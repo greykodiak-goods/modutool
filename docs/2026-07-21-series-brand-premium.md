@@ -47,7 +47,15 @@
 - **DB**: `supabase/migration_01_profiles.sql` — profiles(id→auth.users, plan free|premium, plan_expires_at), RLS 본인 조회만, **플랜 쓰기는 서버 전용**(클라이언트 자가승급 차단), 가입 트리거 자동 생성.
 - **보안 노트**: 클라이언트 플랜 캐시는 광고 표시 편의 판정 전용. 돈이 걸린 실기능(배치·OCR 게이트)은 출시 때 서버 검증(Edge Function/RLS)으로 붙인다.
 
-## 5. ⚠️ 백엔드 활성화 대기 — Supabase 슬롯 (대표 결정)
+## 5. ✅ 백엔드 활성화 완료 (2026-07-21 — 대표 결정: 경매 프로젝트 일시정지)
+
+- 대표가 realestate-auction Supabase 프로젝트를 일시정지 → 슬롯 확보 → **thisismy-tools 프로젝트 생성 완료** (ref `gysvtgnpacqjpdijbcaw`, 서울 ap-northeast-2, 무료 $0).
+- migration_01 적용 확인(profiles·RLS 1정책·가입 트리거), auth-config.js에 publishable key 기입 → **회원 기능 활성 상태로 커밋됨**.
+- ⚠️ 이 컨테이너는 외부 네트워크가 차단되어 실서버 인증 왕복은 미검증 — **배포 직후 라이브에서 가입/로그인 1회 실측할 것**(체크리스트 ↓).
+- 배포 후 Supabase 대시보드 설정 2개(대표 또는 지시 시 안내): Authentication → URL Configuration에서 **Site URL = 배포 주소**, Redirect URLs에 `배포주소/account/`·`배포주소/en/account/` 추가 (이메일 확인·매직링크가 올바른 곳으로 돌아오게). 내장 SMTP는 시간당 발송 제한이 작으므로 가입자가 늘면 커스텀 SMTP 연결.
+- ⚠️ 부작용: 경매 DB 정지로 realestate-auction의 매시 크롤 GitHub Actions가 실패한다 — Actions 탭에서 크롤 워크플로 Disable 권장(경매 재개 시 DB 복원+Enable).
+
+### (기록) 당초 검토했던 옵션
 
 무료 플랜 상한(활성 프로젝트 2개: 어닝 운영 + 경매)에 걸려 신규 프로젝트 생성이 거부됨. 옵션:
 1. **당분간 미활성(현 상태, 추천)** — 사이트 배포·SEO·광고에 지장 없음. 로그인 버튼은 자동 숨김. 트래픽이 생기기 전 회원 기능은 급하지 않음.
