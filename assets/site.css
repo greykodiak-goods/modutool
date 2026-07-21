@@ -222,3 +222,14 @@ textarea.big-input {
   .card { padding: 16px; }
   .dropzone { padding: 26px 14px; }
 }
+
+/* ── 소셜 로그인 버튼 ── */
+.btn-google {
+  display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+  background: var(--surface); color: var(--text); border: 1px solid var(--line);
+  border-radius: 12px; font-size: 15px; font-weight: 600; padding: 11px 16px; cursor: pointer;
+}
+.btn-google:hover { background: var(--surface-2); }
+.btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
+.auth-or { display: flex; align-items: center; gap: 12px; color: var(--text-soft); font-size: 13px; margin: 4px 0; }
+.auth-or::before, .auth-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }

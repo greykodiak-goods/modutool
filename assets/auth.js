@@ -64,12 +64,39 @@
     }
   };
 
-  /* 회원 페이지 전용: SDK 클라이언트 생성 (vendor/supabase.js 선로드 필요) */
+  /* 회원 페이지 전용: SDK 클라이언트 생성 (vendor/supabase.js 선로드 필요)
+     보안 세션 설정:
+     - flowType 'pkce': OAuth(구글) 인가코드 가로채기 방지(SPA 표준 보안 플로우)
+     - autoRefreshToken: 액세스 토큰(기본 1h) 만료 전 자동 갱신 → 세션 유지
+     - persistSession: 리프레시 토큰 보관(재방문 시 로그인 유지)
+     - detectSessionInUrl: OAuth/매직링크 리다이렉트의 토큰을 URL에서 회수 후 주소창 정리 */
   window.mdtlAuthClient = function () {
     var c = cfg();
     if (!c || typeof supabase === 'undefined') return null;
-    if (!window.__mdtlSb) window.__mdtlSb = supabase.createClient(c.url, c.anonKey);
+    if (!window.__mdtlSb) {
+      window.__mdtlSb = supabase.createClient(c.url, c.anonKey, {
+        auth: {
+          flowType: 'pkce',
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true,
+        },
+      });
+    }
     return window.__mdtlSb;
+  };
+
+  /* 구글 OAuth 로그인/가입 (같은 흐름 — 계정 없으면 자동 생성).
+     ⚠️ Supabase 대시보드에서 Google 공급자를 활성화해야 동작(설정 전엔 friendly 에러). */
+  window.mdtlSignInWithGoogle = async function (redirectPath) {
+    var sb = window.mdtlAuthClient(); if (!sb) return { error: { message: 'auth-not-ready' } };
+    return await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: location.origin + (window.MDTL_BASE || '') + (redirectPath || (prefix() + '/account/')),
+        queryParams: { access_type: 'offline', prompt: 'consent' },
+      },
+    });
   };
 
   /* 로그인 직후 플랜 캐시 갱신 */
