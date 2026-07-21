@@ -1,4 +1,4 @@
-# 모두의툴 (tools-web) — 한국어 유틸리티 툴 사이트
+# ThisIsMyPDF (구 모두의툴) — 브라우저 클라이언트 사이드 무료 도구 시리즈 1호
 
 설치·가입 없이 브라우저에서 쓰는 무료 도구 모음. **모든 파일 처리는 클라이언트 사이드**(pdf-lib, pdf.js, browser-image-compression, canvas)로, 서버가 없어 운영비 0원 + "파일이 서버로 전송되지 않음"이 핵심 차별점. 수익 모델은 광고(애드핏→애드센스) — 전략·근거는 `docs/2026-07-21-modutool-strategy.md`(전략)·`docs/2026-07-21-modutool-distribution.md`(노출 전략).
 
@@ -46,12 +46,12 @@ node tests/smoke-pdf-merge.mjs http://localhost:8931 <pw설치경로>
 
 | 항목 | 값 |
 |---|---|
-| Project name | `modutool` (→ modutool.pages.dev) |
+| Project name | `thisismypdf` (→ thisismypdf.pages.dev — ⚠️ modutool.pages.dev는 타인 선점) |
 | Production branch | `main` |
 | Framework preset | None |
 | Build command | `node scripts/build.mjs` |
 | Build output directory | `dist` |
-| 환경변수 | `DEPLOY_ORIGIN` = `https://modutool.pages.dev` |
+| 환경변수 | `DEPLOY_ORIGIN` = `https://thisismypdf.pages.dev` (실제 발급된 주소로) |
 
 커스텀 도메인 전환 시: Pages 프로젝트에 도메인 붙이고 `DEPLOY_ORIGIN`만 새 도메인으로 변경 → 재배포하면 canonical/hreflang/sitemap 전부 자동 갱신(pages.dev 버전은 canonical로 새 도메인을 가리켜 SEO가 자연 이관됨).
 ⚠️ 애드센스·애드핏 신청은 무료 서브도메인으론 불가 — 커스텀 도메인 연결 후에.

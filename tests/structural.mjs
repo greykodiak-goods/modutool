@@ -60,7 +60,7 @@ for (const slug of ['', ...TOOL_PAGES]) {
   const isEn = slug === 'en' || slug.startsWith('en/');
   const isHub = slug === '' || slug === 'en';
   check(name, errors.length === 0, 'JS 오류: ' + errors.join(' | '));
-  check(name, info.title.includes(isEn ? 'ModuTool' : '모두의툴'), 'title에 사이트명 없음: ' + info.title);
+  check(name, info.title.includes('ThisIsMyPDF'), 'title에 사이트명 없음: ' + info.title);
   check(name, info.h1.length >= 2, 'h1 없음');
   check(name, info.desc.length >= 50, 'description 부족: ' + info.desc.length);
   check(name, info.canonical.includes('/' + (slug ? slug + '/' : '')), 'canonical 불일치: ' + info.canonical);
