@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compress PDF — Reduce File Size Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Free PDF compressor that shrinks file size with three quality levels — fit email attachment and upload limits easily. Everything runs in your browser with no server upload, so sensitive documents like contracts stay safe. No install, no sign-up, no size limits.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/pdf-compress/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/ko/pdf-compress/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/pdf-compress/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/pdf-compress/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Compress PDF — Free, No Install, No Server Upload">
+<meta property="og:description" content="Shrink a PDF with three selectable quality levels. 100% in-browser processing — your files never leave your device.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/pdf-compress/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_BASE='/modutool';</script>
+<link rel="stylesheet" href="/modutool/assets/site.css">
+<script src="/modutool/assets/site.js"></script>
+<script src="/modutool/assets/ads-config.js" defer></script>
+<script src="/modutool/assets/auth-config.js" defer></script>
+<script src="/modutool/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Compress PDF - ThisIsMyPDF","url":"https://greykodiak-goods.github.io/modutool/pdf-compress/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that reduces PDF file size with three selectable quality levels. Processed in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my files really never sent to a server?","acceptedAnswer":{"@type":"Answer","text":"Yes. Compression runs entirely on your device using technology built into your browser. If you open the Network tab in your browser's developer tools, you will see no file upload requests. Even sensitive documents like contracts, certificates, or medical reports are safe to use."}},
+{"@type":"Question","name":"Is it true that text can no longer be selected or searched after compression?","acceptedAnswer":{"@type":"Answer","text":"Yes, that is true. This tool shrinks the file by redrawing each page as an image, so in the compressed PDF you cannot select, search, or copy text. It is ideal for scanned documents (which are images to begin with), email attachments, and uploads with size limits — but if you need to search or copy the content later, keep the original file as well."}},
+{"@type":"Question","name":"Which compression level should I choose?","acceptedAnswer":{"@type":"Answer","text":"For most documents the default Recommended level looks fine on screen and in print. Pick Strong when you must squeeze under a tight upload limit (say 5 MB or 10 MB), and Best quality for drawings or fine print where sharpness matters. The resulting size is shown immediately, so you can switch levels and compress again to compare."}},
+{"@type":"Question","name":"How much smaller will my PDF get? Can it get bigger instead?","acceptedAnswer":{"@type":"Answer","text":"PDFs full of scans or photos usually shrink to less than half, and Strong compression can cut 70-90%. However, a text-only PDF that is already light, or a file that was already heavily compressed, can actually grow when redrawn as images. In that case the tool skips the download and tells you to keep using your original."}},
+{"@type":"Question","name":"Can password-protected PDFs be compressed?","acceptedAnswer":{"@type":"Answer","text":"A PDF locked with an open password cannot be read, so it is not compressed and a notice is shown instead. Please remove the password first and try again with the unlocked file."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/">ThisIsMyPDF</a> › <a href="/modutool/#pdf">PDF Tools</a> › Compress PDF</nav>
+  <h1 class="page-title">Compress PDF<span class="privacy-badge">🔒 No server upload</span></h1>
+  <p class="page-sub">Reduce PDF file size with three selectable quality levels. Free — no install, no sign-up, no size limits.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🗜️</span>
+      <strong>Drop a PDF file here or click to select</strong><br>
+      Check the page count and size, then pick a compression level
+    </div>
+    <ul class="file-list" id="fileInfo"></ul>
+    <div class="opts">
+      <label>Compression level
+        <select id="level">
+          <option value="strong">Strong (smallest file)</option>
+          <option value="balanced" selected>Recommended (balanced)</option>
+          <option value="best">Best quality (least reduction)</option>
+        </select>
+      </label>
+    </div>
+    <div class="tip">⚠️ Compression <b>rebuilds each page as an image</b>, so in the result PDF <b>text can no longer be selected, searched, or copied.</b> Great for scanned documents, email attachments, and size-limited uploads — keep the original if you need the text preserved.</div>
+    <div class="btn-row">
+      <button class="btn" id="compBtn" disabled>Compress PDF</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Clear all</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>Drag the PDF you want to compress into the area above, or click to select it. The total page count and current file size appear right away.</li>
+      <li>Pick a <b>compression level</b>. The default <b>Recommended</b> is enough for most documents; choose <b>Strong</b> for tight upload limits, or <b>Best quality</b> for drawings and fine print.</li>
+      <li>Click <b>Compress PDF</b>. Each page is redrawn and compressed with a progress bar, and when it finishes a file named <b>filename_compressed.pdf</b> downloads automatically.</li>
+      <li>Check the result panel for the <b>original size, new size, and percentage saved</b>. Not satisfied? Switch levels and compress again.</li>
+    </ol>
+
+    <h2>How this tool differs from other PDF compressor sites</h2>
+    <p>Most popular online PDF compressors <b>upload your file to their own servers</b>, process it there, and send the result back. You have no way of knowing when the uploaded document gets deleted or who can see it during processing — an uncomfortable thought when the file is a contract, a certificate, a medical report, or a pay stub.</p>
+    <p>ThisIsMyPDF's Compress PDF <b>never sends your file anywhere.</b> It uses the PDF rendering technology built into your browser to draw each page — just as if displaying it on screen — and packs the result into a new, smaller PDF, so the entire process happens on your computer (or phone). That design brings three advantages: <b>privacy</b> (the file never leaves your device), <b>speed</b> (no upload or download queue), and <b>no limits</b> (no caps on pages, uses, or file size — and it stays free).</p>
+
+    <h2>An honest note — how the compression works, and its trade-off</h2>
+    <p>This tool redraws every page at a chosen resolution and stores it as a JPEG image inside a new PDF. That is why scanned documents, whose pages are large images to begin with, shrink dramatically. But there is a clear trade-off: <b>pages in the compressed PDF are images, so text can no longer be selected, searched, or copied</b>, and accessibility tools such as screen readers cannot read the content.</p>
+    <ul>
+      <li><b>Good fit</b> — scanned contracts and receipts, email attachments, government or job-application portals with upload size limits, archival copies</li>
+      <li><b>Poor fit</b> — reports, papers, or e-books whose content you will need to search, copy, or quote later (always keep the original in that case)</li>
+    </ul>
+
+    <h2>Choosing a compression level</h2>
+    <ul>
+      <li><b>Strong</b> — the smallest output. Perfectly readable on screen, though letter edges may soften when zoomed in. Choose it to squeeze under tight upload limits like 5 MB or 10 MB.</li>
+      <li><b>Recommended (default)</b> — the balance point between quality and size. Right for everyday documents, scanned paperwork, and email attachments.</li>
+      <li><b>Best quality</b> — stays close to the original sharpness at the cost of a smaller reduction. Use it for drawings, fine-print tables, and anything headed to a printer.</li>
+    </ul>
+    <p>The original size, the new size, and the percentage saved are shown as soon as compression finishes, so feel free to try several levels and compare. A text-only PDF that is already light, or a file that was already heavily compressed, can actually grow when redrawn as images — in that case the tool skips the download and tells you to keep your original.</p>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>A scanned PDF too big for <b>email attachment limits (usually 10-25 MB)</b></li>
+      <li>Meeting the <b>upload size limits (5-10 MB)</b> of government portals and job-application systems</li>
+      <li><b>Scanned contracts and supporting documents</b> photographed on a phone that ballooned to tens of MB</li>
+      <li>Sharing lecture notes or brochures <b>lightly over chat apps and forums</b></li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> Delete unneeded pages first with <a href="/modutool/pdf-organize/">Organize PDF</a> for an extra size cut. If your material is still JPG photos, shrinking them with <a href="/modutool/image-compress/">Compress Image</a> and then using <a href="/modutool/img-to-pdf/">Image to PDF</a> preserves more quality.</div>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>Are my files really never sent to a server?</summary><p>Yes. Compression runs entirely on your device using technology built into your browser. If you open the Network tab in your browser's developer tools, you will see no file upload requests. Even sensitive documents like contracts, certificates, or medical reports are safe to use.</p></details>
+      <details><summary>Is it true that text can no longer be selected or searched after compression?</summary><p>Yes, that is true. This tool shrinks the file by redrawing each page as an image, so in the compressed PDF you cannot select, search, or copy text. It is ideal for scanned documents (which are images to begin with), email attachments, and uploads with size limits — but if you need to search or copy the content later, keep the original file as well.</p></details>
+      <details><summary>Which compression level should I choose?</summary><p>For most documents the default Recommended level looks fine on screen and in print. Pick Strong when you must squeeze under a tight upload limit (say 5 MB or 10 MB), and Best quality for drawings or fine print where sharpness matters. The resulting size is shown immediately, so you can switch levels and compress again to compare.</p></details>
+      <details><summary>How much smaller will my PDF get? Can it get bigger instead?</summary><p>PDFs full of scans or photos usually shrink to less than half, and Strong compression can cut 70-90%. However, a text-only PDF that is already light, or a file that was already heavily compressed, can actually grow when redrawn as images. In that case the tool skips the download and tells you to keep using your original.</p></details>
+      <details><summary>Can password-protected PDFs be compressed?</summary><p>A PDF locked with an open password cannot be read, so it is not compressed and a notice is shown instead. Please remove the password first and try again with the unlocked file.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/pdf-organize/"><span class="emoji">🗂️</span><span><b>Organize PDF</b><span>Delete, reorder &amp; rotate pages</span></span></a>
+      <a class="tool-tile" href="/modutool/pdf-merge/"><span class="emoji">📎</span><span><b>Merge PDF</b><span>Combine PDFs into one</span></span></a>
+      <a class="tool-tile" href="/modutool/image-compress/"><span class="emoji">🖼️</span><span><b>Compress Image</b><span>Shrink JPG &amp; PNG files</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/assets/vendor/pdf-lib.min.js"></script>
+<script>
+/* pdf.js 5.x uses Map.prototype.getOrInsertComputed (new 2025 syntax).
+   Polyfill (main thread) for browsers that don't support it yet, e.g. Chromium 141.
+   The worker thread gets the same polyfill injected via a blob worker in the module script below. */
+(function () {
+  window.__mdtlNeedsMapUpsertPolyfill = typeof Map.prototype.getOrInsertComputed !== 'function';
+  window.__mdtlMapUpsertPolyfillSrc =
+    '(function(){var f=function(p){' +
+    'if(typeof p.getOrInsertComputed!=="function"){p.getOrInsertComputed=function(k,cb){if(!this.has(k))this.set(k,cb(k));return this.get(k);};}' +
+    'if(typeof p.getOrInsert!=="function"){p.getOrInsert=function(k,v){if(!this.has(k))this.set(k,v);return this.get(k);};}' +
+    '};f(Map.prototype);f(WeakMap.prototype);})();';
+  if (window.__mdtlNeedsMapUpsertPolyfill) {
+    (0, eval)(window.__mdtlMapUpsertPolyfillSrc);
+  }
+})();
+</script>
+<script type="module">
+import * as pdfjsLib from '/modutool/assets/vendor/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/modutool/assets/vendor/pdf.worker.min.mjs';
+
+/* Older browsers need the polyfill in the worker global too, so build a blob module
+   worker with the polyfill prepended to the worker source and set it as workerPort.
+   On failure, fall back to the default workerSrc (modern browsers work without the polyfill). */
+const workerReady = (async () => {
+  if (!window.__mdtlNeedsMapUpsertPolyfill) return;
+  try {
+    const res = await fetch('/modutool/assets/vendor/pdf.worker.min.mjs');
+    if (!res.ok) return;
+    const src = await res.text();
+    const blob = new Blob([window.__mdtlMapUpsertPolyfillSrc, '\n', src], { type: 'text/javascript' });
+    pdfjsLib.GlobalWorkerOptions.workerPort = new Worker(URL.createObjectURL(blob), { type: 'module' });
+  } catch (e) { /* if the polyfilled worker can't be built, use the default path */ }
+})();
+
+/* Compression levels: render scale and JPEG quality (q) */
+const LEVELS = {
+  strong:   { scale: 1.0, q: 0.55 },
+  balanced: { scale: 1.4, q: 0.7 },
+  best:     { scale: 2.0, q: 0.82 }
+};
+
+const dz = document.getElementById('dz');
+const infoEl = document.getElementById('fileInfo');
+const levelSel = document.getElementById('level');
+const compBtn = document.getElementById('compBtn');
+const clearBtn = document.getElementById('clearBtn');
+const prog = document.getElementById('prog');
+const progBar = prog.querySelector('div');
+const result = document.getElementById('result');
+
+let doc = null, baseName = '', pageCount = 0, origSize = 0, busy = false;
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = String(s);
+  return d.innerHTML;
+}
+
+function reset() {
+  if (doc) { try { doc.destroy(); } catch (e) {} }
+  doc = null; baseName = ''; pageCount = 0; origSize = 0;
+  infoEl.innerHTML = '';
+  result.className = 'result';
+  compBtn.disabled = true;
+  compBtn.textContent = 'Compress PDF';
+  clearBtn.style.display = 'none';
+}
+
+clearBtn.addEventListener('click', reset);
+
+mdtlDropzone(dz, {
+  accept: '.pdf,application/pdf',
+  multiple: false,
+  onFiles: (fs) => { if (!busy) loadFile(fs[0]); }
+});
+
+async function loadFile(f) {
+  reset();
+  try {
+    await workerReady;
+    const bytes = new Uint8Array(await f.arrayBuffer());
+    doc = await pdfjsLib.getDocument({ data: bytes }).promise;
+    pageCount = doc.numPages;
+    origSize = f.size;
+    baseName = f.name.replace(/\.pdf$/i, '') || 'document';
+
+    const li = document.createElement('li');
+    li.className = 'file-item';
+    li.innerHTML = '<span class="name"></span><span class="meta"></span>';
+    li.querySelector('.name').textContent = f.name;
+    li.querySelector('.meta').textContent = pageCount + ' pages · ' + mdtlFormatBytes(f.size);
+    infoEl.appendChild(li);
+
+    compBtn.disabled = false;
+    compBtn.textContent = 'Compress ' + pageCount + ' pages';
+    clearBtn.style.display = '';
+  } catch (e) {
+    reset();
+    let msg = 'An error occurred while opening the PDF. Please check that the file is not corrupted.';
+    if (e && e.name === 'PasswordException') msg = 'This PDF is password-protected. Please remove the password and try again.';
+    else if (e && e.name === 'InvalidPDFException') msg = 'This file is not a valid PDF or is corrupted, so it cannot be opened.';
+    mdtlResult(result, '❌ ' + msg, true);
+  }
+}
+
+compBtn.addEventListener('click', async () => {
+  if (!doc || busy) return;
+  busy = true;
+  compBtn.disabled = true; clearBtn.disabled = true; levelSel.disabled = true;
+  prog.className = 'progress show'; progBar.style.width = '0%';
+  result.className = 'result';
+  const lv = LEVELS[levelSel.value] || LEVELS.balanced;
+  try {
+    const out = await PDFLib.PDFDocument.create();
+    for (let i = 1; i <= pageCount; i++) {
+      compBtn.textContent = 'Compressing… (' + i + '/' + pageCount + ')';
+      const page = await doc.getPage(i);
+      const base = page.getViewport({ scale: 1 });
+      const vp = page.getViewport({ scale: lv.scale });
+      const c = document.createElement('canvas');
+      c.width = Math.floor(vp.width);
+      c.height = Math.floor(vp.height);
+      await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+      const dataUrl = c.toDataURL('image/jpeg', lv.q);
+      c.width = 0; c.height = 0; // release canvas memory
+      const img = await out.embedJpg(dataUrl);
+      const p = out.addPage([base.width, base.height]); // keep the original page size in points
+      p.drawImage(img, { x: 0, y: 0, width: base.width, height: base.height });
+      progBar.style.width = Math.round((i / pageCount) * 95) + '%';
+    }
+    const saved = await out.save();
+    progBar.style.width = '100%';
+    const blob = new Blob([saved], { type: 'application/pdf' });
+    if (blob.size >= origSize) {
+      mdtlResult(result,
+        'ℹ️ The compressed result (' + mdtlFormatBytes(blob.size) + ') is not smaller than the original (' + mdtlFormatBytes(origSize) + '), so <b>nothing was downloaded.</b>' +
+        '<br>This file is already light or heavily compressed. <b>Keep using your original.</b> If you still need it smaller, try the <b>Strong</b> level.');
+    } else {
+      const pct = Math.round((1 - blob.size / origSize) * 100);
+      mdtlDownload(blob, baseName + '_compressed.pdf');
+      mdtlResult(result,
+        '✅ <b>Done!</b> ' + mdtlFormatBytes(origSize) + ' → ' + mdtlFormatBytes(blob.size) +
+        ' (<b>' + pct + '% saved</b>) — the file has been downloaded.' +
+        '<br>⚠️ Pages in the compressed PDF are images, so text cannot be selected or searched. Keep the original if you need that.');
+    }
+  } catch (e) {
+    mdtlResult(result,
+      '❌ An error occurred during compression. Please reload the file and try again.' +
+      (e && e.message ? '<br><small>' + escHtml(e.message) + '</small>' : ''), true);
+  } finally {
+    busy = false;
+    prog.className = 'progress';
+    compBtn.disabled = !doc;
+    compBtn.textContent = pageCount ? 'Compress ' + pageCount + ' pages' : 'Compress PDF';
+    clearBtn.disabled = false;
+    levelSel.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

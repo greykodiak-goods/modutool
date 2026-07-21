@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>삼각함수 계산기 — sin·cos·tan 값과 직각삼각형 자동 풀이 | ThisIsMyPDF</title>
+<meta name="description" content="각도만 입력하면 sin cos tan 계산 결과를 소수점 6자리로 즉시 표시. 도·라디안 변환, 역삼각함수(asin·acos·atan), 두 값만 넣으면 나머지를 모두 구하는 직각삼각형 풀이까지 무료. 서버 전송 없이 브라우저에서 바로.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/ko/trig-calculator/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/ko/trig-calculator/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/trig-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/trig-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="삼각함수 계산기 — sin·cos·tan 값, 직각삼각형 자동 풀이">
+<meta property="og:description" content="각도 입력 즉시 sin cos tan 계산. 도↔라디안 변환, 역삼각함수, 직각삼각형 두 값 입력 → 나머지 변·각도 자동 계산. 입력값이 서버로 전송되지 않는 100% 브라우저 처리.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/ko/trig-calculator/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_BASE='/modutool';</script>
+<link rel="stylesheet" href="/modutool/assets/site.css">
+<script src="/modutool/assets/site.js"></script>
+<script src="/modutool/assets/ads-config.js" defer></script>
+<script src="/modutool/assets/auth-config.js" defer></script>
+<script src="/modutool/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"삼각함수 계산기 - ThisIsMyPDF","url":"https://greykodiak-goods.github.io/modutool/ko/trig-calculator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"각도를 입력하면 sin·cos·tan 값을 즉시 계산하고, 직각삼각형의 두 값으로 나머지 변과 각도를 자동으로 구하는 무료 웹 계산기. 도·라디안 변환과 역삼각함수 지원, 서버 전송 없이 브라우저에서 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"도(°)와 라디안(rad)은 어떻게 변환하나요?","acceptedAnswer":{"@type":"Answer","text":"180° = π rad가 변환의 기준입니다. 도에 π/180(약 0.017453)을 곱하면 라디안이 되고, 라디안에 180/π(약 57.2958)를 곱하면 도가 됩니다. 예를 들어 30°는 π/6 ≈ 0.5236 rad입니다. 이 계산기는 결과 첫 줄에 두 단위를 항상 함께 표시합니다."}},
+{"@type":"Question","name":"tan 90°는 왜 \"정의되지 않음\"으로 나오나요?","acceptedAnswer":{"@type":"Answer","text":"tan θ = sin θ ÷ cos θ인데 cos 90° = 0이라 0으로 나눌 수 없기 때문입니다. 90°, 270°처럼 cos θ가 0이 되는 모든 각도에서 tan은 정의되지 않으며, 이 계산기도 해당 각도에서 값 대신 \"정의되지 않음\"을 표시합니다."}},
+{"@type":"Question","name":"직각삼각형 풀이에는 어떤 값 2개를 넣어야 하나요?","acceptedAnswer":{"@type":"Answer","text":"밑변 a, 높이 b, 빗변 c, 예각 θ 중 아무 2개면 됩니다. 어떤 조합을 입력했는지 자동으로 판별해 피타고라스 정리와 삼각비로 나머지 값과 둘레·넓이까지 계산합니다. 단 빗변 c는 다른 변보다 길어야 하고, θ는 0°보다 크고 90°보다 작아야 합니다."}},
+{"@type":"Question","name":"계산 결과는 얼마나 정확한가요?","acceptedAnswer":{"@type":"Answer","text":"브라우저에 내장된 배정밀도(64비트) 부동소수점 연산을 사용해 유효숫자 약 15자리의 정확도를 가지며, 화면에는 소수점 6자리로 반올림해 표시합니다. 학교 시험 검산과 실무 설계 용도로 충분한 정밀도입니다."}},
+{"@type":"Question","name":"입력한 값이 서버로 전송되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 모든 계산은 브라우저 안에서 자바스크립트로만 처리되며 입력값이 어디로도 전송되지 않습니다. 페이지가 한 번 열려 있으면 인터넷이 끊겨도 계속 사용할 수 있고, 회원가입이나 설치도 필요 없습니다."}}
+]}
+</script>
+<style>
+.tool-card h2 { font-size: 18px; margin: 26px 0 14px; }
+.tool-card h2:first-child { margin-top: 0; }
+#triGrid { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 640px) { #triGrid { grid-template-columns: repeat(4, 1fr); } }
+#triSvg { display: block; margin: 0 auto 14px; width: 100%; max-width: 260px; height: auto; }
+.guide table { border-collapse: collapse; width: 100%; min-width: 420px; }
+.guide th, .guide td { border: 1px solid var(--line); padding: 8px 10px; text-align: center; font-size: 14.5px; }
+.guide th { background: var(--surface-2); }
+</style>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/ko/">ThisIsMyPDF</a> › <a href="/modutool/ko/#calc">계산기</a> › 삼각함수 계산기</nav>
+  <h1 class="page-title">삼각함수 계산기<span class="privacy-badge">🔒 서버 전송 없음</span></h1>
+  <p class="page-sub">각도를 입력하면 sin·cos·tan 값을 즉시 계산합니다. 도·라디안 변환, 역삼각함수, 직각삼각형 자동 풀이까지 무료.</p>
+
+  <div class="card tool-card">
+    <h2>📐 삼각함수 값 (sin·cos·tan)</h2>
+    <div class="calc-grid">
+      <div class="opts">
+        <label><input type="radio" name="trigUnit" value="deg" checked> 도(°)</label>
+        <label><input type="radio" name="trigUnit" value="rad"> 라디안(rad)</label>
+      </div>
+      <label class="field"><span>각도</span><input type="number" id="angleIn" step="any" inputmode="decimal" placeholder="예: 30"></label>
+      <div class="calc-out" id="trigOut"><div class="sub">각도를 입력하면 즉시 계산됩니다. (예: 30)</div></div>
+    </div>
+
+    <h2>↩️ 역삼각함수 (asin·acos·atan)</h2>
+    <div class="calc-grid">
+      <label class="field"><span>값 (asin·acos는 -1 ~ 1)</span><input type="number" id="invIn" step="any" inputmode="decimal" placeholder="예: 0.5"></label>
+      <div class="calc-out" id="invOut"><div class="sub">값을 입력하면 asin·acos·atan을 도(°)와 라디안으로 계산합니다.</div></div>
+    </div>
+  </div>
+
+  <div class="card tool-card">
+    <h2>📏 직각삼각형 풀이 — 두 값만 입력하면 나머지 자동 계산</h2>
+    <svg id="triSvg" viewBox="0 0 240 150" role="img" aria-label="직각삼각형: 밑변 a, 높이 b, 빗변 c, 예각 θ">
+      <polygon points="20,130 220,130 220,20" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M204 130 L204 114 L220 114" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+      <path d="M52 130 A 32 32 0 0 0 48 114.6" fill="none" stroke="var(--warn)" stroke-width="1.5"/>
+      <text x="120" y="146" text-anchor="middle" font-size="14" fill="var(--text)">a</text>
+      <text x="228" y="80" font-size="14" fill="var(--text)">b</text>
+      <text x="104" y="64" font-size="14" fill="var(--text)">c</text>
+      <text x="60" y="125" font-size="13" fill="var(--warn)">θ</text>
+    </svg>
+    <div class="calc-grid" id="triGrid">
+      <label class="field"><span>밑변 a</span><input type="number" id="triA" step="any" inputmode="decimal" placeholder="예: 3"></label>
+      <label class="field"><span>높이 b</span><input type="number" id="triB" step="any" inputmode="decimal" placeholder="예: 4"></label>
+      <label class="field"><span>빗변 c</span><input type="number" id="triC" step="any" inputmode="decimal" placeholder=""></label>
+      <label class="field"><span>각도 θ (°)</span><input type="number" id="triT" step="any" inputmode="decimal" placeholder=""></label>
+    </div>
+    <div class="btn-row">
+      <button class="btn secondary" id="triClear">초기화</button>
+    </div>
+    <div class="calc-out" id="triOut"><div class="sub">밑변 a · 높이 b · 빗변 c · 각도 θ 중 <b>아는 값 2개만</b> 입력하세요. 나머지를 자동으로 계산합니다.</div></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li><b>삼각함수 값</b> 카드에서 도(°)·라디안 단위를 고르고 각도를 입력하면 sin·cos·tan 값이 소수점 6자리로 즉시 표시됩니다. tan 90°처럼 정의역을 벗어난 경우는 "정의되지 않음"으로 알려드립니다.</li>
+      <li>역삼각함수가 필요하면 아래 칸에 값을 입력하세요. asin·acos·atan 결과를 도와 라디안으로 동시에 보여줍니다.</li>
+      <li><b>직각삼각형 풀이</b> 카드에서는 밑변 a·높이 b·빗변 c·각도 θ 네 칸 중 <b>아는 값 2개만</b> 입력하면 됩니다. 어떤 조합을 넣었는지 자동으로 판별해 나머지 변과 각도는 물론 둘레·넓이까지 계산합니다.</li>
+      <li>별도의 계산 버튼이 없습니다 — 입력하는 순간 결과가 실시간으로 갱신됩니다.</li>
+    </ol>
+
+    <h2>삼각비의 정의 — SOH·CAH·TOA</h2>
+    <p>직각삼각형에서 한 예각 θ를 기준으로 세 변의 이름이 정해집니다. θ의 맞은편 변이 <b>높이(대변)</b>, θ에 붙어 있는 변이 <b>밑변(인접변)</b>, 직각의 맞은편에 있는 가장 긴 변이 <b>빗변</b>입니다. 삼각비는 이 세 변의 길이 비율이며, 영어 앞글자를 딴 암기법 SOH·CAH·TOA로 널리 알려져 있습니다.</p>
+    <ul>
+      <li><b>sin θ = 높이 ÷ 빗변</b> — SOH (Sine = Opposite / Hypotenuse)</li>
+      <li><b>cos θ = 밑변 ÷ 빗변</b> — CAH (Cosine = Adjacent / Hypotenuse)</li>
+      <li><b>tan θ = 높이 ÷ 밑변</b> — TOA (Tangent = Opposite / Adjacent)</li>
+    </ul>
+    <p>세 값은 서로 독립적이지 않습니다. <b>tan θ = sin θ ÷ cos θ</b> 관계가 항상 성립하고, 피타고라스 정리에서 나온 항등식 <b>sin²θ + cos²θ = 1</b>도 항상 참입니다. 손으로 푼 답을 검산할 때 이 두 식을 활용하면 좋습니다. 위 직각삼각형 풀이 카드도 내부적으로 피타고라스 정리(a² + b² = c²)와 이 삼각비를 그대로 사용해 계산합니다.</p>
+
+    <h2>특수각 표 (0°·30°·45°·60°·90°)</h2>
+    <p>시험에 가장 자주 나오는 특수각의 sin cos tan 계산 값입니다. 분수·근호 형태와 소수 근삿값을 함께 실었으니, 계산기 결과와 비교하면서 암기 여부를 확인해 보세요.</p>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>θ</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th></tr></thead>
+        <tbody>
+          <tr><th>sin θ</th><td>0</td><td>1/2 = 0.5</td><td>√2/2 ≈ 0.7071</td><td>√3/2 ≈ 0.8660</td><td>1</td></tr>
+          <tr><th>cos θ</th><td>1</td><td>√3/2 ≈ 0.8660</td><td>√2/2 ≈ 0.7071</td><td>1/2 = 0.5</td><td>0</td></tr>
+          <tr><th>tan θ</th><td>0</td><td>√3/3 ≈ 0.5774</td><td>1</td><td>√3 ≈ 1.7321</td><td>정의되지 않음</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>tan 90°가 "정의되지 않음"인 이유는 tan θ = sin θ ÷ cos θ에서 cos 90° = 0이라 0으로 나누는 꼴이 되기 때문입니다. 이 계산기도 같은 이유로 90°, 270°처럼 cos θ가 0이 되는 각도에서는 tan 값을 "정의되지 않음"으로 표시합니다.</p>
+
+    <h2>도(°) ↔ 라디안(rad) 변환 공식</h2>
+    <p>수학·물리·공학에서는 두 각도 단위를 함께 씁니다. 변환의 근거는 <b>180° = π rad</b> 단 하나입니다.</p>
+    <ul>
+      <li><b>도 → 라디안</b>: rad = 도 × π ÷ 180 — 예: 30° = 30 × π/180 = π/6 ≈ 0.5236 rad</li>
+      <li><b>라디안 → 도</b>: 도 = rad × 180 ÷ π — 예: 1 rad = 180/π ≈ 57.2958°</li>
+    </ul>
+    <p>이 계산기는 어느 단위로 입력해도 결과 첫 줄에 두 단위를 항상 병기하므로 변환표를 따로 찾을 필요가 없습니다.</p>
+
+    <h2>서버 전송 없이 브라우저에서만 계산합니다</h2>
+    <p>이 페이지의 모든 계산은 브라우저에 내장된 자바스크립트 수학 함수로 처리됩니다. 입력한 숫자는 <b>서버로 전송되지 않고</b> 내 기기 화면을 벗어나지 않습니다. 페이지가 한 번 열려 있으면 인터넷이 끊겨도 계속 계산할 수 있고, 회원가입·앱 설치·광고 시청 대기 같은 절차도 없습니다. 공학용 계산기가 손에 없을 때 휴대폰 브라우저만으로 바로 쓸 수 있습니다.</p>
+
+    <h2>이럴 때 쓰세요</h2>
+    <ul>
+      <li><b>학생 시험공부</b> — 특수각 암기 확인, 문제집 답 검산, 라디안 단원의 단위 변환 연습. sin 75°처럼 특수각이 아닌 값도 바로 확인할 수 있습니다.</li>
+      <li><b>공학·건축 실무</b> — 경사로(램프) 설계: 높이 0.6 m를 경사각 5°로 올리려면 빗변 길이는 0.6 ÷ sin 5° ≈ 6.88 m. 지붕 물매, 계단 각도, 배수 구배 계산에도 같은 방식이 쓰입니다.</li>
+      <li><b>현장 시공</b> — 사다리 안전 각도(약 75°) 확인, 차양·어닝 프레임의 설치 각도와 돌출 길이 계산, 브래킷 사이 대각선 치수 산출.</li>
+      <li><b>DIY·목공</b> — 대각선 길이로 직각 확인(3:4:5 법칙), 경사 재단할 목재의 각도와 길이 계산.</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 공학용 계산기에서 가장 흔한 오답 원인은 DEG/RAD 모드 착각입니다. 예를 들어 sin 30을 라디안 모드로 계산하면 0.5가 아니라 -0.988이 나옵니다. 이 계산기는 단위 토글이 항상 화면에 보이고 결과에도 두 단위를 병기하므로 모드 실수를 원천 차단합니다.</div>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>도(°)와 라디안(rad)은 어떻게 변환하나요?</summary><p>180° = π rad가 변환의 기준입니다. 도에 π/180(약 0.017453)을 곱하면 라디안이 되고, 라디안에 180/π(약 57.2958)를 곱하면 도가 됩니다. 예를 들어 30°는 π/6 ≈ 0.5236 rad입니다. 이 계산기는 결과 첫 줄에 두 단위를 항상 함께 표시합니다.</p></details>
+      <details><summary>tan 90°는 왜 "정의되지 않음"으로 나오나요?</summary><p>tan θ = sin θ ÷ cos θ인데 cos 90° = 0이라 0으로 나눌 수 없기 때문입니다. 90°, 270°처럼 cos θ가 0이 되는 모든 각도에서 tan은 정의되지 않으며, 이 계산기도 해당 각도에서 값 대신 "정의되지 않음"을 표시합니다.</p></details>
+      <details><summary>직각삼각형 풀이에는 어떤 값 2개를 넣어야 하나요?</summary><p>밑변 a, 높이 b, 빗변 c, 예각 θ 중 아무 2개면 됩니다. 어떤 조합을 입력했는지 자동으로 판별해 피타고라스 정리와 삼각비로 나머지 값과 둘레·넓이까지 계산합니다. 단 빗변 c는 다른 변보다 길어야 하고, θ는 0°보다 크고 90°보다 작아야 합니다.</p></details>
+      <details><summary>계산 결과는 얼마나 정확한가요?</summary><p>브라우저에 내장된 배정밀도(64비트) 부동소수점 연산을 사용해 유효숫자 약 15자리의 정확도를 가지며, 화면에는 소수점 6자리로 반올림해 표시합니다. 학교 시험 검산과 실무 설계 용도로 충분한 정밀도입니다.</p></details>
+      <details><summary>입력한 값이 서버로 전송되나요?</summary><p>아니요. 모든 계산은 브라우저 안에서 자바스크립트로만 처리되며 입력값이 어디로도 전송되지 않습니다. 페이지가 한 번 열려 있으면 인터넷이 끊겨도 계속 사용할 수 있고, 회원가입이나 설치도 필요 없습니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/ko/percent-calculator/"><span class="emoji">💯</span><span><b>퍼센트 계산기</b><span>비율·증감률·할인율</span></span></a>
+      <a class="tool-tile" href="/modutool/ko/pyeong-calculator/"><span class="emoji">🏠</span><span><b>평수 계산기</b><span>㎡ ↔ 평 변환</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── 공용 포맷터 ── */
+  function parseNum(el) {
+    var s = el.value.trim();
+    if (s === '') return null;
+    var n = parseFloat(s);
+    return isFinite(n) ? n : null;
+  }
+  function fmt6(n) {
+    var s = n.toFixed(6);
+    return s === '-0.000000' ? '0.000000' : s;
+  }
+  function fmt(n) {
+    var r = Math.round(n * 1e6) / 1e6;
+    if (Object.is(r, -0)) r = 0;
+    return String(r);
+  }
+
+  /* ── ① 삼각함수 값 (sin·cos·tan) ── */
+  var angleIn = document.getElementById('angleIn');
+  var trigOut = document.getElementById('trigOut');
+  function calcTrig() {
+    try {
+      var unitEl = document.querySelector('input[name="trigUnit"]:checked');
+      var unit = unitEl ? unitEl.value : 'deg';
+      var v = parseNum(angleIn);
+      if (v === null) {
+        trigOut.innerHTML = '<div class="sub">각도를 입력하면 즉시 계산됩니다. (예: 30)</div>';
+        return;
+      }
+      var rad = unit === 'deg' ? v * Math.PI / 180 : v;
+      var deg = unit === 'deg' ? v : v * 180 / Math.PI;
+      var sin = Math.sin(rad), cos = Math.cos(rad);
+      var undef = Math.abs(cos) < 1e-12;
+      if (unit === 'deg') {
+        var m = ((v % 180) + 180) % 180;
+        undef = undef || Math.abs(m - 90) < 1e-9;
+      }
+      trigOut.innerHTML =
+        '<div class="sub">θ = ' + fmt(deg) + '° = ' + fmt6(rad) + ' rad</div>' +
+        '<div>sin θ = <b>' + fmt6(sin) + '</b></div>' +
+        '<div>cos θ = <b>' + fmt6(cos) + '</b></div>' +
+        '<div>tan θ = <b>' + (undef ? '정의되지 않음' : fmt6(sin / cos)) + '</b>' +
+        (undef ? ' <span class="sub">(cos θ = 0이라 0으로 나눌 수 없습니다)</span>' : '') + '</div>';
+    } catch (e) {
+      trigOut.innerHTML = '<div>⚠️ 계산 중 오류가 발생했습니다. 입력값을 확인해 주세요.</div>';
+    }
+  }
+
+  /* ── ① 역삼각함수 (asin·acos·atan) ── */
+  var invIn = document.getElementById('invIn');
+  var invOut = document.getElementById('invOut');
+  function calcInv() {
+    try {
+      var v = parseNum(invIn);
+      if (v === null) {
+        invOut.innerHTML = '<div class="sub">값을 입력하면 asin·acos·atan을 도(°)와 라디안으로 계산합니다.</div>';
+        return;
+      }
+      var html = '';
+      if (v < -1 || v > 1) {
+        html += '<div>asin(' + fmt(v) + ') = <b>정의되지 않음</b> <span class="sub">(-1 ~ 1 범위 밖)</span></div>';
+        html += '<div>acos(' + fmt(v) + ') = <b>정의되지 않음</b> <span class="sub">(-1 ~ 1 범위 밖)</span></div>';
+      } else {
+        var as = Math.asin(v), ac = Math.acos(v);
+        html += '<div>asin(' + fmt(v) + ') = <b>' + fmt(as * 180 / Math.PI) + '°</b> = ' + fmt6(as) + ' rad</div>';
+        html += '<div>acos(' + fmt(v) + ') = <b>' + fmt(ac * 180 / Math.PI) + '°</b> = ' + fmt6(ac) + ' rad</div>';
+      }
+      var at = Math.atan(v);
+      html += '<div>atan(' + fmt(v) + ') = <b>' + fmt(at * 180 / Math.PI) + '°</b> = ' + fmt6(at) + ' rad</div>';
+      invOut.innerHTML = html;
+    } catch (e) {
+      invOut.innerHTML = '<div>⚠️ 계산 중 오류가 발생했습니다. 입력값을 확인해 주세요.</div>';
+    }
+  }
+
+  /* ── ② 직각삼각형 풀이 ── */
+  var triA = document.getElementById('triA');
+  var triB = document.getElementById('triB');
+  var triC = document.getElementById('triC');
+  var triT = document.getElementById('triT');
+  var triOut = document.getElementById('triOut');
+  var TRI_HINT = '<div class="sub">밑변 a · 높이 b · 빗변 c · 각도 θ 중 <b>아는 값 2개만</b> 입력하세요. 나머지를 자동으로 계산합니다.</div>';
+  function triErr(msg) { triOut.innerHTML = '<div>⚠️ ' + msg + '</div>'; }
+  function calcTri() {
+    try {
+      var a = parseNum(triA), b = parseNum(triB), c = parseNum(triC), t = parseNum(triT);
+      var has = { a: a !== null, b: b !== null, c: c !== null, t: t !== null };
+      var keys = ['a', 'b', 'c', 't'].filter(function (k) { return has[k]; });
+      if (keys.length < 2) { triOut.innerHTML = TRI_HINT; return; }
+      if (keys.length > 2) { triErr('값을 2개만 입력해 주세요. 나머지 칸은 비워 두면 자동으로 계산됩니다.'); return; }
+      if ((has.a && a <= 0) || (has.b && b <= 0) || (has.c && c <= 0)) { triErr('변의 길이는 0보다 큰 숫자여야 합니다.'); return; }
+      if (has.t && (t <= 0 || t >= 90)) { triErr('직각삼각형의 예각 θ는 0°보다 크고 90°보다 작아야 합니다.'); return; }
+      var combo = keys.join('');
+      var rad;
+      if (combo === 'ab') {
+        c = Math.sqrt(a * a + b * b); rad = Math.atan2(b, a);
+      } else if (combo === 'ac') {
+        if (c <= a) { triErr('불가능한 조합입니다. 빗변 c는 밑변 a보다 길어야 합니다.'); return; }
+        b = Math.sqrt(c * c - a * a); rad = Math.acos(a / c);
+      } else if (combo === 'bc') {
+        if (c <= b) { triErr('불가능한 조합입니다. 빗변 c는 높이 b보다 길어야 합니다.'); return; }
+        a = Math.sqrt(c * c - b * b); rad = Math.asin(b / c);
+      } else if (combo === 'at') {
+        rad = t * Math.PI / 180; b = a * Math.tan(rad); c = a / Math.cos(rad);
+      } else if (combo === 'bt') {
+        rad = t * Math.PI / 180; a = b / Math.tan(rad); c = b / Math.sin(rad);
+      } else { /* 'ct' */
+        rad = t * Math.PI / 180; a = c * Math.cos(rad); b = c * Math.sin(rad);
+      }
+      t = rad * 180 / Math.PI;
+      function mark(k) { return has[k] ? ' <span class="sub">(입력)</span>' : ''; }
+      triOut.innerHTML =
+        '<div>밑변 a = <b>' + fmt(a) + '</b>' + mark('a') + '</div>' +
+        '<div>높이 b = <b>' + fmt(b) + '</b>' + mark('b') + '</div>' +
+        '<div>빗변 c = <b>' + fmt(c) + '</b>' + mark('c') + '</div>' +
+        '<div>각도 θ = <b>' + fmt(t) + '°</b> = ' + fmt6(rad) + ' rad' + mark('t') + '</div>' +
+        '<div class="sub">나머지 예각 ' + fmt(90 - t) + '° · 둘레 ' + fmt(a + b + c) + ' · 넓이 ' + fmt(a * b / 2) + '</div>';
+    } catch (e) {
+      triErr('계산 중 오류가 발생했습니다. 입력값을 확인해 주세요.');
+    }
+  }
+
+  /* ── 이벤트 연결 (버튼 없이 input 즉시 계산) ── */
+  angleIn.addEventListener('input', calcTrig);
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="trigUnit"]'), function (r) {
+    r.addEventListener('change', calcTrig);
+  });
+  invIn.addEventListener('input', calcInv);
+  [triA, triB, triC, triT].forEach(function (el) { el.addEventListener('input', calcTri); });
+  document.getElementById('triClear').addEventListener('click', function () {
+    triA.value = ''; triB.value = ''; triC.value = ''; triT.value = '';
+    calcTri();
+  });
+
+  calcTrig(); calcInv(); calcTri();
+})();
+</script>
+</body>
+</html>

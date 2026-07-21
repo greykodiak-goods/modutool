@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add Watermark to Photos — Text Stamp, Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Free tool that stamps a text watermark onto multiple photos at once — pick position, size, opacity, color, and a readability shadow. Everything runs in your browser, so your photos are never uploaded. No install, no sign-up, no size limits.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/image-watermark/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/ko/image-watermark/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/image-watermark/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/image-watermark/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Add a Text Watermark to Photos — Free, No Install, No Server Upload">
+<meta property="og:description" content="Stamp your name, © notice, or SNS handle across photos in one step. 100% in-browser processing — your files never leave your device.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/image-watermark/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_BASE='/modutool';</script>
+<link rel="stylesheet" href="/modutool/assets/site.css">
+<script src="/modutool/assets/site.js"></script>
+<script src="/modutool/assets/ads-config.js" defer></script>
+<script src="/modutool/assets/auth-config.js" defer></script>
+<script src="/modutool/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Image Watermark - ThisIsMyPDF","url":"https://greykodiak-goods.github.io/modutool/image-watermark/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that stamps a text watermark onto multiple images at once, with adjustable position, size, opacity, color, and shadow. Processed in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my photos really never uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Correct. The watermark is drawn onto your images entirely on your device using the canvas feature built into your browser. Open your browser's developer tools and check the Network tab — you won't see a single file upload request. Product shots, personal photos, and unpublished work are all safe to stamp here."}},
+{"@type":"Question","name":"Can I use Korean, emoji, or other non-English text as the watermark?","acceptedAnswer":{"@type":"Answer","text":"Yes. Unlike a PDF tool that has to embed a font file, this watermark is painted with your device's own system fonts, so Korean, Japanese, accented Latin characters, and most emoji render correctly. The exact letterforms depend on the fonts installed on the machine that runs the tool, not on the viewer's device, because the text is baked into the pixels of the image."}},
+{"@type":"Question","name":"Which watermark position should I choose?","acceptedAnswer":{"@type":"Answer","text":"Bottom-right is the classic choice for a discreet copyright or handle that doesn't cover the subject. Center places a single large mark over the middle of the photo, which is harder to crop out. Tiled repeats the text diagonally across the whole image at a 45° angle — the safest option against theft, since there is no clean area left to reuse."}},
+{"@type":"Question","name":"Does the tool keep my original file format?","acceptedAnswer":{"@type":"Answer","text":"Yes. A JPG stays a JPG, a PNG stays a PNG, and a WEBP stays a WEBP, so transparency in PNG and WEBP files is preserved. GIF and BMP files are flattened and saved as PNG because those formats can't be re-encoded from the browser canvas. Every download is named originalname_watermarked so your originals are never overwritten."}},
+{"@type":"Question","name":"Can someone still remove the watermark I add?","acceptedAnswer":{"@type":"Answer","text":"A watermark is baked into the image pixels, so it can't be toggled off — but a determined editor can crop or paint over a small corner mark. For strong protection use the tiled pattern with medium opacity and the readability shadow on, which leaves no untouched region to reconstruct. A visible watermark deters casual reposting and makes ownership obvious even when it can't make theft impossible."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/">ThisIsMyPDF</a> › <a href="/modutool/#image">Image Tools</a> › Add Watermark to Photos</nav>
+  <h1 class="page-title">Add Watermark to Photos<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Stamp a text watermark — your name, a © notice, or an SNS handle — onto many photos at once. Free — no install, no sign-up, no size limits.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🖼️</span>
+      <strong>Drag &amp; drop images here, or click to select</strong><br>
+      You can select multiple files at once (JPG · PNG · WEBP · GIF · BMP)
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts">
+      <label style="flex:1 1 100%">Watermark text
+        <input type="text" id="wmText" placeholder="© Your Name / @handle" maxlength="120" style="width:100%">
+      </label>
+    </div>
+    <div class="opts">
+      <label>Position
+        <select id="position">
+          <option value="br">Bottom-right</option>
+          <option value="center">Center</option>
+          <option value="tile">Tiled (repeat)</option>
+        </select>
+      </label>
+      <label>Color
+        <select id="colorSel">
+          <option value="#ffffff">White</option>
+          <option value="#000000">Black</option>
+          <option value="#888888">Gray</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="shadow" checked> Shadow (readability)</label>
+    </div>
+    <div class="opts">
+      <label>Size
+        <input type="range" id="size" min="2" max="16" value="6">
+        <span id="sizeVal">6%</span>
+      </label>
+      <label>Opacity
+        <input type="range" id="opacity" min="10" max="80" value="35">
+        <span id="opacityVal">0.35</span>
+      </label>
+    </div>
+    <div class="preview-wrap" id="previewWrap" style="display:none;margin:14px 0 4px">
+      <canvas id="preview" style="max-width:100%;height:auto;border-radius:10px;display:block;margin:0 auto"></canvas>
+      <p class="page-sub" style="text-align:center;margin:8px 0 0;font-size:13px">Live preview of the first image</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="convertBtn" disabled>Add Watermark</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Clear All</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drag images into the area above, or click it to select them. JPG, PNG, WEBP, GIF, and BMP are supported, and you can add multiple files at once.</li>
+      <li>Type your <b>watermark text</b> — a name, a © copyright line, an SNS handle, or a "DRAFT / DO NOT COPY" note. Korean and most emoji work too, because the text is drawn with your device's system fonts.</li>
+      <li>Set the <b>position</b> (bottom-right, center, or tiled), the <b>size</b> (scaled to each image's width, so it looks consistent across different resolutions), the <b>opacity</b>, the <b>color</b>, and whether to add a readability <b>shadow</b>. The first image updates live so you can dial it in.</li>
+      <li>Click <b>Add Watermark</b>. Each file keeps its original format and is saved as <code>originalname_watermarked</code>. Download them one at a time or all at once.</li>
+    </ol>
+
+    <h2>Why Stamp a Watermark on Your Photos</h2>
+    <p>A visible watermark is the simplest way to say "this image is mine." Whether you run a shopping mall, post product shots to a marketplace, share work on Instagram, or publish photos on a blog, a text stamp makes ownership obvious the moment someone screenshots or re-uploads your picture. It won't stop every thief, but it turns silent copying into an obvious, attributable act — and for most casual reposting, that deterrent alone is enough.</p>
+    <p>ThisIsMyPDF's watermark tool <b>never sends your files anywhere.</b> The text is painted onto your images inside your own browser using canvas technology, and nothing is uploaded to a server. That matters when the photos are unpublished designs, client work under embargo, or personal pictures you'd rather not hand to an unknown website. It also means there are no limits: stamp a hundred product photos in one batch without a per-file cap, a queue, or a sign-up wall.</p>
+    <p>Three watermark layouts cover the common needs. <b>Bottom-right</b> keeps a small, tasteful mark out of the way of the subject — ideal for a © line or handle you want present but not distracting. <b>Center</b> drops one larger mark over the middle of the frame, useful for proof photos or drafts you're sharing for review. <b>Tiled</b> repeats the text diagonally across the entire image at a 45° angle, so there is no clean corner left to crop away — the strongest option when theft protection is the whole point.</p>
+    <p>Because the watermark is drawn with <b>system fonts rather than an embedded font file</b>, you can type Korean, Japanese, accented characters, or emoji and they render correctly — something a PDF stamp usually can't do without extra font handling. The size is expressed as a percentage of each image's width, so a single setting looks proportional whether the photo is 800px or 6,000px wide. A subtle <b>shadow</b> keeps white text legible over bright skies and dark text legible over shadows, and the tool <b>automatically applies the EXIF orientation</b> of smartphone photos so nothing comes out sideways. Every file <b>keeps its original format</b> — JPG stays JPG, PNG and WEBP keep their transparency — and outputs are renamed <code>_watermarked</code> so your originals are safe.</p>
+
+    <h2>When to Use This Tool</h2>
+    <ul>
+      <li><b>Preventing photo theft</b> on a blog or online store — tile your brand name so lifted images stay branded</li>
+      <li>Adding a <b>© copyright notice</b> to photography, illustrations, or design work before you publish</li>
+      <li>Marking <b>your SNS handle or ID</b> on images so re-shares point back to your account</li>
+      <li>Sending <b>proofs or drafts</b> to a client with a "SAMPLE / DO NOT COPY" stamp across them</li>
+      <li>Batch-stamping <b>dozens of product photos</b> with one consistent mark before a marketplace upload</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> Watermark first, then resize or compress. If you plan to shrink images for the web, add the watermark here at full resolution and run the results through the <a href="/modutool/image-resize/">Image Resizer</a> or <a href="/modutool/image-compress/">Image Compressor</a> afterwards, so the mark scales down cleanly with the photo.</div>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Are my photos really never uploaded to a server?</summary><p>Correct. The watermark is drawn onto your images entirely on your device using the canvas feature built into your browser. Open your browser's developer tools and check the Network tab — you won't see a single file upload request. Product shots, personal photos, and unpublished work are all safe to stamp here.</p></details>
+      <details><summary>Can I use Korean, emoji, or other non-English text as the watermark?</summary><p>Yes. Unlike a PDF tool that has to embed a font file, this watermark is painted with your device's own system fonts, so Korean, Japanese, accented Latin characters, and most emoji render correctly. The exact letterforms depend on the fonts installed on the machine that runs the tool, not on the viewer's device, because the text is baked into the pixels of the image.</p></details>
+      <details><summary>Which watermark position should I choose?</summary><p>Bottom-right is the classic choice for a discreet copyright or handle that doesn't cover the subject. Center places a single large mark over the middle of the photo, which is harder to crop out. Tiled repeats the text diagonally across the whole image at a 45° angle — the safest option against theft, since there is no clean area left to reuse.</p></details>
+      <details><summary>Does the tool keep my original file format?</summary><p>Yes. A JPG stays a JPG, a PNG stays a PNG, and a WEBP stays a WEBP, so transparency in PNG and WEBP files is preserved. GIF and BMP files are flattened and saved as PNG because those formats can't be re-encoded from the browser canvas. Every download is named originalname_watermarked so your originals are never overwritten.</p></details>
+      <details><summary>Can someone still remove the watermark I add?</summary><p>A watermark is baked into the image pixels, so it can't be toggled off — but a determined editor can crop or paint over a small corner mark. For strong protection use the tiled pattern with medium opacity and the readability shadow on, which leaves no untouched region to reconstruct. A visible watermark deters casual reposting and makes ownership obvious even when it can't make theft impossible.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/image-resize/"><span class="emoji">📐</span><span><b>Image Resizer</b><span>Resize by pixels or percentage</span></span></a>
+      <a class="tool-tile" href="/modutool/image-compress/"><span class="emoji">🗜️</span><span><b>Image Compressor</b><span>Keep resolution, shrink file size</span></span></a>
+      <a class="tool-tile" href="/modutool/image-crop/"><span class="emoji">✂️</span><span><b>Image Cropper</b><span>Crop to the area you need</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var files = [];
+  var firstImg = null, firstW = 0, firstH = 0;
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var wmText = document.getElementById('wmText');
+  var positionSel = document.getElementById('position');
+  var colorSel = document.getElementById('colorSel');
+  var shadowChk = document.getElementById('shadow');
+  var sizeInput = document.getElementById('size');
+  var sizeVal = document.getElementById('sizeVal');
+  var opacityInput = document.getElementById('opacity');
+  var opacityVal = document.getElementById('opacityVal');
+  var previewWrap = document.getElementById('previewWrap');
+  var preview = document.getElementById('preview');
+  var convertBtn = document.getElementById('convertBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+
+  var WM_FONT = '700 {SZ}px system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif';
+
+  /* Keep original format; GIF/BMP → PNG (canvas can't re-encode them) */
+  function outFormat(file) {
+    var t = (file.type || '').toLowerCase();
+    if (t === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) return { mime: 'image/jpeg', ext: 'jpg', flat: true };
+    if (t === 'image/webp' || /\.webp$/i.test(file.name)) return { mime: 'image/webp', ext: 'webp', flat: false };
+    return { mime: 'image/png', ext: 'png', flat: false };
+  }
+
+  function opts() {
+    return {
+      text: wmText.value,
+      position: positionSel.value,
+      color: colorSel.value,
+      shadow: shadowChk.checked,
+      sizePct: +sizeInput.value,
+      opacity: (+opacityInput.value) / 100
+    };
+  }
+
+  /* Draw text watermark onto a context already holding the image (w×h). */
+  function drawWatermark(ctx, w, h, o) {
+    if (!o.text) return;
+    var fontSize = Math.max(10, Math.round(w * o.sizePct / 100));
+    ctx.save();
+    ctx.globalAlpha = o.opacity;
+    ctx.fillStyle = o.color;
+    ctx.font = WM_FONT.replace('{SZ}', fontSize);
+    ctx.textBaseline = 'middle';
+    if (o.shadow) {
+      ctx.shadowColor = (o.color === '#ffffff') ? 'rgba(0,0,0,.6)' : 'rgba(255,255,255,.6)';
+      ctx.shadowBlur = Math.max(2, Math.round(fontSize * 0.12));
+    }
+    if (o.position === 'tile') {
+      ctx.textAlign = 'center';
+      ctx.translate(w / 2, h / 2);
+      ctx.rotate(-Math.PI / 4);
+      var tw = ctx.measureText(o.text).width;
+      var stepX = Math.max(fontSize * 4, tw + fontSize * 2.2);
+      var stepY = fontSize * 3;
+      var diag = Math.sqrt(w * w + h * h);
+      for (var y = -diag; y <= diag; y += stepY) {
+        for (var x = -diag; x <= diag; x += stepX) {
+          ctx.fillText(o.text, x, y);
+        }
+      }
+    } else if (o.position === 'center') {
+      ctx.textAlign = 'center';
+      ctx.fillText(o.text, w / 2, h / 2);
+    } else {
+      ctx.textAlign = 'right';
+      var pad = Math.round(fontSize * 0.7);
+      ctx.fillText(o.text, w - pad, h - pad);
+    }
+    ctx.restore();
+  }
+
+  function renderList() {
+    listEl.innerHTML = '';
+    files.forEach(function (f, i) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = (i + 1) + '. ' + f.name;
+      var meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = mdtlFormatBytes(f.size);
+      var del = document.createElement('button');
+      del.className = 'mini';
+      del.textContent = '✕';
+      del.setAttribute('aria-label', 'Remove');
+      del.dataset.i = i;
+      li.appendChild(name); li.appendChild(meta); li.appendChild(del);
+      listEl.appendChild(li);
+    });
+    clearBtn.style.display = files.length ? '' : 'none';
+    syncButton();
+  }
+
+  function syncButton() {
+    var ready = files.length > 0 && wmText.value.trim().length > 0;
+    convertBtn.disabled = !ready;
+    convertBtn.textContent = files.length
+      ? 'Add Watermark to ' + files.length + (files.length === 1 ? ' Image' : ' Images')
+      : 'Add Watermark';
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    var removedFirst = (+b.dataset.i === 0);
+    files.splice(+b.dataset.i, 1);
+    if (removedFirst) loadFirst();
+    renderList();
+  });
+
+  clearBtn.addEventListener('click', function () {
+    files = [];
+    firstImg = null;
+    previewWrap.style.display = 'none';
+    result.className = 'result'; result.innerHTML = '';
+    renderList();
+  });
+
+  mdtlDropzone(dz, {
+    accept: 'image/*', multiple: true,
+    onFiles: function (fs) {
+      var wasEmpty = files.length === 0;
+      files = files.concat(fs);
+      result.className = 'result'; result.innerHTML = '';
+      if (wasEmpty) loadFirst();
+      renderList();
+    }
+  });
+
+  /* EXIF orientation normalization: createImageBitmap(from-image) → fallback <img> */
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () {
+          URL.revokeObjectURL(url);
+          reject(new Error('Could not read this image. Your browser may not support the format (e.g., HEIC).'));
+        };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else {
+        fallback();
+      }
+    });
+  }
+
+  function loadFirst() {
+    firstImg = null;
+    if (!files.length) { previewWrap.style.display = 'none'; return; }
+    loadImage(files[0]).then(function (img) {
+      firstImg = img;
+      firstW = img.naturalWidth || img.width;
+      firstH = img.naturalHeight || img.height;
+      previewWrap.style.display = '';
+      renderPreview();
+    }).catch(function () {
+      previewWrap.style.display = 'none';
+    });
+  }
+
+  function renderPreview() {
+    if (!firstImg) return;
+    var maxW = 560;
+    var scale = Math.min(1, maxW / firstW);
+    var pw = Math.max(1, Math.round(firstW * scale));
+    var ph = Math.max(1, Math.round(firstH * scale));
+    preview.width = pw; preview.height = ph;
+    var ctx = preview.getContext('2d');
+    ctx.clearRect(0, 0, pw, ph);
+    ctx.drawImage(firstImg, 0, 0, pw, ph);
+    drawWatermark(ctx, pw, ph, opts());
+  }
+
+  sizeInput.addEventListener('input', function () { sizeVal.textContent = sizeInput.value + '%'; renderPreview(); });
+  opacityInput.addEventListener('input', function () { opacityVal.textContent = ((+opacityInput.value) / 100).toFixed(2); renderPreview(); });
+  positionSel.addEventListener('change', renderPreview);
+  colorSel.addEventListener('change', renderPreview);
+  shadowChk.addEventListener('change', renderPreview);
+  wmText.addEventListener('input', function () { syncButton(); renderPreview(); });
+
+  function canvasToBlob(canvas, mime, q) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (b) {
+        if (!b) return reject(new Error('Failed to save the image.'));
+        if (mime === 'image/webp' && b.type !== 'image/webp') {
+          return reject(new Error('This browser cannot save WEBP files. Please use Chrome, Edge, or a recent version of Safari.'));
+        }
+        resolve(b);
+      }, mime, q);
+    });
+  }
+
+  function outName(name, ext) {
+    return name.replace(/\.[^.]*$/, '') + '_watermarked.' + ext;
+  }
+
+  function renderResult(outs, failed) {
+    result.className = 'result show';
+    result.innerHTML = '';
+    var head = document.createElement('p');
+    head.style.margin = '0';
+    head.innerHTML = '✅ <b>Done!</b> ' + outs.length + ' stamped' +
+      (failed.length ? ' · ' + failed.length + ' failed' : '') +
+      (outs.length === 1 ? ' — your file has been downloaded automatically.' : '');
+    result.appendChild(head);
+    var ul = document.createElement('ul');
+    ul.className = 'file-list';
+    outs.forEach(function (o) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = o.name;
+      var meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = o.w + '×' + o.h + ' · ' + mdtlFormatBytes(o.blob.size);
+      var dl = document.createElement('button');
+      dl.className = 'mini';
+      dl.textContent = '⬇';
+      dl.setAttribute('aria-label', 'Download');
+      dl.addEventListener('click', function () { mdtlDownload(o.blob, o.name); });
+      li.appendChild(name); li.appendChild(meta); li.appendChild(dl);
+      ul.appendChild(li);
+    });
+    result.appendChild(ul);
+    if (outs.length > 1) {
+      var row = document.createElement('div');
+      row.className = 'btn-row';
+      var allBtn = document.createElement('button');
+      allBtn.className = 'btn';
+      allBtn.textContent = '⬇ Download All (' + outs.length + ')';
+      allBtn.addEventListener('click', function () {
+        outs.forEach(function (o, idx) {
+          setTimeout(function () { mdtlDownload(o.blob, o.name); }, idx * 400);
+        });
+      });
+      row.appendChild(allBtn);
+      result.appendChild(row);
+    }
+    failed.forEach(function (f) {
+      var p = document.createElement('p');
+      p.style.margin = '8px 0 0';
+      p.style.fontSize = '13.5px';
+      var em = document.createElement('i');
+      em.textContent = f.name;
+      p.appendChild(document.createTextNode('⚠️ '));
+      p.appendChild(em);
+      p.appendChild(document.createTextNode(' — ' + f.msg));
+      result.appendChild(p);
+    });
+  }
+
+  convertBtn.addEventListener('click', async function () {
+    if (!files.length) return;
+    if (!wmText.value.trim()) {
+      mdtlResult(result, '❌ Please enter the watermark text first.', true);
+      return;
+    }
+    convertBtn.disabled = true;
+    prog.className = 'progress show';
+    progBar.style.width = '0%';
+    result.className = 'result'; result.innerHTML = '';
+    var o = opts();
+    var outs = [];
+    var failed = [];
+    try {
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        try {
+          var fmt = outFormat(f);
+          var img = await loadImage(f);
+          var w = img.naturalWidth || img.width;
+          var h = img.naturalHeight || img.height;
+          if (!w || !h) throw new Error('Could not read the image dimensions.');
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          if (fmt.flat) { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); }
+          ctx.drawImage(img, 0, 0, w, h);
+          if (img.close) img.close();
+          drawWatermark(ctx, w, h, o);
+          var q = fmt.mime === 'image/png' ? undefined : 0.92;
+          var blob = await canvasToBlob(canvas, fmt.mime, q);
+          outs.push({ name: outName(f.name, fmt.ext), blob: blob, w: w, h: h });
+        } catch (err) {
+          failed.push({ name: f.name, msg: (err && err.message) ? err.message : 'An error occurred during processing.' });
+        }
+        progBar.style.width = Math.round(((i + 1) / files.length) * 100) + '%';
+      }
+      if (!outs.length) {
+        throw new Error('No images were stamped.' + (failed.length ? ' (' + failed[0].msg + ')' : ''));
+      }
+      renderResult(outs, failed);
+      if (outs.length === 1) mdtlDownload(outs[0].blob, outs[0].name);
+    } catch (e) {
+      mdtlResult(result, '❌ ' + ((e && e.message) ? e.message : 'An error occurred during processing.'), true);
+    } finally {
+      prog.className = 'progress';
+      syncButton();
+    }
+  });
+})();
+</script>
+</body>
+</html>

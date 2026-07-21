@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add Watermark to PDF — Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Stamp CONFIDENTIAL, DRAFT, or any text across every page of a PDF — free. Diagonal, centered, or bottom placement with opacity, size, and color controls. Everything runs in your browser with no server upload, so contracts and proposals stay on your device. No installs, no sign-up, no size limits.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/pdf-watermark/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/ko/pdf-watermark/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/pdf-watermark/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/pdf-watermark/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Add Watermark to PDF — CONFIDENTIAL, DRAFT & More, No Upload">
+<meta property="og:description" content="Diagonal, centered, or bottom text watermark on every page, with opacity, size, and color controls. 100% in-browser processing — your files never leave your device.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/pdf-watermark/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_BASE='/modutool';</script>
+<link rel="stylesheet" href="/modutool/assets/site.css">
+<script src="/modutool/assets/site.js"></script>
+<script src="/modutool/assets/ads-config.js" defer></script>
+<script src="/modutool/assets/auth-config.js" defer></script>
+<script src="/modutool/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Add Watermark to PDF - ThisIsMyPDF","url":"https://greykodiak-goods.github.io/modutool/pdf-watermark/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that stamps a text watermark such as CONFIDENTIAL or DRAFT on every page of a PDF, with placement, opacity, size, and color controls. Processed entirely in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my files really never uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Correct. The entire watermarking job runs inside your browser, on your own computer or phone. The only network activity you might see is a one-time download of a font file from this site when your watermark uses non-English characters — your PDF itself is never sent anywhere. You can verify this in your browser's network tab."}},
+{"@type":"Question","name":"Can the watermark be removed later?","acceptedAnswer":{"@type":"Answer","text":"The watermark is drawn directly into the page content rather than added as a separate annotation, so ordinary PDF viewers cannot delete it. Specialized editing tools can still remove it with effort, though — so treat a watermark as a deterrent that discourages unauthorized sharing and labels the document's status, not as unbreakable copy protection. Your original file is left untouched, so keep it as your clean master copy."}},
+{"@type":"Question","name":"Does it support non-English text, like Korean?","acceptedAnswer":{"@type":"Answer","text":"Yes. If your watermark contains non-ASCII characters such as Korean, a Unicode font (Noto Sans KR) is fetched once and embedded automatically. Plain English text, numbers, and basic symbols are processed instantly with no font download at all."}},
+{"@type":"Question","name":"Can I watermark a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"PDFs with an open password cannot be read for security reasons, so a notice is shown instead. Remove the password in a PDF viewer, save a copy, and try again with that file."}},
+{"@type":"Question","name":"What opacity and size should I use?","acceptedAnswer":{"@type":"Answer","text":"For documents people still need to read, start with the defaults: a light gray diagonal stamp at around 0.15 opacity. If the label needs to be unmissable — say a DRAFT warning on an internal review copy — raise the opacity to 0.3 or more, or switch the color to red. The size is calculated automatically in proportion to each page's diagonal, and the scale slider fine-tunes it between 0.5x and 2x."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/">ThisIsMyPDF</a> › <a href="/modutool/#pdf">PDF Tools</a> › Add Watermark</nav>
+  <h1 class="page-title">Add Watermark to PDF<span class="privacy-badge">🔒 No server upload</span></h1>
+  <p class="page-sub">Stamp CONFIDENTIAL, DRAFT, or any text on every page. Placement, opacity, size, and color controls — free, no installs, no sign-up, no size limits.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">💧</span>
+      <strong>Drag &amp; drop the PDF to watermark here, or click to select</strong><br>
+      One file — the total page count appears as soon as it loads
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts">
+      <label for="wmText">Text
+        <input type="text" id="wmText" value="CONFIDENTIAL" placeholder="e.g. CONFIDENTIAL, DRAFT, COPY" autocomplete="off" maxlength="60">
+      </label>
+      <label for="wmPos">Placement
+        <select id="wmPos">
+          <option value="diag" selected>Diagonal (center)</option>
+          <option value="center">Horizontal (center)</option>
+          <option value="bottom">Bottom</option>
+        </select>
+      </label>
+      <label for="wmColor">Color
+        <select id="wmColor">
+          <option value="gray" selected>Gray</option>
+          <option value="red">Red</option>
+          <option value="blue">Blue</option>
+        </select>
+      </label>
+    </div>
+    <div class="opts">
+      <label for="wmOpacity">Opacity
+        <input type="range" id="wmOpacity" min="0.08" max="0.5" step="0.01" value="0.15">
+        <span id="wmOpacityVal">0.15</span>
+      </label>
+      <label for="wmScale">Size scale
+        <input type="range" id="wmScale" min="0.5" max="2" step="0.05" value="1">
+        <span id="wmScaleVal">1.0×</span>
+      </label>
+    </div>
+    <p style="margin:12px 0 0;font-size:13.5px;color:var(--text-soft)">ℹ️ The font size is calculated automatically in proportion to each page's diagonal. Non-English text triggers a one-time font download (about 2.4 MB) — your PDF is never uploaded.</p>
+    <div class="btn-row">
+      <button class="btn" id="goBtn" disabled>Add watermark</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to add a watermark to a PDF</h2>
+    <ol>
+      <li>Drag <b>one PDF file</b> into the area above, or click it to browse. The total page count appears in the list the moment the file is read.</li>
+      <li>Type your watermark <b>text</b>. The default is &quot;CONFIDENTIAL&quot;, but you can change it to DRAFT, COPY, DO NOT DISTRIBUTE, your company name — anything up to 60 characters. The button stays disabled while the text box is empty.</li>
+      <li>Adjust the <b>placement</b> (diagonal, horizontal center, or bottom), <b>color</b> (gray, red, or blue), <b>opacity</b> (0.08–0.5), and <b>size scale</b> (0.5x–2x) to taste.</li>
+      <li>Click <b>Add watermark</b>. The text is stamped on every page and <b>original_watermarked.pdf</b> downloads automatically. Your original file is left untouched.</li>
+    </ol>
+
+    <h2>What makes this different from other PDF watermark sites</h2>
+    <p>Typical online watermark services work by <b>uploading your file to their servers</b>, stamping it there, and sending it back. Think about what kind of document needs a watermark in the first place: contracts, proposals, quotes — files sensitive enough to deserve a CONFIDENTIAL label. Uploading exactly those files to someone else's server, just to mark them confidential, is a strange trade. You have no way to verify when your document is deleted or who can view it during processing.</p>
+    <p>ThisIsMyPDF's watermark tool <b>never sends your file anywhere.</b> The entire stamping job runs on your own device, using technology built into your browser. That design gives you three advantages:</p>
+    <ul>
+      <li><b>Privacy</b> — your file never leaves your device, so there is simply nothing to leak.</li>
+      <li><b>Speed</b> — with no upload or download queue, even documents dozens of pages long finish in seconds.</li>
+      <li><b>No limits</b> — we pay no server costs for processing, so we don't cap file size or how often you use it.</li>
+    </ul>
+
+    <h2>Watermark options in detail</h2>
+    <h3>Placement — diagonal, horizontal center, or bottom</h3>
+    <p><b>Diagonal (center)</b> is the classic choice: the text is tilted to match each page's diagonal angle and spans the whole page, so it survives screenshots and partial crops — the strongest deterrent against unauthorized sharing. <b>Horizontal (center)</b> puts the label straight across the middle of the page for maximum legibility, and <b>Bottom</b> keeps the stamp out of the way of the content, ideal for subtle labels like COPY or a source attribution.</p>
+    <h3>Opacity — balancing visibility and readability</h3>
+    <p>Opacity ranges from 0.08 (barely visible) to 0.5 (bold), with a default of 0.15. A watermark's job is to label the document, not to bury the content under it — so start light enough that the page still reads and prints comfortably, and only turn it up when the label truly needs to dominate.</p>
+    <h3>Size and color</h3>
+    <p>The font size is computed automatically in proportion to each page's diagonal, so the stamp fits sensibly whether the page is Letter, A4, or a small insert — and mixed page sizes within one document each get their own correct size. The scale slider fine-tunes it between 0.5x and 2x. Three colors are available: <b>gray</b> for standard document stamps, <b>red</b> for warnings like DRAFT or VOID, and <b>blue</b> for organizational labels.</p>
+    <div class="tip">💡 <b>Tip:</b> If the recipient still needs to read the document — a proposal or a contract draft — keep the opacity between 0.12 and 0.2 to preserve readability. For an internal review copy that must scream &quot;this is a draft&quot;, a red diagonal stamp at 0.3+ opacity does the job.</div>
+
+    <h2>When to use it</h2>
+    <ul>
+      <li>Marking outgoing contracts and quotes <b>CONFIDENTIAL</b> to discourage forwarding beyond the intended recipient</li>
+      <li>Labeling documents under review as <b>DRAFT</b> so nobody mistakes them for the final version</li>
+      <li>Stamping <b>COPY</b> on duplicates of certificates or statements submitted to agencies and banks, so the copy can't pass as an original</li>
+      <li>Adding <b>your company or personal name</b> across a proposal or portfolio to deter unauthorized distribution and reuse</li>
+      <li>Tagging course materials or handouts with the <b>intended audience</b> (e.g. &quot;Spring 2026 cohort only&quot;)</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>Are my files really never uploaded to a server?</summary><p>Correct. The entire watermarking job runs inside your browser, on your own computer or phone. The only network activity you might see is a one-time download of a font file from this site when your watermark uses non-English characters — your PDF itself is never sent anywhere. You can verify this in your browser's network tab.</p></details>
+      <details><summary>Can the watermark be removed later?</summary><p>The watermark is drawn directly into the page content rather than added as a separate annotation, so ordinary PDF viewers cannot delete it. Specialized editing tools can still remove it with effort, though — so treat a watermark as a deterrent that discourages unauthorized sharing and labels the document's status, not as unbreakable copy protection. Your original file is left untouched, so keep it as your clean master copy.</p></details>
+      <details><summary>Does it support non-English text, like Korean?</summary><p>Yes. If your watermark contains non-ASCII characters such as Korean, a Unicode font (Noto Sans KR) is fetched once and embedded automatically. Plain English text, numbers, and basic symbols are processed instantly with no font download at all.</p></details>
+      <details><summary>Can I watermark a password-protected PDF?</summary><p>PDFs with an open password cannot be read for security reasons, so a notice is shown instead. Remove the password in a PDF viewer, save a copy, and try again with that file.</p></details>
+      <details><summary>What opacity and size should I use?</summary><p>For documents people still need to read, start with the defaults: a light gray diagonal stamp at around 0.15 opacity. If the label needs to be unmissable — say a DRAFT warning on an internal review copy — raise the opacity to 0.3 or more, or switch the color to red. The size is calculated automatically in proportion to each page's diagonal, and the scale slider fine-tunes it between 0.5x and 2x.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/pdf-page-numbers/"><span class="emoji">🔢</span><span><b>Add Page Numbers</b><span>Number every page</span></span></a>
+      <a class="tool-tile" href="/modutool/pdf-merge/"><span class="emoji">📎</span><span><b>Merge PDF</b><span>Combine PDFs into one</span></span></a>
+      <a class="tool-tile" href="/modutool/pdf-organize/"><span class="emoji">🗂️</span><span><b>Organize PDF Pages</b><span>Delete, reorder &amp; rotate</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/assets/vendor/pdf-lib.min.js"></script>
+<script src="/modutool/assets/vendor/fontkit.umd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var file = null, srcBytes = null, pageCount = 0, baseName = '';
+  var busy = false, notoBytes = null;
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var textInput = document.getElementById('wmText');
+  var posSel = document.getElementById('wmPos');
+  var colorSel = document.getElementById('wmColor');
+  var opSlider = document.getElementById('wmOpacity');
+  var opVal = document.getElementById('wmOpacityVal');
+  var scSlider = document.getElementById('wmScale');
+  var scVal = document.getElementById('wmScaleVal');
+  var goBtn = document.getElementById('goBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+
+  var COLORS = {
+    gray: [0.45, 0.45, 0.45],
+    red:  [0.83, 0.13, 0.13],
+    blue: [0.15, 0.35, 0.85]
+  };
+
+  function esc(t) { var d = document.createElement('i'); d.textContent = t; return d.outerHTML; }
+
+  function render() {
+    listEl.innerHTML = '';
+    if (file) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta">' + pageCount + (pageCount === 1 ? ' page' : ' pages') + ' · ' + mdtlFormatBytes(file.size) + '</span>' +
+        '<button class="mini" data-act="del" aria-label="Remove">✕</button>';
+      li.querySelector('.name').textContent = file.name;
+      listEl.appendChild(li);
+    }
+    goBtn.disabled = !file || !textInput.value.trim() || busy;
+    goBtn.textContent = file ? 'Watermark ' + pageCount + (pageCount === 1 ? ' page' : ' pages') : 'Add watermark';
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || busy) return;
+    file = null; srcBytes = null; pageCount = 0; baseName = '';
+    result.className = 'result';
+    render();
+  });
+
+  textInput.addEventListener('input', render);
+  opSlider.addEventListener('input', function () { opVal.textContent = parseFloat(opSlider.value).toFixed(2); });
+  scSlider.addEventListener('input', function () { scVal.textContent = parseFloat(scSlider.value).toFixed(2).replace(/0$/, '') + '×'; });
+
+  mdtlDropzone(dz, {
+    accept: '.pdf,application/pdf', multiple: false,
+    onFiles: function (fs) { loadFile(fs[0]); }
+  });
+
+  async function loadFile(f) {
+    if (busy) return;
+    result.className = 'result';
+    try {
+      var bytes = await f.arrayBuffer();
+      var doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: false });
+      file = f; srcBytes = bytes; pageCount = doc.getPageCount();
+      baseName = f.name.replace(/\.pdf$/i, '') || 'document';
+      render();
+    } catch (err) {
+      file = null; srcBytes = null; pageCount = 0; baseName = '';
+      render();
+      var msg = (err && err.message && /encrypt/i.test(err.message))
+        ? 'This PDF is protected with an open password. Remove the password first, then try again with that file. (' + esc(f.name) + ')'
+        : 'Could not read this PDF. The file may be corrupted or not a PDF. (' + esc(f.name) + ')';
+      mdtlResult(result, '❌ ' + msg, true);
+    }
+  }
+
+  async function getFont(doc, text) {
+    if (/^[\x20-\x7E]*$/.test(text)) {
+      return doc.embedFont(PDFLib.StandardFonts.Helvetica);
+    }
+    if (!notoBytes) {
+      var res = await fetch('/modutool/assets/vendor/NotoSansKR-sub.ttf');
+      if (!res.ok) throw new Error('Could not load the Unicode font. Check your connection and try again.');
+      notoBytes = await res.arrayBuffer();
+    }
+    doc.registerFontkit(fontkit);
+    return doc.embedFont(notoBytes, { subset: true });
+  }
+
+  goBtn.addEventListener('click', async function () {
+    var text = textInput.value.trim();
+    if (!file || !srcBytes || !text || busy) return;
+    busy = true;
+    render();
+    prog.className = 'progress show'; progBar.style.width = '0%';
+    result.className = 'result';
+    try {
+      var doc = await PDFLib.PDFDocument.load(srcBytes);
+      progBar.style.width = '10%';
+      var font = await getFont(doc, text);
+      progBar.style.width = '25%';
+
+      var unitW = font.widthOfTextAtSize(text, 100) / 100;
+      if (!(unitW > 0)) throw new Error('This text cannot be drawn. Please try different text.');
+
+      var pos = posSel.value;
+      var c = COLORS[colorSel.value] || COLORS.gray;
+      var color = PDFLib.rgb(c[0], c[1], c[2]);
+      var opacity = parseFloat(opSlider.value);
+      var scale = parseFloat(scSlider.value);
+
+      var pages = doc.getPages();
+      for (var i = 0; i < pages.length; i++) {
+        var page = pages[i];
+        var pw = page.getWidth(), ph = page.getHeight();
+        var diag = Math.sqrt(pw * pw + ph * ph);
+        var target = (pos === 'diag' ? diag * 0.5 : pos === 'center' ? pw * 0.62 : pw * 0.45) * scale;
+        var size = Math.max(6, Math.min(target / unitW, diag / 2));
+        var w = unitW * size;
+        var h = size * 0.72; /* approximate cap height, used to center the text block */
+        var angle = pos === 'diag' ? Math.atan2(ph, pw) : 0;
+        var cx = pw / 2;
+        var cy = pos === 'bottom' ? Math.max(ph * 0.04 + h / 2, 24) : ph / 2;
+        var x = cx - (w / 2) * Math.cos(angle) + (h / 2) * Math.sin(angle);
+        var y = cy - (w / 2) * Math.sin(angle) - (h / 2) * Math.cos(angle);
+        page.drawText(text, {
+          x: x, y: y, size: size, font: font,
+          color: color, opacity: opacity,
+          rotate: PDFLib.degrees(angle * 180 / Math.PI)
+        });
+        progBar.style.width = Math.round(25 + ((i + 1) / pages.length) * 65) + '%';
+      }
+
+      var data = await doc.save();
+      progBar.style.width = '100%';
+      var blob = new Blob([data], { type: 'application/pdf' });
+      var name = baseName + '_watermarked.pdf';
+      mdtlDownload(blob, name);
+      mdtlResult(result,
+        '✅ <b>Done!</b> Stamped ' + esc('"' + text + '"') + ' on ' + pages.length +
+        (pages.length === 1 ? ' page' : ' pages') + ' — ' + esc(name) + ' (' + mdtlFormatBytes(blob.size) + ') has been downloaded.');
+    } catch (e) {
+      var m = e && e.message ? e.message : 'Something went wrong while processing.';
+      if (/WinAnsi|cannot encode|glyph/i.test(m)) m = 'The text contains characters the font cannot draw. Please use letters, numbers, and basic symbols.';
+      mdtlResult(result, '❌ ' + esc(m), true);
+    } finally {
+      prog.className = 'progress';
+      busy = false;
+      render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

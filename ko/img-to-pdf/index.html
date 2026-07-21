@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이미지 PDF 변환 — 사진·JPG 여러 장을 하나의 PDF로, 서버 업로드 없음 | ThisIsMyPDF</title>
+<meta name="description" content="JPG·PNG·WebP 사진 여러 장을 순서대로 묶어 PDF 한 파일로 만드는 무료 도구. 서버 업로드 없이 브라우저에서 바로 처리되어 신분증·서류 사진도 안전합니다. A4 자동 맞춤, 설치·가입·용량제한 없음.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/ko/img-to-pdf/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/ko/img-to-pdf/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/img-to-pdf/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/img-to-pdf/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="이미지 PDF 변환 — 설치 없이 무료, 서버 업로드 없음">
+<meta property="og:description" content="사진·JPG·PNG·WebP 여러 장을 순서대로 PDF 한 파일로. 파일이 서버로 전송되지 않는 100% 브라우저 처리.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/ko/img-to-pdf/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_BASE='/modutool';</script>
+<link rel="stylesheet" href="/modutool/assets/site.css">
+<script src="/modutool/assets/site.js"></script>
+<script src="/modutool/assets/ads-config.js" defer></script>
+<script src="/modutool/assets/auth-config.js" defer></script>
+<script src="/modutool/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"이미지 PDF 변환 - ThisIsMyPDF","url":"https://greykodiak-goods.github.io/modutool/ko/img-to-pdf/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"JPG·PNG·WebP 이미지 여러 장을 순서를 정해 하나의 PDF로 변환하는 무료 웹 도구. 서버 업로드 없이 브라우저에서 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"사진이 서버로 업로드되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네, 전송되지 않습니다. 변환은 브라우저에 내장된 기술로 내 컴퓨터(또는 휴대폰) 안에서만 처리됩니다. 개발자도구의 네트워크 탭을 열어 확인해도 파일 업로드 요청이 없습니다. 신분증·계약서·진단서 사진도 안심하고 사용할 수 있습니다."}},
+{"@type":"Question","name":"어떤 이미지 형식을 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"JPG(JPEG)·PNG·WebP를 지원합니다. WebP는 PDF에 직접 넣을 수 없어 자동으로 JPG로 변환한 뒤 삽입합니다. 아이폰 기본 형식인 HEIC는 지원하지 않으므로, 사진 앱에서 JPEG로 내보내거나 카메라 설정을 '호환성 우선'으로 바꿔 촬영해 주세요."}},
+{"@type":"Question","name":"휴대폰으로 찍은 사진이 옆으로 눕거나 거꾸로 나오지 않나요?","acceptedAnswer":{"@type":"Answer","text":"사진 파일에 저장된 회전 정보(EXIF)를 읽어 똑바로 세운 뒤 PDF에 넣습니다. 갤러리에서는 정상인데 문서에서는 옆으로 눕는 흔한 문제를 방지합니다. 회전 정보를 읽지 못하는 일부 구형 브라우저에서는 원본 그대로 삽입됩니다."}},
+{"@type":"Question","name":"몇 장까지 넣을 수 있나요? 용량 제한이 있나요?","acceptedAnswer":{"@type":"Answer","text":"개수·용량 제한이 없습니다. 이미지 한 장이 PDF 한 페이지가 되며, 처리 속도는 사용 중인 기기의 성능을 따릅니다. 일반적인 스마트폰 사진 수십 장은 수 초에서 수십 초 안에 완료됩니다."}},
+{"@type":"Question","name":"용지 크기와 여백을 바꿀 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 용지는 A4 세로·A4 가로·이미지 크기에 맞춤 중에서, 여백은 없음·보통(24pt) 중에서 고를 수 있습니다. A4를 고르면 사진이 비율을 유지한 채 축소되어 페이지 중앙에 배치되고, '이미지 크기에 맞춤'을 고르면 사진 원본 비율 그대로 페이지가 만들어집니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/ko/">ThisIsMyPDF</a> › <a href="/modutool/ko/#pdf">PDF 도구</a> › 이미지 PDF 변환</nav>
+  <h1 class="page-title">이미지 PDF 변환<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">JPG·PNG·WebP 사진 여러 장을 순서대로 묶어 PDF 한 파일로 만듭니다. 설치·가입·용량제한 없이 무료.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">📷</span>
+      <strong>이미지 파일을 여기에 끌어다 놓거나 클릭해서 선택</strong><br>
+      JPG · PNG · WebP — 여러 장을 한 번에 선택할 수 있습니다
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts">
+      <label>용지
+        <select id="paperSel">
+          <option value="a4p" selected>A4 세로</option>
+          <option value="a4l">A4 가로</option>
+          <option value="fit">이미지 크기에 맞춤</option>
+        </select>
+      </label>
+      <label>여백
+        <select id="marginSel">
+          <option value="24" selected>보통 (24pt)</option>
+          <option value="0">없음</option>
+        </select>
+      </label>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="makeBtn" disabled>PDF 만들기</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">전체 지우기</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>위 영역에 사진 파일(JPG·PNG·WebP)을 끌어다 놓거나, 클릭해서 여러 장을 한 번에 선택합니다.</li>
+      <li>목록에서 <b>▲ ▼</b> 버튼으로 페이지 순서를 조정합니다. 목록 맨 위 사진이 PDF의 1쪽이 됩니다.</li>
+      <li><b>용지</b>와 <b>여백</b>을 고릅니다. 관공서·회사 제출용 서류라면 기본값인 <b>A4 세로 + 보통 여백</b>을 그대로 두면 무난하고, 사진첩처럼 화면 가득 담고 싶다면 <b>이미지 크기에 맞춤 + 여백 없음</b>을 고르세요.</li>
+      <li><b>PDF 만들기</b> 버튼을 누르면 이미지당 1페이지로 변환되어 <b>사진문서.pdf</b> 파일이 자동으로 다운로드됩니다.</li>
+    </ol>
+
+    <h2>이 도구가 다른 사진 PDF 만들기 사이트와 다른 점</h2>
+    <p>흔히 쓰는 온라인 JPG PDF 변환 서비스는 대부분 사진을 <b>자기 회사 서버에 업로드</b>한 뒤 변환해서 되돌려줍니다. 업로드된 사진이 언제 삭제되는지, 처리 과정에서 누가 볼 수 있는지 사용자는 확인할 방법이 없습니다. 신분증 사본, 통장 사본, 계약서, 진단서처럼 개인정보가 담긴 사진이라면 특히 위험합니다.</p>
+    <p>ThisIsMyPDF의 이미지 PDF 변환은 <b>사진을 어디로도 보내지 않습니다.</b> 브라우저에 내장된 기술만으로 변환 전체가 내 컴퓨터(또는 휴대폰) 안에서 이뤄집니다. 그래서 세 가지 장점이 생깁니다.</p>
+    <ul>
+      <li><b>보안</b> — 사진이 기기 밖으로 나가지 않으므로 유출 가능성 자체가 없습니다.</li>
+      <li><b>속도</b> — 업로드·다운로드 대기가 없어 고화질 사진 수십 장도 수 초~수십 초면 끝납니다.</li>
+      <li><b>무제한</b> — 서버 비용이 들지 않으니 장수·횟수·용량을 제한하지 않습니다.</li>
+    </ul>
+    <p>사진 방향 문제도 자동으로 해결합니다. 휴대폰으로 찍은 사진은 파일 안에 회전 정보(EXIF)가 따로 저장되는데, 이를 무시하고 변환하는 도구를 쓰면 갤러리에서는 멀쩡하던 사진이 PDF에서는 옆으로 눕거나 거꾸로 뒤집혀 나옵니다. 이 도구는 변환 전에 회전 정보를 읽어 사진을 똑바로 세운 뒤 삽입하므로, 제출한 서류가 누워서 반려되는 일을 막아줍니다.</p>
+
+    <h2>이럴 때 쓰세요</h2>
+    <ul>
+      <li>휴대폰으로 찍은 <b>신분증·등본·통장 사본을 PDF 1장으로</b> 만들어 은행·관공서에 제출할 때</li>
+      <li>종이 계약서·견적서를 여러 장 촬영해 <b>스캔본 대신 PDF 한 파일로</b> 거래처에 보낼 때</li>
+      <li>손으로 쓴 과제·노트 필기를 찍어 <b>과제 제출용 PDF</b>로 묶을 때 (대학 LMS는 대부분 PDF만 받습니다)</li>
+      <li>영수증·증빙 사진을 <b>경비처리용으로 월별 한 파일</b>에 정리할 때</li>
+      <li>그림·포트폴리오 이미지를 <b>순서 있는 한 권짜리 PDF</b>로 만들어 공유할 때</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 사진 수십 장을 넣으면 PDF가 수십 MB로 커져 이메일 첨부(보통 10~25MB 제한)가 막힐 수 있습니다. 먼저 <a href="/modutool/ko/image-compress/">이미지 압축</a>으로 사진 용량을 줄인 뒤 변환하면 화질 손실은 거의 없이 파일 크기를 크게 줄일 수 있습니다.</div>
+
+    <h2>용지 옵션은 이렇게 골라요</h2>
+    <p><b>A4 세로/가로</b>를 고르면 사진이 원본 비율을 유지한 채 용지 안에 들어가도록 축소되어 <b>페이지 중앙에 배치</b>됩니다. 인쇄하거나 서류로 제출할 문서라면 이 방식이 안전합니다. 가로로 긴 사진(풍경·표 촬영본)이 많다면 A4 가로가 여백이 적게 남습니다. <b>이미지 크기에 맞춤</b>은 사진 한 장 한 장의 비율 그대로 페이지를 만들므로 잘림도 여백도 없이 화면에 꽉 찬 PDF가 됩니다. 여백 <b>보통(24pt)</b>은 인쇄 시 가장자리가 잘리지 않는 안전 여백이고, <b>없음</b>은 테두리 없이 꽉 채웁니다.</p>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>사진이 서버로 업로드되지 않나요?</summary><p>네, 전송되지 않습니다. 변환은 브라우저에 내장된 기술로 내 컴퓨터(또는 휴대폰) 안에서만 처리됩니다. 개발자도구의 네트워크 탭을 열어 확인해도 파일 업로드 요청이 없습니다. 신분증·계약서·진단서 사진도 안심하고 사용할 수 있습니다.</p></details>
+      <details><summary>어떤 이미지 형식을 지원하나요?</summary><p>JPG(JPEG)·PNG·WebP를 지원합니다. WebP는 PDF에 직접 넣을 수 없어 자동으로 JPG로 변환한 뒤 삽입합니다. 아이폰 기본 형식인 HEIC는 지원하지 않으므로, 사진 앱에서 JPEG로 내보내거나 카메라 설정을 '호환성 우선'으로 바꿔 촬영해 주세요.</p></details>
+      <details><summary>휴대폰으로 찍은 사진이 옆으로 눕거나 거꾸로 나오지 않나요?</summary><p>사진 파일에 저장된 회전 정보(EXIF)를 읽어 똑바로 세운 뒤 PDF에 넣습니다. 갤러리에서는 정상인데 문서에서는 옆으로 눕는 흔한 문제를 방지합니다. 회전 정보를 읽지 못하는 일부 구형 브라우저에서는 원본 그대로 삽입됩니다.</p></details>
+      <details><summary>몇 장까지 넣을 수 있나요? 용량 제한이 있나요?</summary><p>개수·용량 제한이 없습니다. 이미지 한 장이 PDF 한 페이지가 되며, 처리 속도는 사용 중인 기기의 성능을 따릅니다. 일반적인 스마트폰 사진 수십 장은 수 초에서 수십 초 안에 완료됩니다.</p></details>
+      <details><summary>용지 크기와 여백을 바꿀 수 있나요?</summary><p>네. 용지는 A4 세로·A4 가로·이미지 크기에 맞춤 중에서, 여백은 없음·보통(24pt) 중에서 고를 수 있습니다. A4를 고르면 사진이 비율을 유지한 채 축소되어 페이지 중앙에 배치되고, '이미지 크기에 맞춤'을 고르면 사진 원본 비율 그대로 페이지가 만들어집니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/ko/pdf-merge/"><span class="emoji">📎</span><span><b>PDF 합치기</b><span>여러 PDF를 하나로</span></span></a>
+      <a class="tool-tile" href="/modutool/ko/pdf-to-jpg/"><span class="emoji">🖼️</span><span><b>PDF → JPG</b><span>페이지를 이미지로</span></span></a>
+      <a class="tool-tile" href="/modutool/ko/image-compress/"><span class="emoji">🗜️</span><span><b>이미지 압축</b><span>사진 용량 줄이기</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/assets/vendor/pdf-lib.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var A4W = 595.28, A4H = 841.89; // A4 (pt)
+  var PX_TO_PT = 0.75;            // 96dpi px → 72dpi pt
+
+  var files = [];
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var makeBtn = document.getElementById('makeBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var paperSel = document.getElementById('paperSel');
+  var marginSel = document.getElementById('marginSel');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+
+  function render() {
+    listEl.innerHTML = '';
+    files.forEach(function (f, i) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta">' + mdtlFormatBytes(f.size) + '</span>' +
+        '<button class="mini" data-act="up" data-i="' + i + '" aria-label="위로">▲</button>' +
+        '<button class="mini" data-act="down" data-i="' + i + '" aria-label="아래로">▼</button>' +
+        '<button class="mini" data-act="del" data-i="' + i + '" aria-label="제거">✕</button>';
+      li.querySelector('.name').textContent = (i + 1) + '. ' + f.name;
+      listEl.appendChild(li);
+    });
+    makeBtn.disabled = files.length < 1;
+    makeBtn.textContent = files.length >= 1 ? files.length + '장 PDF 만들기' : 'PDF 만들기';
+    clearBtn.style.display = files.length ? '' : 'none';
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var i = +b.dataset.i, act = b.dataset.act;
+    if (act === 'del') files.splice(i, 1);
+    if (act === 'up' && i > 0) { var t = files[i - 1]; files[i - 1] = files[i]; files[i] = t; }
+    if (act === 'down' && i < files.length - 1) { var u = files[i + 1]; files[i + 1] = files[i]; files[i] = u; }
+    render();
+  });
+
+  clearBtn.addEventListener('click', function () { files = []; result.className = 'result'; render(); });
+
+  mdtlDropzone(dz, {
+    accept: '.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp', multiple: true,
+    onFiles: function (fs) { files = files.concat(fs); result.className = 'result'; render(); }
+  });
+
+  function isPng(f) { return f.type === 'image/png' || /\.png$/i.test(f.name); }
+  function isWebp(f) { return f.type === 'image/webp' || /\.webp$/i.test(f.name); }
+
+  function canvasToBlob(canvas, type, quality) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (b) {
+        if (b) resolve(b); else reject(new Error('이미지 변환에 실패했습니다.'));
+      }, type, quality);
+    });
+  }
+
+  function loadImgEl(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('이미지를 읽을 수 없습니다.')); };
+      img.src = url;
+    });
+  }
+
+  function drawToCanvas(source, w, h) {
+    var canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(source, 0, 0);
+    return canvas;
+  }
+
+  /* EXIF 회전 정규화: createImageBitmap({imageOrientation:'from-image'}) → canvas.
+     실패(구형 웹킷 등) 시: webp는 <img> 경유 JPG 변환, jpg/png는 원본 그대로 삽입. */
+  async function toEmbeddable(file) {
+    var png = isPng(file);
+    try {
+      var bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      var canvas = drawToCanvas(bmp, bmp.width, bmp.height);
+      if (bmp.close) bmp.close();
+      var blob = await canvasToBlob(canvas, png ? 'image/png' : 'image/jpeg', 0.92);
+      return { png: png, bytes: new Uint8Array(await blob.arrayBuffer()) };
+    } catch (err) {
+      if (isWebp(file)) {
+        var img = await loadImgEl(file);
+        var c2 = drawToCanvas(img, img.naturalWidth, img.naturalHeight);
+        var b2 = await canvasToBlob(c2, 'image/jpeg', 0.92);
+        return { png: false, bytes: new Uint8Array(await b2.arrayBuffer()) };
+      }
+      return { png: png, bytes: new Uint8Array(await file.arrayBuffer()) };
+    }
+  }
+
+  function addImagePage(doc, embedded, paper, margin) {
+    var iw = embedded.width * PX_TO_PT, ih = embedded.height * PX_TO_PT;
+    var pw, ph;
+    if (paper === 'fit') { pw = iw + margin * 2; ph = ih + margin * 2; }
+    else if (paper === 'a4l') { pw = A4H; ph = A4W; }
+    else { pw = A4W; ph = A4H; }
+    var availW = Math.max(1, pw - margin * 2), availH = Math.max(1, ph - margin * 2);
+    var scale = Math.min(1, availW / iw, availH / ih); // 비율 유지 축소만 (확대 없음)
+    var dw = iw * scale, dh = ih * scale;
+    var page = doc.addPage([pw, ph]);
+    page.drawImage(embedded, { x: (pw - dw) / 2, y: (ph - dh) / 2, width: dw, height: dh });
+  }
+
+  makeBtn.addEventListener('click', async function () {
+    makeBtn.disabled = true;
+    prog.className = 'progress show'; progBar.style.width = '0%';
+    result.className = 'result';
+    var skipped = [];
+    try {
+      var paper = paperSel.value;
+      var margin = parseInt(marginSel.value, 10) || 0;
+      var doc = await PDFLib.PDFDocument.create();
+      for (var i = 0; i < files.length; i++) {
+        try {
+          var item = await toEmbeddable(files[i]);
+          var embedded = item.png ? await doc.embedPng(item.bytes) : await doc.embedJpg(item.bytes);
+          addImagePage(doc, embedded, paper, margin);
+        } catch (err) {
+          skipped.push(files[i].name);
+        }
+        progBar.style.width = Math.round(((i + 1) / files.length) * 90) + '%';
+      }
+      if (doc.getPageCount() === 0) throw new Error('변환할 수 있는 이미지가 없습니다. JPG·PNG·WebP 파일인지 확인해 주세요.');
+      var out = await doc.save();
+      progBar.style.width = '100%';
+      var blob = new Blob([out], { type: 'application/pdf' });
+      mdtlDownload(blob, '사진문서.pdf');
+      mdtlResult(result,
+        '✅ <b>완료!</b> 사진 ' + doc.getPageCount() + '장 → ' + doc.getPageCount() + '쪽 PDF — ' +
+        mdtlFormatBytes(blob.size) + ' 파일이 다운로드되었습니다.' +
+        (skipped.length ? '<br>⚠️ 제외됨(손상/미지원 형식): ' + skipped.map(function (s) { var d = document.createElement('i'); d.textContent = s; return d.outerHTML; }).join(', ') : ''));
+    } catch (e) {
+      mdtlResult(result, '❌ ' + (e && e.message ? e.message : '처리 중 오류가 발생했습니다. 다시 시도해 주세요.'), true);
+    } finally {
+      prog.className = 'progress';
+      makeBtn.disabled = files.length < 1;
+    }
+  });
+})();
+</script>
+</body>
+</html>

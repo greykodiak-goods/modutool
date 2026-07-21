@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF 워터마크 넣기 — 대외비·초안 문구 삽입, 설치 없이 무료 | ThisIsMyPDF</title>
+<meta name="description" content="PDF 전체 페이지에 대외비·초안·사본 같은 워터마크 문구를 넣는 무료 도구. 대각선·가로·하단 배치, 투명도·크기·색상 조절 지원. 서버 업로드 없이 브라우저에서 바로 처리되어 계약서·제안서 같은 민감한 문서도 안전합니다. 설치·가입·용량제한 없음.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/ko/pdf-watermark/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/ko/pdf-watermark/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/pdf-watermark/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/pdf-watermark/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PDF 워터마크 넣기 — 대외비·초안 문구 삽입, 서버 업로드 없음">
+<meta property="og:description" content="전체 페이지에 대각선·가로·하단 워터마크. 투명도·크기·색상 조절. 파일이 서버로 전송되지 않는 100% 브라우저 처리.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/ko/pdf-watermark/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_BASE='/modutool';</script>
+<link rel="stylesheet" href="/modutool/assets/site.css">
+<script src="/modutool/assets/site.js"></script>
+<script src="/modutool/assets/ads-config.js" defer></script>
+<script src="/modutool/assets/auth-config.js" defer></script>
+<script src="/modutool/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"PDF 워터마크 넣기 - ThisIsMyPDF","url":"https://greykodiak-goods.github.io/modutool/ko/pdf-watermark/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"PDF 전체 페이지에 대외비·초안 같은 텍스트 워터마크를 삽입하는 무료 웹 도구. 배치·투명도·크기·색상 조절. 서버 업로드 없이 브라우저에서 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"파일이 정말 서버로 전송되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 워터마크 삽입 전체가 브라우저 안에서, 내 컴퓨터(또는 휴대폰) 안에서만 처리됩니다. 한글 문구를 처음 적용할 때 이 사이트에서 한글 폰트 파일을 한 번 내려받는 통신이 있을 뿐, 여러분의 PDF가 밖으로 나가는 요청은 없습니다. 개발자도구의 네트워크 탭에서 직접 확인할 수 있습니다."}},
+{"@type":"Question","name":"넣은 워터마크를 나중에 지울 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"이 도구는 워터마크를 별도 주석이 아니라 페이지 내용에 직접 그려 넣기 때문에, 일반 뷰어에서는 지워지지 않습니다. 다만 전문 편집 도구를 쓰면 제거가 불가능하지는 않으므로, 워터마크는 완전한 복제 방지 장치가 아니라 무단 배포를 억제하고 문서 상태를 표시하는 용도로 이해하는 것이 좋습니다. 원본 파일은 변경되지 않으니 원본을 따로 보관하세요."}},
+{"@type":"Question","name":"한글 워터마크도 넣을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 대외비, 초안, 사본 같은 한글 문구를 넣으면 한글 글꼴(Noto Sans KR)이 자동으로 적용됩니다. 한글이 포함된 경우에만 폰트 파일을 한 번 내려받으며, 영문·숫자만 있는 문구는 폰트 다운로드 없이 즉시 처리됩니다."}},
+{"@type":"Question","name":"암호가 걸린 PDF에도 워터마크를 넣을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"열람 암호(비밀번호)가 걸린 PDF는 보안 정책상 열 수 없어 안내 메시지가 표시됩니다. PDF 뷰어 등에서 암호를 해제해 저장한 파일로 다시 시도해 주세요."}},
+{"@type":"Question","name":"투명도와 크기는 어느 정도가 적당한가요?","acceptedAnswer":{"@type":"Answer","text":"본문 가독성을 해치지 않으려면 기본값인 투명도 0.15 전후의 옅은 회색 대각선 배치를 권합니다. 문서 상태를 강하게 표시해야 하면 투명도를 0.3 이상으로 올리거나 빨강을 선택하세요. 크기는 페이지 대각선에 비례해 자동 계산되며, 배율 슬라이더로 0.5~2배 사이에서 조절할 수 있습니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/ko/">ThisIsMyPDF</a> › <a href="/modutool/ko/#pdf">PDF 도구</a> › PDF 워터마크</nav>
+  <h1 class="page-title">PDF 워터마크 넣기<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">전체 페이지에 대외비·초안 같은 문구를 넣습니다. 배치·투명도·크기·색상 조절, 설치·가입·용량제한 없이 무료.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">💧</span>
+      <strong>워터마크를 넣을 PDF를 여기에 끌어다 놓거나 클릭해서 선택</strong><br>
+      파일 1개 — 선택하면 총 페이지 수가 바로 표시됩니다
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts">
+      <label for="wmText">문구
+        <input type="text" id="wmText" value="대외비" placeholder="예: 대외비, 초안, 사본" autocomplete="off" maxlength="60">
+      </label>
+      <label for="wmPos">배치
+        <select id="wmPos">
+          <option value="diag" selected>대각선 (중앙)</option>
+          <option value="center">가로 (중앙)</option>
+          <option value="bottom">하단</option>
+        </select>
+      </label>
+      <label for="wmColor">색상
+        <select id="wmColor">
+          <option value="gray" selected>회색</option>
+          <option value="red">빨강</option>
+          <option value="blue">파랑</option>
+        </select>
+      </label>
+    </div>
+    <div class="opts">
+      <label for="wmOpacity">투명도
+        <input type="range" id="wmOpacity" min="0.08" max="0.5" step="0.01" value="0.15">
+        <span id="wmOpacityVal">0.15</span>
+      </label>
+      <label for="wmScale">크기 배율
+        <input type="range" id="wmScale" min="0.5" max="2" step="0.05" value="1">
+        <span id="wmScaleVal">1.0×</span>
+      </label>
+    </div>
+    <p style="margin:12px 0 0;font-size:13.5px;color:var(--text-soft)">ℹ️ 크기는 페이지 대각선 길이에 비례해 자동 계산됩니다. 한글 문구는 처음 적용할 때 한글 폰트(약 2.4MB)를 한 번 내려받습니다 — PDF 파일이 업로드되는 것이 아닙니다.</p>
+    <div class="btn-row">
+      <button class="btn" id="goBtn" disabled>워터마크 넣기</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>위 영역에 <b>PDF 파일 1개</b>를 끌어다 놓거나, 클릭해서 선택합니다. 파일을 읽는 즉시 총 페이지 수가 목록에 표시됩니다.</li>
+      <li>워터마크 <b>문구</b>를 입력합니다. 기본값은 &quot;대외비&quot;이며 초안, 사본, 배포 금지 등 원하는 문구로 바꿀 수 있습니다. 문구가 비어 있으면 버튼이 비활성화됩니다.</li>
+      <li><b>배치</b>(대각선·가로 중앙·하단), <b>색상</b>(회색·빨강·파랑), <b>투명도</b>(0.08~0.5), <b>크기 배율</b>(0.5~2배)을 취향대로 조절합니다.</li>
+      <li><b>워터마크 넣기</b> 버튼을 누르면 모든 페이지에 문구가 삽입되고, <b>원본명_워터마크.pdf</b> 파일이 자동으로 다운로드됩니다. 원본 파일은 그대로 보존됩니다.</li>
+    </ol>
+
+    <h2>이 도구가 다른 PDF 워터마크 사이트와 다른 점</h2>
+    <p>흔한 온라인 워터마크 서비스는 파일을 <b>자기 회사 서버에 업로드</b>한 뒤 처리해서 되돌려줍니다. 워터마크를 넣는 문서가 어떤 문서인지 생각해 보면 아이러니한 구조입니다 — 대외비 표시가 필요할 만큼 민감한 계약서·제안서·견적서를, 워터마크를 넣겠다고 남의 서버에 먼저 올리는 셈이니까요. 업로드된 파일이 언제 삭제되는지, 처리 과정에서 누가 열람할 수 있는지 사용자는 확인할 방법이 없습니다.</p>
+    <p>ThisIsMyPDF의 PDF 워터마크는 <b>파일을 어디로도 보내지 않습니다.</b> 브라우저에 내장된 기술로 문구 삽입 작업 전체가 내 기기 안에서만 이뤄집니다. 그래서 세 가지 장점이 생깁니다.</p>
+    <ul>
+      <li><b>보안</b> — 파일이 기기 밖으로 나가지 않으므로 유출 가능성 자체가 없습니다.</li>
+      <li><b>속도</b> — 업로드·다운로드 대기가 없어 수십 쪽짜리 문서도 몇 초 안에 끝납니다.</li>
+      <li><b>무제한</b> — 서버 비용이 들지 않으니 파일 용량·횟수를 제한하지 않습니다.</li>
+    </ul>
+
+    <h2>워터마크 옵션 자세히</h2>
+    <h3>배치 — 대각선·가로 중앙·하단</h3>
+    <p><b>대각선(중앙)</b>은 가장 널리 쓰이는 방식으로, 페이지 대각선 각도에 맞춰 문구를 비스듬히 눕혀 페이지 전체를 덮습니다. 캡처하거나 일부만 잘라내도 문구가 걸리기 때문에 무단 배포 억제 효과가 가장 큽니다. <b>가로(중앙)</b>는 페이지 한가운데에 수평으로 배치해 상태 표시가 또렷하게 보이고, <b>하단</b>은 본문을 거의 가리지 않아 사본 표시나 출처 표기처럼 은은하게 남기고 싶을 때 적합합니다.</p>
+    <h3>투명도 — 본문 가독성과의 균형</h3>
+    <p>투명도는 0.08(거의 안 보임)부터 0.5(뚜렷함)까지 조절할 수 있고, 기본값은 0.15입니다. 워터마크의 목적은 본문을 가리는 것이 아니라 문서의 상태를 알리는 것이므로, 인쇄·열람에 지장이 없는 옅은 값에서 시작해 필요할 때만 올리는 것을 권합니다.</p>
+    <h3>크기와 색상</h3>
+    <p>글자 크기는 페이지 대각선 길이에 비례해 자동 계산되므로 A4든 명함 크기든 페이지마다 알맞은 크기로 들어갑니다. 배율 슬라이더로 0.5~2배 사이에서 미세 조정할 수 있습니다. 색상은 서류 표준인 <b>회색</b>, 경고성 표시에 쓰는 <b>빨강</b>, 조직 안내 문구에 어울리는 <b>파랑</b> 세 가지를 제공합니다.</p>
+    <div class="tip">💡 <b>팁:</b> 받는 사람이 본문을 읽어야 하는 문서(제안서·계약서 초안)라면 투명도를 0.12~0.2 사이로 낮춰 가독성을 지키세요. 반대로 &quot;이 파일은 초안&quot;임을 강하게 알려야 하는 내부 검토본은 투명도 0.3 이상 + 빨강 대각선이 효과적입니다.</div>
+
+    <h2>이럴 때 쓰세요</h2>
+    <ul>
+      <li>외부에 보내는 계약서·견적서에 <b>&quot;대외비&quot; 표시</b>를 넣어 무단 전달을 억제할 때</li>
+      <li>검토 중인 문서에 <b>&quot;초안&quot; 표시</b>를 넣어 확정본과 혼동되지 않게 할 때</li>
+      <li>관공서·은행 제출용 서류 사본에 <b>&quot;사본&quot; 표시</b>를 넣어 원본 도용을 막을 때</li>
+      <li>제안서·포트폴리오에 <b>회사명이나 이름</b>을 넣어 무단 배포·재사용을 억제할 때</li>
+      <li>강의자료·전자문서에 <b>배포 대상 표시</b>(예: 2026년 1기 수강생용)를 넣을 때</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>파일이 정말 서버로 전송되지 않나요?</summary><p>네. 워터마크 삽입 전체가 브라우저 안에서, 내 컴퓨터(또는 휴대폰) 안에서만 처리됩니다. 한글 문구를 처음 적용할 때 이 사이트에서 한글 폰트 파일을 한 번 내려받는 통신이 있을 뿐, 여러분의 PDF가 밖으로 나가는 요청은 없습니다. 개발자도구의 네트워크 탭에서 직접 확인할 수 있습니다.</p></details>
+      <details><summary>넣은 워터마크를 나중에 지울 수 있나요?</summary><p>이 도구는 워터마크를 별도 주석이 아니라 페이지 내용에 직접 그려 넣기 때문에, 일반 뷰어에서는 지워지지 않습니다. 다만 전문 편집 도구를 쓰면 제거가 불가능하지는 않으므로, 워터마크는 완전한 복제 방지 장치가 아니라 무단 배포를 억제하고 문서 상태를 표시하는 용도로 이해하는 것이 좋습니다. 원본 파일은 변경되지 않으니 원본을 따로 보관하세요.</p></details>
+      <details><summary>한글 워터마크도 넣을 수 있나요?</summary><p>네. 대외비, 초안, 사본 같은 한글 문구를 넣으면 한글 글꼴(Noto Sans KR)이 자동으로 적용됩니다. 한글이 포함된 경우에만 폰트 파일을 한 번 내려받으며, 영문·숫자만 있는 문구는 폰트 다운로드 없이 즉시 처리됩니다.</p></details>
+      <details><summary>암호가 걸린 PDF에도 워터마크를 넣을 수 있나요?</summary><p>열람 암호(비밀번호)가 걸린 PDF는 보안 정책상 열 수 없어 안내 메시지가 표시됩니다. PDF 뷰어 등에서 암호를 해제해 저장한 파일로 다시 시도해 주세요.</p></details>
+      <details><summary>투명도와 크기는 어느 정도가 적당한가요?</summary><p>본문 가독성을 해치지 않으려면 기본값인 투명도 0.15 전후의 옅은 회색 대각선 배치를 권합니다. 문서 상태를 강하게 표시해야 하면 투명도를 0.3 이상으로 올리거나 빨강을 선택하세요. 크기는 페이지 대각선에 비례해 자동 계산되며, 배율 슬라이더로 0.5~2배 사이에서 조절할 수 있습니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/ko/pdf-page-numbers/"><span class="emoji">🔢</span><span><b>페이지 번호 넣기</b><span>쪽 번호 자동 삽입</span></span></a>
+      <a class="tool-tile" href="/modutool/ko/pdf-merge/"><span class="emoji">📎</span><span><b>PDF 합치기</b><span>여러 PDF를 하나로</span></span></a>
+      <a class="tool-tile" href="/modutool/ko/pdf-organize/"><span class="emoji">🗂️</span><span><b>페이지 삭제·순서 바꾸기</b><span>페이지 정리</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/assets/vendor/pdf-lib.min.js"></script>
+<script src="/modutool/assets/vendor/fontkit.umd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var file = null, srcBytes = null, pageCount = 0, baseName = '';
+  var busy = false, notoBytes = null;
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var textInput = document.getElementById('wmText');
+  var posSel = document.getElementById('wmPos');
+  var colorSel = document.getElementById('wmColor');
+  var opSlider = document.getElementById('wmOpacity');
+  var opVal = document.getElementById('wmOpacityVal');
+  var scSlider = document.getElementById('wmScale');
+  var scVal = document.getElementById('wmScaleVal');
+  var goBtn = document.getElementById('goBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+
+  var COLORS = {
+    gray: [0.45, 0.45, 0.45],
+    red:  [0.83, 0.13, 0.13],
+    blue: [0.15, 0.35, 0.85]
+  };
+
+  function esc(t) { var d = document.createElement('i'); d.textContent = t; return d.outerHTML; }
+
+  function render() {
+    listEl.innerHTML = '';
+    if (file) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta">' + pageCount + '쪽 · ' + mdtlFormatBytes(file.size) + '</span>' +
+        '<button class="mini" data-act="del" aria-label="제거">✕</button>';
+      li.querySelector('.name').textContent = file.name;
+      listEl.appendChild(li);
+    }
+    goBtn.disabled = !file || !textInput.value.trim() || busy;
+    goBtn.textContent = file ? pageCount + '쪽에 워터마크 넣기' : '워터마크 넣기';
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || busy) return;
+    file = null; srcBytes = null; pageCount = 0; baseName = '';
+    result.className = 'result';
+    render();
+  });
+
+  textInput.addEventListener('input', render);
+  opSlider.addEventListener('input', function () { opVal.textContent = parseFloat(opSlider.value).toFixed(2); });
+  scSlider.addEventListener('input', function () { scVal.textContent = parseFloat(scSlider.value).toFixed(2).replace(/0$/, '') + '×'; });
+
+  mdtlDropzone(dz, {
+    accept: '.pdf,application/pdf', multiple: false,
+    onFiles: function (fs) { loadFile(fs[0]); }
+  });
+
+  async function loadFile(f) {
+    if (busy) return;
+    result.className = 'result';
+    try {
+      var bytes = await f.arrayBuffer();
+      var doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: false });
+      file = f; srcBytes = bytes; pageCount = doc.getPageCount();
+      baseName = f.name.replace(/\.pdf$/i, '') || '문서';
+      render();
+    } catch (err) {
+      file = null; srcBytes = null; pageCount = 0; baseName = '';
+      render();
+      var msg = (err && err.message && /encrypt/i.test(err.message))
+        ? '암호(열람 비밀번호)가 걸린 PDF입니다. 먼저 암호를 해제한 파일로 다시 시도해 주세요. (' + esc(f.name) + ')'
+        : 'PDF를 읽을 수 없습니다. 파일이 손상되었거나 PDF 형식이 아닐 수 있습니다. (' + esc(f.name) + ')';
+      mdtlResult(result, '❌ ' + msg, true);
+    }
+  }
+
+  async function getFont(doc, text) {
+    if (/^[\x20-\x7E]*$/.test(text)) {
+      return doc.embedFont(PDFLib.StandardFonts.Helvetica);
+    }
+    if (!notoBytes) {
+      var res = await fetch('/modutool/assets/vendor/NotoSansKR-sub.ttf');
+      if (!res.ok) throw new Error('한글 폰트를 불러오지 못했습니다. 네트워크 상태를 확인한 뒤 다시 시도해 주세요.');
+      notoBytes = await res.arrayBuffer();
+    }
+    doc.registerFontkit(fontkit);
+    return doc.embedFont(notoBytes, { subset: true });
+  }
+
+  goBtn.addEventListener('click', async function () {
+    var text = textInput.value.trim();
+    if (!file || !srcBytes || !text || busy) return;
+    busy = true;
+    render();
+    prog.className = 'progress show'; progBar.style.width = '0%';
+    result.className = 'result';
+    try {
+      var doc = await PDFLib.PDFDocument.load(srcBytes);
+      progBar.style.width = '10%';
+      var font = await getFont(doc, text);
+      progBar.style.width = '25%';
+
+      var unitW = font.widthOfTextAtSize(text, 100) / 100;
+      if (!(unitW > 0)) throw new Error('이 문구는 그릴 수 없습니다. 다른 문구로 시도해 주세요.');
+
+      var pos = posSel.value;
+      var c = COLORS[colorSel.value] || COLORS.gray;
+      var color = PDFLib.rgb(c[0], c[1], c[2]);
+      var opacity = parseFloat(opSlider.value);
+      var scale = parseFloat(scSlider.value);
+
+      var pages = doc.getPages();
+      for (var i = 0; i < pages.length; i++) {
+        var page = pages[i];
+        var pw = page.getWidth(), ph = page.getHeight();
+        var diag = Math.sqrt(pw * pw + ph * ph);
+        var target = (pos === 'diag' ? diag * 0.5 : pos === 'center' ? pw * 0.62 : pw * 0.45) * scale;
+        var size = Math.max(6, Math.min(target / unitW, diag / 2));
+        var w = unitW * size;
+        var h = size * 0.72; /* 대략적 대문자 높이 — 중앙 정렬 보정용 */
+        var angle = pos === 'diag' ? Math.atan2(ph, pw) : 0;
+        var cx = pw / 2;
+        var cy = pos === 'bottom' ? Math.max(ph * 0.04 + h / 2, 24) : ph / 2;
+        var x = cx - (w / 2) * Math.cos(angle) + (h / 2) * Math.sin(angle);
+        var y = cy - (w / 2) * Math.sin(angle) - (h / 2) * Math.cos(angle);
+        page.drawText(text, {
+          x: x, y: y, size: size, font: font,
+          color: color, opacity: opacity,
+          rotate: PDFLib.degrees(angle * 180 / Math.PI)
+        });
+        progBar.style.width = Math.round(25 + ((i + 1) / pages.length) * 65) + '%';
+      }
+
+      var data = await doc.save();
+      progBar.style.width = '100%';
+      var blob = new Blob([data], { type: 'application/pdf' });
+      var name = baseName + '_워터마크.pdf';
+      mdtlDownload(blob, name);
+      mdtlResult(result,
+        '✅ <b>완료!</b> ' + pages.length + '쪽 모두에 ' + esc('"' + text + '"') + ' 워터마크를 넣어 ' +
+        esc(name) + ' (' + mdtlFormatBytes(blob.size) + ') 파일이 다운로드되었습니다.');
+    } catch (e) {
+      var m = e && e.message ? e.message : '처리 중 오류가 발생했습니다.';
+      if (/WinAnsi|cannot encode|glyph/i.test(m)) m = '폰트가 지원하지 않는 문자가 포함되어 있습니다. 한글·영문·숫자·기본 기호로 입력해 주세요.';
+      mdtlResult(result, '❌ ' + esc(m), true);
+    } finally {
+      prog.className = 'progress';
+      busy = false;
+      render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
