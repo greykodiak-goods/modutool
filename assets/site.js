@@ -1,6 +1,7 @@
 /* 모두의툴 공용 스크립트 — 테마, 드롭존, 파일 유틸, 광고 로더. 의존성 없음. */
 (function () {
   'use strict';
+  var BASE = window.MDTL_BASE || '';   // 서브패스 배포(gh-pages 등) 지원 — 빌드가 주입
 
   /* ── 테마 ── */
   var saved = null;
@@ -45,7 +46,7 @@
     if (header) {
       header.innerHTML =
         '<div class="inner">' +
-        '<a class="logo" href="' + L.home + '"><span class="mark">' + L.mark + '</span>' + L.site + '</a>' +
+        '<a class="logo" href="' + BASE + L.home + '"><span class="mark">' + L.mark + '</span>' + L.site + '</a>' +
         '<span class="header-spacer"></span>' +
         '<button class="icon-btn" onclick="mdtlToggleTheme()" aria-label="' + L.themeLabel + '" title="' + L.themeLabel + '">◐</button>' +
         '</div>';
@@ -55,7 +56,7 @@
       footer.innerHTML =
         '<div class="inner">' +
         '<span>' + L.footer + '</span>' +
-        L.links.map(function (a) { return '<a href="' + a[0] + '">' + a[1] + '</a>'; }).join('') +
+        L.links.map(function (a) { return '<a href="' + BASE + a[0] + '">' + a[1] + '</a>'; }).join('') +
         '</div>';
     }
   };

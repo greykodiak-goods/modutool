@@ -1,0 +1,31 @@
+# 라이브 사이트 점검 — 개발 컨테이너는 외부망이 막혀 있어, 러너에서 실URL 응답을 검증한다.
+name: Live site check
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "검사할 사이트 베이스 URL (끝 슬래시 없이)"
+        required: true
+        default: "https://greykodiak-goods.github.io/modutool"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check pages
+        run: |
+          BASE="${{ inputs.base_url }}"
+          fail=0
+          for p in "/" "/en/" "/pdf-merge/" "/pdf-organize/" "/image-compress/" "/pricing/" "/login/" "/sitemap.xml" "/robots.txt" "/assets/site.js" "/assets/vendor/pdf-lib.min.js"; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
+            echo "$code  $BASE$p"
+            [ "$code" = "200" ] || fail=1
+          done
+          echo "--- brand check ---"
+          curl -sL "$BASE/" | grep -o "ThisIsMyPDF" | head -1 || fail=1
+          echo "--- canonical check ---"
+          curl -sL "$BASE/pdf-merge/" | grep -o '<link rel="canonical" href="[^"]*"' || fail=1
+          echo "--- supabase auth reachable (회원 백엔드) ---"
+          curl -s -o /dev/null -w "auth health: %{http_code}\n" "https://gysvtgnpacqjpdijbcaw.supabase.co/auth/v1/health" -H "apikey: sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT"
+          exit $fail

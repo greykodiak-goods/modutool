@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   var sb = window.mdtlAuthClient && window.mdtlAuthClient();
   if (!sb) { loading.textContent = 'Accounts are launching soon.'; return; }
   var info = await window.mdtlRefreshPlan();
-  if (!info) { location.href = '/en/login/'; return; }
+  if (!info) { location.href = (window.MDTL_BASE||'') + '/en/login/'; return; }
   loading.style.display = 'none';
   document.getElementById('panel').style.display = '';
   document.getElementById('emailLabel').textContent = info.user.email;
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   document.getElementById('logoutBtn').addEventListener('click', async function () {
     await sb.auth.signOut();
     window.mdtlClearAuthCache();
-    location.href = '/';
+    location.href = (window.MDTL_BASE||'') + '/';
   });
 });
 </script>

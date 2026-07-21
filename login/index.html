@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var form = document.getElementById('loginForm');
   form.style.display = '';
   var msg = document.getElementById('msg');
-  if (window.mdtlLoggedIn()) { location.href = '/account/'; return; }
+  if (window.mdtlLoggedIn()) { location.href = (window.MDTL_BASE||'') + '/account/'; return; }
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -53,13 +53,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     if (r.error) { mdtlResult(msg, '❌ ' + (r.error.message === 'Invalid login credentials' ? '이메일 또는 비밀번호가 올바르지 않습니다.' : r.error.message), true); return; }
     await window.mdtlRefreshPlan();
-    location.href = '/account/';
+    location.href = (window.MDTL_BASE||'') + '/account/';
   });
 
   document.getElementById('magicBtn').addEventListener('click', async function () {
     var email = document.getElementById('email').value.trim();
     if (!email) { mdtlResult(msg, '이메일을 먼저 입력해 주세요.', true); return; }
-    var r = await sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.origin + '/account/' } });
+    var r = await sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.origin + (window.MDTL_BASE||'') + '/account/' } });
     if (r.error) { mdtlResult(msg, '❌ ' + r.error.message, true); return; }
     mdtlResult(msg, '✅ 로그인 링크를 이메일로 보냈습니다. 메일함을 확인해 주세요.');
   });

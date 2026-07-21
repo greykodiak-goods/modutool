@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var cta = document.getElementById('premiumCta');
     cta.textContent = 'Signed up — we\'ll email you at launch';
     cta.classList.add('secondary');
-    cta.href = '/en/account/';
+    cta.href = (window.MDTL_BASE||'') + '/en/account/';
   }
 });
 </script>

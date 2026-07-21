@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var form = document.getElementById('signupForm');
   form.style.display = '';
   var msg = document.getElementById('msg');
-  if (window.mdtlLoggedIn()) { location.href = '/en/account/'; return; }
+  if (window.mdtlLoggedIn()) { location.href = (window.MDTL_BASE||'') + '/en/account/'; return; }
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -53,10 +53,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var r = await sb.auth.signUp({
       email: document.getElementById('email').value.trim(),
       password: document.getElementById('password').value,
-      options: { emailRedirectTo: location.origin + '/en/account/' },
+      options: { emailRedirectTo: location.origin + (window.MDTL_BASE||'') + '/en/account/' },
     });
     if (r.error) { mdtlResult(msg, '❌ ' + r.error.message, true); return; }
-    if (r.data && r.data.session) { await window.mdtlRefreshPlan(); location.href = '/en/account/'; return; }
+    if (r.data && r.data.session) { await window.mdtlRefreshPlan(); location.href = (window.MDTL_BASE||'') + '/en/account/'; return; }
     mdtlResult(msg, '✅ Confirmation email sent — click the link to finish signing up.');
   });
 });

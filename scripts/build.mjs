@@ -27,6 +27,13 @@ for (const name of readdirSync(root)) {
   cpSync(join(root, name), join(out, name), { recursive: true });
 }
 
+/* 서브패스 배포(예: GitHub Pages …github.io/modutool) 지원.
+   BASE_PATH='/modutool' 지정 시: ①정적 href/src 절대경로 앞에 접두 ②모듈 import·fetch·workerSrc의
+   '/assets/…' 리터럴 접두 ③window.MDTL_BASE 주입(런타임 내비게이션은 site.js/auth.js가 이 값 사용).
+   관례: DEPLOY_ORIGIN에는 base 경로까지 포함시킨다(canonical/sitemap은 __ORIGIN__만으로 완성). */
+const base = (process.env.BASE_PATH || '').replace(/\/$/, '');
+if (base && !base.startsWith('/')) { console.error('BASE_PATH는 /로 시작해야 합니다'); process.exit(1); }
+
 const pages = [];
 function walk(dir) {
   for (const name of readdirSync(dir)) {
@@ -35,6 +42,11 @@ function walk(dir) {
     if (!name.endsWith('.html')) continue;
     let html = readFileSync(p, 'utf8');
     html = html.replaceAll('__ORIGIN__', origin);
+    if (base) {
+      html = html.replace(/(href|src)="\/(?!\/)/g, `$1="${base}/`);
+      html = html.replaceAll("'/assets/", `'${base}/assets/`);
+      html = html.replace('<link rel="stylesheet"', `<script>window.MDTL_BASE='${base}';</script>\n<link rel="stylesheet"`);
+    }
     writeFileSync(p, html);
     if (name === 'index.html' && !/noindex/.test(html)) {
       const rel = p.slice(out.length).replace(/\\/g, '/').replace(/index\.html$/, '');

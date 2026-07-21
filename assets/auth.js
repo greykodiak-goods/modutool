@@ -6,7 +6,7 @@
 
   function cfg() { return window.MDTL_AUTH && window.MDTL_AUTH.url ? window.MDTL_AUTH : null; }
   function lang() { return (document.documentElement.lang || 'ko').slice(0, 2) === 'en' ? 'en' : 'ko'; }
-  function prefix() { return lang() === 'en' ? '/en' : ''; }
+  function prefix() { return (window.MDTL_BASE || '') + (lang() === 'en' ? '/en' : ''); }
 
   /* Supabase 세션 토큰 존재 여부 (SDK 없이 감지) */
   window.mdtlLoggedIn = function () {
