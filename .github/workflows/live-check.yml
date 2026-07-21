@@ -17,7 +17,7 @@ jobs:
         run: |
           BASE="${{ inputs.base_url }}"
           fail=0
-          for p in "/" "/en/" "/pdf-merge/" "/pdf-organize/" "/image-compress/" "/pricing/" "/login/" "/sitemap.xml" "/robots.txt" "/assets/site.js" "/assets/vendor/pdf-lib.min.js"; do
+          for p in "/" "/ko/" "/pdf-merge/" "/pdf-compress/" "/pdf-watermark/" "/pdf-page-numbers/" "/pdf-sign/" "/image-crop/" "/image-convert/" "/image-rotate/" "/image-watermark/" "/pricing/" "/login/" "/sitemap.xml" "/robots.txt" "/assets/site.js" "/assets/vendor/pdf-lib.min.js" "/assets/vendor/fontkit.umd.min.js"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
             echo "$code  $BASE$p"
             [ "$code" = "200" ] || fail=1
