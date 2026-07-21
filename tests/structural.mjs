@@ -9,7 +9,7 @@ const require = createRequire(join(pwDir, 'package.json'));
 const { chromium } = require('playwright');
 
 const TOOL_SLUGS = [
-  'pdf-merge', 'pdf-split', 'pdf-organize', 'pdf-to-jpg', 'img-to-pdf',
+  'pdf-merge', 'pdf-split', 'pdf-organize', 'pdf-rotate', 'pdf-extract', 'pdf-to-jpg', 'img-to-pdf',
   'image-compress', 'image-resize',
   'age-calculator', 'percent-calculator', 'char-count',
   'dday-calculator', 'trig-calculator', 'pyeong-calculator',

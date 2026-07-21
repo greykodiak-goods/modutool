@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Extract PDF Pages — Pull Out Only the Pages You Need, Free, No Upload | ModuTool</title>
+<meta name="description" content="Pick the pages you need from a PDF and save them as one new PDF — free. Type a range like 1-3,5,7-9 and you're done. Everything runs in your browser with no server upload, so contracts and other sensitive documents stay on your device. No installs, no sign-up, no size limits.">
+<link rel="canonical" href="__ORIGIN__/en/pdf-extract/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/pdf-extract/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/en/pdf-extract/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/en/pdf-extract/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Extract PDF Pages — Only the Pages You Need, No Upload">
+<meta property="og:description" content="Type a range like 1-3,5,7-9 and download a new PDF built from just those pages. 100% in-browser processing — your files never leave your device.">
+<meta property="og:url" content="__ORIGIN__/en/pdf-extract/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>M</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Extract PDF Pages - ModuTool","url":"__ORIGIN__/en/pdf-extract/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that pulls selected pages out of a PDF and saves them as one new PDF. Processed entirely in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my files really never uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Correct. The entire extraction runs inside your browser, on your own computer or phone. Open your browser's network tab and you will see no file upload requests. Sensitive documents like contracts, medical records, and ID scans are safe to use here."}},
+{"@type":"Question","name":"How do I enter a page range?","acceptedAnswer":{"@type":"Answer","text":"Separate entries with commas and write consecutive runs with a hyphen. For example, entering 1-3,5,7-9 produces pages 1 to 3, page 5, and pages 7 to 9 — seven pages in the order you typed them, combined into one new PDF. To extract a single page, just type its number (e.g. 5)."}},
+{"@type":"Question","name":"What will the extracted file be called?","acceptedAnswer":{"@type":"Answer","text":"The new file is named after the original with _extracted added. For example, extracting pages from contract.pdf downloads contract_extracted.pdf. Your original file is never modified."}},
+{"@type":"Question","name":"Can I extract pages from a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"PDFs with an open password cannot be read for security reasons, so a notice is shown instead. Remove the password in a PDF viewer, save a copy, and try again with that file."}},
+{"@type":"Question","name":"Will the extracted PDF lose quality or content?","acceptedAnswer":{"@type":"Answer","text":"No. Pages are not re-rendered — the original page data is copied as-is, so text and image quality, fonts, and links stay identical to the source."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/en/">ModuTool</a> › <a href="/en/#pdf">PDF Tools</a> › Extract PDF Pages</nav>
+  <h1 class="page-title">Extract PDF Pages<span class="privacy-badge">🔒 No server upload</span></h1>
+  <p class="page-sub">Pull only the pages you need out of a long PDF and save them as one new file. Free — no installs, no sign-up, no size limits.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">📑</span>
+      <strong>Drag &amp; drop the PDF to extract from here, or click to select</strong><br>
+      One file — the total page count appears as soon as it loads
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts" id="rangeWrap" style="display:none">
+      <label for="rangeInput">Pages to extract
+        <input type="text" id="rangeInput" placeholder="e.g. 1-3,5,7-9" autocomplete="off">
+      </label>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="goBtn" disabled>Extract pages</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to extract pages from a PDF</h2>
+    <ol>
+      <li>Drag <b>one PDF file</b> into the area above, or click it to browse. The total page count appears in the list the moment the file is read.</li>
+      <li>Type the pages you want with commas and hyphens, like <b>1-3,5,7-9</b>. The field is pre-filled with the full range (1 to the last page), so just trim it down to what you need.</li>
+      <li>Click <b>Extract pages</b>. Processing is instant and <b>original_extracted.pdf</b> downloads automatically. Your original file stays untouched.</li>
+    </ol>
+
+    <h2>What makes this different from other page extractor sites</h2>
+    <p>Typical online PDF tools work by <b>uploading your file to their servers</b>, pulling the pages there, and sending the result back. You have no way to verify when your document is deleted or who can view it during processing. If the file is a contract, a medical record, a tax return, or a pay stub, that's a real concern.</p>
+    <p>ModuTool's page extractor <b>never sends your file anywhere.</b> The entire job runs on your own device, using technology built into your browser. That design gives you three advantages:</p>
+    <ul>
+      <li><b>Privacy</b> — your file never leaves your device, so there is simply nothing to leak.</li>
+      <li><b>Speed</b> — with no upload or download queue, even documents tens of MB in size finish in seconds.</li>
+      <li><b>No limits</b> — we pay no server costs for processing, so we don't cap file size or how often you use it.</li>
+    </ul>
+
+    <h2>How page ranges work</h2>
+    <p>Type page numbers separated by commas and a new PDF is built from just those pages, arranged in the order you typed them. Consecutive runs can be shortened with a hyphen:</p>
+    <ul>
+      <li><b>5</b> — extracts page 5 only</li>
+      <li><b>2-4</b> — extracts pages 2 through 4</li>
+      <li><b>1-3,5,7-9</b> — pages 1–3, page 5, and pages 7–9: seven pages, arranged in the order you typed them</li>
+    </ul>
+    <p>If a range points past the last page or the format is off, the tool tells you exactly which part is wrong — so even long documents can be trimmed without mistakes. Need every page as its own separate file instead? Use the split-all mode in <a href="/en/pdf-split/">Split PDF</a> — it turns each page into an individual PDF.</p>
+
+    <h2>When to use it</h2>
+    <ul>
+      <li>Pulling <b>just the signature page or a specific clause</b> out of a long contract to send to the other party or an agency</li>
+      <li>Sharing <b>a single chapter or the abstract of a paper</b> with an advisor or colleague instead of the whole document</li>
+      <li>Separating a batch scan — keeping <b>only the pages with your ID, bank statement, or certificate</b> as their own file</li>
+      <li>Grabbing <b>the units you actually need</b> from an ebook or course pack to print or load onto a tablet</li>
+      <li>Building a <b>handout version of a slide deck</b> — cover plus key pages only</li>
+      <li>Trimming a <b>PDF that exceeds an email size limit</b> down to the essential pages</li>
+    </ul>
+
+    <div class="tip">💡 <b>Tip:</b> Want to reorder, rotate, or delete the pages you pulled out? Continue in <a href="/en/pdf-organize/">Organize PDF</a>. To combine the extracted PDF with other documents, follow up with <a href="/en/pdf-merge/">Merge PDF</a> — both work the same way, with no server upload.</div>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>Are my files really never uploaded to a server?</summary><p>Correct. The entire extraction runs inside your browser, on your own computer or phone. Open your browser's network tab and you will see no file upload requests. Sensitive documents like contracts, medical records, and ID scans are safe to use here.</p></details>
+      <details><summary>How do I enter a page range?</summary><p>Separate entries with commas and write consecutive runs with a hyphen. For example, entering <b>1-3,5,7-9</b> produces pages 1 to 3, page 5, and pages 7 to 9 — seven pages in the order you typed them, combined into one new PDF. To extract a single page, just type its number (e.g. 5).</p></details>
+      <details><summary>What will the extracted file be called?</summary><p>The new file is named after the original with <b>_extracted</b> added. For example, extracting pages from contract.pdf downloads <b>contract_extracted.pdf</b>. Your original file is never modified.</p></details>
+      <details><summary>Can I extract pages from a password-protected PDF?</summary><p>PDFs with an open password cannot be read for security reasons, so a notice is shown instead. Remove the password in a PDF viewer, save a copy, and try again with that file.</p></details>
+      <details><summary>Will the extracted PDF lose quality or content?</summary><p>No. Pages are not re-rendered — the original page data is copied as-is, so text and image quality, fonts, and links stay identical to the source.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/en/pdf-split/"><span class="emoji">✂️</span><span><b>Split PDF</b><span>Every page as its own PDF</span></span></a>
+      <a class="tool-tile" href="/en/pdf-organize/"><span class="emoji">🗂️</span><span><b>Organize PDF</b><span>Reorder, rotate, delete pages</span></span></a>
+      <a class="tool-tile" href="/en/pdf-merge/"><span class="emoji">📎</span><span><b>Merge PDF</b><span>Combine PDFs into one</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/assets/vendor/pdf-lib.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var file = null, srcDoc = null, pageCount = 0, baseName = '';
+  var busy = false;
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var rangeWrap = document.getElementById('rangeWrap');
+  var rangeInput = document.getElementById('rangeInput');
+  var goBtn = document.getElementById('goBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+
+  function esc(t) { var d = document.createElement('i'); d.textContent = t; return d.outerHTML; }
+
+  function render() {
+    listEl.innerHTML = '';
+    if (file) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta">' + pageCount + ' pages · ' + mdtlFormatBytes(file.size) + '</span>' +
+        '<button class="mini" data-act="del" aria-label="Remove">✕</button>';
+      li.querySelector('.name').textContent = file.name;
+      listEl.appendChild(li);
+    }
+    var has = !!file;
+    rangeWrap.style.display = has ? '' : 'none';
+    goBtn.disabled = !has || busy;
+    goBtn.textContent = has ? 'Extract selected pages' : 'Extract pages';
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || busy) return;
+    file = null; srcDoc = null; pageCount = 0; baseName = '';
+    result.className = 'result';
+    render();
+  });
+
+  mdtlDropzone(dz, {
+    accept: '.pdf,application/pdf', multiple: false,
+    onFiles: function (fs) { loadFile(fs[0]); }
+  });
+
+  async function loadFile(f) {
+    if (busy) return;
+    result.className = 'result';
+    try {
+      var bytes = await f.arrayBuffer();
+      var doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: false });
+      file = f; srcDoc = doc; pageCount = doc.getPageCount();
+      baseName = f.name.replace(/\.pdf$/i, '') || 'document';
+      if (!rangeInput.value.trim()) rangeInput.value = '1-' + pageCount;
+      render();
+    } catch (err) {
+      file = null; srcDoc = null; pageCount = 0; baseName = '';
+      render();
+      var msg = (err && err.message && /encrypt/i.test(err.message))
+        ? 'This PDF is password-protected. Remove the password first, then try again. (' + esc(f.name) + ')'
+        : 'Could not read the PDF. The file may be corrupted or not a PDF. (' + esc(f.name) + ')';
+      mdtlResult(result, '❌ ' + msg, true);
+    }
+  }
+
+  function parseRanges(str, max) {
+    var s = String(str || '').replace(/\s+/g, '');
+    if (!s) throw new Error('Enter the page range to extract. Example: 1-3,5,7-9');
+    var parts = s.split(',');
+    var indices = [], norm = [];
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      if (!p) continue;
+      var m = p.match(/^(\d+)(?:-(\d+))?$/);
+      if (!m) throw new Error('Could not understand ' + esc(p) + '. Use only numbers, commas, and hyphens. Example: 1-3,5,7-9');
+      var a = parseInt(m[1], 10);
+      var b = m[2] ? parseInt(m[2], 10) : a;
+      if (a < 1 || b < 1) throw new Error('Page numbers start at 1.');
+      if (a > b) throw new Error(esc(p) + ' — the start page is greater than the end page.');
+      if (b > max) throw new Error(esc(p) + ' — this PDF has only ' + max + ' pages, so page ' + b + ' does not exist.');
+      for (var k = a; k <= b; k++) indices.push(k - 1);
+      norm.push(a === b ? String(a) : a + '-' + b);
+    }
+    if (!indices.length) throw new Error('Enter the page range to extract. Example: 1-3,5,7-9');
+    return { indices: indices, label: norm.join(',') };
+  }
+
+  goBtn.addEventListener('click', async function () {
+    if (!file || !srcDoc || busy) return;
+    busy = true;
+    render();
+    prog.className = 'progress show'; progBar.style.width = '0%';
+    result.className = 'result';
+    try {
+      var r = parseRanges(rangeInput.value, pageCount);
+      progBar.style.width = '30%';
+      var out = await PDFLib.PDFDocument.create();
+      var pages = await out.copyPages(srcDoc, r.indices);
+      pages.forEach(function (pg) { out.addPage(pg); });
+      var data = await out.save();
+      progBar.style.width = '100%';
+      var blob = new Blob([data], { type: 'application/pdf' });
+      var name = baseName + '_extracted.pdf';
+      mdtlDownload(blob, name);
+      mdtlResult(result,
+        '✅ <b>Done!</b> Extracted ' + r.indices.length + ' pages (' + r.label + ') — ' + esc(name) + ' (' +
+        mdtlFormatBytes(blob.size) + ') has been downloaded.');
+    } catch (e) {
+      mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'An error occurred while processing.'), true);
+    } finally {
+      prog.className = 'progress';
+      busy = false;
+      render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
