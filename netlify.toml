@@ -1,6 +1,10 @@
 # Netlify 배포 설정 — dist/를 게시 (빌드: node scripts/build.mjs <도메인>)
 [build]
+  command = "node scripts/build.mjs"
   publish = "dist"
+
+[build.environment]
+  DEPLOY_ORIGIN = "https://thisismypdf.netlify.app"
 
 [[headers]]
   for = "/assets/*"
