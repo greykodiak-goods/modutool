@@ -20,14 +20,14 @@
     ko: {
       mark: '모', site: '모두의툴', home: '/',
       footer: '© 모두의툴 — 모든 처리는 브라우저 안에서 이뤄지며 파일은 서버로 전송되지 않습니다.',
-      links: [['/about/', '소개'], ['/privacy/', '개인정보처리방침'], ['/terms/', '이용약관']],
+      links: [['/pricing/', '프리미엄'], ['/about/', '소개'], ['/privacy/', '개인정보처리방침'], ['/terms/', '이용약관']],
       themeLabel: '다크모드 전환',
       suggest: '🌐 View this page in English', stay: '한국어로 계속'
     },
     en: {
       mark: 'M', site: 'ModuTool', home: '/en/',
       footer: '© ModuTool — Everything runs inside your browser. Your files are never uploaded to any server.',
-      links: [['/en/about/', 'About'], ['/en/privacy/', 'Privacy'], ['/en/terms/', 'Terms']],
+      links: [['/en/pricing/', 'Premium'], ['/en/about/', 'About'], ['/en/privacy/', 'Privacy'], ['/en/terms/', 'Terms']],
       themeLabel: 'Toggle dark mode',
       suggest: '🌐 이 페이지를 한국어로 보기', stay: 'Continue in English'
     }
@@ -206,7 +206,8 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     if (window.mdtlAutoShell !== false) window.mdtlShell();
-    window.mdtlInitAds();
+    if (window.mdtlAuthHeader) window.mdtlAuthHeader();
+    if (!(window.mdtlIsPremium && window.mdtlIsPremium())) window.mdtlInitAds();  // 프리미엄 = 광고 제거
     window.mdtlLangBanner();
   });
 })();
