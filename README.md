@@ -40,4 +40,20 @@ node tests/smoke-pdf-merge.mjs http://localhost:8931 <pw설치경로>
 # 배포: dist/를 아무 정적 호스팅에 (Netlify/Cloudflare Pages). netlify.toml 포함됨.
 ```
 
+### Cloudflare Pages 설정 (권장 — main 푸시 = 자동배포)
+
+대시보드 → Workers & Pages → Create → Pages → **Connect to Git** → `modutool` 선택 후:
+
+| 항목 | 값 |
+|---|---|
+| Project name | `modutool` (→ modutool.pages.dev) |
+| Production branch | `main` |
+| Framework preset | None |
+| Build command | `node scripts/build.mjs` |
+| Build output directory | `dist` |
+| 환경변수 | `DEPLOY_ORIGIN` = `https://modutool.pages.dev` |
+
+커스텀 도메인 전환 시: Pages 프로젝트에 도메인 붙이고 `DEPLOY_ORIGIN`만 새 도메인으로 변경 → 재배포하면 canonical/hreflang/sitemap 전부 자동 갱신(pages.dev 버전은 canonical로 새 도메인을 가리켜 SEO가 자연 이관됨).
+⚠️ 애드센스·애드핏 신청은 무료 서브도메인으론 불가 — 커스텀 도메인 연결 후에.
+
 검증 이력(2026-07-21): 13개 툴 전부 Playwright 실동작 통과 — 실제 PDF 병합/분할/편집 결과물의 페이지수·회전각, 이미지 압축/리사이즈 결과물의 바이트 파싱(매직넘버·해상도), 계산기 수치의 수학 검증 포함. 구조 계약 테스트(메타/JSON-LD/분량/FAQ/외부스크립트 0) 전 페이지 통과.
