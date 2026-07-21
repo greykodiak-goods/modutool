@@ -2,6 +2,8 @@
 (function () {
   'use strict';
   var BASE = window.MDTL_BASE || '';   // 서브패스 배포(gh-pages 등) 지원 — 빌드가 주입
+  var BRAND = window.MDTL_SITE_BRAND || 'ThisIsMyPDF';   // SITE 빌드가 주입(미지정 시 통합 브랜드)
+  var MARK = window.MDTL_SITE_MARK || 'T';
 
   /* ── 테마 ── */
   var saved = null;
@@ -19,15 +21,15 @@
   /* ── 다국어 셸 문자열 (페이지 lang 속성으로 판별) ── */
   var LANGS = {
     ko: {
-      mark: 'T', site: 'ThisIsMyPDF', home: '/ko/',
-      footer: '© ThisIsMyPDF — 모든 처리는 브라우저 안에서 이뤄지며 파일은 서버로 전송되지 않습니다.',
+      mark: MARK, site: BRAND, home: '/ko/',
+      footer: '© ' + BRAND + ' — 모든 처리는 브라우저 안에서 이뤄지며 파일은 서버로 전송되지 않습니다.',
       links: [['/ko/pricing/', '프리미엄'], ['/ko/about/', '소개'], ['/ko/privacy/', '개인정보처리방침'], ['/ko/terms/', '이용약관']],
       themeLabel: '다크모드 전환',
       suggest: '🌐 View this page in English', stay: '한국어로 계속'
     },
     en: {
-      mark: 'T', site: 'ThisIsMyPDF', home: '/',
-      footer: '© ThisIsMyPDF — Everything runs inside your browser. Your files are never uploaded to any server.',
+      mark: MARK, site: BRAND, home: '/',
+      footer: '© ' + BRAND + ' — Everything runs inside your browser. Your files are never uploaded to any server.',
       links: [['/pricing/', 'Premium'], ['/about/', 'About'], ['/privacy/', 'Privacy'], ['/terms/', 'Terms']],
       themeLabel: 'Toggle dark mode',
       suggest: '🌐 이 페이지를 한국어로 보기', stay: 'Continue in English'

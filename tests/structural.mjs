@@ -10,7 +10,7 @@ const { chromium } = require('playwright');
 
 const TOOL_SLUGS = [
   'pdf-merge', 'pdf-split', 'pdf-organize', 'pdf-rotate', 'pdf-extract', 'pdf-compress', 'pdf-watermark', 'pdf-page-numbers', 'pdf-sign', 'pdf-to-jpg', 'img-to-pdf',
-  'image-compress', 'image-resize',
+  'image-compress', 'image-resize', 'image-crop', 'image-convert', 'image-rotate', 'image-watermark',
   'age-calculator', 'percent-calculator', 'char-count',
   'dday-calculator', 'trig-calculator', 'pyeong-calculator',
 ];

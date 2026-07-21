@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crop Image Online — Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Free tool to crop images right in your browser — drag to select any area or lock a 1:1, 4:3, 16:9, or 3:4 ratio. Nothing is uploaded to a server, so private photos stay private. No install, no sign-up, no size limits.">
+<link rel="canonical" href="__ORIGIN__/image-crop/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/image-crop/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/image-crop/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/image-crop/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Crop Image — Free, No Install, No Server Upload">
+<meta property="og:description" content="Drag to crop any area or lock an aspect ratio. 100% in-browser processing — your files never leave your device.">
+<meta property="og:url" content="__ORIGIN__/image-crop/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .crop-stage { position: relative; margin-top: 14px; display: none; }
+  .crop-stage.show { display: block; }
+  .crop-wrap { position: relative; display: inline-block; max-width: 100%; line-height: 0;
+    touch-action: none; user-select: none; -webkit-user-select: none; }
+  .crop-wrap canvas { display: block; max-width: 100%; height: auto; cursor: crosshair; }
+  .crop-shade { position: absolute; inset: 0; box-shadow: 0 0 0 9999px rgba(0,0,0,.45);
+    outline: 1px solid #fff; cursor: move; display: none; }
+  .crop-shade.show { display: block; }
+  .crop-shade::before { content: ''; position: absolute; inset: 0;
+    border: 1px dashed rgba(255,255,255,.9); }
+  .crop-hint { font-size: 13px; color: var(--muted, #6b7280); margin: 8px 0 0; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Image Cropper - ThisIsMyPDF","url":"__ORIGIN__/image-crop/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool to crop an image by dragging a selection or locking an aspect ratio. Processed in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is my photo really never uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Correct. Cropping happens entirely on your device using the canvas feature built into your browser. Open your browser's developer tools and check the Network tab — you won't see a single file upload request. Sensitive images like ID scans or private photos are safe to use here."}},
+{"@type":"Question","name":"How do I crop to an exact aspect ratio like 1:1?","acceptedAnswer":{"@type":"Answer","text":"Pick a ratio from the aspect-ratio menu — Free, 1:1 (square), 4:3, 16:9, or 3:4 (portrait). Once a ratio is locked, the selection box keeps that shape no matter how you drag, so you get a perfectly square profile picture or a widescreen thumbnail without measuring anything by hand."}},
+{"@type":"Question","name":"Does the output keep the original image format?","acceptedAnswer":{"@type":"Answer","text":"Yes. A JPG stays a JPG, while PNG and WEBP files are saved as PNG so any transparent background is preserved. The downloaded file is named after your original with a _cropped suffix added, so you can tell the two apart at a glance."}},
+{"@type":"Question","name":"Will cropping reduce the image quality?","acceptedAnswer":{"@type":"Answer","text":"No. Cropping simply keeps the pixels inside your selection at their original resolution — it does not stretch or resample them — so the cropped area is exactly as sharp as it was in the source. The result panel shows both the original and the cropped resolution so you know the final pixel size."}},
+{"@type":"Question","name":"Will my portrait photos come out sideways?","acceptedAnswer":{"@type":"Answer","text":"The tool automatically applies the EXIF orientation data stored in smartphone photos, so the image you crop is already facing the right way and the saved file keeps that orientation. You don't need to worry about photos coming out rotated or flipped."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/">ThisIsMyPDF</a> › <a href="/#image">Image Tools</a> › Crop Image</nav>
+  <h1 class="page-title">Crop Image<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Drag to select any area, or lock a 1:1, 4:3, 16:9, or 3:4 ratio, and cut out exactly the part you want. Free — no install, no sign-up, no size limits.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">✂️</span>
+      <strong>Drag &amp; drop an image here, or click to select</strong><br>
+      One image at a time (JPG · PNG · WEBP · GIF · BMP)
+    </div>
+    <div class="opts">
+      <label>Aspect ratio
+        <select id="ratioSel">
+          <option value="free">Free</option>
+          <option value="1:1">1:1 (Square)</option>
+          <option value="4:3">4:3</option>
+          <option value="16:9">16:9</option>
+          <option value="3:4">3:4 (Portrait)</option>
+        </select>
+      </label>
+    </div>
+    <div class="crop-stage" id="stage">
+      <div class="crop-wrap" id="wrap">
+        <canvas id="preview"></canvas>
+        <div class="crop-shade" id="shade"></div>
+      </div>
+      <p class="crop-hint">Drag across the image to draw a crop box. Drag inside the box to move it.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="cropBtn" disabled>Crop Image</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Clear</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drag an image into the area above, or click it to select one. JPG, PNG, WEBP, GIF, and BMP are supported — one image at a time.</li>
+      <li>Optionally pick an <b>aspect ratio</b>. Leave it on <b>Free</b> to crop any shape, or choose 1:1, 4:3, 16:9, or 3:4 to lock the selection to that proportion.</li>
+      <li>Drag across the preview to draw a crop box, then drag inside the box to reposition it until it frames exactly what you want.</li>
+      <li>Click <b>Crop Image</b>. The result shows the original and cropped resolution, and the file downloads automatically as <code>name_cropped</code>.</li>
+    </ol>
+
+    <h2>What Makes This Crop Tool Different</h2>
+    <p>Most online image tools <b>upload your photo to their own servers</b>, crop it there, and send it back. You have no way of knowing when the uploaded copy is deleted or who can see it along the way. For sensitive images — ID scans, screenshots of documents, private pictures — that is an uncomfortable thought.</p>
+    <p>ThisIsMyPDF's cropper <b>never sends your file anywhere.</b> The whole crop runs inside your computer or phone using the canvas technology built into your browser. That design brings three advantages.</p>
+    <ul>
+      <li><b>Privacy</b> — your photo never leaves your device, so there is simply nothing to leak.</li>
+      <li><b>Speed</b> — with no upload or download waits, the crop is instant.</li>
+      <li><b>No limits</b> — since we pay no server costs, there are no caps on how many images you crop or how large they are.</li>
+    </ul>
+    <p>Cropping here also stays <b>pixel-perfect</b>. The tool keeps the pixels inside your selection at their original resolution — it never stretches or resamples them — so the part you cut out is exactly as sharp as the source. It reads the <b>EXIF orientation</b> baked into smartphone photos first, so a picture taken in portrait mode shows the right way up before you even start, and it <b>keeps the original format</b> (JPG stays JPG; PNG and WEBP are saved as PNG so transparency survives).</p>
+
+    <h2>When to Use This Tool</h2>
+    <ul>
+      <li>Cutting a <b>square profile picture</b> for a social account, messenger, or forum avatar — just lock 1:1 and drag</li>
+      <li>Making a clean <b>thumbnail</b> for a blog, YouTube, or store listing at a fixed 16:9 or 4:3 shape</li>
+      <li><b>Removing unnecessary margins</b>, whitespace, or stray edges so the subject fills the frame</li>
+      <li>Trimming a <b>screenshot</b> down to just the part you want to share</li>
+      <li>Framing a product shot to a <b>consistent proportion</b> across a whole catalog</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> Crop first to get the framing right, then if you also need a specific pixel size, run the result through the <a href="/image-resize/">Image Resizer</a>. To keep the resolution but shrink the file, use the <a href="/image-compress/">Image Compressor</a> afterwards.</div>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Is my photo really never uploaded to a server?</summary><p>Correct. Cropping happens entirely on your device using the canvas feature built into your browser. Open your browser's developer tools and check the Network tab — you won't see a single file upload request. Sensitive images like ID scans or private photos are safe to use here.</p></details>
+      <details><summary>How do I crop to an exact aspect ratio like 1:1?</summary><p>Pick a ratio from the aspect-ratio menu — Free, 1:1 (square), 4:3, 16:9, or 3:4 (portrait). Once a ratio is locked, the selection box keeps that shape no matter how you drag, so you get a perfectly square profile picture or a widescreen thumbnail without measuring anything by hand.</p></details>
+      <details><summary>Does the output keep the original image format?</summary><p>Yes. A JPG stays a JPG, while PNG and WEBP files are saved as PNG so any transparent background is preserved. The downloaded file is named after your original with a _cropped suffix added, so you can tell the two apart at a glance.</p></details>
+      <details><summary>Will cropping reduce the image quality?</summary><p>No. Cropping simply keeps the pixels inside your selection at their original resolution — it does not stretch or resample them — so the cropped area is exactly as sharp as it was in the source. The result panel shows both the original and the cropped resolution so you know the final pixel size.</p></details>
+      <details><summary>Will my portrait photos come out sideways?</summary><p>The tool automatically applies the EXIF orientation data stored in smartphone photos, so the image you crop is already facing the right way and the saved file keeps that orientation. You don't need to worry about photos coming out rotated or flipped.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/image-resize/"><span class="emoji">🖼️</span><span><b>Image Resizer</b><span>Resize by pixels or percentage</span></span></a>
+      <a class="tool-tile" href="/image-compress/"><span class="emoji">🗜️</span><span><b>Image Compressor</b><span>Keep resolution, shrink file size</span></span></a>
+      <a class="tool-tile" href="/img-to-pdf/"><span class="emoji">📄</span><span><b>Image → PDF</b><span>Turn photos into a PDF</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var ratioSel = document.getElementById('ratioSel');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('wrap');
+  var preview = document.getElementById('preview');
+  var pctx = preview.getContext('2d');
+  var shade = document.getElementById('shade');
+  var cropBtn = document.getElementById('cropBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+
+  var srcImage = null;   // normalized ImageBitmap or <img>
+  var srcW = 0, srcH = 0;
+  var srcName = 'image';
+  var srcFmt = { mime: 'image/png', ext: 'png' };
+  var selN = null;       // {x,y,w,h} as fractions of the image (0..1)
+
+  /* EXIF orientation normalization: createImageBitmap(from-image) → browsers without option support → <img> fallback */
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () {
+          URL.revokeObjectURL(url);
+          reject(new Error('Could not read this image. Your browser may not support the format (e.g., HEIC).'));
+        };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else {
+        fallback();
+      }
+    });
+  }
+
+  function chooseFormat(file) {
+    var t = (file.type || '').toLowerCase();
+    if (t === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) return { mime: 'image/jpeg', ext: 'jpg' };
+    return { mime: 'image/png', ext: 'png' };
+  }
+
+  function ratioValue() {
+    var v = ratioSel.value;
+    if (v === '1:1') return 1;
+    if (v === '4:3') return 4 / 3;
+    if (v === '16:9') return 16 / 9;
+    if (v === '3:4') return 3 / 4;
+    return 0; // free
+  }
+
+  function dispSize() {
+    var r = preview.getBoundingClientRect();
+    return { w: r.width, h: r.height };
+  }
+
+  function renderSel() {
+    if (!selN) { shade.className = 'crop-shade'; cropBtn.disabled = true; return; }
+    var d = dispSize();
+    shade.style.left = (selN.x * d.w) + 'px';
+    shade.style.top = (selN.y * d.h) + 'px';
+    shade.style.width = (selN.w * d.w) + 'px';
+    shade.style.height = (selN.h * d.h) + 'px';
+    shade.className = 'crop-shade show';
+    cropBtn.disabled = !(selN.w * srcW >= 1 && selN.h * srcH >= 1);
+  }
+
+  function clampSel(x, y, w, h, d) {
+    var ratio = ratioValue();
+    x = Math.max(0, Math.min(x, d.w));
+    y = Math.max(0, Math.min(y, d.h));
+    if (x + w > d.w) w = d.w - x;
+    if (y + h > d.h) h = d.h - y;
+    if (w < 0) w = 0;
+    if (h < 0) h = 0;
+    if (ratio && w > 0 && h > 0) {
+      if (w / h > ratio) w = h * ratio; else h = w / ratio;
+    }
+    return { x: x, y: y, w: w, h: h };
+  }
+
+  // Pointer interaction ------------------------------------------------------
+  var mode = null;       // 'draw' | 'move'
+  var startX = 0, startY = 0;
+  var moveOrig = null;   // {x,y} display px of selection at move start
+  var moveGrab = null;   // {x,y} pointer offset within selection
+
+  function localPoint(e) {
+    var r = wrap.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(e.clientX - r.left, r.width)),
+      y: Math.max(0, Math.min(e.clientY - r.top, r.height))
+    };
+  }
+
+  function insideSel(p, d) {
+    if (!selN) return false;
+    var sx = selN.x * d.w, sy = selN.y * d.h, sw = selN.w * d.w, sh = selN.h * d.h;
+    return p.x >= sx && p.x <= sx + sw && p.y >= sy && p.y <= sy + sh;
+  }
+
+  wrap.addEventListener('pointerdown', function (e) {
+    if (!srcImage) return;
+    e.preventDefault();
+    wrap.setPointerCapture(e.pointerId);
+    var d = dispSize();
+    var p = localPoint(e);
+    if (insideSel(p, d)) {
+      mode = 'move';
+      moveOrig = { x: selN.x * d.w, y: selN.y * d.h };
+      moveGrab = { x: p.x - moveOrig.x, y: p.y - moveOrig.y };
+    } else {
+      mode = 'draw';
+      startX = p.x; startY = p.y;
+      selN = { x: p.x / d.w, y: p.y / d.h, w: 0, h: 0 };
+      renderSel();
+    }
+  });
+
+  wrap.addEventListener('pointermove', function (e) {
+    if (!mode) return;
+    e.preventDefault();
+    var d = dispSize();
+    var p = localPoint(e);
+    if (mode === 'draw') {
+      var rawW = p.x - startX, rawH = p.y - startY;
+      var ratio = ratioValue();
+      var aw = Math.abs(rawW), ah = Math.abs(rawH);
+      if (ratio) {
+        if (aw / (ah || 1) > ratio) { aw = ah * ratio; } else { ah = aw / ratio; }
+      }
+      var x = rawW < 0 ? startX - aw : startX;
+      var y = rawH < 0 ? startY - ah : startY;
+      var c = clampSel(x, y, aw, ah, d);
+      selN = { x: c.x / d.w, y: c.y / d.h, w: c.w / d.w, h: c.h / d.h };
+    } else if (mode === 'move') {
+      var nx = p.x - moveGrab.x, ny = p.y - moveGrab.y;
+      var w = selN.w * d.w, h = selN.h * d.h;
+      nx = Math.max(0, Math.min(nx, d.w - w));
+      ny = Math.max(0, Math.min(ny, d.h - h));
+      selN = { x: nx / d.w, y: ny / d.h, w: selN.w, h: selN.h };
+    }
+    renderSel();
+  });
+
+  function endDrag(e) {
+    if (!mode) return;
+    if (mode === 'draw' && selN && (selN.w * srcW < 1 || selN.h * srcH < 1)) selN = null;
+    mode = null;
+    renderSel();
+  }
+  wrap.addEventListener('pointerup', endDrag);
+  wrap.addEventListener('pointercancel', endDrag);
+
+  ratioSel.addEventListener('change', function () {
+    var ratio = ratioValue();
+    if (selN && ratio) {
+      var d = dispSize();
+      var x = selN.x * d.w, y = selN.y * d.h, w = selN.w * d.w, h = selN.h * d.h;
+      if (w / h > ratio) w = h * ratio; else h = w / ratio;
+      var c = clampSel(x, y, w, h, d);
+      selN = { x: c.x / d.w, y: c.y / d.h, w: c.w / d.w, h: c.h / d.h };
+      renderSel();
+    }
+  });
+
+  window.addEventListener('resize', function () { if (selN) renderSel(); });
+
+  // Load / clear -------------------------------------------------------------
+  function drawPreview() {
+    var maxW = Math.min(srcW, 900);
+    preview.width = srcW;
+    preview.height = srcH;
+    preview.style.maxWidth = maxW + 'px';
+    pctx.clearRect(0, 0, srcW, srcH);
+    pctx.drawImage(srcImage, 0, 0);
+  }
+
+  function setImage(file) {
+    result.className = 'result'; result.innerHTML = '';
+    loadImage(file).then(function (img) {
+      if (srcImage && srcImage.close) srcImage.close();
+      srcImage = img;
+      srcW = img.naturalWidth || img.width;
+      srcH = img.naturalHeight || img.height;
+      if (!srcW || !srcH) { mdtlResult(result, '❌ Could not read the image dimensions.', true); return; }
+      srcName = file.name;
+      srcFmt = chooseFormat(file);
+      selN = null;
+      drawPreview();
+      stage.className = 'crop-stage show';
+      clearBtn.style.display = '';
+      renderSel();
+    }, function (err) {
+      mdtlResult(result, '❌ ' + ((err && err.message) ? err.message : 'Could not read this image.'), true);
+    });
+  }
+
+  function clearAll() {
+    if (srcImage && srcImage.close) srcImage.close();
+    srcImage = null; selN = null;
+    stage.className = 'crop-stage';
+    clearBtn.style.display = 'none';
+    cropBtn.disabled = true;
+    result.className = 'result'; result.innerHTML = '';
+  }
+  clearBtn.addEventListener('click', clearAll);
+
+  mdtlDropzone(dz, {
+    accept: 'image/*', multiple: false,
+    onFiles: function (fs) { if (fs && fs.length) setImage(fs[0]); }
+  });
+
+  function outName(name, ext) {
+    return name.replace(/\.[^.]*$/, '') + '_cropped.' + ext;
+  }
+
+  function canvasToBlob(canvas, mime, q) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (b) {
+        if (!b) return reject(new Error('Failed to save the image.'));
+        resolve(b);
+      }, mime, q);
+    });
+  }
+
+  cropBtn.addEventListener('click', async function () {
+    if (!srcImage || !selN) return;
+    var sx = Math.round(selN.x * srcW);
+    var sy = Math.round(selN.y * srcH);
+    var sw = Math.max(1, Math.round(selN.w * srcW));
+    var sh = Math.max(1, Math.round(selN.h * srcH));
+    if (sx + sw > srcW) sw = srcW - sx;
+    if (sy + sh > srcH) sh = srcH - sy;
+    cropBtn.disabled = true;
+    try {
+      var canvas = document.createElement('canvas');
+      canvas.width = sw; canvas.height = sh;
+      var ctx = canvas.getContext('2d');
+      if (srcFmt.mime === 'image/jpeg') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, sw, sh); }
+      ctx.drawImage(srcImage, sx, sy, sw, sh, 0, 0, sw, sh);
+      var q = srcFmt.mime === 'image/jpeg' ? 0.92 : undefined;
+      var blob = await canvasToBlob(canvas, srcFmt.mime, q);
+      var name = outName(srcName, srcFmt.ext);
+      result.className = 'result show';
+      result.innerHTML = '';
+      var head = document.createElement('p');
+      head.style.margin = '0';
+      head.innerHTML = '✅ <b>Done!</b> Cropped — your file has been downloaded automatically.';
+      result.appendChild(head);
+      var meta = document.createElement('p');
+      meta.style.margin = '8px 0 0';
+      meta.style.fontSize = '13.5px';
+      meta.textContent = 'Original ' + srcW + '×' + srcH + ' → Cropped ' + sw + '×' + sh +
+        ' · ' + mdtlFormatBytes(blob.size);
+      result.appendChild(meta);
+      var row = document.createElement('div');
+      row.className = 'btn-row';
+      var dl = document.createElement('button');
+      dl.className = 'btn';
+      dl.textContent = '⬇ Download again';
+      dl.addEventListener('click', function () { mdtlDownload(blob, name); });
+      row.appendChild(dl);
+      result.appendChild(row);
+      mdtlDownload(blob, name);
+    } catch (e) {
+      mdtlResult(result, '❌ ' + ((e && e.message) ? e.message : 'An error occurred during processing.'), true);
+    } finally {
+      cropBtn.disabled = !selN;
+    }
+  });
+})();
+</script>
+</body>
+</html>

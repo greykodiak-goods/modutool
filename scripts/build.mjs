@@ -19,13 +19,44 @@ if (!/^https?:\/\//.test(origin)) {
 }
 const out = process.argv[3] || join(root, 'dist');
 
-const SKIP = new Set(['dist', 'scripts', 'node_modules', 'tests', '.git']);
+/* ── SITE 시리즈 필터 (선택) ──
+   SITE=pdf|img|calc 지정 시: 해당 사이트 카테고리 툴만 포함(다른 카테고리 툴 폴더 제외 + 허브 섹션 필터 +
+   브랜드 주입 + 형제 사이트 헤더 링크). 미지정 시 전체 통합 빌드(현행 preview, 회귀 없음).
+   sites.json이 정의. 카테고리→slug 매핑은 CAT_SLUGS. */
+const SITE_KEY = process.env.SITE || '';
+let site = null, siteSlugs = null;
+const CAT_SLUGS = {
+  pdf: ['pdf-merge','pdf-split','pdf-extract','pdf-organize','pdf-rotate','pdf-compress','pdf-watermark','pdf-page-numbers','pdf-sign','pdf-to-jpg','img-to-pdf'],
+  image: ['image-compress','image-resize','image-crop','image-convert','image-rotate','image-watermark','img-to-pdf'],
+  calc: ['age-calculator','percent-calculator','char-count','dday-calculator','trig-calculator','pyeong-calculator'],
+};
+const SUPPORT_SLUGS = ['about','privacy','terms','pricing','login','signup','account'];
+if (SITE_KEY) {
+  const sites = JSON.parse(readFileSync(join(root, 'sites.json'), 'utf8'));
+  site = sites[SITE_KEY];
+  if (!site) { console.error(`SITE=${SITE_KEY} 는 sites.json에 없습니다`); process.exit(1); }
+  siteSlugs = new Set([...site.categories.flatMap(c => CAT_SLUGS[c] || []), ...SUPPORT_SLUGS]);
+}
+const isToolDir = (name) => /-|calculator|count|compress|resize|convert|rotate|watermark|merge|split|extract|organize|sign|numbers|to-jpg|to-pdf/.test(name) && name !== 'assets';
+
+const SKIP = new Set(['dist', 'scripts', 'node_modules', 'tests', '.git', 'supabase']);
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
-for (const name of readdirSync(root)) {
-  if (SKIP.has(name)) continue;
-  cpSync(join(root, name), join(out, name), { recursive: true });
+function copyFiltered(srcDir, dstDir, inKo) {
+  for (const name of readdirSync(srcDir)) {
+    if (!inKo && SKIP.has(name)) continue;
+    const sp = join(srcDir, name), dp = join(dstDir, name);
+    if (statSync(sp).isDirectory()) {
+      // 툴 폴더이고 SITE 필터가 있으면 소속 카테고리만 복사 (ko도 동일 규칙)
+      if (site && (inKo || name !== 'ko') && isToolDir(name) && !siteSlugs.has(name)) continue;
+      mkdirSync(dp, { recursive: true });
+      copyFiltered(sp, dp, inKo || name === 'ko');
+    } else {
+      cpSync(sp, dp);
+    }
+  }
 }
+copyFiltered(root, out, false);
 
 /* 서브패스 배포(예: GitHub Pages …github.io/modutool) 지원.
    BASE_PATH='/modutool' 지정 시: ①정적 href/src 절대경로 앞에 접두 ②모듈 import·fetch·workerSrc의
@@ -42,6 +73,17 @@ function walk(dir) {
     if (!name.endsWith('.html')) continue;
     let html = readFileSync(p, 'utf8');
     html = html.replaceAll('__ORIGIN__', origin);
+    if (site) {
+      // 허브: 이 사이트 카테고리 섹션만 남김 (cat-title + 뒤따르는 tool-grid 쌍)
+      if (name === 'index.html') {
+        html = html.replace(/[ \t]*<div class="cat-title"[^>]*id="([a-z]+)"[^>]*>[\s\S]*?<\/div>\s*<div class="tool-grid">[\s\S]*?<\/div>\n/g,
+          (m, id) => site.categories.includes(id) ? m : '');
+      }
+      // 브랜드 치환 + site.js용 전역 주입
+      html = html.replaceAll('ThisIsMyPDF', site.brand);
+      html = html.replace('<link rel="stylesheet"',
+        `<script>window.MDTL_SITE_BRAND=${JSON.stringify(site.brand)};window.MDTL_SITE_MARK=${JSON.stringify(site.mark)};</script>\n<link rel="stylesheet"`);
+    }
     if (base) {
       html = html.replace(/(href|src)="\/(?!\/)/g, `$1="${base}/`);
       html = html.replaceAll("'/assets/", `'${base}/assets/`);
