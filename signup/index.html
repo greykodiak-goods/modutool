@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>가입하기 | ThisIsMyPDF</title>
+<title>Sign up | ThisIsMyPDF</title>
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="__ORIGIN__/signup/">
-<link rel="alternate" hreflang="ko" href="__ORIGIN__/signup/">
-<link rel="alternate" hreflang="en" href="__ORIGIN__/en/signup/">
-<link rel="alternate" hreflang="x-default" href="__ORIGIN__/en/signup/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/signup/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/signup/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/signup/">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/site.js"></script>
 <script src="/assets/auth-config.js"></script>
@@ -17,22 +17,22 @@
 <body>
 <header id="site-header" class="site-header"></header>
 <main style="max-width:440px">
-  <h1 class="page-title">가입하기</h1>
-  <p class="page-sub">가입하면 프리미엄 오픈 알림(사전등록 할인)을 받을 수 있습니다. 도구 사용에는 가입이 필요 없습니다.</p>
+  <h1 class="page-title">Sign up</h1>
+  <p class="page-sub">Sign up for the Premium launch alert (with an early discount). No account is needed to use the tools.</p>
   <div class="card">
     <div id="notReady" style="display:none">
-      <p>🛠️ 회원 기능은 오픈 준비 중입니다. 지금은 가입 없이 <a href="/">모든 도구</a>를 그대로 이용하세요.</p>
+      <p>🛠️ Accounts are launching soon. Meanwhile, use <a href="/">every tool</a> without signing up.</p>
     </div>
     <form id="signupForm" class="calc-grid" style="display:none">
-      <label class="field"><span>이메일</span><input type="email" id="email" required autocomplete="email"></label>
-      <label class="field"><span>비밀번호 (8자 이상)</span><input type="password" id="password" required minlength="8" autocomplete="new-password"></label>
+      <label class="field"><span>Email</span><input type="email" id="email" required autocomplete="email"></label>
+      <label class="field"><span>Password (8+ characters)</span><input type="password" id="password" required minlength="8" autocomplete="new-password"></label>
       <label style="font-size:13.5px;color:var(--text-soft);display:flex;gap:8px;align-items:flex-start">
         <input type="checkbox" id="agree" required style="margin-top:3px">
-        <span><a href="/terms/">이용약관</a>과 <a href="/privacy/">개인정보처리방침</a>에 동의합니다.</span>
+        <span>I agree to the <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>.</span>
       </label>
-      <button class="btn block" type="submit">가입하기</button>
+      <button class="btn block" type="submit">Create account</button>
       <div class="result" id="msg"></div>
-      <p style="font-size:13.5px;color:var(--text-soft);margin:4px 0 0">이미 계정이 있나요? <a href="/login/">로그인</a></p>
+      <p style="font-size:13.5px;color:var(--text-soft);margin:4px 0 0">Already have an account? <a href="/login/">Log in</a></p>
     </form>
   </div>
 </main>
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     if (r.error) { mdtlResult(msg, '❌ ' + r.error.message, true); return; }
     if (r.data && r.data.session) { await window.mdtlRefreshPlan(); location.href = (window.MDTL_BASE||'') + '/account/'; return; }
-    mdtlResult(msg, '✅ 확인 메일을 보냈습니다. 메일의 링크를 눌러 가입을 완료해 주세요.');
+    mdtlResult(msg, '✅ Confirmation email sent — click the link to finish signing up.');
   });
 });
 </script>

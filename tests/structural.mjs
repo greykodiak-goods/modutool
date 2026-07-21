@@ -9,12 +9,12 @@ const require = createRequire(join(pwDir, 'package.json'));
 const { chromium } = require('playwright');
 
 const TOOL_SLUGS = [
-  'pdf-merge', 'pdf-split', 'pdf-organize', 'pdf-rotate', 'pdf-extract', 'pdf-to-jpg', 'img-to-pdf',
+  'pdf-merge', 'pdf-split', 'pdf-organize', 'pdf-rotate', 'pdf-extract', 'pdf-compress', 'pdf-watermark', 'pdf-page-numbers', 'pdf-sign', 'pdf-to-jpg', 'img-to-pdf',
   'image-compress', 'image-resize',
   'age-calculator', 'percent-calculator', 'char-count',
   'dday-calculator', 'trig-calculator', 'pyeong-calculator',
 ];
-const TOOL_PAGES = [...TOOL_SLUGS, 'en', ...TOOL_SLUGS.map(s => 'en/' + s)];
+const TOOL_PAGES = [...TOOL_SLUGS, 'ko', ...TOOL_SLUGS.map(s => 'ko/' + s)];
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium' });
 const page = await browser.newPage();
@@ -57,8 +57,8 @@ for (const slug of ['', ...TOOL_PAGES]) {
   });
 
   const name = slug || 'index';
-  const isEn = slug === 'en' || slug.startsWith('en/');
-  const isHub = slug === '' || slug === 'en';
+  const isKo = slug === 'ko' || slug.startsWith('ko/');
+  const isHub = slug === '' || slug === 'ko';
   check(name, errors.length === 0, 'JS 오류: ' + errors.join(' | '));
   check(name, info.title.includes('ThisIsMyPDF'), 'title에 사이트명 없음: ' + info.title);
   check(name, info.h1.length >= 2, 'h1 없음');
@@ -67,7 +67,7 @@ for (const slug of ['', ...TOOL_PAGES]) {
   check(name, info.jsonldOk, 'JSON-LD 파싱 실패');
   check(name, info.headerOk && info.footerOk, '헤더/푸터 주입 실패');
   check(name, info.activeAds === 0, '광고 설정 없는데 활성 슬롯 존재');
-  check(name, info.hasViewport && info.lang === (isEn ? 'en' : 'ko'), 'viewport/lang 누락: ' + info.lang);
+  check(name, info.hasViewport && info.lang === (isKo ? 'ko' : 'en'), 'viewport/lang 누락: ' + info.lang);
   check(name, info.externalScripts.length === 0, '외부 스크립트 발견: ' + info.externalScripts.join(','));
   check(name, info.hreflangs === 'en,ko,x-default', 'hreflang 3종 불일치: ' + info.hreflangs);
   if (!isHub) {

@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF 쪽번호 넣기 — 페이지 번호 일괄 삽입, 설치 없이 무료 | ThisIsMyPDF</title>
+<meta name="description" content="PDF 전체 페이지에 쪽번호(페이지 번호)를 한 번에 넣는 무료 도구. 위치 6종·형식 4종·시작 번호·첫 페이지(표지) 제외까지 지원. 서버 업로드 없이 브라우저에서 바로 처리되어 보고서·논문·계약서 같은 민감한 문서도 안전합니다. 설치·가입·용량제한 없음.">
+<link rel="canonical" href="__ORIGIN__/ko/pdf-page-numbers/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/pdf-page-numbers/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/pdf-page-numbers/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/pdf-page-numbers/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PDF 쪽번호 넣기 — 설치 없이 무료, 서버 업로드 없음">
+<meta property="og:description" content="위치 6종·형식 4종으로 전체 페이지에 쪽번호 일괄 삽입. 파일이 서버로 전송되지 않는 100% 브라우저 처리.">
+<meta property="og:url" content="__ORIGIN__/ko/pdf-page-numbers/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"PDF 쪽번호 넣기 - ThisIsMyPDF","url":"__ORIGIN__/ko/pdf-page-numbers/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"PDF 전체 페이지에 쪽번호(페이지 번호)를 위치·형식·시작 번호를 골라 일괄 삽입하는 무료 웹 도구. 서버 업로드 없이 브라우저에서 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"파일이 정말 서버로 전송되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 쪽번호 삽입 작업 전체가 브라우저에 내장된 기술로 내 컴퓨터(또는 휴대폰) 안에서만 처리됩니다. 한글 형식(1페이지)을 고르면 표시용 한글 글꼴 파일 하나를 저희 사이트에서 받아올 뿐, 사용자의 PDF는 어떤 경우에도 기기 밖으로 나가지 않습니다."}},
+{"@type":"Question","name":"\"1 / 총N\" 형식의 총N은 어떻게 정해지나요?","acceptedAnswer":{"@type":"Answer","text":"쪽번호가 실제로 들어가는 페이지 수입니다. 예를 들어 10쪽짜리 문서에서 첫 페이지 제외를 켜면 2쪽부터 번호가 들어가고, 표기는 1 / 9부터 9 / 9까지가 됩니다. 표지를 뺀 본문 기준으로 총수가 맞춰지는 방식입니다."}},
+{"@type":"Question","name":"시작 번호를 1이 아닌 숫자로 바꿀 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 시작 번호 칸에 원하는 숫자를 넣으면 첫 번호가 그 값부터 시작합니다. 여러 파일로 나뉜 문서를 이어서 번호 매길 때(예: 1권이 48쪽에서 끝났다면 2권은 49부터) 유용합니다."}},
+{"@type":"Question","name":"암호가 걸린 PDF에도 쪽번호를 넣을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"열람 암호(비밀번호)가 걸린 PDF는 보안 정책상 열 수 없어 안내 메시지가 표시됩니다. PDF 뷰어 등에서 암호를 해제해 저장한 파일로 다시 시도해 주세요."}},
+{"@type":"Question","name":"기존 내용이나 이미 있는 쪽번호와 겹치면 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"쪽번호는 페이지 위에 덧그려지는 방식이라 같은 자리에 글자나 기존 번호가 있으면 겹쳐 보일 수 있습니다. 위치를 6곳(상단·하단 × 왼쪽·가운데·오른쪽) 중에서 바꿔 비어 있는 구석을 고르면 대부분 해결됩니다. 원본 파일은 그대로 남고 새 파일로 저장되니 부담 없이 다시 시도할 수 있습니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/ko/">ThisIsMyPDF</a> › <a href="/ko/#pdf">PDF 도구</a> › PDF 쪽번호 넣기</nav>
+  <h1 class="page-title">PDF 쪽번호 넣기<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">전체 페이지에 쪽번호(페이지 번호)를 한 번에 삽입합니다. 위치·형식·시작 번호 선택, 설치·가입·용량제한 없이 무료.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🔢</span>
+      <strong>쪽번호를 넣을 PDF를 여기에 끌어다 놓거나 클릭해서 선택</strong><br>
+      파일 1개 — 선택하면 총 페이지 수가 바로 표시됩니다
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts" id="optRow1" style="display:none">
+      <label for="posSel">위치
+        <select id="posSel">
+          <option value="bottom-center" selected>하단 가운데 (기본)</option>
+          <option value="bottom-right">하단 오른쪽</option>
+          <option value="bottom-left">하단 왼쪽</option>
+          <option value="top-center">상단 가운데</option>
+          <option value="top-right">상단 오른쪽</option>
+          <option value="top-left">상단 왼쪽</option>
+        </select>
+      </label>
+      <label for="fmtSel">형식
+        <select id="fmtSel">
+          <option value="n" selected>1</option>
+          <option value="total">1 / 총N</option>
+          <option value="dash">- 1 -</option>
+          <option value="word">1페이지</option>
+        </select>
+      </label>
+    </div>
+    <div class="opts" id="optRow2" style="display:none">
+      <label for="startInput">시작 번호
+        <input type="number" id="startInput" value="1" min="0" step="1" style="width:80px">
+      </label>
+      <label for="sizeSel">글자 크기
+        <select id="sizeSel">
+          <option value="10">10</option>
+          <option value="12" selected>12</option>
+          <option value="14">14</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="skipFirst"> 첫 페이지 제외 (표지용)</label>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="goBtn" disabled>쪽번호 넣기</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>위 영역에 쪽번호를 넣을 <b>PDF 파일 1개</b>를 끌어다 놓거나, 클릭해서 선택합니다. 파일을 읽는 즉시 총 페이지 수가 목록에 표시됩니다.</li>
+      <li><b>위치</b>(상단·하단 × 왼쪽·가운데·오른쪽 6곳)와 <b>형식</b>(1 / 1 / 총N / - 1 - / 1페이지)을 고릅니다. 필요하면 시작 번호와 글자 크기를 바꾸고, 표지가 있는 문서라면 <b>첫 페이지 제외</b>를 켭니다.</li>
+      <li><b>쪽번호 넣기</b> 버튼을 누르면 전체 페이지에 번호가 삽입되고, <b>원본명_쪽번호.pdf</b> 파일이 자동으로 다운로드됩니다.</li>
+      <li>완료 문구에 몇 쪽에 번호가 들어갔는지 표시되니, 첫 페이지 제외 여부까지 바로 확인할 수 있습니다.</li>
+    </ol>
+
+    <h2>이 도구가 다른 쪽번호 사이트와 다른 점</h2>
+    <p>흔한 온라인 PDF 페이지 번호 서비스는 파일을 <b>자기 회사 서버에 업로드</b>한 뒤 번호를 넣어 되돌려줍니다. 업로드된 문서가 언제 삭제되는지, 처리 과정에서 누가 열람할 수 있는지 사용자는 확인할 방법이 없습니다. 회사 보고서, 계약서, 논문 초안처럼 외부에 나가면 곤란한 문서라면 불안할 수밖에 없습니다.</p>
+    <p>ThisIsMyPDF의 쪽번호 넣기는 <b>파일을 어디로도 보내지 않습니다.</b> 번호 계산부터 글자 삽입, 저장까지 전 과정이 브라우저에 내장된 기술로 내 기기 안에서만 이뤄집니다. 그래서 세 가지 장점이 생깁니다.</p>
+    <ul>
+      <li><b>보안</b> — 파일이 기기 밖으로 나가지 않으므로 유출 가능성 자체가 없습니다.</li>
+      <li><b>속도</b> — 업로드·다운로드 대기가 없어 수백 쪽짜리 문서도 몇 초 안에 끝납니다.</li>
+      <li><b>무제한</b> — 서버 비용이 들지 않으니 파일 용량·횟수를 제한하지 않습니다.</li>
+    </ul>
+
+    <h2>형식·위치·시작 번호 고르기</h2>
+    <p>형식은 네 가지입니다. <b>1</b>은 숫자만 깔끔하게, <b>- 1 -</b>은 인쇄물에서 흔한 장식형, <b>1페이지</b>는 한글 표기형입니다. <b>1 / 총N</b>은 "3 / 12"처럼 전체 쪽수를 함께 보여주는 형식인데, 여기서 <b>총N은 쪽번호가 실제로 들어가는 페이지 수</b>입니다. 즉 10쪽짜리 문서에서 <b>첫 페이지 제외</b>를 켜면 표지를 뺀 9쪽에만 번호가 들어가고, 표기도 1 / 9 ~ 9 / 9로 자동으로 맞춰집니다. 표지까지 세어 1 / 10로 어긋나는 일이 없습니다.</p>
+    <p>위치는 하단 가운데가 기본이고, 상단·하단 × 왼쪽·가운데·오른쪽 여섯 곳 중에서 고를 수 있습니다. 여백은 가장자리에서 약 1cm(28pt)로, 일반적인 문서 여백 안에 안전하게 들어갑니다. 본문이나 기존 번호와 겹치면 다른 구석으로 바꿔 다시 만들면 됩니다 — 원본은 그대로 두고 새 파일로 저장되니 몇 번이든 부담이 없습니다.</p>
+    <p>시작 번호는 기본 1이지만 자유롭게 바꿀 수 있습니다. 분책된 자료를 이어서 번호 매길 때(1권이 48쪽에서 끝났으면 2권은 49부터), 또는 표지·목차 뒤 본문부터 특정 번호로 시작해야 하는 제출 규정에 맞출 때 유용합니다. <b>1페이지</b> 형식을 고르면 한글 표시용 글꼴이 그때만 자동으로 불러와지며, 숫자 형식은 추가 다운로드 없이 즉시 처리됩니다.</p>
+    <div class="tip">💡 <b>팁:</b> 여러 파일을 합친 뒤 통합 쪽번호를 매기고 싶다면 <a href="/ko/pdf-merge/">PDF 합치기</a>로 먼저 하나로 묶고 여기서 번호를 넣으세요. 페이지 순서를 바꾸거나 필요 없는 쪽을 지운 뒤 번호를 매기려면 <a href="/ko/pdf-organize/">PDF 페이지 정리</a>를 먼저 거치면 됩니다. 번호는 항상 마지막 단계에 넣는 것이 다시 만들 일이 없어 편합니다.</div>
+
+    <h2>이럴 때 쓰세요</h2>
+    <ul>
+      <li>보고서·논문·과제 <b>제출 규정에 "페이지 번호 필수"</b>가 있을 때 — 학교·학회·관공서 양식은 대부분 하단 가운데 번호를 요구합니다</li>
+      <li>여러 장 스캔한 <b>계약서·첨부서류에 페이지 표기</b>를 넣어 "몇 쪽 중 몇 쪽"인지 명확히 할 때 (1 / 총N 형식)</li>
+      <li>인쇄·제본 전 <b>낱장이 섞여도 순서를 되찾을 수 있게</b> 번호를 박아둘 때</li>
+      <li>표지·간지가 있는 문서에서 <b>표지는 건너뛰고 본문부터</b> 번호를 시작할 때 (첫 페이지 제외)</li>
+      <li>분책된 강의자료·매뉴얼을 <b>권마다 이어지는 번호</b>로 맞출 때 (시작 번호 조정)</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>파일이 정말 서버로 전송되지 않나요?</summary><p>네. 쪽번호 삽입 작업 전체가 브라우저에 내장된 기술로 내 컴퓨터(또는 휴대폰) 안에서만 처리됩니다. 한글 형식(1페이지)을 고르면 표시용 한글 글꼴 파일 하나를 저희 사이트에서 받아올 뿐, 사용자의 PDF는 어떤 경우에도 기기 밖으로 나가지 않습니다.</p></details>
+      <details><summary>"1 / 총N" 형식의 총N은 어떻게 정해지나요?</summary><p>쪽번호가 실제로 들어가는 페이지 수입니다. 예를 들어 10쪽짜리 문서에서 첫 페이지 제외를 켜면 2쪽부터 번호가 들어가고, 표기는 1 / 9부터 9 / 9까지가 됩니다. 표지를 뺀 본문 기준으로 총수가 맞춰지는 방식입니다.</p></details>
+      <details><summary>시작 번호를 1이 아닌 숫자로 바꿀 수 있나요?</summary><p>네. 시작 번호 칸에 원하는 숫자를 넣으면 첫 번호가 그 값부터 시작합니다. 여러 파일로 나뉜 문서를 이어서 번호 매길 때(예: 1권이 48쪽에서 끝났다면 2권은 49부터) 유용합니다.</p></details>
+      <details><summary>암호가 걸린 PDF에도 쪽번호를 넣을 수 있나요?</summary><p>열람 암호(비밀번호)가 걸린 PDF는 보안 정책상 열 수 없어 안내 메시지가 표시됩니다. PDF 뷰어 등에서 암호를 해제해 저장한 파일로 다시 시도해 주세요.</p></details>
+      <details><summary>기존 내용이나 이미 있는 쪽번호와 겹치면 어떻게 하나요?</summary><p>쪽번호는 페이지 위에 덧그려지는 방식이라 같은 자리에 글자나 기존 번호가 있으면 겹쳐 보일 수 있습니다. 위치를 6곳(상단·하단 × 왼쪽·가운데·오른쪽) 중에서 바꿔 비어 있는 구석을 고르면 대부분 해결됩니다. 원본 파일은 그대로 남고 새 파일로 저장되니 부담 없이 다시 시도할 수 있습니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/ko/pdf-watermark/"><span class="emoji">💧</span><span><b>PDF 워터마크</b><span>대외비·초안 문구 일괄 삽입</span></span></a>
+      <a class="tool-tile" href="/ko/pdf-merge/"><span class="emoji">📎</span><span><b>PDF 합치기</b><span>여러 PDF를 하나로</span></span></a>
+      <a class="tool-tile" href="/ko/pdf-organize/"><span class="emoji">🗂️</span><span><b>페이지 삭제·순서</b><span>삭제·이동·회전 통합</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/assets/vendor/pdf-lib.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var file = null, fileBytes = null, pageCount = 0, baseName = '';
+  var busy = false;
+  var fontBytes = null;        // NotoSansKR 서브셋 캐시 (한글 형식 선택 시에만 fetch)
+  var fontkitPromise = null;   // fontkit 스크립트 지연 로드 (한글 형식 선택 시에만)
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var optRow1 = document.getElementById('optRow1');
+  var optRow2 = document.getElementById('optRow2');
+  var posSel = document.getElementById('posSel');
+  var fmtSel = document.getElementById('fmtSel');
+  var startInput = document.getElementById('startInput');
+  var sizeSel = document.getElementById('sizeSel');
+  var skipFirst = document.getElementById('skipFirst');
+  var goBtn = document.getElementById('goBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var MARGIN = 28;
+
+  function esc(t) { var d = document.createElement('i'); d.textContent = t; return d.outerHTML; }
+
+  function render() {
+    listEl.innerHTML = '';
+    if (file) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta">' + pageCount + '쪽 · ' + mdtlFormatBytes(file.size) + '</span>' +
+        '<button class="mini" data-act="del" aria-label="제거">✕</button>';
+      li.querySelector('.name').textContent = file.name;
+      listEl.appendChild(li);
+    }
+    var has = !!file;
+    optRow1.style.display = has ? '' : 'none';
+    optRow2.style.display = has ? '' : 'none';
+    goBtn.disabled = !has || busy;
+    goBtn.textContent = has ? '쪽번호 넣기 (' + pageCount + '쪽)' : '쪽번호 넣기';
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || busy) return;
+    file = null; fileBytes = null; pageCount = 0; baseName = '';
+    result.className = 'result';
+    render();
+  });
+
+  mdtlDropzone(dz, {
+    accept: '.pdf,application/pdf', multiple: false,
+    onFiles: function (fs) { loadFile(fs[0]); }
+  });
+
+  async function loadFile(f) {
+    if (busy) return;
+    result.className = 'result';
+    try {
+      var bytes = await f.arrayBuffer();
+      var doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: false });
+      file = f; fileBytes = bytes; pageCount = doc.getPageCount();
+      baseName = f.name.replace(/\.pdf$/i, '') || '문서';
+      render();
+    } catch (err) {
+      file = null; fileBytes = null; pageCount = 0; baseName = '';
+      render();
+      var msg = (err && err.message && /encrypt/i.test(err.message))
+        ? '암호(열람 비밀번호)가 걸린 PDF입니다. 먼저 암호를 해제한 파일로 다시 시도해 주세요. (' + esc(f.name) + ')'
+        : 'PDF를 읽을 수 없습니다. 파일이 손상되었거나 PDF 형식이 아닐 수 있습니다. (' + esc(f.name) + ')';
+      mdtlResult(result, '❌ ' + msg, true);
+    }
+  }
+
+  function makeLabel(fmt, num, total) {
+    if (fmt === 'total') return num + ' / ' + total;
+    if (fmt === 'dash') return '- ' + num + ' -';
+    if (fmt === 'word') return num + '페이지';
+    return String(num);
+  }
+
+  function loadFontkit() {
+    if (window.fontkit) return Promise.resolve();
+    if (!fontkitPromise) {
+      fontkitPromise = new Promise(function (res, rej) {
+        var s = document.createElement('script');
+        s.src = '/assets/vendor/fontkit.umd.min.js';
+        s.onload = res;
+        s.onerror = function () {
+          fontkitPromise = null;
+          rej(new Error('한글 글꼴 모듈을 불러오지 못했습니다. 네트워크 상태를 확인한 뒤 다시 시도해 주세요.'));
+        };
+        document.head.appendChild(s);
+      });
+    }
+    return fontkitPromise;
+  }
+
+  async function getFont(doc, fmt) {
+    if (fmt === 'word') {
+      await loadFontkit();
+      doc.registerFontkit(window.fontkit);
+      if (!fontBytes) {
+        var res = await fetch('/assets/vendor/NotoSansKR-sub.ttf');
+        if (!res.ok) throw new Error('한글 글꼴 파일을 불러오지 못했습니다. 네트워크 상태를 확인한 뒤 다시 시도해 주세요.');
+        fontBytes = await res.arrayBuffer();
+      }
+      return doc.embedFont(fontBytes, { subset: true });
+    }
+    return doc.embedFont(PDFLib.StandardFonts.Helvetica);
+  }
+
+  goBtn.addEventListener('click', async function () {
+    if (!file || !fileBytes || busy) return;
+    busy = true;
+    render();
+    prog.className = 'progress show'; progBar.style.width = '0%';
+    result.className = 'result';
+    try {
+      var fmt = fmtSel.value, pos = posSel.value;
+      var size = parseInt(sizeSel.value, 10) || 12;
+      var start = parseInt(startInput.value, 10);
+      if (isNaN(start) || start < 0) start = 1;
+      var skip = skipFirst.checked;
+      var total = pageCount - (skip ? 1 : 0);
+      if (total < 1) throw new Error('쪽번호를 넣을 페이지가 없습니다. 1쪽짜리 문서에서는 첫 페이지 제외를 끄고 다시 시도해 주세요.');
+
+      var doc = await PDFLib.PDFDocument.load(fileBytes, { ignoreEncryption: false });
+      progBar.style.width = '15%';
+      var font = await getFont(doc, fmt);
+      progBar.style.width = '30%';
+
+      var pages = doc.getPages();
+      var inserted = 0;
+      for (var i = 0; i < pages.length; i++) {
+        if (skip && i === 0) continue;
+        var num = start + inserted;
+        var text = makeLabel(fmt, num, total);
+        var pg = pages[i];
+        var w = pg.getWidth(), h = pg.getHeight();
+        var tw = font.widthOfTextAtSize(text, size);
+        var x = pos.indexOf('left') >= 0 ? MARGIN
+              : pos.indexOf('right') >= 0 ? w - MARGIN - tw
+              : (w - tw) / 2;
+        var y = pos.indexOf('top') === 0 ? h - MARGIN - size : MARGIN;
+        pg.drawText(text, { x: x, y: y, size: size, font: font, color: PDFLib.rgb(0, 0, 0) });
+        inserted++;
+        progBar.style.width = (30 + Math.round(((i + 1) / pages.length) * 55)) + '%';
+      }
+
+      var data = await doc.save();
+      progBar.style.width = '100%';
+      var blob = new Blob([data], { type: 'application/pdf' });
+      var name = baseName + '_쪽번호.pdf';
+      mdtlDownload(blob, name);
+      mdtlResult(result,
+        '✅ <b>완료!</b> 총 ' + pageCount + '쪽 중 <b>' + inserted + '쪽</b>에 쪽번호를 넣어 ' + esc(name) +
+        ' (' + mdtlFormatBytes(blob.size) + ') 파일이 다운로드되었습니다.' +
+        (skip ? '<br>ℹ️ 첫 페이지(표지)는 제외했고, 2쪽부터 ' + start + '번으로 시작합니다.' : ''));
+    } catch (e) {
+      var m = (e && e.message) ? e.message : '처리 중 오류가 발생했습니다.';
+      if (/encrypt/i.test(m)) m = '암호(열람 비밀번호)가 걸린 PDF입니다. 먼저 암호를 해제한 파일로 다시 시도해 주세요.';
+      mdtlResult(result, '❌ ' + m, true);
+    } finally {
+      prog.className = 'progress';
+      busy = false;
+      render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -19,16 +19,16 @@
   /* ── 다국어 셸 문자열 (페이지 lang 속성으로 판별) ── */
   var LANGS = {
     ko: {
-      mark: 'T', site: 'ThisIsMyPDF', home: '/',
+      mark: 'T', site: 'ThisIsMyPDF', home: '/ko/',
       footer: '© ThisIsMyPDF — 모든 처리는 브라우저 안에서 이뤄지며 파일은 서버로 전송되지 않습니다.',
-      links: [['/pricing/', '프리미엄'], ['/about/', '소개'], ['/privacy/', '개인정보처리방침'], ['/terms/', '이용약관']],
+      links: [['/ko/pricing/', '프리미엄'], ['/ko/about/', '소개'], ['/ko/privacy/', '개인정보처리방침'], ['/ko/terms/', '이용약관']],
       themeLabel: '다크모드 전환',
       suggest: '🌐 View this page in English', stay: '한국어로 계속'
     },
     en: {
-      mark: 'T', site: 'ThisIsMyPDF', home: '/en/',
+      mark: 'T', site: 'ThisIsMyPDF', home: '/',
       footer: '© ThisIsMyPDF — Everything runs inside your browser. Your files are never uploaded to any server.',
-      links: [['/en/pricing/', 'Premium'], ['/en/about/', 'About'], ['/en/privacy/', 'Privacy'], ['/en/terms/', 'Terms']],
+      links: [['/pricing/', 'Premium'], ['/about/', 'About'], ['/privacy/', 'Privacy'], ['/terms/', 'Terms']],
       themeLabel: 'Toggle dark mode',
       suggest: '🌐 이 페이지를 한국어로 보기', stay: 'Continue in English'
     }
