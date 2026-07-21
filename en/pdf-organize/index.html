@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delete, Reorder &amp; Rotate PDF Pages — Free, No Upload | ModuTool</title>
+<meta name="description" content="Delete unwanted PDF pages, reorder them, and rotate them — all on one screen, free. 100% in-browser processing with no server upload, so contracts and other sensitive documents stay on your device. No installs, no sign-up, no login.">
+<link rel="canonical" href="__ORIGIN__/en/pdf-organize/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/pdf-organize/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/en/pdf-organize/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/en/pdf-organize/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Delete, Reorder &amp; Rotate PDF Pages — Free, No Upload">
+<meta property="og:description" content="Delete, reorder, and rotate pages on one screen. 100% in-browser processing — your files never leave your device.">
+<meta property="og:url" content="__ORIGIN__/en/pdf-organize/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>M</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Delete, Reorder & Rotate PDF Pages - ModuTool","url":"__ORIGIN__/en/pdf-organize/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool for deleting, reordering, and rotating PDF pages on one screen. Processed entirely in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my files really never uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Correct. Deleting, reordering, and rotating all happen entirely inside your browser. Open your browser's network tab and you will see no file upload requests. Sensitive documents like contracts and ID scans are safe to use here."}},
+{"@type":"Question","name":"Can I delete several pages at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Click the ✕ button on each page preview to mark as many pages as you like for deletion, then click Save once. Clicked the wrong one? The restore button in the same spot undoes it."}},
+{"@type":"Question","name":"How do I reorder pages?","acceptedAnswer":{"@type":"Answer","text":"Use the ◀ ▶ arrow buttons on each page card to move it one position at a time. You work from the preview images, so there is no need to remember page numbers."}},
+{"@type":"Question","name":"Can I rotate only the pages that were scanned sideways?","acceptedAnswer":{"@type":"Answer","text":"Yes. Rotation is applied per page. Click the ⟳ button on just the pages you want to turn — each click rotates that page 90 degrees while the rest stay untouched."}},
+{"@type":"Question","name":"Is my original file modified?","acceptedAnswer":{"@type":"Answer","text":"No. The original PDF on your computer is left untouched — your edits are downloaded as a new file. If you don't like the result, just start again from the original."}}
+]}
+</script>
+<style>
+#pgGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-top: 18px; }
+.pg-card { border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); padding: 8px; text-align: center; }
+.pg-card.deleted { opacity: .38; }
+.pg-card.deleted canvas { filter: grayscale(1); }
+.pg-card canvas { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; display: block; margin: 0 auto; }
+.pg-num { font-size: 12px; color: var(--text-soft); margin: 6px 0 4px; }
+.pg-btns { display: flex; justify-content: center; gap: 4px; }
+.pg-btns button { border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 7px; min-width: 28px; height: 26px; cursor: pointer; font-size: 12px; }
+.pg-btns button:hover { background: var(--accent-soft); }
+.pg-btns button.del-on { background: color-mix(in srgb, var(--danger) 12%, transparent); border-color: var(--danger); }
+</style>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/en/">ModuTool</a> › <a href="/en/#pdf">PDF Tools</a> › Delete &amp; Reorder Pages</nav>
+  <h1 class="page-title">Delete, Reorder &amp; Rotate PDF Pages<span class="privacy-badge">🔒 No server upload</span></h1>
+  <p class="page-sub">Delete, move, and rotate pages while looking at live previews. Free — no installs, no sign-up.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🗂️</span>
+      <strong>Drag &amp; drop a PDF file here, or click to select</strong><br>
+      Once the page previews appear: ✕ delete · ◀ ▶ move · ⟳ rotate
+    </div>
+    <div id="pgGrid"></div>
+    <div class="btn-row">
+      <button class="btn" id="saveBtn" disabled>Save edited PDF</button>
+      <button class="btn secondary" id="resetBtn" style="display:none">Start over</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to edit your PDF pages</h2>
+    <ol>
+      <li>Drop in a PDF and every page appears as a <b>preview thumbnail</b>.</li>
+      <li>Click <b>✕</b> to mark unwanted pages for deletion (click again to restore), use <b>◀ ▶</b> to move a page, and click <b>⟳</b> to rotate a crooked page in 90-degree steps.</li>
+      <li>Click <b>Save edited PDF</b> and your edits are downloaded as a new file. The original stays untouched.</li>
+    </ol>
+
+    <h2>Why this tool?</h2>
+    <p>Removing a page or two from a PDF is a simple job, yet most services make it a chore. Some require a <b>login</b> before you can edit anything, others cap you at a few <b>uses per day</b>, and desktop apps come bundled with ads. Worst of all, nearly every online editor uploads your file to the company's servers for processing.</p>
+    <p>ModuTool handles deleting, reordering, and rotating <b>entirely inside your browser.</b> Your file never leaves your device, so sensitive documents — contracts, medical records, ID scans — stay private. There's no upload wait, so even a document dozens of pages long finishes in seconds. No usage caps, no size limits, and no watermarks either.</p>
+    <p>Because you edit against live page previews, mistakes are much harder to make than with number-based tools. You can see exactly which page you're deleting, watch the new order take shape as you move pages around, and confirm a rotation fixed the orientation before you save anything.</p>
+    <div class="tip">💡 <b>Tip:</b> PDFs made with scanning apps often pick up a blank or blurry page in the middle. Delete those here, fix any upside-down pages with ⟳, and if you need to combine several files afterwards, finish up with <a href="/en/pdf-merge/">Merge PDF</a>.</div>
+
+    <h2>When to use it</h2>
+    <ul>
+      <li>Submitting paperwork with <b>only the pages that are needed</b> — dropping a page with personal details before sending a job application or government form</li>
+      <li>Fixing a batch scan that came out shuffled by <b>reordering pages against the previews</b></li>
+      <li>Rotating <b>only the pages that were scanned sideways</b> while leaving the rest alone</li>
+      <li>Deleting <b>outdated pages from a report</b> before replacing them with new ones</li>
+    </ul>
+
+    <h2>Good to know</h2>
+    <p>This tool is built for page-level editing. If you want to <b>extract a page range into a new file</b>, <a href="/en/pdf-split/">Split PDF</a> is faster; to <b>save pages as images</b>, use <a href="/en/pdf-to-jpg/">PDF to JPG</a>. Password-protected PDFs cannot be edited for security reasons — remove the password first.</p>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>Are my files really never uploaded to a server?</summary><p>Correct. Deleting, reordering, and rotating all happen entirely inside your browser. Open your browser's network tab and you will see no file upload requests. Sensitive documents like contracts and ID scans are safe to use here.</p></details>
+      <details><summary>Can I delete several pages at once?</summary><p>Yes. Click the ✕ button on each page preview to mark as many pages as you like for deletion, then click Save once. Clicked the wrong one? The restore button in the same spot undoes it.</p></details>
+      <details><summary>How do I reorder pages?</summary><p>Use the ◀ ▶ arrow buttons on each page card to move it one position at a time. You work from the preview images, so there is no need to remember page numbers.</p></details>
+      <details><summary>Can I rotate only the pages that were scanned sideways?</summary><p>Yes. Rotation is applied per page. Click the ⟳ button on just the pages you want to turn — each click rotates that page 90 degrees while the rest stay untouched.</p></details>
+      <details><summary>Is my original file modified?</summary><p>No. The original PDF on your computer is left untouched — your edits are downloaded as a new file. If you don't like the result, just start again from the original.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/en/pdf-split/"><span class="emoji">✂️</span><span><b>Split PDF</b><span>Extract page ranges</span></span></a>
+      <a class="tool-tile" href="/en/pdf-merge/"><span class="emoji">📎</span><span><b>Merge PDF</b><span>Combine PDFs into one</span></span></a>
+      <a class="tool-tile" href="/en/pdf-to-jpg/"><span class="emoji">🖼️</span><span><b>PDF to JPG</b><span>Pages as images</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/assets/vendor/pdf-lib.min.js"></script>
+<script>
+/* Polyfill for Map.prototype.getOrInsertComputed used by pdf.js 5.x on browsers that lack it (e.g. Chromium 141) — same pattern as pdf-to-jpg */
+(function () {
+  window.__mdtlNeedsMapUpsertPolyfill = typeof Map.prototype.getOrInsertComputed !== 'function';
+  window.__mdtlMapUpsertPolyfillSrc =
+    '(function(){var f=function(p){' +
+    'if(typeof p.getOrInsertComputed!=="function"){p.getOrInsertComputed=function(k,cb){if(!this.has(k))this.set(k,cb(k));return this.get(k);};}' +
+    'if(typeof p.getOrInsert!=="function"){p.getOrInsert=function(k,v){if(!this.has(k))this.set(k,v);return this.get(k);};}' +
+    '};f(Map.prototype);f(WeakMap.prototype);})();';
+  if (window.__mdtlNeedsMapUpsertPolyfill) { (0, eval)(window.__mdtlMapUpsertPolyfillSrc); }
+})();
+</script>
+<script type="module">
+import * as pdfjsLib from '/assets/vendor/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/assets/vendor/pdf.worker.min.mjs';
+
+const workerReady = (async () => {
+  if (!window.__mdtlNeedsMapUpsertPolyfill) return;
+  try {
+    const res = await fetch('/assets/vendor/pdf.worker.min.mjs');
+    if (!res.ok) return;
+    const src = await res.text();
+    const blob = new Blob([window.__mdtlMapUpsertPolyfillSrc, '\n', src], { type: 'text/javascript' });
+    pdfjsLib.GlobalWorkerOptions.workerPort = new Worker(URL.createObjectURL(blob), { type: 'module' });
+  } catch (e) { /* fall back to the default workerSrc on failure */ }
+})();
+
+const dz = document.getElementById('dz');
+const grid = document.getElementById('pgGrid');
+const saveBtn = document.getElementById('saveBtn');
+const resetBtn = document.getElementById('resetBtn');
+const prog = document.getElementById('prog');
+const progBar = prog.querySelector('div');
+const result = document.getElementById('result');
+
+let srcBytes = null;   // original PDF bytes (for saving with pdf-lib)
+let srcName = '';
+let pages = [];        // { srcIndex, rot (0/90/180/270 extra rotation), deleted, canvas }
+
+mdtlDropzone(dz, {
+  accept: '.pdf,application/pdf',
+  onFiles: (fs) => loadFile(fs[0]),
+});
+
+async function loadFile(file) {
+  result.className = 'result';
+  grid.innerHTML = '';
+  pages = [];
+  saveBtn.disabled = true;
+  prog.className = 'progress show'; progBar.style.width = '5%';
+  try {
+    await workerReady;
+    srcBytes = new Uint8Array(await file.arrayBuffer());
+    srcName = file.name.replace(/\.pdf$/i, '');
+    const doc = await pdfjsLib.getDocument({ data: srcBytes.slice() }).promise;
+    const n = doc.numPages;
+    for (let i = 1; i <= n; i++) {
+      const page = await doc.getPage(i);
+      const base = page.getViewport({ scale: 1 });
+      const scale = 150 / base.width;
+      const vp = page.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.ceil(vp.width); canvas.height = Math.ceil(vp.height);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+      pages.push({ srcIndex: i - 1, rot: 0, deleted: false, canvas });
+      progBar.style.width = Math.round(5 + (i / n) * 90) + '%';
+    }
+    render();
+  } catch (e) {
+    const msg = /password|encrypt/i.test(String(e && e.name) + String(e && e.message))
+      ? 'Password-protected PDFs cannot be edited. Remove the password first, then try again.'
+      : 'An error occurred while opening the PDF. Check that the file is not corrupted.';
+    mdtlResult(result, '❌ ' + msg, true);
+  } finally {
+    prog.className = 'progress';
+  }
+}
+
+function render() {
+  grid.innerHTML = '';
+  pages.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'pg-card' + (p.deleted ? ' deleted' : '');
+    p.canvas.style.transform = p.rot ? 'rotate(' + p.rot + 'deg)' : '';
+    p.canvas.style.margin = (p.rot % 180 !== 0) ? '14px auto' : '0 auto';
+    card.appendChild(p.canvas);
+    const num = document.createElement('div');
+    num.className = 'pg-num';
+    num.textContent = (i + 1) + ' (source p.' + (p.srcIndex + 1) + ')' + (p.rot ? ' ⟳' + p.rot + '°' : '');
+    card.appendChild(num);
+    const btns = document.createElement('div');
+    btns.className = 'pg-btns';
+    btns.innerHTML =
+      '<button data-act="left" data-i="' + i + '" aria-label="Move forward" ' + (i === 0 ? 'disabled' : '') + '>◀</button>' +
+      '<button data-act="right" data-i="' + i + '" aria-label="Move back" ' + (i === pages.length - 1 ? 'disabled' : '') + '>▶</button>' +
+      '<button data-act="rot" data-i="' + i + '" aria-label="Rotate">⟳</button>' +
+      '<button data-act="del" data-i="' + i + '" class="' + (p.deleted ? 'del-on' : '') + '" aria-label="' + (p.deleted ? 'Restore' : 'Delete') + '">' + (p.deleted ? '↩' : '✕') + '</button>';
+    card.appendChild(btns);
+    grid.appendChild(card);
+  });
+  const kept = pages.filter(p => !p.deleted).length;
+  const edited = pages.some((p, i) => p.deleted || p.rot || p.srcIndex !== i);
+  saveBtn.disabled = !pages.length || kept === 0 || !edited;
+  saveBtn.textContent = pages.length
+    ? (kept === 0 ? 'No pages left to save' : 'Save edited PDF (' + kept + ' pages)')
+    : 'Save edited PDF';
+  resetBtn.style.display = pages.length ? '' : 'none';
+}
+
+grid.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b || b.disabled) return;
+  const i = +b.dataset.i, act = b.dataset.act;
+  if (act === 'del') pages[i].deleted = !pages[i].deleted;
+  if (act === 'rot') pages[i].rot = (pages[i].rot + 90) % 360;
+  if (act === 'left' && i > 0) { const t = pages[i - 1]; pages[i - 1] = pages[i]; pages[i] = t; }
+  if (act === 'right' && i < pages.length - 1) { const t = pages[i + 1]; pages[i + 1] = pages[i]; pages[i] = t; }
+  result.className = 'result';
+  render();
+});
+
+resetBtn.addEventListener('click', () => {
+  if (srcBytes) loadFile(new File([srcBytes], srcName + '.pdf', { type: 'application/pdf' }));
+});
+
+saveBtn.addEventListener('click', async () => {
+  saveBtn.disabled = true;
+  prog.className = 'progress show'; progBar.style.width = '10%';
+  try {
+    const src = await PDFLib.PDFDocument.load(srcBytes);
+    const out = await PDFLib.PDFDocument.create();
+    const keep = pages.filter(p => !p.deleted);
+    const copied = await out.copyPages(src, keep.map(p => p.srcIndex));
+    progBar.style.width = '60%';
+    copied.forEach((pg, idx) => {
+      const extra = keep[idx].rot;
+      if (extra) {
+        const cur = pg.getRotation().angle || 0;
+        pg.setRotation(PDFLib.degrees(((cur + extra) % 360 + 360) % 360));
+      }
+      out.addPage(pg);
+    });
+    const bytes = await out.save();
+    progBar.style.width = '100%';
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    mdtlDownload(blob, srcName + '_edited.pdf');
+    const removed = pages.length - keep.length;
+    mdtlResult(result,
+      '✅ <b>Done!</b> Saved ' + keep.length + ' pages' +
+      (removed ? ' (' + removed + ' deleted)' : '') +
+      ' — your ' + mdtlFormatBytes(blob.size) + ' file has been downloaded.');
+  } catch (e) {
+    mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'An error occurred while saving.'), true);
+  } finally {
+    prog.className = 'progress';
+    render();
+  }
+});
+</script>
+</body>
+</html>

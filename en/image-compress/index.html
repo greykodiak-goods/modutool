@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compress Images to a Target Size (KB) — Free, No Upload | ModuTool</title>
+<meta name="description" content="Free image compressor that shrinks photo file sizes with quality control, resolution limits, and JPG/WEBP conversion. Everything runs in your browser — no server upload, no install, no sign-up, no file limits.">
+<link rel="canonical" href="__ORIGIN__/en/image-compress/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/image-compress/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/en/image-compress/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/en/image-compress/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Compress Images — Shrink Photo File Sizes, No Server Upload">
+<meta property="og:description" content="Reduce image file sizes with a quality slider, resolution limits, and JPG/WEBP conversion. 100% in-browser processing — your files never leave your device.">
+<meta property="og:url" content="__ORIGIN__/en/image-compress/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>M</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Image Compressor - ModuTool","url":"__ORIGIN__/en/image-compress/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that reduces photo and image file sizes with quality control and resolution limits. Supports JPG and WEBP conversion. Processed in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my files really never uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Correct. Compression happens entirely on your device using the canvas technology built into your browser. Open your browser's developer tools and check the Network tab — you won't see a single file upload request. Sensitive images like ID scans or family photos are safe to use here."}},
+{"@type":"Question","name":"Will the quality loss be noticeable?","acceptedAnswer":{"@type":"Answer","text":"At 80–90% quality, most photos show no difference visible to the naked eye. For web uploads or document attachments, 70–80% quality with the longest side limited to 1920px gives the best balance of file size and quality. Download the result, compare it, and if you're not happy, just change the settings and compress again."}},
+{"@type":"Question","name":"Which image formats are supported?","acceptedAnswer":{"@type":"Answer","text":"JPG, PNG, WEBP, and BMP. iPhone HEIC files can't be read directly by browsers, so export them as JPG from your Photos app first. PNG is a lossless format, so compressing it as-is may not shrink it much — switching the output format to JPG or WEBP usually reduces it dramatically."}},
+{"@type":"Question","name":"I compressed an image but it didn't shrink — or it got bigger.","acceptedAnswer":{"@type":"Answer","text":"If an image has already been heavily compressed, there may be no room left to shrink it, and the result can come out larger than the original. In that case the tool automatically keeps your original file and tells you. Limiting the maximum resolution to 1920px or converting to WEBP often reduces the size further."}},
+{"@type":"Question","name":"Does it work on phones? Are my original photos changed?","acceptedAnswer":{"@type":"Answer","text":"Yes. It works in modern mobile browsers such as Chrome, Safari, and Samsung Internet. Your original files are never modified — the compressed versions are downloaded as new files."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/en/">ModuTool</a> › <a href="/en/#image">Image Tools</a> › Image Compressor</nav>
+  <h1 class="page-title">Image Compressor<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Shrink photo file sizes — quality control, resolution limits, and JPG/WEBP conversion in one step. Free, no install, no sign-up.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🗜️</span>
+      <strong>Drag &amp; drop image files here, or click to select</strong><br>
+      JPG · PNG · WEBP · BMP — multiple files at once
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts">
+      <label>Quality
+        <input type="range" id="quality" min="0.5" max="0.9" step="0.05" value="0.7">
+        <b id="qualityVal">70%</b>
+      </label>
+      <label>Max resolution
+        <select id="maxSize">
+          <option value="orig" selected>Keep original</option>
+          <option value="1920">Longest side 1920px (best for web)</option>
+          <option value="2560">Longest side 2560px (high quality)</option>
+        </select>
+      </label>
+      <label>Output format
+        <select id="outFmt">
+          <option value="" selected>Keep original format</option>
+          <option value="image/jpeg">Convert to JPG</option>
+          <option value="image/webp">Convert to WEBP</option>
+        </select>
+      </label>
+      <label>Target size
+        <select id="targetKB">
+          <option value="" selected>No target (quality-based)</option>
+          <option value="500">Under 500 KB (visa/job applications)</option>
+          <option value="300">Under 300 KB (web forms)</option>
+          <option value="200">Under 200 KB (email signatures)</option>
+          <option value="100">Under 100 KB (resume portals)</option>
+          <option value="50">Under 50 KB (forum avatars)</option>
+        </select>
+      </label>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="goBtn" disabled>Compress Images</button>
+      <button class="btn" id="dlAllBtn" style="display:none">⬇ Download All</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Clear All</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <ul class="file-list" id="outList"></ul>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drag photos (JPG, PNG, WEBP, or BMP) into the area above, or click it to select multiple files at once.</li>
+      <li>Adjust the <b>Quality</b> slider. Lower values shrink files more; 70–80% is right for most purposes.</li>
+      <li>If needed, choose a <b>Max resolution</b> (longest side 1920px or 2560px) and an <b>Output format</b> (JPG or WEBP conversion).</li>
+      <li>Click <b>Compress Images</b>. Each file is processed and the list shows the <b>before → after size and savings</b> (e.g., 2.4 MB → 340 KB, -86%).</li>
+      <li>Download files one at a time with each ⬇ button, or grab everything with <b>Download All</b>. Your originals are left untouched.</li>
+    </ol>
+
+    <h2>What Makes This Different from Other Compression Sites</h2>
+    <p>Most online compression services <b>upload your photos to their own servers</b>, process them there, and send them back. You have no way of knowing when the uploaded copies are deleted or who can see them along the way. For sensitive images — family photos, ID scans, contract documents — that should give you pause.</p>
+    <p>ModuTool's image compressor <b>never sends your photos anywhere.</b> The entire compression runs inside your computer (or phone) using the canvas technology built into your browser. That design brings three advantages.</p>
+    <ul>
+      <li><b>Privacy</b> — your photos never leave your device, so there is simply nothing to leak.</li>
+      <li><b>Speed</b> — with no upload or download waits, even dozens of photos finish in seconds.</li>
+      <li><b>No limits</b> — since we pay no server costs, there are no caps on file count, runs, or size.</li>
+    </ul>
+
+    <h2>Which Settings Should I Use?</h2>
+    <p>Two things mostly determine an image's file size. One is <b>compression quality</b> — how precisely a lossy format like JPG or WEBP preserves color information. The other is <b>resolution</b> — the pixel count. Smartphone camera originals usually exceed 4000px, but for viewing on monitors and phone screens, 1920px on the longest side is plenty, so limiting resolution alone cuts file size dramatically.</p>
+    <ul>
+      <li><b>Web posts and forum attachments</b> — 70% quality + longest side 1920px. Nearly indistinguishable on screen, with the biggest savings.</li>
+      <li><b>Document submissions or possible printing</b> — 80–90% quality + longest side 2560px, or keep the original resolution.</li>
+      <li><b>PNG screenshots and graphics</b> — switching the output format to WEBP (recommended) or JPG shrinks them dramatically. Note that converting a transparent PNG to JPG fills the transparent areas with a background color, so pick WEBP if you need transparency.</li>
+    </ul>
+    <p>If a compressed result would come out larger than the original (an already-optimized image), the tool automatically <b>keeps the original</b> and tells you — so feel free to experiment as many times as you like. You can change the settings and recompress without re-adding your files.</p>
+    <div class="tip">💡 <b>Tip:</b> Compression also helps protect your privacy — the process strips EXIF metadata, including GPS location and device details, so you can post photos to social media or marketplace listings without worrying about revealing where they were taken. If you need exact pixel dimensions instead, use the <a href="/en/image-resize/">Image Resizer</a>.</div>
+
+    <h2>When to Use This Tool</h2>
+    <ul>
+      <li>Product photos for your online store or blog keep <b>hitting upload size limits</b></li>
+      <li>You need to <b>attach several photos at once</b> that exceed email limits (usually 10–25 MB)</li>
+      <li>You want smaller website images for <b>faster loading and better SEO</b></li>
+      <li>A job application or government portal demands an <b>attachment under a limit like 1 MB</b></li>
+      <li>You're cleaning up phone photos to <b>free up storage and cloud space</b></li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Are my files really never uploaded to a server?</summary><p>Correct. Compression happens entirely on your device using the canvas technology built into your browser. Open your browser's developer tools and check the Network tab — you won't see a single file upload request. Sensitive images like ID scans or family photos are safe to use here.</p></details>
+      <details><summary>Will the quality loss be noticeable?</summary><p>At 80–90% quality, most photos show no difference visible to the naked eye. For web uploads or document attachments, 70–80% quality with the longest side limited to 1920px gives the best balance of file size and quality. Download the result, compare it, and if you're not happy, just change the settings and compress again.</p></details>
+      <details><summary>Which image formats are supported?</summary><p>JPG, PNG, WEBP, and BMP. iPhone HEIC files can't be read directly by browsers, so export them as JPG from your Photos app first. PNG is a lossless format, so compressing it as-is may not shrink it much — switching the output format to JPG or WEBP usually reduces it dramatically.</p></details>
+      <details><summary>I compressed an image but it didn't shrink — or it got bigger.</summary><p>If an image has already been heavily compressed, there may be no room left to shrink it, and the result can come out larger than the original. In that case the tool automatically keeps your original file and tells you. Limiting the maximum resolution to 1920px or converting to WEBP often reduces the size further.</p></details>
+      <details><summary>Does it work on phones? Are my original photos changed?</summary><p>Yes. It works in modern mobile browsers such as Chrome, Safari, and Samsung Internet. Your original files are never modified — the compressed versions are downloaded as new files.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/en/image-resize/"><span class="emoji">📐</span><span><b>Image Resizer</b><span>Resize + format conversion</span></span></a>
+      <a class="tool-tile" href="/en/img-to-pdf/"><span class="emoji">📄</span><span><b>Image → PDF</b><span>Turn photos into a PDF</span></span></a>
+      <a class="tool-tile" href="/en/pdf-to-jpg/"><span class="emoji">🖼️</span><span><b>PDF → JPG</b><span>Pages to images</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/assets/vendor/browser-image-compression.js"></script>
+<script>
+(function () {
+  'use strict';
+  var files = [];
+  var results = [];
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var outEl = document.getElementById('outList');
+  var goBtn = document.getElementById('goBtn');
+  var dlAllBtn = document.getElementById('dlAllBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var qRange = document.getElementById('quality');
+  var qVal = document.getElementById('qualityVal');
+  var sizeSel = document.getElementById('maxSize');
+  var fmtSel = document.getElementById('outFmt');
+  var targetSel = document.getElementById('targetKB');
+
+  qRange.addEventListener('input', function () {
+    qVal.textContent = Math.round(parseFloat(qRange.value) * 100) + '%';
+  });
+
+  function baseOf(name) { return name.replace(/\.[^.]+$/, ''); }
+  function extOf(name) { var m = /\.[^.]+$/.exec(name); return m ? m[0] : ''; }
+  function outNameFor(file, mime) {
+    var ext;
+    if (mime === 'image/jpeg') ext = '.jpg';
+    else if (mime === 'image/webp') ext = '.webp';
+    else if (mime === 'image/png') ext = '.png';
+    else if (mime === 'image/bmp') ext = '.bmp';
+    else ext = extOf(file.name) || '.jpg';
+    return baseOf(file.name) + '_compressed' + ext;
+  }
+
+  function resetOutput() {
+    results = [];
+    outEl.innerHTML = '';
+    result.className = 'result';
+    dlAllBtn.style.display = 'none';
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    files.forEach(function (f, i) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta">' + mdtlFormatBytes(f.size) + '</span>' +
+        '<button class="mini" data-i="' + i + '" aria-label="Remove">✕</button>';
+      li.querySelector('.name').textContent = (i + 1) + '. ' + f.name;
+      listEl.appendChild(li);
+    });
+    goBtn.disabled = files.length < 1;
+    goBtn.textContent = files.length ? 'Compress ' + files.length + (files.length === 1 ? ' Image' : ' Images') : 'Compress Images';
+    clearBtn.style.display = files.length ? '' : 'none';
+  }
+
+  function renderOut() {
+    outEl.innerHTML = '';
+    results.forEach(function (r, i) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta"></span>' +
+        '<button class="mini" data-i="' + i + '" aria-label="Download">⬇</button>';
+      li.querySelector('.name').textContent = r.outName;
+      var meta = li.querySelector('.meta');
+      var btn = li.querySelector('.mini');
+      if (r.error) {
+        meta.textContent = '⚠️ ' + r.error;
+        btn.disabled = true;
+      } else if (r.kept) {
+        meta.textContent = mdtlFormatBytes(r.origSize) + ' → no change (original kept)';
+      } else {
+        var pct = Math.round((1 - r.blob.size / r.origSize) * 100);
+        meta.textContent = mdtlFormatBytes(r.origSize) + ' → ' + mdtlFormatBytes(r.blob.size) +
+          ' (' + (pct >= 0 ? '-' + pct : '+' + (-pct)) + '%)';
+      }
+      outEl.appendChild(li);
+    });
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    files.splice(+b.dataset.i, 1);
+    resetOutput();
+    render();
+  });
+
+  outEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || b.disabled) return;
+    var r = results[+b.dataset.i];
+    if (r && r.blob) mdtlDownload(r.blob, r.outName);
+  });
+
+  clearBtn.addEventListener('click', function () {
+    files = [];
+    resetOutput();
+    render();
+  });
+
+  dlAllBtn.addEventListener('click', function () {
+    var ok = results.filter(function (r) { return !r.error && r.blob; });
+    ok.forEach(function (r, idx) {
+      setTimeout(function () { mdtlDownload(r.blob, r.outName); }, idx * 400);
+    });
+  });
+
+  mdtlDropzone(dz, {
+    accept: '.jpg,.jpeg,.png,.webp,.bmp', multiple: true,
+    onFiles: function (fs) {
+      files = files.concat(fs);
+      resetOutput();
+      render();
+    }
+  });
+
+  goBtn.addEventListener('click', async function () {
+    if (typeof imageCompression === 'undefined') {
+      mdtlResult(result, '❌ Could not load the compression module. Please refresh the page and try again.', true);
+      return;
+    }
+    goBtn.disabled = true;
+    resetOutput();
+    prog.className = 'progress show'; progBar.style.width = '0%';
+    var q = parseFloat(qRange.value);
+    var maxW = sizeSel.value;
+    var fmt = fmtSel.value;
+    var targetKB = targetSel.value ? parseInt(targetSel.value, 10) : 0;
+    var overTarget = 0;
+    var okCount = 0, failCount = 0, keptCount = 0, totalOrig = 0, totalOut = 0;
+    try {
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        var r = { origSize: f.size, outName: f.name };
+        try {
+          var opts = {
+            initialQuality: q,
+            useWebWorker: true,
+            preserveExif: false,
+            onProgress: (function (idx) {
+              return function (p) {
+                progBar.style.width = Math.round(((idx + p / 100) / files.length) * 100) + '%';
+              };
+            })(i)
+          };
+          if (maxW !== 'orig') opts.maxWidthOrHeight = parseInt(maxW, 10);
+          if (fmt) opts.fileType = fmt;
+          if (targetKB) opts.maxSizeMB = targetKB / 1024;
+          var out;
+          try {
+            out = await imageCompression(f, opts);
+          } catch (wErr) {
+            opts.useWebWorker = false;
+            out = await imageCompression(f, opts);
+          }
+          var converted = fmt && fmt !== f.type;
+          if (!converted && out.size >= f.size && !targetKB) {
+            r.kept = true; r.blob = f; r.outName = f.name;
+            keptCount++;
+          } else {
+            r.blob = out; r.outName = outNameFor(f, out.type || fmt);
+          }
+          if (targetKB && r.blob.size > targetKB * 1024) overTarget++;
+          okCount++;
+        } catch (err) {
+          r.error = 'This file could not be processed (corrupted or unsupported format).';
+          failCount++;
+        }
+        totalOrig += f.size;
+        totalOut += r.blob ? r.blob.size : f.size;
+        results.push(r);
+        progBar.style.width = Math.round(((i + 1) / files.length) * 100) + '%';
+        renderOut();
+      }
+      if (!okCount) throw new Error('No images could be compressed. Please make sure your files are JPG, PNG, WEBP, or BMP.');
+      var savedPct = totalOrig > 0 ? Math.max(0, Math.round((1 - totalOut / totalOrig) * 100)) : 0;
+      var html = '✅ <b>Done!</b> ' + okCount + ' processed — total ' + mdtlFormatBytes(totalOrig) + ' → ' +
+        mdtlFormatBytes(totalOut) + ' (' + savedPct + '% saved). Download files individually below or click <b>Download All</b>.';
+      if (keptCount) html += '<br>ℹ️ ' + keptCount + ' could not be made any smaller, so the <b>originals were kept</b>. (Already optimized)';
+      if (targetKB && overTarget) html += '<br>⚠️ ' + overTarget + ' did not reach the ' + targetKB + ' KB target. Lowering "Max resolution" as well (e.g., 1920px) shrinks them further.';
+      if (targetKB && !overTarget && okCount) html += '<br>🎯 All images were compressed to within the ' + targetKB + ' KB target.';
+      if (failCount) html += '<br>⚠️ ' + failCount + ' could not be processed.';
+      mdtlResult(result, html);
+      dlAllBtn.style.display = '';
+      dlAllBtn.textContent = '⬇ Download All (' + okCount + ')';
+    } catch (e) {
+      mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'An error occurred during processing.'), true);
+    } finally {
+      prog.className = 'progress';
+      goBtn.disabled = files.length < 1;
+    }
+  });
+})();
+</script>
+</body>
+</html>

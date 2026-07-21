@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이미지 압축 — 화질은 지키고 사진 용량 줄이기, 설치 없이 무료 | 모두의툴</title>
+<meta name="description" content="사진·이미지 용량을 화질 조절과 해상도 축소로 줄이는 무료 이미지 압축 도구. JPG·WEBP 변환 지원. 서버 업로드 없이 브라우저에서 바로 처리되어 안전합니다. 설치·가입·개수제한 없음.">
+<link rel="canonical" href="__ORIGIN__/image-compress/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/image-compress/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/en/image-compress/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/en/image-compress/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="이미지 압축 — 사진 용량 줄이기, 서버 업로드 없음">
+<meta property="og:description" content="화질 슬라이더·해상도 제한·JPG/WEBP 변환으로 사진 용량을 줄입니다. 파일이 서버로 전송되지 않는 100% 브라우저 처리.">
+<meta property="og:url" content="__ORIGIN__/image-compress/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>모</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"이미지 압축 - 모두의툴","url":"__ORIGIN__/image-compress/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"사진·이미지 용량을 화질 조절과 해상도 축소로 줄이는 무료 웹 도구. JPG·WEBP 변환 지원. 서버 업로드 없이 브라우저에서 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"파일이 정말 서버로 전송되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 압축은 브라우저에 내장된 캔버스 기술로 내 기기 안에서만 처리됩니다. 개발자도구의 네트워크 탭을 열어 확인해도 파일 업로드 요청이 없습니다. 신분증 사본이나 가족 사진처럼 민감한 이미지도 안심하고 사용할 수 있습니다."}},
+{"@type":"Question","name":"화질이 눈에 띄게 나빠지지 않나요?","acceptedAnswer":{"@type":"Answer","text":"화질 80~90% 설정에서는 대부분의 사진에서 육안으로 차이를 구분하기 어렵습니다. 웹 업로드나 문서 첨부 용도라면 화질 70~80%에 긴 변 1920px 설정이 용량과 화질의 균형이 가장 좋습니다. 결과를 바로 내려받아 비교해 보고, 마음에 들지 않으면 설정을 바꿔 다시 압축하면 됩니다."}},
+{"@type":"Question","name":"어떤 이미지 형식을 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"JPG, PNG, WEBP, BMP를 지원합니다. 아이폰의 HEIC 형식은 브라우저가 직접 읽지 못하므로 사진 앱에서 JPG로 내보낸 뒤 사용해 주세요. PNG는 무손실 형식이라 그대로 압축하면 효과가 작을 수 있는데, 출력 형식을 JPG나 WEBP로 바꾸면 크게 줄어듭니다."}},
+{"@type":"Question","name":"압축했는데 용량이 줄지 않거나 오히려 커졌어요.","acceptedAnswer":{"@type":"Answer","text":"이미 강하게 압축된 이미지를 다시 압축하면 더 줄어들 여지가 없어 결과가 원본보다 커질 수 있습니다. 이 경우 도구가 자동으로 원본을 그대로 유지하고 알려드립니다. 최대 해상도를 1920px로 제한하거나 WEBP 변환을 선택하면 추가로 줄어드는 경우가 많습니다."}},
+{"@type":"Question","name":"휴대폰에서도 되나요? 원본 사진이 바뀌나요?","acceptedAnswer":{"@type":"Answer","text":"네. 크롬·삼성인터넷·사파리 등 최신 모바일 브라우저에서 그대로 동작합니다. 원본 파일은 절대 수정되지 않으며, 압축본이 새 파일로 다운로드됩니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/">모두의툴</a> › <a href="/#image">이미지 도구</a> › 이미지 압축</nav>
+  <h1 class="page-title">이미지 압축<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">사진 용량 줄이기 — 화질 조절·해상도 제한·JPG/WEBP 변환을 한 번에. 설치·가입 없이 무료.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🗜️</span>
+      <strong>이미지 파일을 여기에 끌어다 놓거나 클릭해서 선택</strong><br>
+      JPG · PNG · WEBP · BMP, 여러 장 한 번에 가능
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts">
+      <label>화질
+        <input type="range" id="quality" min="0.5" max="0.9" step="0.05" value="0.7">
+        <b id="qualityVal">70%</b>
+      </label>
+      <label>최대 해상도
+        <select id="maxSize">
+          <option value="orig" selected>원본 유지</option>
+          <option value="1920">긴 변 1920px (웹용 권장)</option>
+          <option value="2560">긴 변 2560px (고화질)</option>
+        </select>
+      </label>
+      <label>출력 형식
+        <select id="outFmt">
+          <option value="" selected>원본 형식 유지</option>
+          <option value="image/jpeg">JPG로 변환</option>
+          <option value="image/webp">WEBP로 변환</option>
+        </select>
+      </label>
+      <label>목표 용량
+        <select id="targetKB">
+          <option value="" selected>지정 안 함 (화질 기준)</option>
+          <option value="500">500KB 이하 (토익 접수 등)</option>
+          <option value="300">300KB 이하</option>
+          <option value="200">200KB 이하</option>
+          <option value="100">100KB 이하 (이력서 첨부 등)</option>
+          <option value="50">50KB 이하</option>
+        </select>
+      </label>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="goBtn" disabled>이미지 압축하기</button>
+      <button class="btn" id="dlAllBtn" style="display:none">⬇ 전체 다운로드</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">전체 지우기</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <ul class="file-list" id="outList"></ul>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>위 영역에 사진(JPG·PNG·WEBP·BMP)을 끌어다 놓거나, 클릭해서 여러 장을 한 번에 선택합니다.</li>
+      <li><b>화질</b> 슬라이더를 조절합니다. 낮출수록 용량이 많이 줄고, 70~80%가 대부분의 용도에 적당합니다.</li>
+      <li>필요하면 <b>최대 해상도</b>(긴 변 1920px/2560px)와 <b>출력 형식</b>(JPG/WEBP 변환)을 선택합니다.</li>
+      <li><b>이미지 압축하기</b> 버튼을 누르면 파일별로 처리되며, 목록에 <b>원본 → 압축 용량과 절감률</b>(예: 2.4 MB → 340 KB, -86%)이 표시됩니다.</li>
+      <li>파일별 ⬇ 버튼으로 하나씩 받거나, <b>전체 다운로드</b>로 한 번에 저장합니다. 원본 파일은 그대로 남습니다.</li>
+    </ol>
+
+    <h2>이 도구가 다른 이미지 압축 사이트와 다른 점</h2>
+    <p>대부분의 온라인 압축 사이트는 사진을 <b>자기 회사 서버에 업로드</b>한 뒤 처리해서 되돌려줍니다. 업로드된 사진이 언제 지워지는지, 처리 과정에서 누가 볼 수 있는지 사용자는 알 수 없습니다. 가족 사진, 신분증 사본, 계약서 스캔처럼 민감한 이미지라면 찜찜할 수밖에 없습니다.</p>
+    <p>모두의툴의 이미지 압축은 <b>사진을 어디로도 보내지 않습니다.</b> 브라우저에 내장된 캔버스 기술로 압축 전체가 내 컴퓨터(또는 휴대폰) 안에서만 이뤄집니다. 그래서 세 가지 장점이 생깁니다.</p>
+    <ul>
+      <li><b>보안</b> — 사진이 기기 밖으로 나가지 않으므로 유출 가능성 자체가 없습니다.</li>
+      <li><b>속도</b> — 업로드·다운로드 대기가 없어 수십 장도 몇 초~수십 초면 끝납니다.</li>
+      <li><b>무제한</b> — 서버 비용이 들지 않으니 장수·횟수·용량을 제한하지 않습니다.</li>
+    </ul>
+
+    <h2>어떤 설정으로 압축해야 하나요?</h2>
+    <p>이미지 용량은 크게 두 가지가 좌우합니다. 하나는 <b>압축 품질</b>(JPG·WEBP 같은 손실 압축 형식이 색 정보를 얼마나 정밀하게 남기는가), 다른 하나는 <b>해상도</b>(픽셀 수)입니다. 스마트폰 카메라 원본은 보통 4000px가 넘는데, 모니터·휴대폰 화면 표시에는 긴 변 1920px이면 충분해서 해상도만 줄여도 용량이 크게 감소합니다.</p>
+    <ul>
+      <li><b>웹 게시·커뮤니티 첨부</b> — 화질 70% + 긴 변 1920px. 화면으로 보기에 차이가 거의 없으면서 절감률이 가장 큽니다.</li>
+      <li><b>문서 제출·인쇄 가능성 있음</b> — 화질 80~90% + 긴 변 2560px 또는 원본 해상도 유지.</li>
+      <li><b>PNG 스크린샷·그림</b> — 출력 형식을 WEBP(권장) 또는 JPG로 바꾸면 극적으로 줄어듭니다. 단, 투명 배경이 있는 PNG를 JPG로 바꾸면 투명 영역이 배경색으로 채워지므로 투명도가 필요하면 WEBP를 선택하세요.</li>
+    </ul>
+    <p>압축 결과가 원본보다 커지는 경우(이미 최적화된 이미지)에는 자동으로 <b>원본을 유지</b>하고 알려드리니, 몇 번이고 부담 없이 시도해 보세요. 파일을 다시 올릴 필요 없이 설정만 바꿔 재압축할 수 있습니다.</p>
+    <div class="tip">💡 <b>팁:</b> 압축과 함께 개인정보 보호 효과도 있습니다 — 압축 과정에서 촬영 위치(GPS)·기기 정보가 담긴 EXIF 메타데이터가 제거되어, SNS나 중고거래에 사진을 올릴 때 위치 노출 걱정을 덜 수 있습니다. 픽셀 크기를 정확한 수치로 지정하고 싶다면 <a href="/image-resize/">이미지 크기조절</a>을 이용하세요.</div>
+
+    <h2>이럴 때 쓰세요</h2>
+    <ul>
+      <li>쇼핑몰·블로그에 올릴 상품 사진이 <b>업로드 용량 제한</b>에 걸릴 때</li>
+      <li>이메일 첨부 한도(보통 10~25MB)를 넘는 <b>사진 여러 장을 한 번에 첨부</b>해야 할 때</li>
+      <li>홈페이지 이미지 용량을 줄여 <b>로딩 속도와 검색 노출(SEO)</b>을 개선할 때</li>
+      <li>입사지원·민원 사이트가 요구하는 <b>"1MB 이하" 같은 첨부 조건</b>을 맞출 때</li>
+      <li>휴대폰 사진을 정리해 <b>저장공간과 클라우드 용량</b>을 아낄 때</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>파일이 정말 서버로 전송되지 않나요?</summary><p>네. 압축은 브라우저에 내장된 캔버스 기술로 내 기기 안에서만 처리됩니다. 개발자도구의 네트워크 탭을 열어 확인해도 파일 업로드 요청이 없습니다. 신분증 사본이나 가족 사진처럼 민감한 이미지도 안심하고 사용할 수 있습니다.</p></details>
+      <details><summary>화질이 눈에 띄게 나빠지지 않나요?</summary><p>화질 80~90% 설정에서는 대부분의 사진에서 육안으로 차이를 구분하기 어렵습니다. 웹 업로드나 문서 첨부 용도라면 화질 70~80%에 긴 변 1920px 설정이 용량과 화질의 균형이 가장 좋습니다. 결과를 바로 내려받아 비교해 보고, 마음에 들지 않으면 설정을 바꿔 다시 압축하면 됩니다.</p></details>
+      <details><summary>어떤 이미지 형식을 지원하나요?</summary><p>JPG, PNG, WEBP, BMP를 지원합니다. 아이폰의 HEIC 형식은 브라우저가 직접 읽지 못하므로 사진 앱에서 JPG로 내보낸 뒤 사용해 주세요. PNG는 무손실 형식이라 그대로 압축하면 효과가 작을 수 있는데, 출력 형식을 JPG나 WEBP로 바꾸면 크게 줄어듭니다.</p></details>
+      <details><summary>압축했는데 용량이 줄지 않거나 오히려 커졌어요.</summary><p>이미 강하게 압축된 이미지를 다시 압축하면 더 줄어들 여지가 없어 결과가 원본보다 커질 수 있습니다. 이 경우 도구가 자동으로 원본을 그대로 유지하고 알려드립니다. 최대 해상도를 1920px로 제한하거나 WEBP 변환을 선택하면 추가로 줄어드는 경우가 많습니다.</p></details>
+      <details><summary>휴대폰에서도 되나요? 원본 사진이 바뀌나요?</summary><p>네. 크롬·삼성인터넷·사파리 등 최신 모바일 브라우저에서 그대로 동작합니다. 원본 파일은 절대 수정되지 않으며, 압축본이 새 파일로 다운로드됩니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/image-resize/"><span class="emoji">📐</span><span><b>이미지 크기조절</b><span>리사이즈 + 형식 변환</span></span></a>
+      <a class="tool-tile" href="/img-to-pdf/"><span class="emoji">📄</span><span><b>이미지 → PDF</b><span>사진을 PDF로</span></span></a>
+      <a class="tool-tile" href="/pdf-to-jpg/"><span class="emoji">🖼️</span><span><b>PDF → JPG</b><span>페이지를 이미지로</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/assets/vendor/browser-image-compression.js"></script>
+<script>
+(function () {
+  'use strict';
+  var files = [];
+  var results = [];
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var outEl = document.getElementById('outList');
+  var goBtn = document.getElementById('goBtn');
+  var dlAllBtn = document.getElementById('dlAllBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var qRange = document.getElementById('quality');
+  var qVal = document.getElementById('qualityVal');
+  var sizeSel = document.getElementById('maxSize');
+  var fmtSel = document.getElementById('outFmt');
+  var targetSel = document.getElementById('targetKB');
+
+  qRange.addEventListener('input', function () {
+    qVal.textContent = Math.round(parseFloat(qRange.value) * 100) + '%';
+  });
+
+  function baseOf(name) { return name.replace(/\.[^.]+$/, ''); }
+  function extOf(name) { var m = /\.[^.]+$/.exec(name); return m ? m[0] : ''; }
+  function outNameFor(file, mime) {
+    var ext;
+    if (mime === 'image/jpeg') ext = '.jpg';
+    else if (mime === 'image/webp') ext = '.webp';
+    else if (mime === 'image/png') ext = '.png';
+    else if (mime === 'image/bmp') ext = '.bmp';
+    else ext = extOf(file.name) || '.jpg';
+    return baseOf(file.name) + '_압축' + ext;
+  }
+
+  function resetOutput() {
+    results = [];
+    outEl.innerHTML = '';
+    result.className = 'result';
+    dlAllBtn.style.display = 'none';
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    files.forEach(function (f, i) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta">' + mdtlFormatBytes(f.size) + '</span>' +
+        '<button class="mini" data-i="' + i + '" aria-label="제거">✕</button>';
+      li.querySelector('.name').textContent = (i + 1) + '. ' + f.name;
+      listEl.appendChild(li);
+    });
+    goBtn.disabled = files.length < 1;
+    goBtn.textContent = files.length ? files.length + '장 압축하기' : '이미지 압축하기';
+    clearBtn.style.display = files.length ? '' : 'none';
+  }
+
+  function renderOut() {
+    outEl.innerHTML = '';
+    results.forEach(function (r, i) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta"></span>' +
+        '<button class="mini" data-i="' + i + '" aria-label="다운로드">⬇</button>';
+      li.querySelector('.name').textContent = r.outName;
+      var meta = li.querySelector('.meta');
+      var btn = li.querySelector('.mini');
+      if (r.error) {
+        meta.textContent = '⚠️ ' + r.error;
+        btn.disabled = true;
+      } else if (r.kept) {
+        meta.textContent = mdtlFormatBytes(r.origSize) + ' → 변화 없음 (원본 유지)';
+      } else {
+        var pct = Math.round((1 - r.blob.size / r.origSize) * 100);
+        meta.textContent = mdtlFormatBytes(r.origSize) + ' → ' + mdtlFormatBytes(r.blob.size) +
+          ' (' + (pct >= 0 ? '-' + pct : '+' + (-pct)) + '%)';
+      }
+      outEl.appendChild(li);
+    });
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    files.splice(+b.dataset.i, 1);
+    resetOutput();
+    render();
+  });
+
+  outEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || b.disabled) return;
+    var r = results[+b.dataset.i];
+    if (r && r.blob) mdtlDownload(r.blob, r.outName);
+  });
+
+  clearBtn.addEventListener('click', function () {
+    files = [];
+    resetOutput();
+    render();
+  });
+
+  dlAllBtn.addEventListener('click', function () {
+    var ok = results.filter(function (r) { return !r.error && r.blob; });
+    ok.forEach(function (r, idx) {
+      setTimeout(function () { mdtlDownload(r.blob, r.outName); }, idx * 400);
+    });
+  });
+
+  mdtlDropzone(dz, {
+    accept: '.jpg,.jpeg,.png,.webp,.bmp', multiple: true,
+    onFiles: function (fs) {
+      files = files.concat(fs);
+      resetOutput();
+      render();
+    }
+  });
+
+  goBtn.addEventListener('click', async function () {
+    if (typeof imageCompression === 'undefined') {
+      mdtlResult(result, '❌ 압축 모듈을 불러오지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.', true);
+      return;
+    }
+    goBtn.disabled = true;
+    resetOutput();
+    prog.className = 'progress show'; progBar.style.width = '0%';
+    var q = parseFloat(qRange.value);
+    var maxW = sizeSel.value;
+    var fmt = fmtSel.value;
+    var targetKB = targetSel.value ? parseInt(targetSel.value, 10) : 0;
+    var overTarget = 0;
+    var okCount = 0, failCount = 0, keptCount = 0, totalOrig = 0, totalOut = 0;
+    try {
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        var r = { origSize: f.size, outName: f.name };
+        try {
+          var opts = {
+            initialQuality: q,
+            useWebWorker: true,
+            preserveExif: false,
+            onProgress: (function (idx) {
+              return function (p) {
+                progBar.style.width = Math.round(((idx + p / 100) / files.length) * 100) + '%';
+              };
+            })(i)
+          };
+          if (maxW !== 'orig') opts.maxWidthOrHeight = parseInt(maxW, 10);
+          if (fmt) opts.fileType = fmt;
+          if (targetKB) opts.maxSizeMB = targetKB / 1024;
+          var out;
+          try {
+            out = await imageCompression(f, opts);
+          } catch (wErr) {
+            opts.useWebWorker = false;
+            out = await imageCompression(f, opts);
+          }
+          var converted = fmt && fmt !== f.type;
+          if (!converted && out.size >= f.size && !targetKB) {
+            r.kept = true; r.blob = f; r.outName = f.name;
+            keptCount++;
+          } else {
+            r.blob = out; r.outName = outNameFor(f, out.type || fmt);
+          }
+          if (targetKB && r.blob.size > targetKB * 1024) overTarget++;
+          okCount++;
+        } catch (err) {
+          r.error = '처리할 수 없는 파일입니다 (손상되었거나 지원하지 않는 형식).';
+          failCount++;
+        }
+        totalOrig += f.size;
+        totalOut += r.blob ? r.blob.size : f.size;
+        results.push(r);
+        progBar.style.width = Math.round(((i + 1) / files.length) * 100) + '%';
+        renderOut();
+      }
+      if (!okCount) throw new Error('압축할 수 있는 이미지가 없습니다. JPG·PNG·WEBP·BMP 파일인지 확인해 주세요.');
+      var savedPct = totalOrig > 0 ? Math.max(0, Math.round((1 - totalOut / totalOrig) * 100)) : 0;
+      var html = '✅ <b>완료!</b> ' + okCount + '장 처리 — 총 ' + mdtlFormatBytes(totalOrig) + ' → ' +
+        mdtlFormatBytes(totalOut) + ' (' + savedPct + '% 절감). 아래 목록에서 파일별로 받거나 <b>전체 다운로드</b>를 누르세요.';
+      if (keptCount) html += '<br>ℹ️ ' + keptCount + '장은 압축해도 줄어들지 않아 <b>원본을 그대로 유지</b>했습니다. (이미 최적화된 이미지)';
+      if (targetKB && overTarget) html += '<br>⚠️ ' + overTarget + '장은 목표 ' + targetKB + 'KB에 도달하지 못했습니다. "최대 해상도"를 함께 낮추면(예: 1920px) 더 줄어듭니다.';
+      if (targetKB && !overTarget && okCount) html += '<br>🎯 전부 목표 ' + targetKB + 'KB 이내로 압축되었습니다.';
+      if (failCount) html += '<br>⚠️ ' + failCount + '장은 처리하지 못했습니다.';
+      mdtlResult(result, html);
+      dlAllBtn.style.display = '';
+      dlAllBtn.textContent = '⬇ 전체 다운로드 (' + okCount + '장)';
+    } catch (e) {
+      mdtlResult(result, '❌ ' + (e && e.message ? e.message : '처리 중 오류가 발생했습니다.'), true);
+    } finally {
+      prog.className = 'progress';
+      goBtn.disabled = files.length < 1;
+    }
+  });
+})();
+</script>
+</body>
+</html>
