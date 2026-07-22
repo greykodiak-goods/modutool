@@ -252,6 +252,8 @@
         var blob = new Blob([data], { type: 'application/pdf' });
         var name = baseName + '_' + r.label + '.pdf';
         mdtlDownload(blob, name);
+        mdtlLogEvent('pdf-split', 'success', null,
+          { pages: r.indices.length, size_bucket: mdtlSizeBucket(blob.size) });
         mdtlResult(result,
           '✅ <b>Done!</b> Extracted ' + r.indices.length + ' pages — ' + esc(name) + ' (' +
           mdtlFormatBytes(blob.size) + ') has been downloaded.');
@@ -268,6 +270,8 @@
           progBar.style.width = Math.round(((i + 1) / pageCount) * 100) + '%';
           if (i < pageCount - 1) await wait(400);
         }
+        mdtlLogEvent('pdf-split', 'success', null,
+          { pages: pageCount, count: pageCount, size_bucket: mdtlSizeBucket(total) });
         mdtlResult(result,
           '✅ <b>Done!</b> Split ' + pageCount + ' pages into ' + pageCount + ' separate PDFs and downloaded them. (Total ' +
           mdtlFormatBytes(total) + ')<br>ℹ️ If only one file downloaded, allow the "multiple file downloads" prompt near the address bar and run it again.');

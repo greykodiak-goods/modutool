@@ -264,12 +264,16 @@ compBtn.addEventListener('click', async () => {
     progBar.style.width = '100%';
     const blob = new Blob([saved], { type: 'application/pdf' });
     if (blob.size >= origSize) {
+      mdtlLogEvent('pdf-compress', 'no_result', 'result_not_smaller',
+        { pages: pageCount, size_bucket: mdtlSizeBucket(origSize), result_bucket: mdtlSizeBucket(blob.size), level: levelSel.value });
       mdtlResult(result,
         'ℹ️ The compressed result (' + mdtlFormatBytes(blob.size) + ') is not smaller than the original (' + mdtlFormatBytes(origSize) + '), so <b>nothing was downloaded.</b>' +
         '<br>This file is already light or heavily compressed. <b>Keep using your original.</b> If you still need it smaller, try the <b>Strong</b> level.');
     } else {
       const pct = Math.round((1 - blob.size / origSize) * 100);
       mdtlDownload(blob, baseName + '_compressed.pdf');
+      mdtlLogEvent('pdf-compress', 'success', null,
+        { pages: pageCount, size_bucket: mdtlSizeBucket(origSize), level: levelSel.value, saved_pct: pct });
       mdtlResult(result,
         '✅ <b>Done!</b> ' + mdtlFormatBytes(origSize) + ' → ' + mdtlFormatBytes(blob.size) +
         ' (<b>' + pct + '% saved</b>) — the file has been downloaded.' +

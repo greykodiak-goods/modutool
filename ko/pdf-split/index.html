@@ -252,6 +252,8 @@
         var blob = new Blob([data], { type: 'application/pdf' });
         var name = baseName + '_' + r.label + '.pdf';
         mdtlDownload(blob, name);
+        mdtlLogEvent('pdf-split', 'success', null,
+          { pages: r.indices.length, size_bucket: mdtlSizeBucket(blob.size) });
         mdtlResult(result,
           '✅ <b>완료!</b> ' + r.indices.length + '쪽을 추출해 ' + esc(name) + ' (' +
           mdtlFormatBytes(blob.size) + ') 파일이 다운로드되었습니다.');
@@ -268,6 +270,8 @@
           progBar.style.width = Math.round(((i + 1) / pageCount) * 100) + '%';
           if (i < pageCount - 1) await wait(400);
         }
+        mdtlLogEvent('pdf-split', 'success', null,
+          { pages: pageCount, count: pageCount, size_bucket: mdtlSizeBucket(total) });
         mdtlResult(result,
           '✅ <b>완료!</b> ' + pageCount + '쪽을 ' + pageCount + '개의 개별 PDF로 분할해 다운로드했습니다. (총 ' +
           mdtlFormatBytes(total) + ')<br>ℹ️ 파일이 하나만 받아졌다면 주소창 근처의 "여러 파일 다운로드 허용" 알림을 허용한 뒤 다시 실행해 주세요.');

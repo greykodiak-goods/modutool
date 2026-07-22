@@ -338,6 +338,13 @@
       if (targetKB && overTarget) html += '<br>⚠️ ' + overTarget + '장은 목표 ' + targetKB + 'KB에 도달하지 못했습니다. "최대 해상도"를 함께 낮추면(예: 1920px) 더 줄어듭니다.';
       if (targetKB && !overTarget && okCount) html += '<br>🎯 전부 목표 ' + targetKB + 'KB 이내로 압축되었습니다.';
       if (failCount) html += '<br>⚠️ ' + failCount + '장은 처리하지 못했습니다.';
+      if (keptCount === okCount) {
+        mdtlLogEvent('image-compress', 'no_result', 'result_not_smaller',
+          { count: okCount, saved_pct: savedPct });
+      } else {
+        mdtlLogEvent('image-compress', 'success', null,
+          { count: okCount, saved_pct: savedPct, size_bucket: mdtlSizeBucket(totalOut) });
+      }
       mdtlResult(result, html);
       dlAllBtn.style.display = '';
       dlAllBtn.textContent = '⬇ 전체 다운로드 (' + okCount + '장)';

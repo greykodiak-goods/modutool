@@ -271,6 +271,8 @@ saveBtn.addEventListener('click', async () => {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     mdtlDownload(blob, srcName + '_회전.pdf');
     const rotated = pages.filter(p => p.rot).length;
+    mdtlLogEvent('pdf-rotate', 'success', null,
+      { pages: pages.length, count: rotated, size_bucket: mdtlSizeBucket(blob.size) });
     mdtlResult(result,
       '✅ <b>완료!</b> ' + pages.length + '쪽 중 ' + rotated + '쪽 회전' +
       ' — ' + mdtlFormatBytes(blob.size) + ' 파일이 다운로드되었습니다.');

@@ -271,6 +271,8 @@ saveBtn.addEventListener('click', async () => {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     mdtlDownload(blob, srcName + '_rotated.pdf');
     const rotated = pages.filter(p => p.rot).length;
+    mdtlLogEvent('pdf-rotate', 'success', null,
+      { pages: pages.length, count: rotated, size_bucket: mdtlSizeBucket(blob.size) });
     mdtlResult(result,
       '✅ <b>Done!</b> Rotated ' + rotated + ' of ' + pages.length + ' pages' +
       ' — your ' + mdtlFormatBytes(blob.size) + ' file has been downloaded.');

@@ -303,6 +303,8 @@
       var blob = new Blob([data], { type: 'application/pdf' });
       var name = baseName + '_쪽번호.pdf';
       mdtlDownload(blob, name);
+      mdtlLogEvent('pdf-page-numbers', 'success', null,
+        { pages: pageCount, count: inserted, size_bucket: mdtlSizeBucket(blob.size) });
       mdtlResult(result,
         '✅ <b>완료!</b> 총 ' + pageCount + '쪽 중 <b>' + inserted + '쪽</b>에 쪽번호를 넣어 ' + esc(name) +
         ' (' + mdtlFormatBytes(blob.size) + ') 파일이 다운로드되었습니다.' +

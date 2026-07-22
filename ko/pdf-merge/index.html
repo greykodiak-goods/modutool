@@ -178,6 +178,8 @@
       progBar.style.width = '100%';
       var blob = new Blob([merged], { type: 'application/pdf' });
       mdtlDownload(blob, '합친문서.pdf');
+      mdtlLogEvent('pdf-merge', 'success', null,
+        { count: files.length - skipped.length, pages: out.getPageCount(), size_bucket: mdtlSizeBucket(blob.size) });
       mdtlResult(result,
         '✅ <b>완료!</b> ' + (files.length - skipped.length) + '개 파일, 총 ' + out.getPageCount() + '쪽 — ' +
         mdtlFormatBytes(blob.size) + ' 파일이 다운로드되었습니다.' +

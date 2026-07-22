@@ -397,6 +397,8 @@
       if (filledCount) html += '<br>ℹ️ ' + filledCount + '장은 투명 배경이 <b>흰색으로 채워졌습니다</b> (JPG는 투명도 없음). 유지하려면 PNG나 WEBP를 선택하세요.';
       if (heicCount) html += '<br>⚠️ HEIC ' + heicCount + '장은 건너뛰었습니다 — 아이폰에서 JPG로 내보낸 뒤(설정 → 카메라 → 포맷 → "높은 호환성") 다시 시도하세요.';
       if (failCount) html += '<br>⚠️ ' + failCount + '장은 처리하지 못했습니다.';
+      mdtlLogEvent('image-convert', 'success', null,
+        { count: okCount, format: fmt.ext, size_bucket: mdtlSizeBucket(totalOut) });
       mdtlResult(result, html);
       dlAllBtn.style.display = '';
       dlAllBtn.textContent = '⬇ 전체 다운로드 (' + okCount + '장)';

@@ -289,6 +289,8 @@
       var blob = new Blob([data], { type: 'application/pdf' });
       var name = baseName + '_워터마크.pdf';
       mdtlDownload(blob, name);
+      mdtlLogEvent('pdf-watermark', 'success', null,
+        { pages: pages.length, size_bucket: mdtlSizeBucket(blob.size) });
       mdtlResult(result,
         '✅ <b>완료!</b> ' + pages.length + '쪽 모두에 ' + esc('"' + text + '"') + ' 워터마크를 넣어 ' +
         esc(name) + ' (' + mdtlFormatBytes(blob.size) + ') 파일이 다운로드되었습니다.');

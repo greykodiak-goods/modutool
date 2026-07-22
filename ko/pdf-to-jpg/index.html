@@ -295,6 +295,8 @@ convBtn.addEventListener('click', async () => {
       progBar.style.width = Math.round((i / pageCount) * 100) + '%';
       if (i < pageCount) await sleep(400);
     }
+    mdtlLogEvent('pdf-to-jpg', 'success', null,
+      { pages: done, count: done, format: 'jpg', size_bucket: mdtlSizeBucket(totalBytes) });
     mdtlResult(result,
       '✅ <b>완료!</b> ' + done + '쪽이 각각 JPG 파일로 저장되었습니다. (총 ' + mdtlFormatBytes(totalBytes) + ')' +
       '<br>⚠️ 파일이 1개만 받아졌다면 브라우저의 <b>여러 파일 다운로드 허용</b> 안내를 허용한 뒤 다시 변환해 주세요.');

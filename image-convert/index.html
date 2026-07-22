@@ -397,6 +397,8 @@
       if (filledCount) html += '<br>ℹ️ ' + filledCount + ' had a transparent background that was <b>filled with white</b> (JPG has no transparency). Choose PNG or WEBP to keep it.';
       if (heicCount) html += '<br>⚠️ ' + heicCount + ' HEIC file' + (heicCount === 1 ? '' : 's') + ' skipped — export as JPG on your iPhone (Settings → Camera → Formats → "Most Compatible") and try again.';
       if (failCount) html += '<br>⚠️ ' + failCount + ' could not be processed.';
+      mdtlLogEvent('image-convert', 'success', null,
+        { count: okCount, format: fmt.ext, size_bucket: mdtlSizeBucket(totalOut) });
       mdtlResult(result, html);
       dlAllBtn.style.display = '';
       dlAllBtn.textContent = '⬇ Download All (' + okCount + ')';
