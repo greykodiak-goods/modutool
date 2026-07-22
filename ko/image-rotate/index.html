@@ -399,6 +399,7 @@
       }
       renderResult(outs, failed);
       if (outs.length === 1) mdtlDownload(outs[0].blob, outs[0].name);
+      mdtlLogEvent('image-rotate', 'success', null, { count: outs.length });
     } catch (e) {
       mdtlResult(result, '❌ ' + ((e && e.message) ? e.message : '처리 중 오류가 발생했습니다.'), true);
     } finally {

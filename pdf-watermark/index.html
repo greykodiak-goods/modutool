@@ -288,6 +288,8 @@
       var blob = new Blob([data], { type: 'application/pdf' });
       var name = baseName + '_watermarked.pdf';
       mdtlDownload(blob, name);
+      mdtlLogEvent('pdf-watermark', 'success', null,
+        { pages: pages.length, size_bucket: mdtlSizeBucket(blob.size) });
       mdtlResult(result,
         '✅ <b>Done!</b> Stamped ' + esc('"' + text + '"') + ' on ' + pages.length +
         (pages.length === 1 ? ' page' : ' pages') + ' — ' + esc(name) + ' (' + mdtlFormatBytes(blob.size) + ') has been downloaded.');

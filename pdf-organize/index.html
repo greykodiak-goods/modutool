@@ -265,6 +265,8 @@ saveBtn.addEventListener('click', async () => {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     mdtlDownload(blob, srcName + '_edited.pdf');
     const removed = pages.length - keep.length;
+    mdtlLogEvent('pdf-organize', 'success', null,
+      { pages: keep.length, size_bucket: mdtlSizeBucket(blob.size) });
     mdtlResult(result,
       '✅ <b>Done!</b> Saved ' + keep.length + ' pages' +
       (removed ? ' (' + removed + ' deleted)' : '') +

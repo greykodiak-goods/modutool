@@ -319,6 +319,8 @@ const workerReady = (async () => {
       progBar.style.width = '100%';
       var blob = new Blob([merged], { type: 'application/pdf' });
       mdtlDownload(blob, 'merged.pdf');
+      mdtlLogEvent('pdf-merge', 'success', null,
+        { count: files.length - skipped.length, pages: out.getPageCount(), size_bucket: mdtlSizeBucket(blob.size) });
       mdtlResult(result,
         '✅ <b>Done!</b> ' + (files.length - skipped.length) + ' files, ' + out.getPageCount() + ' pages total — your ' +
         mdtlFormatBytes(blob.size) + ' file has been downloaded.' +

@@ -267,6 +267,8 @@
       progBar.style.width = '100%';
       var blob = new Blob([out], { type: 'application/pdf' });
       mdtlDownload(blob, 'photos.pdf');
+      mdtlLogEvent('img-to-pdf', 'success', null,
+        { count: doc.getPageCount(), pages: doc.getPageCount(), size_bucket: mdtlSizeBucket(blob.size) });
       mdtlResult(result,
         '✅ <b>Done!</b> ' + doc.getPageCount() + ' images → ' + doc.getPageCount() + '-page PDF — ' +
         mdtlFormatBytes(blob.size) + ' file downloaded.' +

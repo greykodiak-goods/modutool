@@ -403,6 +403,8 @@
       }
       renderResult(outs, failed);
       if (outs.length === 1) mdtlDownload(outs[0].blob, outs[0].name);
+      mdtlLogEvent('image-resize', 'success', null,
+        { count: outs.length, format: fmt.ext });
     } catch (e) {
       mdtlResult(result, '❌ ' + ((e && e.message) ? e.message : 'An error occurred during processing.'), true);
     } finally {

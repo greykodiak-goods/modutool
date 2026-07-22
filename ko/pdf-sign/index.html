@@ -435,6 +435,8 @@ applyBtn.addEventListener('click', async () => {
     progBar.style.width = '100%';
     const blob = new Blob([bytes], { type: 'application/pdf' });
     mdtlDownload(blob, srcName + '_서명.pdf');
+    mdtlLogEvent('pdf-sign', 'success', null,
+      { pages: pageCount, size_bucket: mdtlSizeBucket(blob.size) });
     mdtlResult(result,
       '✅ <b>완료!</b> ' + placement.page + '쪽에 서명을 넣어 ' + mdtlFormatBytes(blob.size) +
       ' 파일로 다운로드했습니다. 원본 파일은 변경되지 않았습니다.' +

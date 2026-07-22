@@ -411,6 +411,8 @@
       row.appendChild(dl);
       result.appendChild(row);
       mdtlDownload(blob, name);
+      mdtlLogEvent('image-crop', 'success', null,
+        { width: sw, height: sh, format: srcFmt.ext, size_bucket: mdtlSizeBucket(blob.size) });
     } catch (e) {
       mdtlResult(result, '❌ ' + ((e && e.message) ? e.message : 'An error occurred during processing.'), true);
     } finally {

@@ -295,6 +295,8 @@ convBtn.addEventListener('click', async () => {
       progBar.style.width = Math.round((i / pageCount) * 100) + '%';
       if (i < pageCount) await sleep(400);
     }
+    mdtlLogEvent('pdf-to-jpg', 'success', null,
+      { pages: done, count: done, format: 'jpg', size_bucket: mdtlSizeBucket(totalBytes) });
     mdtlResult(result,
       '✅ <b>Done!</b> ' + done + ' pages were saved as individual JPG files. (Total ' + mdtlFormatBytes(totalBytes) + ')' +
       '<br>⚠️ If only one file was downloaded, allow <b>multiple file downloads</b> when your browser asks, then convert again.');

@@ -264,6 +264,8 @@ saveBtn.addEventListener('click', async () => {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     mdtlDownload(blob, srcName + '_편집.pdf');
     const removed = pages.length - keep.length;
+    mdtlLogEvent('pdf-organize', 'success', null,
+      { pages: keep.length, size_bucket: mdtlSizeBucket(blob.size) });
     mdtlResult(result,
       '✅ <b>완료!</b> ' + keep.length + '쪽 저장' +
       (removed ? ' (' + removed + '쪽 삭제)' : '') +

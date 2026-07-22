@@ -267,6 +267,8 @@
       progBar.style.width = '100%';
       var blob = new Blob([out], { type: 'application/pdf' });
       mdtlDownload(blob, '사진문서.pdf');
+      mdtlLogEvent('img-to-pdf', 'success', null,
+        { count: doc.getPageCount(), pages: doc.getPageCount(), size_bucket: mdtlSizeBucket(blob.size) });
       mdtlResult(result,
         '✅ <b>완료!</b> 사진 ' + doc.getPageCount() + '장 → ' + doc.getPageCount() + '쪽 PDF — ' +
         mdtlFormatBytes(blob.size) + ' 파일이 다운로드되었습니다.' +

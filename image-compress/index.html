@@ -337,6 +337,13 @@
       if (targetKB && overTarget) html += '<br>⚠️ ' + overTarget + ' did not reach the ' + targetKB + ' KB target. Lowering "Max resolution" as well (e.g., 1920px) shrinks them further.';
       if (targetKB && !overTarget && okCount) html += '<br>🎯 All images were compressed to within the ' + targetKB + ' KB target.';
       if (failCount) html += '<br>⚠️ ' + failCount + ' could not be processed.';
+      if (keptCount === okCount) {
+        mdtlLogEvent('image-compress', 'no_result', 'result_not_smaller',
+          { count: okCount, saved_pct: savedPct });
+      } else {
+        mdtlLogEvent('image-compress', 'success', null,
+          { count: okCount, saved_pct: savedPct, size_bucket: mdtlSizeBucket(totalOut) });
+      }
       mdtlResult(result, html);
       dlAllBtn.style.display = '';
       dlAllBtn.textContent = '⬇ Download All (' + okCount + ')';

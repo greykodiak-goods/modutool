@@ -269,6 +269,8 @@
       var blob = new Blob([data], { type: 'application/pdf' });
       var name = baseName + '_numbered.pdf';
       mdtlDownload(blob, name);
+      mdtlLogEvent('pdf-page-numbers', 'success', null,
+        { pages: pageCount, count: inserted, size_bucket: mdtlSizeBucket(blob.size) });
       mdtlResult(result,
         '✅ <b>Done!</b> Numbered <b>' + inserted + ' of ' + pageCount + ' pages</b> — ' + esc(name) +
         ' (' + mdtlFormatBytes(blob.size) + ') has been downloaded.' +

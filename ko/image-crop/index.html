@@ -413,6 +413,8 @@
       row.appendChild(dl);
       result.appendChild(row);
       mdtlDownload(blob, name);
+      mdtlLogEvent('image-crop', 'success', null,
+        { width: sw, height: sh, format: srcFmt.ext, size_bucket: mdtlSizeBucket(blob.size) });
     } catch (e) {
       mdtlResult(result, '❌ ' + ((e && e.message) ? e.message : '처리 중 오류가 발생했습니다.'), true);
     } finally {
