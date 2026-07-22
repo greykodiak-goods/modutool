@@ -17,7 +17,7 @@ jobs:
         run: |
           BASE="${{ inputs.base_url }}"
           fail=0
-          for p in "/" "/ko/" "/pdf-merge/" "/pdf-compress/" "/pdf-watermark/" "/pdf-page-numbers/" "/pdf-sign/" "/image-crop/" "/image-convert/" "/image-rotate/" "/image-watermark/" "/pricing/" "/login/" "/sitemap.xml" "/robots.txt" "/assets/site.js" "/assets/vendor/pdf-lib.min.js" "/assets/vendor/fontkit.umd.min.js"; do
+          for p in "/" "/ko/" "/pdf-merge/" "/pdf-compress/" "/pdf-watermark/" "/pdf-page-numbers/" "/pdf-sign/" "/image-crop/" "/image-convert/" "/image-rotate/" "/image-watermark/" "/pricing/" "/login/" "/admin/" "/sitemap.xml" "/robots.txt" "/assets/site.js" "/assets/vendor/pdf-lib.min.js" "/assets/vendor/fontkit.umd.min.js"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
             echo "$code  $BASE$p"
             [ "$code" = "200" ] || fail=1
@@ -26,6 +26,30 @@ jobs:
           curl -sL "$BASE/" | grep -o "ThisIsMyPDF" | head -1 || fail=1
           echo "--- canonical check ---"
           curl -sL "$BASE/pdf-merge/" | grep -o '<link rel="canonical" href="[^"]*"' || fail=1
+          echo "--- telemetry wired into site.js ---"
+          curl -sL "$BASE/assets/site.js" | grep -q "mdtlLogEvent" && echo "site.js: mdtlLogEvent OK" || { echo "site.js: mdtlLogEvent MISSING"; fail=1; }
+          echo "--- /admin noindex (백오피스는 색인 금지) ---"
+          curl -sL "$BASE/admin/" | grep -q "noindex" && echo "admin: noindex OK" || { echo "admin: noindex MISSING"; fail=1; }
+          echo "--- admin NOT in sitemap ---"
+          curl -sL "$BASE/sitemap.xml" | grep -q "/admin/" && { echo "admin leaked into sitemap"; fail=1; } || echo "admin absent from sitemap OK"
           echo "--- supabase auth reachable (회원 백엔드) ---"
           curl -s -o /dev/null -w "auth health: %{http_code}\n" "https://gysvtgnpacqjpdijbcaw.supabase.co/auth/v1/health" -H "apikey: sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT"
+          exit $fail
+      - name: Telemetry backend E2E (anon INSERT allowed, SELECT denied, dashboard gated)
+        run: |
+          SB="https://gysvtgnpacqjpdijbcaw.supabase.co"
+          KEY="sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT"
+          fail=0
+          echo "--- anon INSERT (expect 201) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SB/rest/v1/tool_events" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -H "Prefer: return=minimal" \
+            --data '{"tool":"live-check","outcome":"error","reason":"ci_e2e","lang":"en","site":"pdf","ua":"ci/runner","meta":{"seed":true}}')
+          echo "insert: $code"; [ "$code" = "201" ] || fail=1
+          echo "--- anon SELECT (expect empty [] — RLS blocks read) ---"
+          body=$(curl -s "$SB/rest/v1/tool_events?select=tool&limit=1" -H "apikey: $KEY" -H "Authorization: Bearer $KEY")
+          echo "select body: $body"; [ "$body" = "[]" ] || { echo "RLS read not blocked!"; fail=1; }
+          echo "--- anon dashboard RPC (expect NOT 200 — admin gated) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SB/rest/v1/rpc/mdtl_tool_dashboard" \
+            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" --data '{"days":30}')
+          echo "rpc: $code"; [ "$code" = "200" ] && { echo "dashboard NOT gated!"; fail=1; } || echo "dashboard gated OK"
           exit $fail
