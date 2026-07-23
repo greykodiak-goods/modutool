@@ -40,7 +40,7 @@ if (SITE_KEY) {
 }
 const isToolDir = (name) => /-|calculator|count|compress|resize|convert|rotate|watermark|merge|split|extract|organize|sign|numbers|to-jpg|to-pdf/.test(name) && name !== 'assets';
 
-const SKIP = new Set(['dist', 'scripts', 'node_modules', 'tests', '.git', 'supabase', 'portal', 'docs']);
+const SKIP = new Set(['dist', 'scripts', 'node_modules', 'tests', '.git', 'supabase', 'portal', 'docs', 'convex', 'package.json', 'package-lock.json']);
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 function copyFiltered(srcDir, dstDir, inKo) {

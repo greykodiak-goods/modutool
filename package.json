@@ -1,0 +1,8 @@
+{
+  "name": "modutool",
+  "private": true,
+  "description": "ThisIsMy Tools — static in-browser tools. package.json exists only for the Convex backend scaffold (convex/).",
+  "devDependencies": {
+    "convex": "^1.17.0"
+  }
+}
