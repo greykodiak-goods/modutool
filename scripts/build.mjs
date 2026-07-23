@@ -89,6 +89,11 @@ function walk(dir) {
       html = html.replaceAll("'/assets/", `'${base}/assets/`);
       html = html.replace('<link rel="stylesheet"', `<script>window.MDTL_BASE='${base}';</script>\n<link rel="stylesheet"`);
     }
+    /* NOINDEX=1: 서브패스 브랜드 사이트(한 오리진 안 /img /calc)용 — 루트 허브와 툴 페이지가
+       중복되므로 도메인 분리 전까지 검색 색인은 루트가 전담하고 서브사이트는 noindex. */
+    if (process.env.NOINDEX && !/name="robots"/.test(html)) {
+      html = html.replace('</head>', '<meta name="robots" content="noindex, follow">\n</head>');
+    }
     writeFileSync(p, html);
     if (name === 'index.html' && !/noindex/.test(html)) {
       const rel = p.slice(out.length).replace(/\\/g, '/').replace(/index\.html$/, '');
@@ -98,10 +103,12 @@ function walk(dir) {
 }
 walk(out);
 
-writeFileSync(join(out, 'sitemap.xml'),
-  '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-  pages.sort().map(u => `  <url><loc>${u}</loc></url>`).join('\n') +
-  '\n</urlset>\n');
-writeFileSync(join(out, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`);
+if (!process.env.NOINDEX) {
+  writeFileSync(join(out, 'sitemap.xml'),
+    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    pages.sort().map(u => `  <url><loc>${u}</loc></url>`).join('\n') +
+    '\n</urlset>\n');
+  writeFileSync(join(out, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`);
+}
 
 console.log(`빌드 완료 → ${out} (색인 페이지 ${pages.length}개, origin=${origin})`);
