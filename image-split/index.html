@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Split Image into a Grid — Instagram Carousel &amp; 3×3 Tiles Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Free tool that splits one image into 2, 3, 4, or 9 pieces — vertical thirds for Instagram carousels or a 3×3 grid for profile layouts. Pixel-exact crops at full resolution, processed entirely in your browser with no server upload.">
+<link rel="canonical" href="__ORIGIN__/image-split/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/image-split/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/image-split/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/image-split/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Split Image into a Grid — Carousel &amp; Grid Tiles, No Server Upload">
+<meta property="og:description" content="Cut one image into halves, thirds, 2×2, or 3×3 tiles at full resolution. 100% in-browser — your image never leaves your device.">
+<meta property="og:url" content="__ORIGIN__/image-split/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .split-stage { display:none; margin-top:14px; }
+  .split-stage.show { display:block; }
+  .split-stage canvas { max-width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
+  .split-hint { font-size:12.5px; color:var(--text-soft); margin:8px 0 0; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Split Image - ThisIsMyPDF","url":"__ORIGIN__/image-split/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that splits an image into vertical halves, thirds, a 2×2, or a 3×3 grid at full resolution. Processed in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"In what order do the pieces download, and why does it matter for Instagram?","acceptedAnswer":{"@type":"Answer","text":"Pieces are numbered left to right, top to bottom — _1 is the top-left tile. For a carousel (the 3-piece vertical split), add the photos in numeric order 1, 2, 3 so they swipe seamlessly. For a 3×3 profile grid it is the opposite: Instagram shows your newest post at the top-left, so upload the LAST tile first (9, 8, 7 … 1) to make the grid assemble correctly."}},
+{"@type":"Question","name":"My browser only downloaded one file. Where are the rest?","acceptedAnswer":{"@type":"Answer","text":"Browsers block pages from saving several files at once unless you allow it. The tool spaces the downloads out and your browser will show a prompt like 'This site is attempting to download multiple files' — click Allow, then split again. Every piece downloads as a separate numbered file."}},
+{"@type":"Question","name":"Does splitting reduce image quality?","acceptedAnswer":{"@type":"Answer","text":"The crop itself is pixel-exact: each tile is cut from the original at full resolution, with no scaling or resampling. Saving does re-encode the file — JPG tiles are written at 92% quality, which is visually indistinguishable for photos, and PNG tiles are lossless. The combined tiles contain exactly the same pixels as the original image."}},
+{"@type":"Question","name":"What happens when the image doesn't divide evenly?","acceptedAnswer":{"@type":"Answer","text":"The remainder pixels go to the last column and last row. For example, a 1000px-wide image split into 3 gives tiles of 333, 333, and 334 pixels. That means tiles can differ by a pixel or two — invisible in practice, and no pixels are ever dropped or stretched."}},
+{"@type":"Question","name":"Is my image uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The cutting happens entirely on your device using your browser's built-in canvas feature. You can verify in the Network tab of your browser's developer tools that no file leaves your machine. Closing the tab removes everything."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/">ThisIsMyPDF</a> › <a href="/#image">Image Tools</a> › Split Image</nav>
+  <h1 class="page-title">Split Image (Grid)<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Cut one image into vertical halves, Instagram carousel thirds, a 2×2, or a 3×3 grid — pixel-exact at full resolution. Free, no install, no sign-up.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🧩</span>
+      <strong>Drag &amp; drop an image here, or click to select</strong><br>
+      One image at a time (JPG · PNG · WEBP · GIF · BMP)
+    </div>
+    <div class="opts">
+      <label>Split layout
+        <select id="layoutSel">
+          <option value="1x2">2 pieces — vertical halves</option>
+          <option value="1x3" selected>3 pieces — vertical thirds (Instagram carousel)</option>
+          <option value="2x2">4 pieces — 2×2 grid</option>
+          <option value="3x3">9 pieces — 3×3 grid (profile grid)</option>
+        </select>
+      </label>
+    </div>
+    <div class="split-stage" id="stage">
+      <canvas id="preview"></canvas>
+      <p class="split-hint">The dashed lines show where the image will be cut. Pieces are numbered left → right, top → bottom.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="splitBtn" disabled>Split &amp; Download</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Remove Image</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drop the image into the area above, or click to select it.</li>
+      <li>Choose a <b>Split layout</b>. The preview shows dashed lines exactly where the cuts will be — <b>3 pieces (vertical thirds)</b> is the Instagram panorama carousel format, <b>3×3</b> is for profile grids.</li>
+      <li>Click <b>Split &amp; Download</b>. Each piece is cropped at full original resolution and saved as <b>filename_1</b>, <b>filename_2</b>, and so on. If your browser asks to <b>allow multiple downloads</b>, click Allow.</li>
+      <li>Upload in the right order: <b>carousels in order 1 → 2 → 3</b>; a <b>3×3 profile grid in reverse (9 first, 1 last)</b>, because Instagram places the newest post at the top-left.</li>
+    </ol>
+
+    <h2>How the pieces are numbered</h2>
+    <p>Tiles are always numbered <b>left to right, top to bottom</b>: in a 3×3 grid, _1 is the top-left tile and _9 the bottom-right. That numbering is what makes the upload order predictable — swipeable carousels go up in order, profile grids go up in reverse. The guide step above spells out both.</p>
+    <p>When the width or height does not divide evenly, the tool uses whole-pixel cuts and gives <b>the remainder to the last column and row</b> — 1000px into thirds becomes 333 + 333 + 334. No pixels are dropped, none are stretched.</p>
+
+    <h2>Full resolution, no resampling</h2>
+    <p>The preview you see is scaled down for the screen, but the cutting happens on the <b>original pixels</b>. A 4000×3000 photo split 1×3 produces three files of roughly 1333×3000 each — nothing is downscaled. JPG input is saved as JPG (92% quality), other formats as lossless PNG. As a side effect of re-saving through a clean canvas, EXIF metadata such as GPS location is not carried into the pieces.</p>
+    <div class="tip">💡 <b>Tip:</b> Instagram displays carousel images best when each piece is close to a supported ratio (1:1, 4:5, or 1.91:1). If your panorama is very wide, consider cropping it first with the <a href="/image-crop/">Crop Image</a> tool so each third lands near 4:5.</div>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>Instagram panorama carousels — one wide photo swiped across 3 slides</li>
+      <li>3×3 profile-grid art that assembles into one large picture</li>
+      <li>Splitting a scanned page or poster to print in sections</li>
+      <li>Chat wallpapers or banners that need matching halves</li>
+      <li>Turning one large graphic into tiles for a photo wall</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>In what order do the pieces download, and why does it matter for Instagram?</summary><p>Pieces are numbered left to right, top to bottom — _1 is the top-left tile. For a carousel (the 3-piece vertical split), add the photos in numeric order 1, 2, 3 so they swipe seamlessly. For a 3×3 profile grid it is the opposite: Instagram shows your newest post at the top-left, so upload the LAST tile first (9, 8, 7 … 1) to make the grid assemble correctly.</p></details>
+      <details><summary>My browser only downloaded one file. Where are the rest?</summary><p>Browsers block pages from saving several files at once unless you allow it. The tool spaces the downloads out and your browser will show a prompt like "This site is attempting to download multiple files" — click Allow, then split again. Every piece downloads as a separate numbered file.</p></details>
+      <details><summary>Does splitting reduce image quality?</summary><p>The crop itself is pixel-exact: each tile is cut from the original at full resolution, with no scaling or resampling. Saving does re-encode the file — JPG tiles are written at 92% quality, which is visually indistinguishable for photos, and PNG tiles are lossless. The combined tiles contain exactly the same pixels as the original image.</p></details>
+      <details><summary>What happens when the image doesn't divide evenly?</summary><p>The remainder pixels go to the last column and last row. For example, a 1000px-wide image split into 3 gives tiles of 333, 333, and 334 pixels. That means tiles can differ by a pixel or two — invisible in practice, and no pixels are ever dropped or stretched.</p></details>
+      <details><summary>Is my image uploaded to a server?</summary><p>No. The cutting happens entirely on your device using your browser's built-in canvas feature. You can verify in the Network tab of your browser's developer tools that no file leaves your machine. Closing the tab removes everything.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/image-crop/"><span class="emoji">✂️</span><span><b>Crop Image</b><span>Cut out exactly the part you want</span></span></a>
+      <a class="tool-tile" href="/image-resize/"><span class="emoji">📐</span><span><b>Image Resizer</b><span>Resize + format conversion</span></span></a>
+      <a class="tool-tile" href="/image-compress/"><span class="emoji">🗜️</span><span><b>Compress Image</b><span>Keep resolution, shrink file size</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var layoutSel = document.getElementById('layoutSel');
+  var stage = document.getElementById('stage');
+  var preview = document.getElementById('preview');
+  var pctx = preview.getContext('2d');
+  var splitBtn = document.getElementById('splitBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+
+  var srcImage = null, srcW = 0, srcH = 0, srcName = 'image', srcFmt = { mime: 'image/png', ext: 'png' }, busy = false;
+
+  // rows × cols per layout; pieces are ordered left→right, top→bottom
+  var LAYOUTS = {
+    '1x2': { cols: 2, rows: 1 },
+    '1x3': { cols: 3, rows: 1 },
+    '2x2': { cols: 2, rows: 2 },
+    '3x3': { cols: 3, rows: 3 }
+  };
+
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Could not read this image. Your browser may not support the format (e.g., HEIC).')); };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else { fallback(); }
+    });
+  }
+
+  function chooseFormat(file) {
+    var t = (file.type || '').toLowerCase();
+    if (t === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) return { mime: 'image/jpeg', ext: 'jpg' };
+    return { mime: 'image/png', ext: 'png' };
+  }
+
+  /* Whole-pixel cell rectangles: base size is Math.floor, and the LAST column
+     and row absorb the remainder pixels (e.g., 1000/3 → 333, 333, 334). */
+  function cellRects(W, H, cols, rows) {
+    var bw = Math.floor(W / cols), bh = Math.floor(H / rows);
+    var rects = [];
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        rects.push({
+          x: c * bw,
+          y: r * bh,
+          w: (c === cols - 1) ? W - bw * (cols - 1) : bw,
+          h: (r === rows - 1) ? H - bh * (rows - 1) : bh
+        });
+      }
+    }
+    return rects;
+  }
+
+  function currentLayout() { return LAYOUTS[layoutSel.value] || LAYOUTS['1x3']; }
+
+  function renderPreview() {
+    if (!srcImage) return;
+    pctx.clearRect(0, 0, preview.width, preview.height);
+    pctx.drawImage(srcImage, 0, 0, preview.width, preview.height);
+    var lay = currentLayout();
+    var bw = Math.floor(srcW / lay.cols), bh = Math.floor(srcH / lay.rows);
+    var sx = preview.width / srcW, sy = preview.height / srcH;
+    pctx.save();
+    pctx.strokeStyle = 'rgba(37,99,235,.95)';
+    pctx.lineWidth = 2;
+    pctx.setLineDash([8, 6]);
+    var i;
+    for (i = 1; i < lay.cols; i++) {
+      pctx.beginPath();
+      pctx.moveTo(Math.round(i * bw * sx) + 0.5, 0);
+      pctx.lineTo(Math.round(i * bw * sx) + 0.5, preview.height);
+      pctx.stroke();
+    }
+    for (i = 1; i < lay.rows; i++) {
+      pctx.beginPath();
+      pctx.moveTo(0, Math.round(i * bh * sy) + 0.5);
+      pctx.lineTo(preview.width, Math.round(i * bh * sy) + 0.5);
+      pctx.stroke();
+    }
+    pctx.restore();
+    var n = lay.cols * lay.rows;
+    splitBtn.disabled = busy;
+    splitBtn.textContent = 'Split & Download ' + n + ' Pieces';
+  }
+
+  function setImage(img, file) {
+    srcImage = img;
+    srcW = img.width || img.naturalWidth;
+    srcH = img.height || img.naturalHeight;
+    srcName = (file.name || 'image').replace(/\.[a-z0-9]+$/i, '') || 'image';
+    srcFmt = chooseFormat(file);
+    var maxW = 900;
+    var scale = Math.min(1, maxW / srcW);
+    preview.width = Math.max(1, Math.round(srcW * scale));
+    preview.height = Math.max(1, Math.round(srcH * scale));
+    stage.className = 'split-stage show';
+    clearBtn.style.display = '';
+    result.className = 'result';
+    renderPreview();
+  }
+
+  function resetAll() {
+    srcImage = null;
+    stage.className = 'split-stage';
+    splitBtn.disabled = true;
+    splitBtn.textContent = 'Split & Download';
+    clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+
+  mdtlDropzone(dz, {
+    accept: 'image/*,.jpg,.jpeg,.png,.webp,.gif,.bmp',
+    multiple: false,
+    onFiles: function (fs) {
+      if (busy) return;
+      loadImage(fs[0]).then(function (img) { setImage(img, fs[0]); })
+        .catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+    }
+  });
+
+  clearBtn.addEventListener('click', function () { if (!busy) resetAll(); });
+  layoutSel.addEventListener('change', renderPreview);
+
+  function cropToBlob(rect) {
+    return new Promise(function (resolve, reject) {
+      var c = document.createElement('canvas');
+      c.width = rect.w; c.height = rect.h;
+      var ctx = c.getContext('2d');
+      // Pixel-exact crop at full original resolution — no scaling, no resampling.
+      ctx.drawImage(srcImage, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
+      c.toBlob(function (blob) {
+        c.width = 0; c.height = 0; // release canvas memory
+        if (blob) resolve(blob); else reject(new Error('Could not create a piece. The image may be too large for this device.'));
+      }, srcFmt.mime, 0.92);
+    });
+  }
+
+  splitBtn.addEventListener('click', async function () {
+    if (!srcImage || busy) return;
+    busy = true;
+    splitBtn.disabled = true;
+    clearBtn.disabled = true;
+    result.className = 'result';
+    var lay = currentLayout();
+    var rects = cellRects(srcW, srcH, lay.cols, lay.rows);
+    var done = 0, totalBytes = 0;
+    try {
+      for (var i = 0; i < rects.length; i++) {
+        splitBtn.textContent = 'Splitting… (' + (i + 1) + '/' + rects.length + ')';
+        var blob = await cropToBlob(rects[i]);
+        mdtlDownload(blob, srcName + '_' + (i + 1) + '.' + srcFmt.ext);
+        totalBytes += blob.size;
+        done++;
+        // Stagger downloads so the browser doesn't swallow all but the first one.
+        if (i < rects.length - 1) await sleep(400);
+      }
+      mdtlLogEvent('image-split', 'success', null,
+        { count: done, format: srcFmt.ext, width: srcW, height: srcH, size_bucket: mdtlSizeBucket(totalBytes) });
+      mdtlResult(result,
+        '✅ <b>Done!</b> ' + done + ' pieces were downloaded, numbered left → right, top → bottom (total ' + mdtlFormatBytes(totalBytes) + ').' +
+        '<br>⚠️ If only one file arrived, allow <b>multiple file downloads</b> when your browser asks, then split again.' +
+        '<br>Carousel: upload 1 → ' + done + ' in order. 3×3 profile grid: upload in reverse (last piece first).');
+    } catch (e) {
+      mdtlResult(result,
+        '❌ ' + (done > 0 ? done + ' pieces were saved, then ' : '') + 'an error occurred while splitting. Please reload the image and try again.', true);
+    } finally {
+      busy = false;
+      clearBtn.disabled = false;
+      renderPreview();
+    }
+  });
+})();
+</script>
+</body>
+</html>

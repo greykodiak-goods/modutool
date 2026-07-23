@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VAT Calculator — Add or Back Out VAT From Any Amount | ThisIsMyPDF</title>
+<meta name="description" content="Free VAT calculator: add VAT to a net amount, back the VAT out of a gross (VAT-inclusive) total, or compute the tax alone. Editable rate (default 10%, Korea's standard), all three figures — net, VAT, gross — shown live as you type. 100% in-browser; your amounts are never sent to a server.">
+<link rel="canonical" href="__ORIGIN__/vat-calculator/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/vat-calculator/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/vat-calculator/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/vat-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="VAT Calculator — Add or Back Out VAT From Any Amount">
+<meta property="og:description" content="Net → gross, gross → net, or tax only — pick a mode, type an amount, and net / VAT / total update live. Editable rate, 100% in-browser.">
+<meta property="og:url" content="__ORIGIN__/vat-calculator/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"VAT Calculator - ThisIsMyPDF","url":"__ORIGIN__/vat-calculator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web calculator that adds VAT to a net amount, extracts the VAT from a gross total, or computes the tax alone, at any editable rate (default 10%). All three figures — net amount, VAT, and gross total — update live as you type. Runs entirely in the browser; no input is sent to a server.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How do I back the VAT out of a VAT-inclusive total?","acceptedAnswer":{"@type":"Answer","text":"Divide the gross total by (1 + rate). At the 10% rate that means net = total ÷ 1.1, and VAT = total − net. For example, a 110,000 gross total breaks down into a 100,000 net amount and 10,000 of VAT. A common mistake is taking 10% of the gross (110,000 × 0.1 = 11,000) — that overstates the tax, because the 10% applies to the net amount, not the total."}},
+{"@type":"Question","name":"How does this calculator round the results?","acceptedAnswer":{"@type":"Answer","text":"Each figure is rounded to the nearest whole currency unit (standard half-up rounding), and the three lines are kept consistent so that net + VAT always equals the total exactly. Invoicing software and tax authorities may use different rounding conventions (truncation, per-line vs per-invoice rounding), so totals on an official document can differ by a unit or two."}},
+{"@type":"Question","name":"What VAT rate should I use?","acceptedAnswer":{"@type":"Answer","text":"The default is 10%, the standard rate in South Korea (and the consumption-tax rate in Japan). Rates vary widely by country — for example 20% in the UK and France, 19% in Germany — and many countries also have reduced rates for specific goods. Just type your rate into the rate field; the calculator accepts any percentage including decimals."}},
+{"@type":"Question","name":"Does every sale include VAT?","acceptedAnswer":{"@type":"Answer","text":"No. Most VAT systems exempt or zero-rate certain categories — typically staple foods, medical care, education, financial services and exports — and small businesses under a turnover threshold may charge no VAT or a reduced simplified rate. This calculator assumes the standard rate applies; check your local rules for exempt items."}},
+{"@type":"Question","name":"Are the amounts I enter sent to a server?","acceptedAnswer":{"@type":"Answer","text":"No. Every calculation runs entirely inside your browser and no network request is made with your figures. Invoice amounts, contract values and revenue numbers are safe to type in, and the page keeps working offline once it has loaded."}}
+]}
+</script>
+<style>
+.tool-card h2{font-size:16px;margin:0 0 12px}
+@media (min-width:600px){.calc-grid{grid-template-columns:2fr 1fr 1fr}}
+.vat-rows{display:grid;gap:6px;margin-top:10px;font-size:14.5px}
+.vat-rows>div{display:flex;justify-content:space-between;gap:12px;border-top:1px dashed var(--line);padding-top:6px}
+.vat-rows b{font-variant-numeric:tabular-nums}
+.guide table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+.guide th,.guide td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+.guide th{background:var(--surface-2);font-size:13.5px}
+</style>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/">ThisIsMyPDF</a> › <a href="/#calc">Calculators</a> › VAT Calculator</nav>
+  <h1 class="page-title">VAT Calculator<span class="privacy-badge">🔒 Nothing sent to a server</span></h1>
+  <p class="page-sub">Add VAT to a net amount, back it out of a gross total, or compute the tax alone — net, VAT and total shown together, updating as you type. Free, no sign-up.</p>
+
+  <div class="card tool-card">
+    <h2>🧾 Net · VAT · Total</h2>
+    <label class="field" style="margin-bottom:14px">
+      <span>What do you know?</span>
+      <select id="mode" aria-label="Calculation mode">
+        <option value="net">Net amount → add VAT (get the total)</option>
+        <option value="gross">Gross total → back out net &amp; VAT</option>
+        <option value="vat">VAT only (from a net amount)</option>
+      </select>
+    </label>
+    <div class="calc-grid">
+      <label class="field">
+        <span id="amtLabel">Net amount (before VAT)</span>
+        <input type="text" id="amtIn" inputmode="decimal" placeholder="e.g. 100,000" autocomplete="off" aria-label="Amount">
+      </label>
+      <label class="field">
+        <span>VAT rate (%)</span>
+        <input type="number" id="rateIn" inputmode="decimal" min="0" step="any" value="10" aria-label="VAT rate in percent">
+      </label>
+    </div>
+    <div class="calc-out" id="out" aria-live="polite"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>Pick the mode that matches the number you already have: a <b>net amount</b> (price before tax), a <b>gross total</b> (price with VAT already inside), or a net amount when you only care about the <b>tax itself</b>.</li>
+      <li>Type the amount. There is no button — <b>net, VAT and total all appear instantly</b> and update as you edit. Thousands separators (e.g. 1,250,000) are recognized as-is.</li>
+      <li>Change the <b>VAT rate</b> if yours is not 10%. The default matches South Korea's standard rate; enter 20 for the UK, 19 for Germany, or any other rate including decimals.</li>
+    </ol>
+
+    <h2>The two directions of a VAT calculation</h2>
+    <p>Every VAT problem is one of two directions, and mixing them up is the single most common error on invoices and receipts.</p>
+    <ul>
+      <li><b>Adding VAT (net → gross):</b> VAT = net × rate, total = net + VAT. At 10%: a 100,000 net amount carries 10,000 of VAT for a 110,000 total.</li>
+      <li><b>Extracting VAT (gross → net):</b> net = total ÷ (1 + rate), VAT = total − net. At 10%: a 110,000 total divides by 1.1 to give a 100,000 net and 10,000 of VAT.</li>
+    </ul>
+    <p>The trap in the second direction is taking the rate straight off the gross figure. 10% of 110,000 is 11,000 — but the real VAT inside that total is 10,000, because the 10% was charged on the net amount, not on the total. Whenever a price is quoted "VAT included," divide first.</p>
+    <table>
+      <thead><tr><th>You know</th><th>Net</th><th>VAT (10%)</th><th>Total</th></tr></thead>
+      <tbody>
+        <tr><td>Net 100,000</td><td>100,000</td><td>10,000</td><td>110,000</td></tr>
+        <tr><td>Total 110,000</td><td>100,000</td><td>10,000</td><td>110,000</td></tr>
+        <tr><td>Total 55,000</td><td>50,000</td><td>5,000</td><td>55,000</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Where you'll meet this calculation</h2>
+    <ul>
+      <li><b>Quoting a price</b> — a freelancer or contractor quotes a net fee and needs the VAT-inclusive figure the client will actually pay.</li>
+      <li><b>Reading a receipt</b> — a consumer price includes VAT; backing it out shows what the seller keeps and what goes to the tax office.</li>
+      <li><b>Bookkeeping</b> — purchase and sales ledgers record net and VAT separately, so every gross bank-statement figure has to be split.</li>
+      <li><b>Comparing offers</b> — one supplier quotes ex-VAT, another quotes inclusive; converting both to the same basis is the only fair comparison.</li>
+    </ul>
+    <p>Rates differ by country — 10% in South Korea, 20% in the UK and France, 19% in Germany, and US states use a sales tax added at checkout instead of a VAT baked into the shelf price. The arithmetic is identical either way; only the rate field changes. Note that many systems also exempt categories such as staple foods, medical care and education, and small businesses under a turnover threshold may charge no VAT or a reduced simplified amount — this calculator assumes the standard rate applies to the full amount.</p>
+    <div class="tip">💡 <b>Mental math tip:</b> at the 10% rate, backing VAT out of a total is just dividing by 11 — the VAT inside any gross figure is total ÷ 11 (110,000 ÷ 11 = 10,000). At 20%, it is total ÷ 6.</div>
+
+    <h2>Rounding, honestly stated</h2>
+    <p>This calculator rounds each figure to the nearest whole currency unit and keeps the three lines consistent, so net + VAT always equals the total you see. Real invoicing systems sometimes truncate instead of rounding, or round per line item rather than per invoice, so an official document can differ from this result by a unit or two. Treat the output as an estimate for checking and planning, not as a substitute for your accounting software or tax authority's figures.</p>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>How do I back the VAT out of a VAT-inclusive total?</summary><p>Divide the gross total by (1 + rate). At the 10% rate that means net = total ÷ 1.1, and VAT = total − net. For example, a 110,000 gross total breaks down into a 100,000 net amount and 10,000 of VAT. A common mistake is taking 10% of the gross (110,000 × 0.1 = 11,000) — that overstates the tax, because the 10% applies to the net amount, not the total.</p></details>
+      <details><summary>How does this calculator round the results?</summary><p>Each figure is rounded to the nearest whole currency unit (standard half-up rounding), and the three lines are kept consistent so that net + VAT always equals the total exactly. Invoicing software and tax authorities may use different rounding conventions (truncation, per-line vs per-invoice rounding), so totals on an official document can differ by a unit or two.</p></details>
+      <details><summary>What VAT rate should I use?</summary><p>The default is 10%, the standard rate in South Korea (and the consumption-tax rate in Japan). Rates vary widely by country — for example 20% in the UK and France, 19% in Germany — and many countries also have reduced rates for specific goods. Just type your rate into the rate field; the calculator accepts any percentage including decimals.</p></details>
+      <details><summary>Does every sale include VAT?</summary><p>No. Most VAT systems exempt or zero-rate certain categories — typically staple foods, medical care, education, financial services and exports — and small businesses under a turnover threshold may charge no VAT or a reduced simplified rate. This calculator assumes the standard rate applies; check your local rules for exempt items.</p></details>
+      <details><summary>Are the amounts I enter sent to a server?</summary><p>No. Every calculation runs entirely inside your browser and no network request is made with your figures. Invoice amounts, contract values and revenue numbers are safe to type in, and the page keeps working offline once it has loaded.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/percent-calculator/"><span class="emoji">➗</span><span><b>Percentage Calculator</b><span>Ratios, change, discounts</span></span></a>
+      <a class="tool-tile" href="/interest-calculator/"><span class="emoji">💰</span><span><b>Interest Calculator</b><span>Deposits, savings &amp; loans</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var modeEl = document.getElementById('mode');
+  var amtIn = document.getElementById('amtIn');
+  var amtLabel = document.getElementById('amtLabel');
+  var rateIn = document.getElementById('rateIn');
+  var out = document.getElementById('out');
+
+  var LABELS = {
+    net: 'Net amount (before VAT)',
+    gross: 'Gross total (VAT included)',
+    vat: 'Net amount (before VAT)'
+  };
+  var PLACEHOLDERS = { net: 'e.g. 100,000', gross: 'e.g. 110,000', vat: 'e.g. 100,000' };
+
+  function parseNum(s) {
+    if (s == null) return NaN;
+    s = String(s).replace(/,/g, '').trim();
+    if (s === '') return NaN;
+    var n = Number(s);
+    return isFinite(n) ? n : NaN;
+  }
+  function fmt(n) {
+    return n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+  function idle(msg) {
+    out.innerHTML = '<div class="num">—</div><div class="sub">' + msg + '</div>';
+  }
+  function rows(net, vat, total) {
+    return '<div class="vat-rows">' +
+      '<div><span>Net amount</span><b>' + fmt(net) + '</b></div>' +
+      '<div><span>VAT</span><b>' + fmt(vat) + '</b></div>' +
+      '<div><span>Total (gross)</span><b>' + fmt(total) + '</b></div>' +
+      '</div>';
+  }
+
+  function update() {
+    try {
+      var mode = modeEl.value;
+      var x = parseNum(amtIn.value);
+      var r = parseNum(rateIn.value);
+      if (!isFinite(r) || r < 0) { idle('Enter a VAT rate of 0% or more.'); return; }
+      if (!isFinite(x) || x < 0) {
+        idle(amtIn.value.trim() ? 'Numbers only, please. (Commas are recognized automatically.)' : 'Enter an amount for an instant result.');
+        return;
+      }
+      var net, vat, total, main, sub;
+      if (mode === 'gross') {
+        total = Math.round(x);
+        net = Math.round(x / (1 + r / 100));
+        vat = total - net;
+        main = fmt(net);
+        sub = 'Net = ' + fmt(x) + ' ÷ ' + (1 + r / 100) + ' (rounded to the nearest unit)';
+      } else {
+        net = Math.round(x);
+        vat = Math.round(x * r / 100);
+        total = net + vat;
+        if (mode === 'vat') {
+          main = fmt(vat);
+          sub = 'VAT = ' + fmt(x) + ' × ' + r + '% (rounded to the nearest unit)';
+        } else {
+          main = fmt(total);
+          sub = 'Total = net + VAT (' + fmt(net) + ' + ' + fmt(vat) + ', ' + r + '% rate)';
+        }
+      }
+      out.innerHTML = '<div class="num">' + main + '</div><div class="sub">' + sub + '</div>' + rows(net, vat, total);
+    } catch (e) {
+      idle('Something went wrong. Please enter numbers only.');
+    }
+  }
+
+  function onMode() {
+    amtLabel.textContent = LABELS[modeEl.value];
+    amtIn.placeholder = PLACEHOLDERS[modeEl.value];
+    update();
+  }
+
+  modeEl.addEventListener('change', onMode);
+  amtIn.addEventListener('input', update);
+  rateIn.addEventListener('input', update);
+  onMode();
+})();
+</script>
+</body>
+</html>

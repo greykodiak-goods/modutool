@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR Code Generator — URL, Text &amp; Wi-Fi, Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Free QR code generator for links, text, and Wi-Fi login. Live preview, 256–1024 px PNG download, selectable error correction. Everything is generated in your browser — nothing you type is ever sent to a server.">
+<link rel="canonical" href="__ORIGIN__/qr-generator/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/qr-generator/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/qr-generator/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/qr-generator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="QR Code Generator — URL, Text &amp; Wi-Fi, No Upload">
+<meta property="og:description" content="Make QR codes for links, text, or Wi-Fi login with live preview and PNG download. 100% in-browser — your data never leaves your device.">
+<meta property="og:url" content="__ORIGIN__/qr-generator/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .qr-panel { margin-top: 14px; }
+  .qr-panel textarea { width: 100%; min-height: 90px; resize: vertical; font: inherit; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--text); box-sizing: border-box; }
+  .qr-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .qr-fields label { display: block; font-size: 13.5px; color: var(--text-soft); }
+  .qr-fields input[type=text], .qr-fields input[type=password], .qr-fields select { width: 100%; margin-top: 4px; padding: 9px 10px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--text); box-sizing: border-box; font: inherit; }
+  .qr-check { display: flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--text-soft); margin-top: 10px; }
+  .qr-preview { margin-top: 18px; text-align: center; }
+  .qr-preview canvas { max-width: min(100%, 320px); height: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; display: none; }
+  .qr-placeholder { color: var(--text-soft); font-size: 14px; padding: 40px 10px; border: 1px dashed var(--line); border-radius: 10px; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"QR Code Generator - ThisIsMyPDF","url":"__ORIGIN__/qr-generator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that generates QR codes for URLs, text, and Wi-Fi login with live preview and PNG download. Codes are generated entirely in the browser and never sent to a server.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Does a QR code made here ever expire?","acceptedAnswer":{"@type":"Answer","text":"No. A QR code is nothing more than your text drawn as a pattern of squares — there is no server, no account, and no link-shortening service behind it. As long as the content itself stays valid (for example, the URL still works), the code will scan forever. Nothing is hosted anywhere that could be shut down."}},
+{"@type":"Question","name":"Is it safe to put my Wi-Fi password into this tool?","acceptedAnswer":{"@type":"Answer","text":"The tool itself never transmits or stores anything — the QR code is generated entirely inside your browser, and you can verify in the Network tab that nothing is sent. Be aware of what a Wi-Fi QR code is, though: the password is encoded in plain text inside the pattern, so anyone who scans the code (or decodes a photo of it) can read the password. Share the printed code only with people you would tell the password to."}},
+{"@type":"Question","name":"How much text fits in one QR code?","acceptedAnswer":{"@type":"Answer","text":"At the lowest error-correction level (L), a QR code holds up to about 2,953 bytes of data — roughly 2,900 Latin characters, fewer for Korean or emoji since they take 3 bytes each in UTF-8. Higher error-correction levels reserve more space for recovery data, so the limit drops — level H holds roughly 1,270 bytes. If your text does not fit, the tool tells you instead of producing a broken code."}},
+{"@type":"Question","name":"Why does higher error correction make the code look denser?","acceptedAnswer":{"@type":"Answer","text":"Error correction adds redundant recovery data so the code still scans when partly dirty, damaged, or covered — L tolerates about 7% damage, M 15%, Q 25%, and H 30%. That extra data has to go somewhere, so the code needs more modules (smaller squares) for the same text. Use M for general use, and Q or H only for codes that will be printed small or handled roughly."}},
+{"@type":"Question","name":"Can I put a logo in the middle of the QR code?","acceptedAnswer":{"@type":"Answer","text":"Not in this tool — it generates clean standard codes only. Logo overlays work by deliberately covering part of the code and relying on high error correction to survive, which is possible but fragile to get right. If you need a branded code, generate a high-error-correction (H) PNG here and add the logo carefully in an image editor, keeping it under about 20% of the code area, then test-scan it."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/">ThisIsMyPDF</a> › <a href="/#calc">Everyday Tools</a> › QR Code Generator</nav>
+  <h1 class="page-title">QR Code Generator<span class="privacy-badge">🔒 No upload, no storage</span></h1>
+  <p class="page-sub">Turn a link, any text, or your Wi-Fi login into a QR code with live preview and crisp PNG download. Generated entirely in your browser — nothing you type is transmitted or stored.</p>
+
+  <div class="card tool-card">
+    <div class="opts">
+      <label>Content type
+        <select id="typeSel">
+          <option value="text" selected>URL / Text</option>
+          <option value="wifi">Wi-Fi login</option>
+        </select>
+      </label>
+      <label>Size
+        <select id="sizeSel">
+          <option value="256">256 px</option>
+          <option value="512" selected>512 px</option>
+          <option value="1024">1024 px</option>
+        </select>
+      </label>
+      <label>Error correction
+        <select id="ecSel">
+          <option value="L">L — smallest code</option>
+          <option value="M" selected>M — recommended</option>
+          <option value="Q">Q — robust</option>
+          <option value="H">H — most robust</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="qr-panel" id="panelText">
+      <textarea id="txt" spellcheck="false" placeholder="Paste a URL or type any text — the QR code appears below as you type."></textarea>
+    </div>
+
+    <div class="qr-panel" id="panelWifi" style="display:none">
+      <div class="qr-fields">
+        <label>Network name (SSID)<input type="text" id="wifiSsid" autocomplete="off" placeholder="MyHomeWifi"></label>
+        <label>Password<input type="password" id="wifiPass" autocomplete="off" placeholder="Wi-Fi password"></label>
+        <label>Security
+          <select id="wifiSec">
+            <option value="WPA" selected>WPA / WPA2 / WPA3</option>
+            <option value="WEP">WEP (legacy)</option>
+            <option value="nopass">None (open network)</option>
+          </select>
+        </label>
+      </div>
+      <label class="qr-check"><input type="checkbox" id="wifiHidden"> Hidden network (SSID not broadcast)</label>
+    </div>
+
+    <div class="qr-preview">
+      <canvas id="qrCanvas"></canvas>
+      <div class="qr-placeholder" id="qrPlaceholder">The QR code will appear here as soon as you enter something above.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="dlBtn" disabled>Download PNG</button>
+      <button class="btn secondary" id="copyBtn" disabled>Copy image</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>Pick a <b>content type</b>: <b>URL / Text</b> for links, phone numbers, or any message, or <b>Wi-Fi login</b> to let guests join your network by scanning.</li>
+      <li>Type your content — the preview regenerates live as you type, no button needed.</li>
+      <li>Adjust <b>size</b> (pixels of the downloaded PNG) and <b>error correction</b> if needed. The defaults — 512 px, level M — are right for most uses.</li>
+      <li>Click <b>Download PNG</b> to save <b>qr-code.png</b>, or <b>Copy image</b> to paste it straight into a chat or document.</li>
+    </ol>
+
+    <h2>QR versions and error correction, briefly and honestly</h2>
+    <p>A QR code grows in fixed steps called <b>versions</b> — version 1 is a 21×21 grid, and each version adds 4 modules per side up to version 40 (177×177). This tool picks the smallest version that fits your text automatically, so more text simply means a denser code.</p>
+    <p><b>Error correction</b> reserves part of the code for redundant recovery data so a dirty, torn, or partly covered code still scans: <b>L</b> survives ~7% damage, <b>M</b> ~15%, <b>Q</b> ~25%, <b>H</b> ~30%. The trade-off is real — higher levels leave less room for your data and make the code denser. <b>M is the sensible default.</b> Choose H only when the code will be printed small, laminated onto equipment, or otherwise abused.</p>
+
+    <h2>Wi-Fi QR codes: how guests use them</h2>
+    <p>A Wi-Fi QR code encodes your network name, security type, and password in a standard format that iOS and Android both understand natively. A guest opens their camera, points it at the code, and taps the prompt — the phone joins the network without anyone spelling out <i>"capital B, underscore, seven…"</i>. Print it and stick it on the fridge, frame it for your café counter, or drop it into a guest-room welcome card.</p>
+    <p>One honest caveat: the password sits in plain text inside the code. Anyone who scans it — including anyone with a photo of it — can read the password. Treat the printed code with the same care as the password itself.</p>
+
+    <h2>Print size: how big should the code be?</h2>
+    <ul>
+      <li>Rule of thumb: <b>scanning distance ≈ 10× the code's printed width</b>. A 3 cm code scans comfortably from ~30 cm (a table tent); a poster read from 3 m needs a code around 30 cm wide.</li>
+      <li>Keep the <b>quiet zone</b> — the white margin around the code — intact. This tool bakes in the standard 4-module margin; don't crop it off.</li>
+      <li>More text = smaller squares at the same print size. If a dense code scans poorly, shorten the content (use a shorter URL) before enlarging the print.</li>
+      <li>For print, download at <b>1024 px</b> so the code stays sharp when scaled.</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> Always test-scan a printed code with a real phone before producing 500 flyers. It takes ten seconds and catches every sizing mistake.</div>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>Does a QR code made here ever expire?</summary><p>No. A QR code is nothing more than your text drawn as a pattern of squares — there is no server, no account, and no link-shortening service behind it. As long as the content itself stays valid (for example, the URL still works), the code will scan forever. Nothing is hosted anywhere that could be shut down.</p></details>
+      <details><summary>Is it safe to put my Wi-Fi password into this tool?</summary><p>The tool itself never transmits or stores anything — the QR code is generated entirely inside your browser, and you can verify in the Network tab that nothing is sent. Be aware of what a Wi-Fi QR code is, though: the password is encoded in plain text inside the pattern, so anyone who scans the code (or decodes a photo of it) can read the password. Share the printed code only with people you would tell the password to.</p></details>
+      <details><summary>How much text fits in one QR code?</summary><p>At the lowest error-correction level (L), a QR code holds up to about 2,953 bytes of data — roughly 2,900 Latin characters, fewer for Korean or emoji since they take 3 bytes each in UTF-8. Higher error-correction levels reserve more space for recovery data, so the limit drops — level H holds roughly 1,270 bytes. If your text does not fit, the tool tells you instead of producing a broken code.</p></details>
+      <details><summary>Why does higher error correction make the code look denser?</summary><p>Error correction adds redundant recovery data so the code still scans when partly dirty, damaged, or covered — L tolerates about 7% damage, M 15%, Q 25%, and H 30%. That extra data has to go somewhere, so the code needs more modules (smaller squares) for the same text. Use M for general use, and Q or H only for codes that will be printed small or handled roughly.</p></details>
+      <details><summary>Can I put a logo in the middle of the QR code?</summary><p>Not in this tool — it generates clean standard codes only. Logo overlays work by deliberately covering part of the code and relying on high error correction to survive, which is possible but fragile to get right. If you need a branded code, generate a high-error-correction (H) PNG here and add the logo carefully in an image editor, keeping it under about 20% of the code area, then test-scan it.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/password-generator/"><span class="emoji">🔑</span><span><b>Password Generator</b><span>Strong random passwords, made locally</span></span></a>
+      <a class="tool-tile" href="/text-diff/"><span class="emoji">🔀</span><span><b>Text Diff</b><span>Compare two texts line by line</span></span></a>
+      <a class="tool-tile" href="/char-count/"><span class="emoji">🔤</span><span><b>Character Counter</b><span>Live character, word &amp; byte counts</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/assets/vendor/qrcode-generator.js"></script>
+<script>
+(function () {
+  'use strict';
+  var typeSel = document.getElementById('typeSel');
+  var sizeSel = document.getElementById('sizeSel');
+  var ecSel = document.getElementById('ecSel');
+  var panelText = document.getElementById('panelText');
+  var panelWifi = document.getElementById('panelWifi');
+  var txt = document.getElementById('txt');
+  var wifiSsid = document.getElementById('wifiSsid');
+  var wifiPass = document.getElementById('wifiPass');
+  var wifiSec = document.getElementById('wifiSec');
+  var wifiHidden = document.getElementById('wifiHidden');
+  var canvas = document.getElementById('qrCanvas');
+  var placeholder = document.getElementById('qrPlaceholder');
+  var dlBtn = document.getElementById('dlBtn');
+  var copyBtn = document.getElementById('copyBtn');
+  var result = document.getElementById('result');
+
+  var hasQR = false;
+  var lastCopyLog = 0;
+  var copySupported = !!(navigator.clipboard && navigator.clipboard.write && window.ClipboardItem);
+  if (!copySupported) copyBtn.style.display = 'none';
+
+  /* Wi-Fi payload special characters must be backslash-escaped per the de-facto WIFI: format. */
+  function wifiEsc(s) { return s.replace(/([\\;,":])/g, '\\$1'); }
+
+  function payload() {
+    if (typeSel.value === 'wifi') {
+      var ssid = wifiSsid.value;
+      if (!ssid.trim()) return '';
+      var sec = wifiSec.value;
+      var out = 'WIFI:T:' + sec + ';S:' + wifiEsc(ssid) + ';';
+      if (sec !== 'nopass') out += 'P:' + wifiEsc(wifiPass.value) + ';';
+      if (wifiHidden.checked) out += 'H:true;';
+      return out + ';';
+    }
+    return txt.value.trim();
+  }
+
+  function setEmpty() {
+    hasQR = false;
+    canvas.style.display = 'none';
+    placeholder.style.display = '';
+    dlBtn.disabled = true;
+    copyBtn.disabled = true;
+  }
+
+  function draw() {
+    var data = payload();
+    result.className = 'result';
+    if (!data) { setEmpty(); return; }
+    try {
+      var qr = qrcode(0, ecSel.value); // type 0 = auto-pick smallest version that fits
+      qr.addData(data, 'Byte');
+      qr.make();
+      var count = qr.getModuleCount();
+      var target = parseInt(sizeSel.value, 10) || 512;
+      var quiet = 4; // standard quiet-zone margin, in modules
+      var cell = Math.max(1, Math.floor(target / (count + quiet * 2)));
+      var dim = cell * (count + quiet * 2);
+      canvas.width = dim;
+      canvas.height = dim;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, dim, dim);
+      ctx.fillStyle = '#000000';
+      for (var r = 0; r < count; r++) {
+        for (var c = 0; c < count; c++) {
+          if (qr.isDark(r, c)) ctx.fillRect((c + quiet) * cell, (r + quiet) * cell, cell, cell);
+        }
+      }
+      canvas.style.display = 'inline-block';
+      placeholder.style.display = 'none';
+      hasQR = true;
+      dlBtn.disabled = false;
+      copyBtn.disabled = false;
+    } catch (e) {
+      setEmpty();
+      mdtlResult(result, '❌ The text is too long for a QR code at this error-correction level. Shorten the content or switch error correction to L.', true);
+    }
+  }
+
+  var debTimer = null;
+  function drawDebounced() {
+    if (debTimer) clearTimeout(debTimer);
+    debTimer = setTimeout(draw, 300);
+  }
+
+  function switchType() {
+    var wifi = typeSel.value === 'wifi';
+    panelText.style.display = wifi ? 'none' : '';
+    panelWifi.style.display = wifi ? '' : 'none';
+    draw();
+  }
+
+  typeSel.addEventListener('change', switchType);
+  sizeSel.addEventListener('change', draw);
+  ecSel.addEventListener('change', draw);
+  wifiSec.addEventListener('change', draw);
+  wifiHidden.addEventListener('change', draw);
+  [txt, wifiSsid, wifiPass].forEach(function (el) { el.addEventListener('input', drawDebounced); });
+
+  dlBtn.addEventListener('click', function () {
+    if (!hasQR) return;
+    canvas.toBlob(function (blob) {
+      if (!blob) { mdtlResult(result, '❌ Could not create the PNG. Please try again.', true); return; }
+      mdtlDownload(blob, 'qr-code.png');
+      mdtlLogEvent('qr-generator', 'success', null, { format: 'png', width: parseInt(sizeSel.value, 10), count: 1 });
+      mdtlResult(result, '✅ <b>Downloaded!</b> Saved as <b>qr-code.png</b>. Test-scan it with your phone camera before printing — it takes ten seconds.');
+    }, 'image/png');
+  });
+
+  copyBtn.addEventListener('click', function () {
+    if (!hasQR || !copySupported) return;
+    try {
+      canvas.toBlob(function (blob) {
+        if (!blob) { mdtlResult(result, '❌ Could not copy the image. Use Download PNG instead.', true); return; }
+        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(function () {
+          var now = Date.now();
+          if (now - lastCopyLog > 3000) { // rate-limit copy telemetry to once per 3s
+            lastCopyLog = now;
+            mdtlLogEvent('qr-generator', 'success', null, { format: 'png', width: parseInt(sizeSel.value, 10), count: 1 });
+          }
+          mdtlResult(result, '✅ <b>Copied!</b> Paste the QR code image into any chat or document.');
+        }, function () {
+          mdtlResult(result, '❌ Your browser blocked the image copy. Use Download PNG instead.', true);
+        });
+      }, 'image/png');
+    } catch (e) {
+      mdtlResult(result, '❌ Your browser blocked the image copy. Use Download PNG instead.', true);
+    }
+  });
+
+  setEmpty();
+})();
+</script>
+</body>
+</html>

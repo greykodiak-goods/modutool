@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이미지 색상 추출(스포이드) — HEX·RGB 색상코드 무료, 업로드 없음 | ThisIsMyPDF</title>
+<meta name="description" content="이미지 위에 마우스를 올려 HEX·RGB 색상코드를 읽는 무료 스포이드 도구. 클릭으로 색을 고정하고, 견본을 클릭하면 HEX가 복사됩니다. 전 과정이 브라우저 안에서 처리되고 이미지는 서버로 전송되지 않습니다.">
+<link rel="canonical" href="__ORIGIN__/ko/image-color-picker/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/image-color-picker/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/image-color-picker/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/image-color-picker/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="이미지 색상 추출(스포이드) — HEX·RGB, 서버 업로드 없음">
+<meta property="og:description" content="이미지에 마우스를 올려 색을 읽고, 클릭으로 모아서 HEX 복사. 100% 브라우저 처리 — 이미지는 기기를 떠나지 않습니다.">
+<meta property="og:url" content="__ORIGIN__/ko/image-color-picker/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .pick-stage { display:none; margin-top:14px; }
+  .pick-stage.show { display:block; }
+  .pick-wrap { position:relative; display:inline-block; max-width:100%; }
+  .pick-wrap canvas { max-width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); cursor:crosshair; }
+  .pick-chip { position:absolute; display:none; pointer-events:none; background:rgba(17,24,39,.92); color:#fff; font-size:12px; padding:4px 8px; border-radius:8px; white-space:nowrap; z-index:5; }
+  .pick-chip .dot { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:6px; vertical-align:-2px; border:1px solid rgba(255,255,255,.6); }
+  .pick-hint { font-size:12.5px; color:var(--text-soft); margin:8px 0 0; }
+  .pick-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .pick-swatch { display:flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:8px; padding:4px 8px; background:none; cursor:pointer; font-size:12.5px; font-family:inherit; color:inherit; }
+  .pick-swatch .sw { width:18px; height:18px; border-radius:4px; border:1px solid var(--line); }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"이미지 색상 추출(스포이드) - ThisIsMyPDF","url":"__ORIGIN__/ko/image-color-picker/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"이미지의 원하는 픽셀에서 HEX·RGB 색상값을 읽는 무료 웹 스포이드. 서버 업로드 없이 브라우저에서 처리됩니다.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"이미지가 어딘가로 업로드되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 이미지는 브라우저 안의 캔버스에 그려지고, 색상은 그 캔버스에서 내 기기 위에서 읽습니다. 브라우저 개발자도구의 네트워크 탭을 열어보면 파일이 전송되지 않는 것을 직접 확인할 수 있고, 탭을 닫으면 모든 것이 사라집니다."}},
+{"@type":"Question","name":"포토샵이나 디자인 파일과 HEX 값이 조금 다르게 나오는데요?","acceptedAnswer":{"@type":"Answer","text":"브라우저 캔버스는 sRGB로 동작합니다. 사진이 Display P3 같은 광색역(최신 아이폰에서 흔함)으로 저장돼 있으면 브라우저가 픽셀을 읽기 전에 sRGB로 변환하므로, 채도 높은 색은 색 관리를 하는 편집 프로그램의 값과 몇 단계 다를 수 있습니다. 원래 sRGB였던 픽셀 — 대부분의 웹 그래픽과 스크린샷 — 은 값이 정확히 일치합니다."}},
+{"@type":"Question","name":"원하는 픽셀을 정확히 집으려면 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"확대하세요: PC에서는 브라우저 확대(Ctrl/Cmd +), 모바일에서는 손가락 핀치 줌을 쓰면 됩니다 — 읽기는 확대된 픽셀을 따라가므로 1픽셀짜리 디테일도 집을 수 있습니다. 클릭하기 전에 커서를 따라다니는 칩이 보여주는 색이 안정되는 것을 확인한 뒤 고정하세요."}},
+{"@type":"Question","name":"HEX와 RGB는 뭐가 다른가요?","acceptedAnswer":{"@type":"Answer","text":"같은 색을 적는 두 가지 표기법입니다. RGB는 빨강·초록·파랑 성분을 0~255 숫자로 나열합니다(예: rgb(37, 99, 235)). HEX는 같은 세 숫자를 16진수 한 줄로 적습니다(#2563EB). CSS는 둘 다 인식하지만 디자인 도구·브랜드 가이드는 보통 HEX를 쓰기 때문에, 이 도구의 복사 버튼도 HEX를 복사합니다."}},
+{"@type":"Question","name":"스크린샷에서 집은 색이 그 사이트의 CSS 값과 왜 다른가요?","acceptedAnswer":{"@type":"Answer","text":"JPG로 저장된 스크린샷은 경계 부분의 색이 살짝 섞입니다 — 압축이 이웃 픽셀을 섞기 때문에 글자나 버튼 테두리 경계의 픽셀은 혼합된 값으로 읽힙니다. 단색 영역의 한가운데에서 집고, 가능하면 PNG 스크린샷을 쓰세요. PNG는 무손실이라 단색 영역의 값이 그대로 보존됩니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/ko/">ThisIsMyPDF</a> › <a href="/ko/#image">이미지 도구</a> › 색상 추출</nav>
+  <h1 class="page-title">이미지 색상 추출(스포이드)<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">마우스를 올리면 커서 아래 색이 읽히고, 클릭하면 고정, 견본을 클릭하면 HEX 코드가 복사됩니다. 무료 — 설치·가입 없음.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🎨</span>
+      <strong>이미지를 끌어다 놓거나 클릭해서 선택</strong><br>
+      한 번에 한 장 (JPG · PNG · WEBP · GIF · BMP)
+    </div>
+    <div class="pick-stage" id="stage">
+      <div class="pick-wrap" id="wrap">
+        <canvas id="preview"></canvas>
+        <div class="pick-chip" id="chip"></div>
+      </div>
+      <p class="pick-hint">이미지 위에서 움직이면 색이 읽힙니다 · 클릭하면 보관(최대 12개, 최신 순) · 견본을 클릭하면 HEX 복사.</p>
+      <div class="pick-row" id="picks"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="copyBtn" disabled>HEX 복사</button>
+      <button class="btn secondary" id="clearPicksBtn" style="display:none">색상 비우기</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">이미지 제거</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>이미지를 위 영역에 끌어다 놓거나 클릭해서 선택합니다 — 스크린샷, 사진, 로고 무엇이든 좋습니다.</li>
+      <li>미리보기 위에서 <b>포인터를 움직이면</b> 커서를 따라다니는 작은 칩에 그 픽셀의 <b>HEX·RGB</b> 값이 표시됩니다.</li>
+      <li><b>클릭</b>하면 색이 고정되어 이미지 아래 견본 줄에 추가됩니다(최대 12개, 최신 순). 한 번에 팔레트 전체를 모을 수 있습니다.</li>
+      <li>아무 <b>견본</b>이나 — 또는 마지막 색을 복사하는 <b>HEX 복사</b> 버튼을 — 클릭하면 코드가 클립보드에 복사됩니다. CSS·피그마·브랜드 문서에 바로 붙여 넣으세요.</li>
+    </ol>
+
+    <h2>값이 의미하는 것</h2>
+    <p>화면의 모든 픽셀은 빨강·초록·파랑 빛의 혼합이고, 각각 0~255 값을 가집니다. <b>RGB</b> 표기는 이를 그대로 나열하고 — <code>rgb(37, 99, 235)</code> — <b>HEX</b>는 같은 세 숫자를 16진수로 묶어 적습니다: <code>#2563EB</code>. 서로 완전히 호환되며, 대부분의 도구와 스타일 가이드가 HEX를 기대하기 때문에 복사 버튼도 HEX를 내보냅니다.</p>
+    <p>솔직히 짚어둘 것 하나: 브라우저 캔버스는 <b>sRGB</b>로 색을 읽습니다. 광색역(최신 폰에서 흔한 Display P3)으로 저장된 사진은 먼저 sRGB로 변환되므로, 채도가 아주 높은 색은 포토샵 같은 색 관리 편집기의 값과 몇 단계 차이 날 수 있습니다. 일반적인 웹 그래픽·스크린샷은 값이 정확히 일치합니다.</p>
+
+    <h2>정확하게 집는 요령</h2>
+    <ul>
+      <li><b>확대하기</b> — 브라우저 확대(Ctrl/Cmd +) 또는 모바일 핀치 줌. 스포이드가 확대된 이미지를 따라가므로 1픽셀 디테일도 쉽게 집힙니다.</li>
+      <li><b>단색 영역에서 집기</b> — JPG 압축은 경계의 픽셀을 섞기 때문에, 글자·테두리 경계의 픽셀은 혼합값으로 읽힙니다. 단색 영역 한가운데가 진짜 값입니다.</li>
+      <li><b>PNG 스크린샷 선호</b> — PNG는 무손실이라 UI 색이 그대로 보존됩니다. JPG 스크린샷은 단색도 1~2 정도 틀어질 수 있습니다.</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 사진에서 팔레트를 뽑을 때는 밝은 부분·중간톤·어두운 부분을 골고루 클릭해 두세요 — 견본 줄이 최근 12개를 보관하므로 비교하며 하나씩 복사할 수 있습니다.</div>
+
+    <h2>이런 때 좋아요</h2>
+    <ul>
+      <li>스타일 가이드를 찾을 수 없을 때 로고에서 브랜드 색상 맞추기</li>
+      <li>스크린샷에서 본 배색 그대로 재현하기</li>
+      <li>발표자료·썸네일에 쓸 포인트 색을 사진에서 뽑기</li>
+      <li>실제 렌더링된 페이지가 어떤 색으로 나갔는지 확인</li>
+      <li>디자인 시작 전에 빠르게 팔레트 수집</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>이미지가 어딘가로 업로드되나요?</summary><p>아니요. 이미지는 브라우저 안의 캔버스에 그려지고, 색상은 그 캔버스에서 내 기기 위에서 읽습니다. 브라우저 개발자도구의 네트워크 탭을 열어보면 파일이 전송되지 않는 것을 직접 확인할 수 있고, 탭을 닫으면 모든 것이 사라집니다.</p></details>
+      <details><summary>포토샵이나 디자인 파일과 HEX 값이 조금 다르게 나오는데요?</summary><p>브라우저 캔버스는 sRGB로 동작합니다. 사진이 Display P3 같은 광색역(최신 아이폰에서 흔함)으로 저장돼 있으면 브라우저가 픽셀을 읽기 전에 sRGB로 변환하므로, 채도 높은 색은 색 관리를 하는 편집 프로그램의 값과 몇 단계 다를 수 있습니다. 원래 sRGB였던 픽셀 — 대부분의 웹 그래픽과 스크린샷 — 은 값이 정확히 일치합니다.</p></details>
+      <details><summary>원하는 픽셀을 정확히 집으려면 어떻게 하나요?</summary><p>확대하세요: PC에서는 브라우저 확대(Ctrl/Cmd +), 모바일에서는 손가락 핀치 줌을 쓰면 됩니다 — 읽기는 확대된 픽셀을 따라가므로 1픽셀짜리 디테일도 집을 수 있습니다. 클릭하기 전에 커서를 따라다니는 칩이 보여주는 색이 안정되는 것을 확인한 뒤 고정하세요.</p></details>
+      <details><summary>HEX와 RGB는 뭐가 다른가요?</summary><p>같은 색을 적는 두 가지 표기법입니다. RGB는 빨강·초록·파랑 성분을 0~255 숫자로 나열합니다(예: rgb(37, 99, 235)). HEX는 같은 세 숫자를 16진수 한 줄로 적습니다(#2563EB). CSS는 둘 다 인식하지만 디자인 도구·브랜드 가이드는 보통 HEX를 쓰기 때문에, 이 도구의 복사 버튼도 HEX를 복사합니다.</p></details>
+      <details><summary>스크린샷에서 집은 색이 그 사이트의 CSS 값과 왜 다른가요?</summary><p>JPG로 저장된 스크린샷은 경계 부분의 색이 살짝 섞입니다 — 압축이 이웃 픽셀을 섞기 때문에 글자나 버튼 테두리 경계의 픽셀은 혼합된 값으로 읽힙니다. 단색 영역의 한가운데에서 집고, 가능하면 PNG 스크린샷을 쓰세요. PNG는 무손실이라 단색 영역의 값이 그대로 보존됩니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/ko/image-crop/"><span class="emoji">✂️</span><span><b>이미지 자르기</b><span>원하는 부분만 잘라내기</span></span></a>
+      <a class="tool-tile" href="/ko/image-resize/"><span class="emoji">📐</span><span><b>이미지 크기조절·변환</b><span>크기 조절 + 형식 변환</span></span></a>
+      <a class="tool-tile" href="/ko/image-compress/"><span class="emoji">🗜️</span><span><b>이미지 압축</b><span>해상도 유지, 용량만 줄이기</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('wrap');
+  var preview = document.getElementById('preview');
+  var pctx = preview.getContext('2d');
+  var chip = document.getElementById('chip');
+  var picksRow = document.getElementById('picks');
+  var copyBtn = document.getElementById('copyBtn');
+  var clearPicksBtn = document.getElementById('clearPicksBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+
+  var srcImage = null;
+  // 미리보기와 같은 해상도의 오프스크린 샘플 캔버스; 픽셀 읽기는 여기서
+  // willReadFrequently로 수행해 호버 조회를 가볍게 유지한다.
+  var sample = document.createElement('canvas');
+  var sctx = sample.getContext('2d', { willReadFrequently: true });
+  var picks = [];            // [{hex, rgb}] 최신 순, 최대 12개
+  var MAX_PICKS = 12;
+  var lastLogAt = 0;         // 텔레메트리 가드: 3초에 최대 1회 기록
+
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('이미지를 읽지 못했습니다. 브라우저가 지원하지 않는 형식(HEIC 등)일 수 있습니다.')); };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else { fallback(); }
+    });
+  }
+
+  function toHex(n) { var s = n.toString(16).toUpperCase(); return s.length === 1 ? '0' + s : s; }
+
+  function colorAt(e) {
+    var r = preview.getBoundingClientRect();
+    if (!r.width || !r.height) return null;
+    var px = Math.floor((e.clientX - r.left) * preview.width / r.width);
+    var py = Math.floor((e.clientY - r.top) * preview.height / r.height);
+    px = Math.max(0, Math.min(px, preview.width - 1));
+    py = Math.max(0, Math.min(py, preview.height - 1));
+    var d = sctx.getImageData(px, py, 1, 1).data;
+    return {
+      hex: '#' + toHex(d[0]) + toHex(d[1]) + toHex(d[2]),
+      rgb: 'rgb(' + d[0] + ', ' + d[1] + ', ' + d[2] + ')',
+      lx: e.clientX - r.left,
+      ly: e.clientY - r.top
+    };
+  }
+
+  function copyText(t) {
+    return new Promise(function (resolve, reject) {
+      function legacy() {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = t;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) resolve(); else reject(new Error('copy failed'));
+        } catch (err) { reject(err); }
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(t).then(resolve, legacy);
+      } else { legacy(); }
+    });
+  }
+
+  function logCopy() {
+    var now = Date.now();
+    if (now - lastLogAt >= 3000) {
+      lastLogAt = now;
+      mdtlLogEvent('image-color-picker', 'success', null, { count: picks.length });
+    }
+  }
+
+  function copyPick(p) {
+    copyText(p.hex).then(function () {
+      logCopy();
+      mdtlResult(result, '✅ <b>' + p.hex + '</b> 를 클립보드에 복사했습니다 (' + p.rgb + ').');
+    }, function () {
+      mdtlResult(result, '❌ 클립보드에 접근하지 못했습니다. 견본의 HEX 글자를 직접 선택해 복사해 주세요.', true);
+    });
+  }
+
+  function renderPicks() {
+    picksRow.innerHTML = '';
+    picks.forEach(function (p, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pick-swatch';
+      b.dataset.i = i;
+      b.title = p.rgb + ' — 클릭하면 복사';
+      var sw = document.createElement('span');
+      sw.className = 'sw';
+      sw.style.background = p.hex;
+      var label = document.createElement('span');
+      label.textContent = p.hex;
+      b.appendChild(sw); b.appendChild(label);
+      picksRow.appendChild(b);
+    });
+    copyBtn.disabled = picks.length === 0;
+    copyBtn.textContent = picks.length ? 'HEX 복사 (' + picks[0].hex + ')' : 'HEX 복사';
+    clearPicksBtn.style.display = picks.length ? '' : 'none';
+  }
+
+  function setImage(img) {
+    srcImage = img;
+    var w = img.width || img.naturalWidth;
+    var h = img.height || img.naturalHeight;
+    var maxW = 900;
+    var scale = Math.min(1, maxW / w);
+    preview.width = Math.max(1, Math.round(w * scale));
+    preview.height = Math.max(1, Math.round(h * scale));
+    sample.width = preview.width;
+    sample.height = preview.height;
+    pctx.drawImage(img, 0, 0, preview.width, preview.height);
+    sctx.drawImage(img, 0, 0, sample.width, sample.height);
+    picks = [];
+    renderPicks();
+    stage.className = 'pick-stage show';
+    clearBtn.style.display = '';
+    result.className = 'result';
+  }
+
+  function resetAll() {
+    srcImage = null;
+    picks = [];
+    stage.className = 'pick-stage';
+    chip.style.display = 'none';
+    copyBtn.disabled = true;
+    copyBtn.textContent = 'HEX 복사';
+    clearPicksBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+
+  mdtlDropzone(dz, {
+    accept: 'image/*,.jpg,.jpeg,.png,.webp,.gif,.bmp',
+    multiple: false,
+    onFiles: function (fs) {
+      loadImage(fs[0]).then(setImage)
+        .catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+    }
+  });
+
+  clearBtn.addEventListener('click', resetAll);
+  clearPicksBtn.addEventListener('click', function () { picks = []; renderPicks(); result.className = 'result'; });
+
+  preview.addEventListener('pointermove', function (e) {
+    if (!srcImage) return;
+    var c = colorAt(e);
+    if (!c) return;
+    chip.style.display = 'block';
+    chip.innerHTML = '<span class="dot"></span>' + c.hex + ' · ' + c.rgb;
+    chip.querySelector('.dot').style.background = c.hex;
+    var r = preview.getBoundingClientRect();
+    var cx = Math.min(c.lx + 14, Math.max(0, r.width - chip.offsetWidth - 4));
+    var cy = c.ly - 34;
+    if (cy < 0) cy = c.ly + 18;
+    chip.style.left = cx + 'px';
+    chip.style.top = cy + 'px';
+  });
+  preview.addEventListener('pointerleave', function () { chip.style.display = 'none'; });
+
+  preview.addEventListener('click', function (e) {
+    if (!srcImage) return;
+    var c = colorAt(e);
+    if (!c) return;
+    picks.unshift({ hex: c.hex, rgb: c.rgb });
+    if (picks.length > MAX_PICKS) picks.length = MAX_PICKS;
+    renderPicks();
+  });
+
+  picksRow.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    var p = picks[+b.dataset.i];
+    if (p) copyPick(p);
+  });
+
+  copyBtn.addEventListener('click', function () {
+    if (picks.length) copyPick(picks[0]);
+  });
+})();
+</script>
+</body>
+</html>

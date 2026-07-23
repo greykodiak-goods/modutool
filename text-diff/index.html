@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Text Diff — Compare Two Texts Online, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Free online text comparison tool. Paste two versions and see additions highlighted in green and deletions in red, line by line or word by word. Everything runs in your browser — your text is never sent to a server.">
+<link rel="canonical" href="__ORIGIN__/text-diff/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/text-diff/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/text-diff/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/text-diff/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Text Diff — Compare Two Texts, No Upload">
+<meta property="og:description" content="See exactly what changed between two versions of a text, line by line or word by word. 100% in-browser — nothing is transmitted.">
+<meta property="og:url" content="__ORIGIN__/text-diff/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .diff-cols { display: flex; gap: 12px; flex-wrap: wrap; }
+  .diff-col { flex: 1 1 280px; min-width: 0; }
+  .diff-col label { display: block; font-size: 13.5px; color: var(--text-soft); margin-bottom: 5px; font-weight: 700; }
+  .diff-col textarea { width: 100%; min-height: 190px; resize: vertical; box-sizing: border-box; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; line-height: 1.55; }
+  .diff-summary { margin-top: 14px; font-size: 14px; color: var(--text-soft); }
+  .diff-summary .add { color: var(--ok); font-weight: 700; }
+  .diff-summary .del { color: var(--danger); font-weight: 700; }
+  .diff-out { display: none; margin-top: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); white-space: pre-wrap; word-break: break-word; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; line-height: 1.6; max-height: 480px; overflow-y: auto; }
+  .diff-out.show { display: block; }
+  .diff-out ins { background: rgba(22,163,74,.18); text-decoration: none; border-radius: 3px; }
+  .diff-out del { background: rgba(220,38,38,.15); text-decoration: line-through; border-radius: 3px; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Text Diff - ThisIsMyPDF","url":"__ORIGIN__/text-diff/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that compares two texts and highlights additions and deletions, line by line or word by word. Comparison runs entirely in the browser and text is never sent to a server.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is my text uploaded anywhere when I compare?","acceptedAnswer":{"@type":"Answer","text":"No. The comparison algorithm runs as JavaScript inside your browser — both texts stay on your device, and nothing is transmitted or stored. You can confirm in the Network tab of your browser's developer tools that no request carries your text. That makes it safe for contracts, unpublished drafts, and anything else confidential."}},
+{"@type":"Question","name":"Is there a size limit on the texts?","acceptedAnswer":{"@type":"Answer","text":"There is no hard limit — the practical ceiling is your browser's memory and CPU. Texts up to around 1 MB (hundreds of pages) compare comfortably; far beyond that, word-level mode in particular can get slow because it examines many more pieces. If a huge comparison feels sluggish, switch to line mode, which scales much better."}},
+{"@type":"Question","name":"Can it compare character by character?","acceptedAnswer":{"@type":"Answer","text":"Not in this tool — word mode is the finest granularity offered. In practice word-level highlighting is what you want for prose and documents; character-level output on ordinary text tends to produce confetti that is harder to read, not easier. If you truly need character-level precision (say, comparing serial numbers), word mode will still isolate the differing token for you."}},
+{"@type":"Question","name":"What do the green and red highlights mean?","acceptedAnswer":{"@type":"Answer","text":"Green marks text that exists in the changed version but not the original — additions. Red with strikethrough marks text that exists in the original but was removed or replaced in the changed version — deletions. A replacement shows up as a red part immediately next to a green part. Unhighlighted text is identical in both versions."}},
+{"@type":"Question","name":"Can I compare two files directly?","acceptedAnswer":{"@type":"Answer","text":"This version has no file picker — open each file, select all, and paste the contents into the two boxes. That works for any plain-text file: .txt, .md, .csv, source code, exported notes. Binary formats like .docx or .pdf need their text extracted first (copy out of the application and paste here)."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/">ThisIsMyPDF</a> › <a href="/#calc">Text Tools</a> › Text Diff</nav>
+  <h1 class="page-title">Text Diff<span class="privacy-badge">🔒 No upload, no storage</span></h1>
+  <p class="page-sub">Paste two versions of a text and see exactly what changed — additions in green, deletions in red, line by line or word by word. Compared entirely in your browser; your text is never transmitted.</p>
+
+  <div class="card tool-card">
+    <div class="diff-cols">
+      <div class="diff-col">
+        <label for="txtA">Original</label>
+        <textarea id="txtA" spellcheck="false" placeholder="Paste the original text here…"></textarea>
+      </div>
+      <div class="diff-col">
+        <label for="txtB">Changed</label>
+        <textarea id="txtB" spellcheck="false" placeholder="Paste the changed text here…"></textarea>
+      </div>
+    </div>
+    <div class="opts">
+      <label>Compare by
+        <select id="modeSel">
+          <option value="line" selected>Lines</option>
+          <option value="word">Words</option>
+        </select>
+      </label>
+      <button class="btn" id="cmpBtn">Compare</button>
+    </div>
+    <div class="diff-summary" id="summary">Paste text into both boxes — the comparison also runs automatically as you type.</div>
+    <pre class="diff-out" id="diffOut"></pre>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>Paste the earlier version into <b>Original</b> and the newer version into <b>Changed</b>.</li>
+      <li>Pick a mode: <b>Lines</b> or <b>Words</b>. The result updates automatically as you type, or press <b>Compare</b>.</li>
+      <li>Read the highlighted output: <span style="background:rgba(22,163,74,.18)">green</span> = added, <span style="background:rgba(220,38,38,.15)"><s>red strikethrough</s></span> = removed. The summary line counts the changed chunks.</li>
+    </ol>
+
+    <h2>Line mode or word mode?</h2>
+    <ul>
+      <li><b>Lines</b> — best for structured text where lines are meaningful units: code snippets, config files, CSV rows, lists. A line counts as changed if anything in it differs, so heavily re-wrapped prose lights up whole paragraphs.</li>
+      <li><b>Words</b> — best for prose: essays, contracts, emails. It pinpoints the exact words that changed inside a sentence, so a one-word edit shows as one word, not a whole paragraph.</li>
+    </ul>
+    <p>Rule of thumb: if the text has meaningful line breaks, start with line mode; if it's flowing sentences, use word mode. Switching modes re-runs the comparison instantly, so trying both costs nothing.</p>
+
+    <h2>Whitespace counts — deliberately</h2>
+    <p>Word mode uses a whitespace-sensitive comparison: changing <code>one&nbsp;space</code> to <code>one&nbsp;&nbsp;two&nbsp;spaces</code>, or a space to a tab, is reported as a change. That is usually what you want when checking documents where spacing matters (code, formatted text, data). Keep it in mind when a diff shows "changes" you can't see at first glance — look for spacing and invisible characters, and note that trailing spaces at line ends count too.</p>
+
+    <h2>Everyday uses</h2>
+    <ul>
+      <li><b>Contract revisions</b> — see precisely which clauses the other party edited between draft v3 and v4, without trusting their summary.</li>
+      <li><b>Code snippets</b> — compare two versions of a function or config when you don't have the files in version control.</li>
+      <li><b>Homework and papers</b> — check what changed between your draft and a returned edit, or verify your own revision pass.</li>
+      <li><b>Translations and copies</b> — confirm two "identical" texts from different sources really match (terms pages, product descriptions, email templates).</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> Because nothing is uploaded, this tool is appropriate for confidential material — the comparison would work with your network cable unplugged.</div>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>Is my text uploaded anywhere when I compare?</summary><p>No. The comparison algorithm runs as JavaScript inside your browser — both texts stay on your device, and nothing is transmitted or stored. You can confirm in the Network tab of your browser's developer tools that no request carries your text. That makes it safe for contracts, unpublished drafts, and anything else confidential.</p></details>
+      <details><summary>Is there a size limit on the texts?</summary><p>There is no hard limit — the practical ceiling is your browser's memory and CPU. Texts up to around 1 MB (hundreds of pages) compare comfortably; far beyond that, word-level mode in particular can get slow because it examines many more pieces. If a huge comparison feels sluggish, switch to line mode, which scales much better.</p></details>
+      <details><summary>Can it compare character by character?</summary><p>Not in this tool — word mode is the finest granularity offered. In practice word-level highlighting is what you want for prose and documents; character-level output on ordinary text tends to produce confetti that is harder to read, not easier. If you truly need character-level precision (say, comparing serial numbers), word mode will still isolate the differing token for you.</p></details>
+      <details><summary>What do the green and red highlights mean?</summary><p>Green marks text that exists in the changed version but not the original — additions. Red with strikethrough marks text that exists in the original but was removed or replaced in the changed version — deletions. A replacement shows up as a red part immediately next to a green part. Unhighlighted text is identical in both versions.</p></details>
+      <details><summary>Can I compare two files directly?</summary><p>This version has no file picker — open each file, select all, and paste the contents into the two boxes. That works for any plain-text file: .txt, .md, .csv, source code, exported notes. Binary formats like .docx or .pdf need their text extracted first (copy out of the application and paste here).</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/char-count/"><span class="emoji">🔤</span><span><b>Character Counter</b><span>Live character, word &amp; byte counts</span></span></a>
+      <a class="tool-tile" href="/qr-generator/"><span class="emoji">🔳</span><span><b>QR Code Generator</b><span>Links, text &amp; Wi-Fi login as QR codes</span></span></a>
+      <a class="tool-tile" href="/password-generator/"><span class="emoji">🔑</span><span><b>Password Generator</b><span>Strong random passwords, made locally</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/assets/vendor/jsdiff.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var txtA = document.getElementById('txtA');
+  var txtB = document.getElementById('txtB');
+  var modeSel = document.getElementById('modeSel');
+  var cmpBtn = document.getElementById('cmpBtn');
+  var summary = document.getElementById('summary');
+  var diffOut = document.getElementById('diffOut');
+  var result = document.getElementById('result');
+
+  var lastLog = 0;
+  var escDiv = document.createElement('div');
+  function escHtml(s) { escDiv.textContent = s; return escDiv.innerHTML; } // textContent-based escaper
+
+  function logLimited(outcome, reason, meta) {
+    var now = Date.now();
+    if (now - lastLog < 3000) return; // rate-limit telemetry to once per 3s while typing
+    lastLog = now;
+    mdtlLogEvent('text-diff', outcome, reason, meta);
+  }
+
+  function run() {
+    result.className = 'result';
+    var a = txtA.value, b = txtB.value;
+
+    if (!a && !b) { // both empty → neutral placeholder, no log
+      diffOut.className = 'diff-out';
+      diffOut.innerHTML = '';
+      summary.innerHTML = 'Paste text into both boxes — the comparison also runs automatically as you type.';
+      return;
+    }
+
+    if (a === b) {
+      diffOut.className = 'diff-out';
+      diffOut.innerHTML = '';
+      summary.innerHTML = '✅ <b>No differences</b> — the two texts are identical, including spacing and line breaks.';
+      logLimited('no_result', 'identical_inputs', {});
+      return;
+    }
+
+    try {
+      var parts = modeSel.value === 'word' ? Diff.diffWordsWithSpace(a, b) : Diff.diffLines(a, b);
+      var html = '';
+      var added = 0, removed = 0;
+      parts.forEach(function (p) {
+        var t = escHtml(p.value);
+        if (p.added) { added++; html += '<ins>' + t + '</ins>'; }
+        else if (p.removed) { removed++; html += '<del>' + t + '</del>'; }
+        else { html += t; }
+      });
+      diffOut.innerHTML = html;
+      diffOut.className = 'diff-out show';
+      summary.innerHTML = '<span class="add">+' + added + ' added</span> / <span class="del">−' + removed + ' removed</span> — comparing by ' + (modeSel.value === 'word' ? 'words (whitespace-sensitive)' : 'lines') + '.';
+      logLimited('success', null, { n: parts.length });
+    } catch (e) {
+      diffOut.className = 'diff-out';
+      mdtlResult(result, '❌ The comparison failed — the texts may be too large for this device. Try line mode or smaller sections.', true);
+    }
+  }
+
+  var debTimer = null;
+  function runDebounced() {
+    if (debTimer) clearTimeout(debTimer);
+    debTimer = setTimeout(run, 500);
+  }
+
+  txtA.addEventListener('input', runDebounced);
+  txtB.addEventListener('input', runDebounced);
+  modeSel.addEventListener('change', run);
+  cmpBtn.addEventListener('click', run);
+})();
+</script>
+</body>
+</html>

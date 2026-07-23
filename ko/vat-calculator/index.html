@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>부가세 계산기 — 공급가액↔합계 역산·부가세 10% 즉시 계산 | ThisIsMyPDF</title>
+<meta name="description" content="무료 부가세 계산기. 공급가액에 부가세를 더하거나, 부가세 포함 합계에서 공급가액·부가세를 역산(합계÷1.1)하거나, 부가세만 바로 계산. 세율 수정 가능(기본 10%), 공급가액·부가세·합계 3줄이 입력 즉시 표시됩니다. 입력 금액은 서버로 전송되지 않습니다.">
+<link rel="canonical" href="__ORIGIN__/ko/vat-calculator/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/vat-calculator/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/vat-calculator/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/vat-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="부가세 계산기 — 공급가액↔합계 역산, 10% 즉시 계산">
+<meta property="og:description" content="아는 금액이 공급가액이든 합계든 모드만 고르면 공급가액·부가세·합계가 실시간 계산. 세율 수정 가능, 100% 브라우저 계산.">
+<meta property="og:url" content="__ORIGIN__/ko/vat-calculator/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"부가세 계산기 - ThisIsMyPDF","url":"__ORIGIN__/ko/vat-calculator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"공급가액→부가세·합계 계산, 부가세 포함 합계→공급가액·부가세 역산, 부가세만 계산까지 지원하는 무료 웹 계산기. 세율 수정 가능(기본 10%), 원 단위 반올림. 서버 전송 없이 브라우저에서만 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"부가세 포함 금액에서 공급가액은 어떻게 역산하나요?","acceptedAnswer":{"@type":"Answer","text":"합계금액을 (1+세율)로 나누면 됩니다. 10% 기준으로 공급가액 = 합계 ÷ 1.1, 부가세 = 합계 − 공급가액입니다. 예를 들어 합계 110,000원은 공급가액 100,000원 + 부가세 10,000원으로 나뉩니다. 흔한 실수는 합계에 바로 10%를 곱하는 것인데(110,000 × 0.1 = 11,000), 부가세는 합계가 아니라 공급가액의 10%이므로 이렇게 하면 세액이 부풀려집니다."}},
+{"@type":"Question","name":"소수점(원 미만)은 어떻게 처리하나요?","acceptedAnswer":{"@type":"Answer","text":"이 계산기는 각 금액을 원 단위로 반올림하고, 공급가액 + 부가세 = 합계가 정확히 맞아떨어지도록 맞춥니다. 다만 세금계산서 발행 프로그램이나 국세청 신고 화면은 절사(버림) 등 다른 원 미만 처리 방식을 쓸 수 있어, 실제 서류와 1~2원 차이가 날 수 있습니다."}},
+{"@type":"Question","name":"간이과세자도 10%로 계산하면 되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 간이과세자는 '공급대가 × 업종별 부가가치율 × 10%'라는 별도 구조로 세액을 계산해 실효 세율이 업종에 따라 1.5~4% 수준이고, 원칙적으로 세금계산서 대신 영수증을 발급합니다(일부 간이과세자는 세금계산서 발급 대상). 이 계산기는 일반과세자의 표준 10%를 기준으로 하므로, 간이과세 세액 계산에는 그대로 쓸 수 없습니다."}},
+{"@type":"Question","name":"모든 거래에 부가세가 붙나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 가공되지 않은 농·축·수산물, 의료보건 용역, 교육 용역, 도서·신문 등은 면세 품목이라 부가세가 붙지 않고, 수출 재화 등은 영세율(0%)이 적용됩니다. 이 계산기는 과세 거래(표준 10%)를 전제로 하므로 면세·영세율 거래에는 해당하지 않습니다."}},
+{"@type":"Question","name":"입력한 금액이 서버로 전송되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 계산은 전부 브라우저 안에서 이뤄지며 입력한 금액이 서버로 전송되거나 저장되지 않습니다. 견적서·매출액 같은 민감한 숫자도 안심하고 입력할 수 있고, 페이지가 한 번 열리면 인터넷이 끊겨도 계산됩니다."}}
+]}
+</script>
+<style>
+.tool-card h2{font-size:16px;margin:0 0 12px}
+@media (min-width:600px){.calc-grid{grid-template-columns:2fr 1fr 1fr}}
+.vat-rows{display:grid;gap:6px;margin-top:10px;font-size:14.5px}
+.vat-rows>div{display:flex;justify-content:space-between;gap:12px;border-top:1px dashed var(--line);padding-top:6px}
+.vat-rows b{font-variant-numeric:tabular-nums}
+.guide table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+.guide th,.guide td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+.guide th{background:var(--surface-2);font-size:13.5px}
+</style>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/ko/">ThisIsMyPDF</a> › <a href="/ko/#calc">계산기</a> › 부가세 계산기</nav>
+  <h1 class="page-title">부가세 계산기<span class="privacy-badge">🔒 입력값 전송 없음</span></h1>
+  <p class="page-sub">공급가액에 부가세를 더하거나, 합계에서 공급가액·부가세를 역산하거나, 부가세만 계산 — 3가지 모드 모두 입력 즉시 결과가 나옵니다. 무료.</p>
+
+  <div class="card tool-card">
+    <h2>🧾 공급가액 · 부가세 · 합계</h2>
+    <label class="field" style="margin-bottom:14px">
+      <span>아는 금액이 무엇인가요?</span>
+      <select id="mode" aria-label="계산 모드">
+        <option value="net">공급가액 → 부가세 더하기 (합계 계산)</option>
+        <option value="gross">합계금액 → 공급가액·부가세 역산</option>
+        <option value="vat">부가세만 계산 (공급가액 기준)</option>
+      </select>
+    </label>
+    <div class="calc-grid">
+      <label class="field">
+        <span id="amtLabel">공급가액 (부가세 별도)</span>
+        <input type="text" id="amtIn" inputmode="decimal" placeholder="예: 100,000" autocomplete="off" aria-label="금액 입력">
+      </label>
+      <label class="field">
+        <span>부가세율 (%)</span>
+        <input type="number" id="rateIn" inputmode="decimal" min="0" step="any" value="10" aria-label="부가세율(%)">
+      </label>
+    </div>
+    <div class="calc-out" id="out" aria-live="polite"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>지금 손에 있는 숫자가 무엇인지에 따라 모드를 고르세요. <b>공급가액</b>(부가세 별도 금액), <b>합계금액</b>(부가세가 이미 포함된 금액), 또는 공급가액에서 <b>부가세만</b> 뽑고 싶은 경우 중 하나입니다.</li>
+      <li>금액을 입력하면 버튼 없이 <b>공급가액·부가세·합계 3줄이 즉시</b> 표시되고, 수정하는 대로 실시간 갱신됩니다. 쉼표가 있는 숫자(예: 1,250,000)도 그대로 인식합니다.</li>
+      <li>세율은 기본 <b>10%</b>(일반과세 표준)이며, 필요하면 다른 값으로 바꿀 수 있습니다.</li>
+    </ol>
+
+    <h2>부가세 계산의 두 방향 — 더하기와 역산</h2>
+    <p>부가세 계산은 방향이 두 가지뿐인데, 이 둘을 헷갈리는 것이 견적서·영수증에서 가장 흔한 실수입니다.</p>
+    <ul>
+      <li><b>부가세 더하기 (공급가액 → 합계):</b> 부가세 = 공급가액 × 10%, 합계 = 공급가액 + 부가세. 예: 공급가액 100,000원 → 부가세 10,000원, 합계 110,000원.</li>
+      <li><b>부가세 역산 (합계 → 공급가액):</b> 공급가액 = 합계 ÷ 1.1, 부가세 = 합계 − 공급가액. 예: 합계 110,000원 ÷ 1.1 = 공급가액 100,000원, 부가세 10,000원.</li>
+    </ul>
+    <p>역산에서 빠지기 쉬운 함정은 합계에 곧바로 10%를 곱하는 것입니다. 110,000원의 10%는 11,000원이지만, 그 합계 안에 실제로 들어 있는 부가세는 10,000원입니다. 10%는 합계가 아니라 <b>공급가액</b>에 붙기 때문입니다. "부가세 포함" 금액을 받았다면 무조건 1.1로 먼저 나누세요.</p>
+    <table>
+      <thead><tr><th>아는 금액</th><th>공급가액</th><th>부가세(10%)</th><th>합계</th></tr></thead>
+      <tbody>
+        <tr><td>공급가액 100,000</td><td>100,000</td><td>10,000</td><td>110,000</td></tr>
+        <tr><td>합계 110,000</td><td>100,000</td><td>10,000</td><td>110,000</td></tr>
+        <tr><td>합계 55,000</td><td>50,000</td><td>5,000</td><td>55,000</td></tr>
+      </tbody>
+    </table>
+
+    <h2>세금계산서 발행 실무에서</h2>
+    <p>세금계산서에는 <b>공급가액과 세액(부가세)을 따로</b> 적게 되어 있습니다. 그래서 클라이언트와 "110만원에 하기로 했다"고 합의했다면, 그 금액이 부가세 포함인지 별도인지에 따라 세금계산서의 공급가액이 1,000,000원(포함)일 수도, 1,100,000원(별도, 합계는 1,210,000원)일 수도 있습니다. 견적 단계에서 <b>"부가세 별도"인지 "부가세 포함"인지 반드시 명시</b>하고, 포함이라면 이 계산기의 역산 모드로 공급가액을 확정해 두면 발행 단계에서 다툼이 없습니다.</p>
+    <p>계좌로 들어온 입금액(합계)만 보고 매출 장부를 정리할 때도 마찬가지입니다. 입금액을 1.1로 나눠 공급가액과 세액을 분리해 두어야 부가세 신고 때 매출세액이 맞아떨어집니다.</p>
+    <div class="tip">💡 <b>암산 팁:</b> 10% 기준으로 합계 속 부가세는 <b>합계 ÷ 11</b>입니다. 110,000 ÷ 11 = 10,000. 공급가액은 나머지(합계 − 부가세)이니, 계산기 없이도 현장에서 바로 검산할 수 있습니다.</div>
+
+    <h2>간이과세자·면세 거래는 다릅니다</h2>
+    <p>이 계산기는 <b>일반과세자의 표준 세율 10%</b>를 기준으로 합니다. 다음 두 경우는 계산 구조 자체가 달라 그대로 적용하면 안 됩니다.</p>
+    <ul>
+      <li><b>간이과세자</b> — 세액을 '공급대가 × 업종별 부가가치율 × 10%'로 계산해 실효 부담이 업종에 따라 대략 1.5~4% 수준이고, 원칙적으로 영수증을 발급합니다(직전연도 공급대가 일정 기준 이상인 간이과세자는 세금계산서 발급 대상). 간이과세 세액은 이 계산기의 10% 계산과 다릅니다.</li>
+      <li><b>면세·영세율</b> — 가공되지 않은 농·축·수산물, 의료보건·교육 용역, 도서·신문 등 면세 품목은 부가세가 아예 붙지 않고, 수출 재화 등에는 영세율(0%)이 적용됩니다.</li>
+    </ul>
+    <p>결과는 참고용 추정치입니다. 실제 신고·발행 금액은 세금계산서 발행 시스템(홈택스 등)과 세무 전문가의 확인을 기준으로 하세요. 원 미만 처리 방식(반올림/절사) 차이로 1~2원이 다를 수 있습니다.</p>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>부가세 포함 금액에서 공급가액은 어떻게 역산하나요?</summary><p>합계금액을 (1+세율)로 나누면 됩니다. 10% 기준으로 공급가액 = 합계 ÷ 1.1, 부가세 = 합계 − 공급가액입니다. 예를 들어 합계 110,000원은 공급가액 100,000원 + 부가세 10,000원으로 나뉩니다. 흔한 실수는 합계에 바로 10%를 곱하는 것인데(110,000 × 0.1 = 11,000), 부가세는 합계가 아니라 공급가액의 10%이므로 이렇게 하면 세액이 부풀려집니다.</p></details>
+      <details><summary>소수점(원 미만)은 어떻게 처리하나요?</summary><p>이 계산기는 각 금액을 원 단위로 반올림하고, 공급가액 + 부가세 = 합계가 정확히 맞아떨어지도록 맞춥니다. 다만 세금계산서 발행 프로그램이나 국세청 신고 화면은 절사(버림) 등 다른 원 미만 처리 방식을 쓸 수 있어, 실제 서류와 1~2원 차이가 날 수 있습니다.</p></details>
+      <details><summary>간이과세자도 10%로 계산하면 되나요?</summary><p>아니요. 간이과세자는 '공급대가 × 업종별 부가가치율 × 10%'라는 별도 구조로 세액을 계산해 실효 세율이 업종에 따라 1.5~4% 수준이고, 원칙적으로 세금계산서 대신 영수증을 발급합니다(일부 간이과세자는 세금계산서 발급 대상). 이 계산기는 일반과세자의 표준 10%를 기준으로 하므로, 간이과세 세액 계산에는 그대로 쓸 수 없습니다.</p></details>
+      <details><summary>모든 거래에 부가세가 붙나요?</summary><p>아닙니다. 가공되지 않은 농·축·수산물, 의료보건 용역, 교육 용역, 도서·신문 등은 면세 품목이라 부가세가 붙지 않고, 수출 재화 등은 영세율(0%)이 적용됩니다. 이 계산기는 과세 거래(표준 10%)를 전제로 하므로 면세·영세율 거래에는 해당하지 않습니다.</p></details>
+      <details><summary>입력한 금액이 서버로 전송되나요?</summary><p>아니요. 계산은 전부 브라우저 안에서 이뤄지며 입력한 금액이 서버로 전송되거나 저장되지 않습니다. 견적서·매출액 같은 민감한 숫자도 안심하고 입력할 수 있고, 페이지가 한 번 열리면 인터넷이 끊겨도 계산됩니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/ko/percent-calculator/"><span class="emoji">➗</span><span><b>퍼센트 계산기</b><span>비율·증감률·할인율</span></span></a>
+      <a class="tool-tile" href="/ko/interest-calculator/"><span class="emoji">💰</span><span><b>이자 계산기</b><span>예금·적금·대출</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var modeEl = document.getElementById('mode');
+  var amtIn = document.getElementById('amtIn');
+  var amtLabel = document.getElementById('amtLabel');
+  var rateIn = document.getElementById('rateIn');
+  var out = document.getElementById('out');
+
+  var LABELS = {
+    net: '공급가액 (부가세 별도)',
+    gross: '합계금액 (부가세 포함)',
+    vat: '공급가액 (부가세 별도)'
+  };
+  var PLACEHOLDERS = { net: '예: 100,000', gross: '예: 110,000', vat: '예: 100,000' };
+
+  function parseNum(s) {
+    if (s == null) return NaN;
+    s = String(s).replace(/,/g, '').trim();
+    if (s === '') return NaN;
+    var n = Number(s);
+    return isFinite(n) ? n : NaN;
+  }
+  function fmt(n) {
+    return n.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
+  }
+  function idle(msg) {
+    out.innerHTML = '<div class="num">—</div><div class="sub">' + msg + '</div>';
+  }
+  function rows(net, vat, total) {
+    return '<div class="vat-rows">' +
+      '<div><span>공급가액</span><b>' + fmt(net) + '원</b></div>' +
+      '<div><span>부가세</span><b>' + fmt(vat) + '원</b></div>' +
+      '<div><span>합계금액</span><b>' + fmt(total) + '원</b></div>' +
+      '</div>';
+  }
+
+  function update() {
+    try {
+      var mode = modeEl.value;
+      var x = parseNum(amtIn.value);
+      var r = parseNum(rateIn.value);
+      if (!isFinite(r) || r < 0) { idle('부가세율을 0% 이상으로 입력해 주세요.'); return; }
+      if (!isFinite(x) || x < 0) {
+        idle(amtIn.value.trim() ? '숫자만 입력해 주세요. (쉼표는 자동 인식됩니다.)' : '금액을 입력하면 즉시 계산됩니다.');
+        return;
+      }
+      var net, vat, total, main, sub;
+      if (mode === 'gross') {
+        total = Math.round(x);
+        net = Math.round(x / (1 + r / 100));
+        vat = total - net;
+        main = fmt(net) + '원';
+        sub = '공급가액 = ' + fmt(x) + ' ÷ ' + (1 + r / 100) + ' (원 단위 반올림)';
+      } else {
+        net = Math.round(x);
+        vat = Math.round(x * r / 100);
+        total = net + vat;
+        if (mode === 'vat') {
+          main = fmt(vat) + '원';
+          sub = '부가세 = ' + fmt(x) + ' × ' + r + '% (원 단위 반올림)';
+        } else {
+          main = fmt(total) + '원';
+          sub = '합계 = 공급가액 + 부가세 (' + fmt(net) + ' + ' + fmt(vat) + ', 세율 ' + r + '%)';
+        }
+      }
+      out.innerHTML = '<div class="num">' + main + '</div><div class="sub">' + sub + '</div>' + rows(net, vat, total);
+    } catch (e) {
+      idle('계산 중 오류가 발생했습니다. 숫자만 입력해 주세요.');
+    }
+  }
+
+  function onMode() {
+    amtLabel.textContent = LABELS[modeEl.value];
+    amtIn.placeholder = PLACEHOLDERS[modeEl.value];
+    update();
+  }
+
+  modeEl.addEventListener('change', onMode);
+  amtIn.addEventListener('input', update);
+  rateIn.addEventListener('input', update);
+  onMode();
+})();
+</script>
+</body>
+</html>
