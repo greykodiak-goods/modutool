@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>글자수 세기 — 공백 포함·제외, 바이트, 원고지 매수 실시간 확인 | ThisIsMyCalculator</title>
+<meta name="description" content="자소서·원고 글자수를 실시간으로 세는 무료 도구. 공백 포함/제외 글자수, UTF-8·EUC-KR 바이트 수, 단어수, 줄수, 원고지 매수까지 한 번에. 입력 내용은 서버로 전송되지 않습니다.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/ko/char-count/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/char-count/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/char-count/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/char-count/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="글자수 세기 — 공백 포함·제외, 바이트, 원고지 실시간 계산">
+<meta property="og:description" content="자소서 글자수를 입력과 동시에 확인. 내용이 서버로 전송되지 않는 100% 브라우저 처리.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/ko/char-count/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"글자수 세기 - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/ko/char-count/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"공백 포함/제외 글자수, 바이트 수, 단어수, 줄수, 원고지 매수를 실시간으로 계산하는 무료 웹 도구. 입력 내용은 서버로 전송되지 않고 브라우저에서만 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"자소서 글자수는 공백 포함인가요, 제외인가요?","acceptedAnswer":{"@type":"Answer","text":"회사와 채용 시스템마다 다릅니다. 모집 요강이나 입력란 안내에 '공백 포함/제외' 표기가 있는지 먼저 확인하고, 표기가 없다면 더 엄격한 공백 포함 기준에 맞추는 것이 안전합니다. 이 도구는 두 기준을 동시에 보여주므로 어느 쪽이든 바로 확인할 수 있습니다."}},
+{"@type":"Question","name":"입력한 글이 서버로 전송되거나 저장되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 계산은 전부 브라우저 안에서만 이뤄지며 입력 내용은 어디로도 전송·저장되지 않습니다. 페이지를 닫거나 새로고침하면 내용은 그대로 사라집니다. 개인정보가 담긴 자기소개서도 안심하고 사용할 수 있습니다."}},
+{"@type":"Question","name":"바이트 수가 사이트마다 다르게 나오는 이유는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"인코딩 기준이 다르기 때문입니다. 현재 웹 표준인 UTF-8에서는 한글 1자가 3바이트, 일부 기관의 구형 시스템이 쓰는 EUC-KR에서는 한글 1자가 2바이트로 계산됩니다. 이 도구는 두 기준을 모두 표시하므로 제출처가 쓰는 기준의 값을 보면 됩니다."}},
+{"@type":"Question","name":"원고지 매수는 어떻게 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"가장 보편적인 200자 원고지를 기준으로, 공백 포함 글자수를 200으로 나눈 뒤 올림한 간이 계산값입니다. 실제 원고지에 옮겨 적으면 문단 들여쓰기와 줄바꿈으로 빈 칸이 생겨 계산값보다 매수가 늘어날 수 있으니 1~2매 여유를 두는 것이 좋습니다."}},
+{"@type":"Question","name":"줄바꿈(엔터)도 글자수에 포함되나요?","acceptedAnswer":{"@type":"Answer","text":"공백 포함 글자수에는 줄바꿈도 1자로 포함되고, 공백 제외 글자수에서는 띄어쓰기와 함께 빠집니다. 대부분의 웹 입력란도 같은 방식으로 세지만, 정확한 기준은 실제 제출 입력란에서 직접 확인하는 것이 가장 확실합니다."}}
+]}
+</script>
+<style>
+#mainOut { margin-top: 14px; text-align: center; }
+#statGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+#statGrid .calc-out { margin-top: 0; padding: 12px 14px; text-align: center; }
+#statGrid .num { font-size: 20px; }
+#statGrid .sub { margin-top: 2px; }
+</style>
+<meta name="robots" content="noindex, follow">
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/ko/">ThisIsMyCalculator</a> › <a href="/modutool/calc/ko/#calc">텍스트 도구</a> › 글자수 세기</nav>
+  <h1 class="page-title">글자수 세기<span class="privacy-badge">🔒 저장·전송 없음</span></h1>
+  <p class="page-sub">자소서·원고의 공백 포함/제외 글자수, 바이트, 원고지 매수를 입력과 동시에 계산합니다. 입력 내용은 서버로 전송되거나 저장되지 않습니다.</p>
+
+  <div class="card tool-card">
+    <textarea class="big-input" id="txt" spellcheck="false" placeholder="여기에 글을 입력하거나 붙여넣으세요. 버튼 없이 입력과 동시에 아래 숫자가 바뀝니다."></textarea>
+    <div class="calc-out" id="mainOut">
+      <div class="num"><span id="cntAll">0</span>자</div>
+      <div class="sub">공백 포함 글자수 (줄바꿈 포함)</div>
+    </div>
+    <div id="statGrid">
+      <div class="calc-out"><div class="num" id="cntNoSpace">0</div><div class="sub">공백 제외 글자수</div></div>
+      <div class="calc-out"><div class="num" id="cntUtf8">0</div><div class="sub">바이트 · UTF-8 (한글 3바이트)</div></div>
+      <div class="calc-out"><div class="num" id="cntEuc">0</div><div class="sub">바이트 · EUC-KR (한글 2바이트)</div></div>
+      <div class="calc-out"><div class="num" id="cntWords">0</div><div class="sub">단어수 (띄어쓰기 기준)</div></div>
+      <div class="calc-out"><div class="num" id="cntLines">0</div><div class="sub">줄수</div></div>
+      <div class="calc-out"><div class="num" id="cntPages">0</div><div class="sub">원고지 매수 (200자·올림)</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="copyBtn">📋 내용 복사</button>
+      <button class="btn secondary" id="clearBtn">🗑️ 지우기</button>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>위 입력창에 글을 직접 입력하거나, 한글·워드·메모장에 써 둔 자소서나 원고를 복사해서 붙여넣습니다.</li>
+      <li>버튼을 누를 필요 없이 입력과 동시에 <b>공백 포함·공백 제외 글자수, 바이트 수, 단어수, 줄수, 원고지 매수</b>가 실시간으로 계산됩니다.</li>
+      <li>확인이 끝나면 <b>내용 복사</b> 버튼으로 글을 그대로 복사해 제출란에 붙여넣고, <b>지우기</b> 버튼으로 입력창을 비웁니다.</li>
+    </ol>
+
+    <h2>이 도구가 다른 글자수 세기와 다른 점</h2>
+    <p>글자수를 세 준다는 사이트는 많지만, 입력한 글이 어떻게 처리되는지 밝히는 곳은 드뭅니다. 자기소개서에는 이름·학교·경력처럼 민감한 개인정보가 그대로 들어가기 마련인데, 입력 내용이 서버로 전송되는 구조라면 그 글이 어디에 남는지 사용자는 알 길이 없습니다.</p>
+    <p>ThisIsMyCalculator의 글자수 세기는 <b>입력 내용을 어디로도 보내지 않습니다.</b> 계산 전체가 지금 보고 있는 브라우저 안에서만 이뤄지고, 서버는 물론 브라우저 저장소에도 기록하지 않으며, 페이지를 닫으면 내용은 그대로 사라집니다. 개발자도구의 네트워크 탭을 열어 확인해도 입력 내용이 나가는 요청이 없습니다.</p>
+    <ul>
+      <li><b>보안</b> — 글이 기기 밖으로 나가지 않으므로 유출 가능성 자체가 없습니다.</li>
+      <li><b>실시간</b> — 계산 버튼 없이 타이핑과 동시에 모든 지표가 갱신됩니다.</li>
+      <li><b>한 번에</b> — 공백 포함/제외·바이트·단어·줄·원고지까지, 지표별로 다른 사이트를 오갈 필요가 없습니다.</li>
+    </ul>
+
+    <h2>자소서 글자수, 공백 포함일까 제외일까</h2>
+    <p>채용 공고의 "1,000자 이내"가 공백 포함인지 제외인지는 <b>회사와 채용 시스템마다 다릅니다.</b> 같은 회사라도 자체 채용 홈페이지와 취업 플랫폼의 기준이 서로 다른 경우도 있습니다. 헷갈릴 때는 이렇게 확인하세요.</p>
+    <ol>
+      <li>모집 요강과 입력란 근처의 안내 문구에서 <b>"공백 포함" 또는 "공백 제외"</b> 표기를 먼저 찾습니다. 대부분 괄호로 명시돼 있습니다.</li>
+      <li>표기가 없으면 실제 지원서 입력란에 띄어쓰기가 들어간 짧은 테스트 문장을 넣어 보고, 남은 글자수가 어느 기준으로 줄어드는지 확인합니다.</li>
+      <li>그래도 확인이 어렵다면 더 엄격한 <b>공백 포함 기준</b>에 맞춰 두는 것이 안전합니다. 제출 직전에 글자수 초과로 뒷부분이 잘리는 사고를 막을 수 있습니다.</li>
+    </ol>
+    <p>공공기관·공기업 원서처럼 <b>바이트(byte) 단위</b>로 제한하는 곳도 있습니다. 이때는 인코딩에 따라 값이 달라지는데, 현재 웹 표준인 UTF-8에서는 한글 1자가 3바이트(영문·숫자·공백은 1바이트)이고, 일부 기관의 구형 시스템이 쓰는 EUC-KR에서는 한글 1자가 2바이트입니다. 이 도구는 두 기준을 나란히 보여주므로 제출처가 쓰는 기준의 값을 읽으면 됩니다.</p>
+
+    <h2>원고지 매수 계산 방식</h2>
+    <p>원고지 매수는 백일장·논술·문학 공모전에서 아직 널리 쓰이는 분량 단위입니다. 이 도구는 가장 보편적인 <b>200자 원고지</b>를 기준으로, 공백 포함 글자수를 200으로 나눈 뒤 올림하여 매수를 구합니다. 예를 들어 공백 포함 1,530자라면 1,530 ÷ 200 = 7.65 → <b>8매</b>가 됩니다.</p>
+    <p>다만 이는 간이 계산입니다. 실제 원고지에 옮겨 적으면 문단이 시작될 때 첫 칸을 비우고, 줄이 바뀌면 그 줄의 남은 칸을 쓰지 못하며, 문장부호도 한 칸씩 차지하기 때문에 실제 매수는 계산값보다 늘어나는 것이 보통입니다. "10매 내외" 같은 제한이 있다면 계산값에서 1~2매 여유를 두고 쓰는 것을 권합니다.</p>
+
+    <h2>이럴 때 쓰세요</h2>
+    <ul>
+      <li>자기소개서 항목별 글자수 제한(500자·1,000자 이내)에 맞춰 <b>퇴고하면서 실시간으로</b> 분량을 조절할 때</li>
+      <li>공공기관·공기업 원서의 <b>바이트 제한</b>을 넘지 않는지 제출 전에 확인할 때</li>
+      <li>블로그 포스트·상품 상세설명 분량을 점검할 때</li>
+      <li>백일장·논술 과제를 <b>원고지 매수로 환산</b>해 제출해야 할 때</li>
+      <li>문자 메시지가 SMS(90바이트) 범위를 넘어 LMS로 전환되는지 미리 확인할 때</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 워드·한글 문서에서 복사해 붙여넣으면 문서 앞뒤에 딸려 온 빈 줄과 공백까지 글자수에 포함됩니다. 제출란의 카운터와 숫자가 다르게 나온다면 먼저 글 앞뒤의 공백과 빈 줄을 지워 보세요.</div>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>자소서 글자수는 공백 포함인가요, 제외인가요?</summary><p>회사와 채용 시스템마다 다릅니다. 모집 요강이나 입력란 안내에 '공백 포함/제외' 표기가 있는지 먼저 확인하고, 표기가 없다면 더 엄격한 공백 포함 기준에 맞추는 것이 안전합니다. 이 도구는 두 기준을 동시에 보여주므로 어느 쪽이든 바로 확인할 수 있습니다.</p></details>
+      <details><summary>입력한 글이 서버로 전송되거나 저장되나요?</summary><p>아니요. 계산은 전부 브라우저 안에서만 이뤄지며 입력 내용은 어디로도 전송·저장되지 않습니다. 페이지를 닫거나 새로고침하면 내용은 그대로 사라집니다. 개인정보가 담긴 자기소개서도 안심하고 사용할 수 있습니다.</p></details>
+      <details><summary>바이트 수가 사이트마다 다르게 나오는 이유는 무엇인가요?</summary><p>인코딩 기준이 다르기 때문입니다. 현재 웹 표준인 UTF-8에서는 한글 1자가 3바이트, 일부 기관의 구형 시스템이 쓰는 EUC-KR에서는 한글 1자가 2바이트로 계산됩니다. 이 도구는 두 기준을 모두 표시하므로 제출처가 쓰는 기준의 값을 보면 됩니다.</p></details>
+      <details><summary>원고지 매수는 어떻게 계산하나요?</summary><p>가장 보편적인 200자 원고지를 기준으로, 공백 포함 글자수를 200으로 나눈 뒤 올림한 간이 계산값입니다. 실제 원고지에 옮겨 적으면 문단 들여쓰기와 줄바꿈으로 빈 칸이 생겨 계산값보다 매수가 늘어날 수 있으니 1~2매 여유를 두는 것이 좋습니다.</p></details>
+      <details><summary>줄바꿈(엔터)도 글자수에 포함되나요?</summary><p>공백 포함 글자수에는 줄바꿈도 1자로 포함되고, 공백 제외 글자수에서는 띄어쓰기와 함께 빠집니다. 대부분의 웹 입력란도 같은 방식으로 세지만, 정확한 기준은 실제 제출 입력란에서 직접 확인하는 것이 가장 확실합니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/ko/percent-calculator/"><span class="emoji">📊</span><span><b>퍼센트 계산기</b><span>비율·증감률 계산</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/ko/dday-calculator/"><span class="emoji">📅</span><span><b>디데이 계산기</b><span>남은 날짜 계산</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var txt = document.getElementById('txt');
+  var elAll = document.getElementById('cntAll');
+  var elNoSpace = document.getElementById('cntNoSpace');
+  var elUtf8 = document.getElementById('cntUtf8');
+  var elEuc = document.getElementById('cntEuc');
+  var elWords = document.getElementById('cntWords');
+  var elLines = document.getElementById('cntLines');
+  var elPages = document.getElementById('cntPages');
+  var copyBtn = document.getElementById('copyBtn');
+  var clearBtn = document.getElementById('clearBtn');
+
+  function fmt(n) { return n.toLocaleString('ko-KR'); }
+
+  function calc() {
+    try {
+      var t = txt.value;
+      var chars = Array.from(t); /* 코드포인트 단위 — 이모지도 1자로 센다 */
+      var all = chars.length;
+      var noSpace = Array.from(t.replace(/\s/g, '')).length;
+      var utf8 = new Blob([t]).size; /* UTF-8: 한글 1자 = 3바이트 */
+      var euc = 0; /* EUC-KR 근사: 영문·숫자·기본기호 1바이트, 그 외 2바이트 */
+      for (var i = 0; i < chars.length; i++) euc += chars[i].codePointAt(0) <= 0x7F ? 1 : 2;
+      var trimmed = t.trim();
+      var words = trimmed ? trimmed.split(/\s+/).length : 0;
+      var lines = t ? t.split('\n').length : 0;
+      var pages = Math.ceil(all / 200); /* 200자 원고지, 공백 포함 기준 올림 */
+      elAll.textContent = fmt(all);
+      elNoSpace.textContent = fmt(noSpace);
+      elUtf8.textContent = fmt(utf8);
+      elEuc.textContent = fmt(euc);
+      elWords.textContent = fmt(words);
+      elLines.textContent = fmt(lines);
+      elPages.textContent = fmt(pages);
+    } catch (e) {
+      /* 계산 실패 시 다음 입력 이벤트에서 재시도 — 표시값은 이전 상태 유지 */
+    }
+  }
+
+  txt.addEventListener('input', calc);
+  calc();
+
+  clearBtn.addEventListener('click', function () {
+    txt.value = '';
+    calc();
+    txt.focus();
+  });
+
+  var copyLabel = copyBtn.textContent;
+  var copyTimer = null;
+  function copied(ok) {
+    copyBtn.textContent = ok ? '✅ 복사 완료' : '❌ 복사 실패 — 글을 직접 선택해 복사해 주세요';
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(function () { copyBtn.textContent = copyLabel; }, 1800);
+  }
+
+  copyBtn.addEventListener('click', function () {
+    if (!txt.value) { txt.focus(); return; }
+    function fallback() {
+      try {
+        txt.select();
+        var ok = document.execCommand('copy');
+        if (window.getSelection) window.getSelection().removeAllRanges();
+        txt.blur();
+        copied(ok);
+      } catch (e) {
+        copied(false);
+      }
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt.value).then(function () { copied(true); }, fallback);
+      } else {
+        fallback();
+      }
+    } catch (e) {
+      fallback();
+    }
+  });
+})();
+</script>
+</body>
+</html>

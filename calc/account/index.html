@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My account | ThisIsMyCalculator</title>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/account/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/account/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/account/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/account/">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/auth-config.js"></script>
+<script src="/modutool/calc/assets/auth.js"></script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main style="max-width:520px">
+  <h1 class="page-title">My account</h1>
+  <div class="card">
+    <div id="loading">Loading…</div>
+    <div id="panel" style="display:none">
+      <div class="calc-out">
+        <div class="num" id="planLabel">Free</div>
+        <div class="sub" id="emailLabel"></div>
+        <div class="sub" id="planNote"></div>
+      </div>
+      <div class="btn-row">
+        <a class="btn" id="upBtn" href="/modutool/calc/pricing/">See Premium</a>
+        <button class="btn secondary" id="logoutBtn">Log out</button>
+        <button class="btn secondary" id="logoutAllBtn">Log out all devices</button>
+      </div>
+      <p style="font-size:12.5px;color:var(--text-soft);margin:10px 0 0">Your session stays signed in on this device and refreshes automatically. "Log out all devices" ends every active session everywhere.</p>
+    </div>
+    <div class="result" id="msg"></div>
+  </div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+<script src="/modutool/calc/assets/vendor/supabase.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function () {
+  var loading = document.getElementById('loading');
+  var sb = window.mdtlAuthClient && window.mdtlAuthClient();
+  if (!sb) { loading.textContent = 'Accounts are launching soon.'; return; }
+  var info = await window.mdtlRefreshPlan();
+  if (!info) { location.href = (window.MDTL_BASE||'') + '/login/'; return; }
+  loading.style.display = 'none';
+  document.getElementById('panel').style.display = '';
+  document.getElementById('emailLabel').textContent = info.user.email;
+  var premium = window.mdtlIsPremium();
+  document.getElementById('planLabel').textContent = premium ? 'Premium ✓' : 'Free';
+  document.getElementById('planNote').textContent = premium
+    ? 'Enjoying ad-free. Thank you!'
+    : 'We will email you when Premium payments launch (early-signup discount).';
+  if (premium) document.getElementById('upBtn').style.display = 'none';
+  document.getElementById('logoutBtn').addEventListener('click', async function () {
+    await sb.auth.signOut();
+    window.mdtlClearAuthCache();
+    location.href = (window.MDTL_BASE||'') + '/';
+  });
+  document.getElementById('logoutAllBtn').addEventListener('click', async function () {
+    await sb.auth.signOut({ scope: 'global' });
+    window.mdtlClearAuthCache();
+    location.href = (window.MDTL_BASE||'') + '/';
+  });
+});
+</script>
+</body>
+</html>

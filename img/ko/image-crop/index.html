@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이미지 자르기 — 원하는 영역만 잘라내기, 무료 | ThisIsMyIMG</title>
+<meta name="description" content="사진에서 원하는 영역만 드래그로 골라 잘라내는 무료 도구. 자유 영역은 물론 1:1·4:3·16:9·3:4 비율 고정도 지원합니다. 서버 업로드 없이 브라우저에서 바로 처리되어 개인 사진도 안전합니다. 설치·가입·용량제한 없음.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/img/ko/image-crop/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/img/ko/image-crop/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/img/image-crop/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/img/image-crop/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="이미지 자르기 — 설치 없이 무료, 서버 업로드 없음">
+<meta property="og:description" content="드래그로 원하는 영역만, 또는 비율 고정으로 잘라내기. 파일이 서버로 전송되지 않는 100% 브라우저 처리.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/img/ko/image-crop/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyIMG";window.MDTL_SITE_MARK="I";</script>
+<script>window.MDTL_BASE='/modutool/img';</script>
+<link rel="stylesheet" href="/modutool/img/assets/site.css">
+<script src="/modutool/img/assets/site.js"></script>
+<script src="/modutool/img/assets/ads-config.js" defer></script>
+<script src="/modutool/img/assets/auth-config.js" defer></script>
+<script src="/modutool/img/assets/auth.js" defer></script>
+<style>
+  .crop-stage { position: relative; margin-top: 14px; display: none; }
+  .crop-stage.show { display: block; }
+  .crop-wrap { position: relative; display: inline-block; max-width: 100%; line-height: 0;
+    touch-action: none; user-select: none; -webkit-user-select: none; }
+  .crop-wrap canvas { display: block; max-width: 100%; height: auto; cursor: crosshair; }
+  .crop-shade { position: absolute; inset: 0; box-shadow: 0 0 0 9999px rgba(0,0,0,.45);
+    outline: 1px solid #fff; cursor: move; display: none; }
+  .crop-shade.show { display: block; }
+  .crop-shade::before { content: ''; position: absolute; inset: 0;
+    border: 1px dashed rgba(255,255,255,.9); }
+  .crop-hint { font-size: 13px; color: var(--muted, #6b7280); margin: 8px 0 0; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"이미지 자르기 - ThisIsMyIMG","url":"https://greykodiak-goods.github.io/modutool/img/ko/image-crop/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"사진에서 원하는 영역을 드래그하거나 비율을 고정해 잘라내는 무료 웹 도구. 서버 업로드 없이 브라우저에서 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"사진이 정말 서버로 업로드되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 자르기는 브라우저에 내장된 캔버스 기능으로 내 기기 안에서만 처리됩니다. 개발자도구의 네트워크 탭을 열어 확인해도 파일 업로드 요청이 없습니다. 신분증 사본이나 개인 사진 같은 민감한 이미지도 안심하고 사용할 수 있습니다."}},
+{"@type":"Question","name":"1:1 같은 정확한 비율로 어떻게 자르나요?","acceptedAnswer":{"@type":"Answer","text":"비율 메뉴에서 자유·1:1(정사각)·4:3·16:9·3:4(세로) 중 하나를 고르면 됩니다. 비율을 고정하면 어떻게 드래그해도 선택 상자가 그 비율을 유지하므로, 손으로 수치를 재지 않아도 완벽한 정사각 프로필 사진이나 와이드 썸네일을 만들 수 있습니다."}},
+{"@type":"Question","name":"결과물은 원본 포맷을 유지하나요?","acceptedAnswer":{"@type":"Answer","text":"네. JPG는 JPG 그대로, PNG·WEBP는 투명 배경이 유지되도록 PNG로 저장됩니다. 다운로드 파일은 원본 이름 뒤에 _잘라내기가 붙어 원본과 한눈에 구분됩니다."}},
+{"@type":"Question","name":"자르면 화질이 나빠지나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 자르기는 선택 영역 안의 픽셀을 원본 해상도 그대로 남기는 작업이라 늘리거나 다시 샘플링하지 않습니다. 따라서 잘라낸 부분은 원본만큼 선명합니다. 결과 영역에 원본과 잘라낸 해상도가 함께 표시되어 최종 픽셀 크기를 바로 확인할 수 있습니다."}},
+{"@type":"Question","name":"세로로 찍은 사진이 옆으로 눕지 않나요?","acceptedAnswer":{"@type":"Answer","text":"스마트폰 사진에 저장된 EXIF 회전 정보를 자동으로 반영하므로, 자르기 전부터 이미지가 바른 방향으로 보이고 저장된 파일도 그 방향을 그대로 유지합니다. 사진이 눕거나 뒤집혀 나오는 걱정을 하지 않아도 됩니다."}}
+]}
+</script>
+<meta name="robots" content="noindex, follow">
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/img/ko/">ThisIsMyIMG</a> › <a href="/modutool/img/ko/#image">이미지 도구</a> › 이미지 자르기</nav>
+  <h1 class="page-title">이미지 자르기<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">드래그로 원하는 영역을 고르거나 1:1·4:3·16:9·3:4 비율을 고정해, 필요한 부분만 정확히 잘라냅니다. 설치·가입·용량제한 없이 무료.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">✂️</span>
+      <strong>이미지를 여기에 끌어다 놓거나 클릭해서 선택</strong><br>
+      한 번에 한 장 (JPG·PNG·WEBP·GIF·BMP)
+    </div>
+    <div class="opts">
+      <label>종횡비
+        <select id="ratioSel">
+          <option value="free">자유</option>
+          <option value="1:1">1:1 (정사각)</option>
+          <option value="4:3">4:3</option>
+          <option value="16:9">16:9</option>
+          <option value="3:4">3:4 (세로)</option>
+        </select>
+      </label>
+    </div>
+    <div class="crop-stage" id="stage">
+      <div class="crop-wrap" id="wrap">
+        <canvas id="preview"></canvas>
+        <div class="crop-shade" id="shade"></div>
+      </div>
+      <p class="crop-hint">이미지 위를 드래그해 자를 영역을 그리고, 상자 안을 드래그하면 위치를 옮깁니다.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="cropBtn" disabled>이미지 자르기</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">지우기</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>위 영역에 이미지를 끌어다 놓거나 클릭해서 선택합니다. JPG·PNG·WEBP·GIF·BMP를 지원하며 한 번에 한 장을 처리합니다.</li>
+      <li>필요하면 <b>종횡비</b>를 고릅니다. <b>자유</b>로 두면 어떤 모양이든 자를 수 있고, 1:1·4:3·16:9·3:4를 고르면 선택 상자가 그 비율로 고정됩니다.</li>
+      <li>미리보기 위를 드래그해 자를 상자를 그린 뒤, 상자 안을 드래그해 원하는 부분에 정확히 맞춥니다.</li>
+      <li><b>이미지 자르기</b>를 누르면 원본과 잘라낸 해상도가 표시되고, 파일이 <code>이름_잘라내기</code>로 자동 다운로드됩니다.</li>
+    </ol>
+
+    <h2>이 자르기 도구가 다른 사이트와 다른 점</h2>
+    <p>대부분의 온라인 이미지 도구는 사진을 <b>자기 회사 서버에 업로드</b>한 뒤 잘라서 되돌려줍니다. 업로드된 사진이 언제 지워지는지, 처리 과정에서 누가 볼 수 있는지 사용자는 알 수 없습니다. 신분증 사본, 문서 캡처, 개인 사진처럼 민감한 이미지라면 불안할 수밖에 없습니다.</p>
+    <p>ThisIsMyIMG의 자르기는 <b>파일을 어디로도 보내지 않습니다.</b> 브라우저에 내장된 캔버스 기술로 자르기 전체가 내 컴퓨터(또는 휴대폰) 안에서만 이뤄집니다. 그래서 세 가지 장점이 생깁니다.</p>
+    <ul>
+      <li><b>보안</b> — 사진이 기기 밖으로 나가지 않으므로 유출 가능성 자체가 없습니다.</li>
+      <li><b>속도</b> — 업로드·다운로드 대기가 없어 자르기가 즉시 끝납니다.</li>
+      <li><b>무제한</b> — 서버 비용이 들지 않으니 장수·용량을 제한하지 않습니다.</li>
+    </ul>
+    <p>자르기 자체도 <b>픽셀 손실이 없습니다.</b> 이 도구는 선택 영역 안의 픽셀을 원본 해상도 그대로 남길 뿐 늘리거나 다시 샘플링하지 않으므로, 잘라낸 부분은 원본만큼 선명합니다. 또 스마트폰 사진에 담긴 <b>EXIF 회전 정보를 먼저 반영</b>해 세로로 찍은 사진도 시작부터 바른 방향으로 보이고, <b>원본 포맷을 유지</b>합니다(JPG는 JPG 그대로, PNG·WEBP는 투명 배경이 살아 있도록 PNG로 저장).</p>
+    <p>썸네일이나 프로필처럼 규격이 정해진 작업에서는 비율 고정이 특히 편합니다. 1:1을 고르면 어떤 방향으로 드래그해도 선택 상자가 정사각형을 유지하므로, 프로필 사진을 한 번에 정사각으로 잘라낼 수 있습니다. 16:9·4:3은 블로그·유튜브·쇼핑몰 썸네일에, 3:4(세로)는 인물·상품 세로컷에 알맞습니다. 자유 모드에서는 원하는 대로 아무 모양이나 그릴 수 있어, 규격에 얽매이지 않고 필요한 부분만 감각적으로 잘라내기에 좋습니다.</p>
+    <p>사용법도 간단합니다. 이미지를 올린 뒤 미리보기 위를 드래그하면 어두운 영역과 흰 테두리로 자를 범위가 표시되고, 그 상자 안을 다시 드래그하면 위치를 미세하게 옮길 수 있습니다. 마음에 들지 않으면 바깥을 다시 드래그해 새 상자를 그리면 되고, 종횡비를 바꾸면 이미 그려 둔 상자도 그 비율에 맞춰 자동으로 다시 맞춰집니다. 자를 영역을 정하기 전에는 버튼이 비활성화되어 있어 실수로 빈 이미지를 내려받는 일도 없습니다.</p>
+
+    <h2>이럴 때 쓰세요</h2>
+    <ul>
+      <li>SNS·메신저·카페 아바타용 <b>정사각 프로필 사진</b>을 만들 때 — 1:1로 고정하고 드래그만 하면 됩니다</li>
+      <li>블로그·유튜브·상품 목록용 <b>썸네일</b>을 16:9·4:3 같은 정해진 비율로 만들 때</li>
+      <li>피사체가 화면을 꽉 채우도록 <b>불필요한 여백·흰 공간·거슬리는 가장자리를 제거</b>할 때</li>
+      <li><b>스크린샷</b>에서 공유할 부분만 잘라낼 때</li>
+      <li>여러 상품 사진을 <b>같은 비율</b>로 통일해 정돈된 카탈로그를 만들 때</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 먼저 자르기로 구도를 잡은 뒤, 특정 픽셀 크기가 필요하면 결과물을 <a href="/modutool/img/ko/image-resize/">이미지 크기조절</a>로 이어서 맞추면 됩니다. 해상도는 그대로 두고 용량만 줄이려면 <a href="/modutool/img/ko/image-compress/">이미지 압축</a>을 쓰세요.</div>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>사진이 정말 서버로 업로드되지 않나요?</summary><p>네. 자르기는 브라우저에 내장된 캔버스 기능으로 내 기기 안에서만 처리됩니다. 개발자도구의 네트워크 탭을 열어 확인해도 파일 업로드 요청이 없습니다. 신분증 사본이나 개인 사진 같은 민감한 이미지도 안심하고 사용할 수 있습니다.</p></details>
+      <details><summary>1:1 같은 정확한 비율로 어떻게 자르나요?</summary><p>비율 메뉴에서 자유·1:1(정사각)·4:3·16:9·3:4(세로) 중 하나를 고르면 됩니다. 비율을 고정하면 어떻게 드래그해도 선택 상자가 그 비율을 유지하므로, 손으로 수치를 재지 않아도 완벽한 정사각 프로필 사진이나 와이드 썸네일을 만들 수 있습니다.</p></details>
+      <details><summary>결과물은 원본 포맷을 유지하나요?</summary><p>네. JPG는 JPG 그대로, PNG·WEBP는 투명 배경이 유지되도록 PNG로 저장됩니다. 다운로드 파일은 원본 이름 뒤에 _잘라내기가 붙어 원본과 한눈에 구분됩니다.</p></details>
+      <details><summary>자르면 화질이 나빠지나요?</summary><p>아니요. 자르기는 선택 영역 안의 픽셀을 원본 해상도 그대로 남기는 작업이라 늘리거나 다시 샘플링하지 않습니다. 따라서 잘라낸 부분은 원본만큼 선명합니다. 결과 영역에 원본과 잘라낸 해상도가 함께 표시되어 최종 픽셀 크기를 바로 확인할 수 있습니다.</p></details>
+      <details><summary>세로로 찍은 사진이 옆으로 눕지 않나요?</summary><p>스마트폰 사진에 저장된 EXIF 회전 정보를 자동으로 반영하므로, 자르기 전부터 이미지가 바른 방향으로 보이고 저장된 파일도 그 방향을 그대로 유지합니다. 사진이 눕거나 뒤집혀 나오는 걱정을 하지 않아도 됩니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/img/ko/image-resize/"><span class="emoji">🖼️</span><span><b>이미지 크기조절</b><span>픽셀·퍼센트로 크기 변경</span></span></a>
+      <a class="tool-tile" href="/modutool/img/ko/image-compress/"><span class="emoji">🗜️</span><span><b>이미지 압축</b><span>해상도 유지, 용량만 줄이기</span></span></a>
+      <a class="tool-tile" href="/modutool/img/ko/img-to-pdf/"><span class="emoji">📄</span><span><b>이미지 → PDF</b><span>사진을 PDF 문서로</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var ratioSel = document.getElementById('ratioSel');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('wrap');
+  var preview = document.getElementById('preview');
+  var pctx = preview.getContext('2d');
+  var shade = document.getElementById('shade');
+  var cropBtn = document.getElementById('cropBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+
+  var srcImage = null;   // 정규화된 ImageBitmap 또는 <img>
+  var srcW = 0, srcH = 0;
+  var srcName = 'image';
+  var srcFmt = { mime: 'image/png', ext: 'png' };
+  var selN = null;       // {x,y,w,h} 이미지 대비 비율(0..1)
+
+  /* EXIF 회전 정규화: createImageBitmap(from-image) → 옵션 미지원 브라우저 → <img> 폴백 */
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () {
+          URL.revokeObjectURL(url);
+          reject(new Error('이미지를 읽을 수 없습니다. 브라우저가 지원하지 않는 형식일 수 있습니다(예: HEIC).'));
+        };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else {
+        fallback();
+      }
+    });
+  }
+
+  function chooseFormat(file) {
+    var t = (file.type || '').toLowerCase();
+    if (t === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) return { mime: 'image/jpeg', ext: 'jpg' };
+    return { mime: 'image/png', ext: 'png' };
+  }
+
+  function ratioValue() {
+    var v = ratioSel.value;
+    if (v === '1:1') return 1;
+    if (v === '4:3') return 4 / 3;
+    if (v === '16:9') return 16 / 9;
+    if (v === '3:4') return 3 / 4;
+    return 0; // 자유
+  }
+
+  function dispSize() {
+    var r = preview.getBoundingClientRect();
+    return { w: r.width, h: r.height };
+  }
+
+  function renderSel() {
+    if (!selN) { shade.className = 'crop-shade'; cropBtn.disabled = true; return; }
+    var d = dispSize();
+    shade.style.left = (selN.x * d.w) + 'px';
+    shade.style.top = (selN.y * d.h) + 'px';
+    shade.style.width = (selN.w * d.w) + 'px';
+    shade.style.height = (selN.h * d.h) + 'px';
+    shade.className = 'crop-shade show';
+    cropBtn.disabled = !(selN.w * srcW >= 1 && selN.h * srcH >= 1);
+  }
+
+  function clampSel(x, y, w, h, d) {
+    var ratio = ratioValue();
+    x = Math.max(0, Math.min(x, d.w));
+    y = Math.max(0, Math.min(y, d.h));
+    if (x + w > d.w) w = d.w - x;
+    if (y + h > d.h) h = d.h - y;
+    if (w < 0) w = 0;
+    if (h < 0) h = 0;
+    if (ratio && w > 0 && h > 0) {
+      if (w / h > ratio) w = h * ratio; else h = w / ratio;
+    }
+    return { x: x, y: y, w: w, h: h };
+  }
+
+  // 포인터 상호작용 --------------------------------------------------------
+  var mode = null;       // 'draw' | 'move'
+  var startX = 0, startY = 0;
+  var moveOrig = null;   // 이동 시작 시 선택 영역 좌상단(표시 px)
+  var moveGrab = null;   // 선택 영역 안에서의 포인터 오프셋
+
+  function localPoint(e) {
+    var r = wrap.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(e.clientX - r.left, r.width)),
+      y: Math.max(0, Math.min(e.clientY - r.top, r.height))
+    };
+  }
+
+  function insideSel(p, d) {
+    if (!selN) return false;
+    var sx = selN.x * d.w, sy = selN.y * d.h, sw = selN.w * d.w, sh = selN.h * d.h;
+    return p.x >= sx && p.x <= sx + sw && p.y >= sy && p.y <= sy + sh;
+  }
+
+  wrap.addEventListener('pointerdown', function (e) {
+    if (!srcImage) return;
+    e.preventDefault();
+    wrap.setPointerCapture(e.pointerId);
+    var d = dispSize();
+    var p = localPoint(e);
+    if (insideSel(p, d)) {
+      mode = 'move';
+      moveOrig = { x: selN.x * d.w, y: selN.y * d.h };
+      moveGrab = { x: p.x - moveOrig.x, y: p.y - moveOrig.y };
+    } else {
+      mode = 'draw';
+      startX = p.x; startY = p.y;
+      selN = { x: p.x / d.w, y: p.y / d.h, w: 0, h: 0 };
+      renderSel();
+    }
+  });
+
+  wrap.addEventListener('pointermove', function (e) {
+    if (!mode) return;
+    e.preventDefault();
+    var d = dispSize();
+    var p = localPoint(e);
+    if (mode === 'draw') {
+      var rawW = p.x - startX, rawH = p.y - startY;
+      var ratio = ratioValue();
+      var aw = Math.abs(rawW), ah = Math.abs(rawH);
+      if (ratio) {
+        if (aw / (ah || 1) > ratio) { aw = ah * ratio; } else { ah = aw / ratio; }
+      }
+      var x = rawW < 0 ? startX - aw : startX;
+      var y = rawH < 0 ? startY - ah : startY;
+      var c = clampSel(x, y, aw, ah, d);
+      selN = { x: c.x / d.w, y: c.y / d.h, w: c.w / d.w, h: c.h / d.h };
+    } else if (mode === 'move') {
+      var nx = p.x - moveGrab.x, ny = p.y - moveGrab.y;
+      var w = selN.w * d.w, h = selN.h * d.h;
+      nx = Math.max(0, Math.min(nx, d.w - w));
+      ny = Math.max(0, Math.min(ny, d.h - h));
+      selN = { x: nx / d.w, y: ny / d.h, w: selN.w, h: selN.h };
+    }
+    renderSel();
+  });
+
+  function endDrag(e) {
+    if (!mode) return;
+    if (mode === 'draw' && selN && (selN.w * srcW < 1 || selN.h * srcH < 1)) selN = null;
+    mode = null;
+    renderSel();
+  }
+  wrap.addEventListener('pointerup', endDrag);
+  wrap.addEventListener('pointercancel', endDrag);
+
+  ratioSel.addEventListener('change', function () {
+    var ratio = ratioValue();
+    if (selN && ratio) {
+      var d = dispSize();
+      var x = selN.x * d.w, y = selN.y * d.h, w = selN.w * d.w, h = selN.h * d.h;
+      if (w / h > ratio) w = h * ratio; else h = w / ratio;
+      var c = clampSel(x, y, w, h, d);
+      selN = { x: c.x / d.w, y: c.y / d.h, w: c.w / d.w, h: c.h / d.h };
+      renderSel();
+    }
+  });
+
+  window.addEventListener('resize', function () { if (selN) renderSel(); });
+
+  // 로드 / 지우기 ----------------------------------------------------------
+  function drawPreview() {
+    var maxW = Math.min(srcW, 900);
+    preview.width = srcW;
+    preview.height = srcH;
+    preview.style.maxWidth = maxW + 'px';
+    pctx.clearRect(0, 0, srcW, srcH);
+    pctx.drawImage(srcImage, 0, 0);
+  }
+
+  function setImage(file) {
+    result.className = 'result'; result.innerHTML = '';
+    loadImage(file).then(function (img) {
+      if (srcImage && srcImage.close) srcImage.close();
+      srcImage = img;
+      srcW = img.naturalWidth || img.width;
+      srcH = img.naturalHeight || img.height;
+      if (!srcW || !srcH) { mdtlResult(result, '❌ 이미지 크기를 읽을 수 없습니다.', true); return; }
+      srcName = file.name;
+      srcFmt = chooseFormat(file);
+      selN = null;
+      drawPreview();
+      stage.className = 'crop-stage show';
+      clearBtn.style.display = '';
+      renderSel();
+    }, function (err) {
+      mdtlResult(result, '❌ ' + ((err && err.message) ? err.message : '이미지를 읽을 수 없습니다.'), true);
+    });
+  }
+
+  function clearAll() {
+    if (srcImage && srcImage.close) srcImage.close();
+    srcImage = null; selN = null;
+    stage.className = 'crop-stage';
+    clearBtn.style.display = 'none';
+    cropBtn.disabled = true;
+    result.className = 'result'; result.innerHTML = '';
+  }
+  clearBtn.addEventListener('click', clearAll);
+
+  mdtlDropzone(dz, {
+    accept: 'image/*', multiple: false,
+    onFiles: function (fs) { if (fs && fs.length) setImage(fs[0]); }
+  });
+
+  function outName(name, ext) {
+    return name.replace(/\.[^.]*$/, '') + '_잘라내기.' + ext;
+  }
+
+  function canvasToBlob(canvas, mime, q) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (b) {
+        if (!b) return reject(new Error('이미지 저장에 실패했습니다.'));
+        resolve(b);
+      }, mime, q);
+    });
+  }
+
+  cropBtn.addEventListener('click', async function () {
+    if (!srcImage || !selN) return;
+    var sx = Math.round(selN.x * srcW);
+    var sy = Math.round(selN.y * srcH);
+    var sw = Math.max(1, Math.round(selN.w * srcW));
+    var sh = Math.max(1, Math.round(selN.h * srcH));
+    if (sx + sw > srcW) sw = srcW - sx;
+    if (sy + sh > srcH) sh = srcH - sy;
+    cropBtn.disabled = true;
+    try {
+      var canvas = document.createElement('canvas');
+      canvas.width = sw; canvas.height = sh;
+      var ctx = canvas.getContext('2d');
+      if (srcFmt.mime === 'image/jpeg') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, sw, sh); }
+      ctx.drawImage(srcImage, sx, sy, sw, sh, 0, 0, sw, sh);
+      var q = srcFmt.mime === 'image/jpeg' ? 0.92 : undefined;
+      var blob = await canvasToBlob(canvas, srcFmt.mime, q);
+      var name = outName(srcName, srcFmt.ext);
+      result.className = 'result show';
+      result.innerHTML = '';
+      var head = document.createElement('p');
+      head.style.margin = '0';
+      head.innerHTML = '✅ <b>완료!</b> 잘라내기 완료 — 파일이 자동으로 다운로드되었습니다.';
+      result.appendChild(head);
+      var meta = document.createElement('p');
+      meta.style.margin = '8px 0 0';
+      meta.style.fontSize = '13.5px';
+      meta.textContent = '원본 ' + srcW + '×' + srcH + ' → 결과 ' + sw + '×' + sh +
+        ' · ' + mdtlFormatBytes(blob.size);
+      result.appendChild(meta);
+      var row = document.createElement('div');
+      row.className = 'btn-row';
+      var dl = document.createElement('button');
+      dl.className = 'btn';
+      dl.textContent = '⬇ 다시 다운로드';
+      dl.addEventListener('click', function () { mdtlDownload(blob, name); });
+      row.appendChild(dl);
+      result.appendChild(row);
+      mdtlDownload(blob, name);
+      mdtlLogEvent('image-crop', 'success', null,
+        { width: sw, height: sh, format: srcFmt.ext, size_bucket: mdtlSizeBucket(blob.size) });
+    } catch (e) {
+      mdtlResult(result, '❌ ' + ((e && e.message) ? e.message : '처리 중 오류가 발생했습니다.'), true);
+    } finally {
+      cropBtn.disabled = !selN;
+    }
+  });
+})();
+</script>
+</body>
+</html>

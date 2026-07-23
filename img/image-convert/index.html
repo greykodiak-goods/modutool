@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convert Images — JPG, PNG, WEBP, HEIC→JPG, Free, No Upload | ThisIsMyIMG</title>
+<meta name="description" content="Free image format converter for JPG, PNG, and WEBP. Batch-convert photos in your browser with a quality slider and transparent-background handling — no server upload, no install, no sign-up, no file limits.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/img/image-convert/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/img/ko/image-convert/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/img/image-convert/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/img/image-convert/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Convert Images — JPG · PNG · WEBP, No Server Upload">
+<meta property="og:description" content="Batch-convert images between JPG, PNG, and WEBP with a quality slider. 100% in-browser processing — your files never leave your device.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/img/image-convert/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyIMG";window.MDTL_SITE_MARK="I";</script>
+<script>window.MDTL_BASE='/modutool/img';</script>
+<link rel="stylesheet" href="/modutool/img/assets/site.css">
+<script src="/modutool/img/assets/site.js"></script>
+<script src="/modutool/img/assets/ads-config.js" defer></script>
+<script src="/modutool/img/assets/auth-config.js" defer></script>
+<script src="/modutool/img/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Image Format Converter - ThisIsMyIMG","url":"https://greykodiak-goods.github.io/modutool/img/image-convert/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that converts images between JPG, PNG, and WEBP with a quality slider and transparent-background handling. Processed in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my files really never uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Correct. The conversion happens entirely on your device using the canvas technology built into your browser. Open your browser's developer tools and check the Network tab — you won't see a single file upload request. Sensitive images like ID scans or family photos are safe to convert here."}},
+{"@type":"Question","name":"Which formats can I convert between?","acceptedAnswer":{"@type":"Answer","text":"You can load JPG, PNG, WEBP, BMP, and static GIF files and convert them to JPG, PNG, or WEBP. That covers the everyday cases: WEBP to JPG for compatibility, PNG to WEBP to save space, or JPG to PNG when you need a lossless copy. Animated GIFs are flattened to their first frame."}},
+{"@type":"Question","name":"What happens to transparency when I convert PNG to JPG?","acceptedAnswer":{"@type":"Answer","text":"JPG does not support transparency, so any transparent areas are filled with white when you convert a PNG or WEBP to JPG. If you need to keep a transparent background — for a logo or icon — choose PNG or WEBP as the output format instead. The tool tells you whenever transparent pixels were filled."}},
+{"@type":"Question","name":"Can I convert iPhone HEIC photos?","acceptedAnswer":{"@type":"Answer","text":"Not directly. Browsers cannot read Apple's HEIC/HEIF format, so this tool detects HEIC files and skips them rather than producing a broken result. On your iPhone, go to Settings → Camera → Formats and choose 'Most Compatible' to shoot in JPG, or open the photo in the Photos app and share or export it as JPG first — then it converts here without any problem."}},
+{"@type":"Question","name":"Which format should I choose — JPG, PNG, or WEBP?","acceptedAnswer":{"@type":"Answer","text":"Use JPG for photographs and anywhere you need maximum compatibility, such as chat apps and older upload forms. Use PNG when you need a transparent background or a lossless copy of graphics and screenshots. Use WEBP for the web when you want the smallest file at a given quality — it typically saves 25–35% versus JPG and supports transparency."}}
+]}
+</script>
+<meta name="robots" content="noindex, follow">
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/img/">ThisIsMyIMG</a> › <a href="/modutool/img/#image">Image Tools</a> › Image Converter</nav>
+  <h1 class="page-title">Image Converter<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Convert images between JPG, PNG, and WEBP — batch, with a quality slider and transparent-background handling. Free, no install, no sign-up.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🔄</span>
+      <strong>Drag &amp; drop image files here, or click to select</strong><br>
+      JPG · PNG · WEBP · BMP · GIF — multiple files at once
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts">
+      <label>Output format
+        <select id="outFmt">
+          <option value="jpeg" selected>Convert to JPG</option>
+          <option value="png">Convert to PNG</option>
+          <option value="webp">Convert to WEBP</option>
+        </select>
+      </label>
+      <label id="qualityWrap">Quality
+        <input type="range" id="quality" min="40" max="100" value="90">
+        <span id="qualityVal">90</span>
+      </label>
+    </div>
+    <p id="pngHint" style="display:none;color:var(--text-soft);font-size:13.5px;margin:10px 0 0">ℹ️ JPG has no transparency — transparent areas of a PNG or WEBP will be filled with white. Choose PNG or WEBP as the output to keep a transparent background.</p>
+    <div class="btn-row">
+      <button class="btn" id="goBtn" disabled>Convert Images</button>
+      <button class="btn" id="dlAllBtn" style="display:none">⬇ Download All</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Clear All</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <ul class="file-list" id="outList"></ul>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drag images (JPG, PNG, WEBP, BMP, or GIF) into the area above, or click it to select multiple files at once.</li>
+      <li>Pick an <b>Output format</b> — JPG, PNG, or WEBP. The <b>Quality</b> slider appears for JPG and WEBP (85–95 is the sweet spot); PNG is lossless and needs no quality setting.</li>
+      <li>Click <b>Convert Images</b>. Each file is processed on its own and the list shows the <b>original format → new format and size</b> (e.g., PNG → JPG, 1.8 MB → 420 KB).</li>
+      <li>Download files one at a time with each ⬇ button, or grab everything with <b>Download All</b>. Each converted file keeps its original name with the new extension, and your originals are left untouched.</li>
+    </ol>
+
+    <h2>What Makes This Different from Other Converter Sites</h2>
+    <p>Most online converters <b>upload your images to their own servers</b>, convert them there, and send them back. You have no way of knowing when the uploaded copies are deleted or who can see them along the way. For sensitive images — family photos, ID scans, contract documents — that should give you pause.</p>
+    <p>ThisIsMyIMG's image converter <b>never sends your images anywhere.</b> The entire conversion runs inside your computer (or phone) using the canvas technology built into your browser. That design brings three advantages.</p>
+    <ul>
+      <li><b>Privacy</b> — your images never leave your device, so there is simply nothing to leak.</li>
+      <li><b>Speed</b> — with no upload or download waits, even dozens of images finish in seconds.</li>
+      <li><b>No limits</b> — since we pay no server costs, there are no caps on file count, runs, or size.</li>
+    </ul>
+    <p>Portrait photos are handled correctly, too: the converter reads the <b>EXIF orientation</b> stored by smartphone cameras, so an image never comes out sideways or upside down after conversion the way it does on some other tools.</p>
+
+    <h2>Which Format Should I Choose?</h2>
+    <p>Each format is good at a different job, and picking the right one is usually the whole point of converting in the first place.</p>
+    <ul>
+      <li><b>WEBP → JPG for compatibility.</b> More and more sites save images as WEBP, but some chat apps, older upload forms, and desktop programs still refuse to open them. Converting a WEBP to JPG makes it work everywhere — this is the single most common reason people convert an image, whether it is to attach it in a messenger, upload it to a government portal, or drop it into an old document editor.</li>
+      <li><b>Keep transparency as PNG.</b> A company logo, an icon, or a signature cut-out needs a see-through background. If you convert those to JPG the transparent area turns solid white, which looks wrong on a colored page — so keep or convert them to PNG (or WEBP) to preserve the transparency.</li>
+      <li><b>Convert to WEBP to save space.</b> For blogs, online stores, and websites, WEBP typically produces files 25–35% smaller than JPG at the same visual quality, which means faster page loads and better SEO. Every modern browser — Chrome, Edge, Safari, Samsung Internet — opens WEBP, so it is a safe choice for anything that lives online.</li>
+      <li><b>Use PNG for a lossless copy.</b> Screenshots, diagrams, and images with sharp text or flat color stay crisp as PNG, with no compression artifacts around the edges. Converting a JPG to PNG will not recover detail that JPG already discarded, but it prevents any further loss if you plan to edit and re-save.</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> Converting to JPG or WEBP usually shrinks the file, but if you need to hit an exact size limit, run the result through the <a href="/modutool/img/image-compress/">Image Compressor</a> afterward. If you need specific pixel dimensions, resize first with the <a href="/modutool/img/image-resize/">Image Resizer</a>.</div>
+
+    <h2>A Note on HEIC (iPhone Photos)</h2>
+    <p>Photos taken on a recent iPhone are often saved as <b>HEIC</b>, Apple's high-efficiency format. Browsers cannot read HEIC, so no in-browser tool — including this one — can convert it directly. Rather than hand you a broken file, the converter detects HEIC uploads and clearly flags them as skipped. To use them here, set your iPhone to shoot JPG (Settings → Camera → Formats → "Most Compatible"), or open the photo in the Photos app and export or share it as a JPG first. Once it is a JPG, it converts here like any other image.</p>
+
+    <h2>When to Use This Tool</h2>
+    <ul>
+      <li>A WEBP image <b>won't open or upload</b> where you need it, so you convert it to JPG</li>
+      <li>You need a <b>transparent PNG logo</b> converted from another format, or preserved as PNG</li>
+      <li>You want <b>smaller WEBP files</b> for a faster, better-ranking website</li>
+      <li>A form or program only accepts <b>JPG or PNG</b> and rejects your current format</li>
+      <li>You're standardizing <b>a batch of mixed-format images</b> into one consistent format</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Are my files really never uploaded to a server?</summary><p>Correct. The conversion happens entirely on your device using the canvas technology built into your browser. Open your browser's developer tools and check the Network tab — you won't see a single file upload request. Sensitive images like ID scans or family photos are safe to convert here.</p></details>
+      <details><summary>Which formats can I convert between?</summary><p>You can load JPG, PNG, WEBP, BMP, and static GIF files and convert them to JPG, PNG, or WEBP. That covers the everyday cases: WEBP to JPG for compatibility, PNG to WEBP to save space, or JPG to PNG when you need a lossless copy. Animated GIFs are flattened to their first frame.</p></details>
+      <details><summary>What happens to transparency when I convert PNG to JPG?</summary><p>JPG does not support transparency, so any transparent areas are filled with white when you convert a PNG or WEBP to JPG. If you need to keep a transparent background — for a logo or icon — choose PNG or WEBP as the output format instead. The tool tells you whenever transparent pixels were filled.</p></details>
+      <details><summary>Can I convert iPhone HEIC photos?</summary><p>Not directly. Browsers cannot read Apple's HEIC/HEIF format, so this tool detects HEIC files and skips them rather than producing a broken result. On your iPhone, go to Settings → Camera → Formats and choose 'Most Compatible' to shoot in JPG, or open the photo in the Photos app and share or export it as JPG first — then it converts here without any problem.</p></details>
+      <details><summary>Which format should I choose — JPG, PNG, or WEBP?</summary><p>Use JPG for photographs and anywhere you need maximum compatibility, such as chat apps and older upload forms. Use PNG when you need a transparent background or a lossless copy of graphics and screenshots. Use WEBP for the web when you want the smallest file at a given quality — it typically saves 25–35% versus JPG and supports transparency.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/img/image-compress/"><span class="emoji">🗜️</span><span><b>Image Compressor</b><span>Shrink file size to a target</span></span></a>
+      <a class="tool-tile" href="/modutool/img/image-resize/"><span class="emoji">📐</span><span><b>Image Resizer</b><span>Resize by pixels or percent</span></span></a>
+      <a class="tool-tile" href="/modutool/img/image-crop/"><span class="emoji">✂️</span><span><b>Image Cropper</b><span>Crop to a ratio or region</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var files = [];      // { file, heic }
+  var results = [];
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var outEl = document.getElementById('outList');
+  var goBtn = document.getElementById('goBtn');
+  var dlAllBtn = document.getElementById('dlAllBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var fmtSel = document.getElementById('outFmt');
+  var qualityWrap = document.getElementById('qualityWrap');
+  var quality = document.getElementById('quality');
+  var qualityVal = document.getElementById('qualityVal');
+  var pngHint = document.getElementById('pngHint');
+
+  var FMT = {
+    jpeg: { mime: 'image/jpeg', ext: 'jpg', label: 'JPG' },
+    png:  { mime: 'image/png',  ext: 'png', label: 'PNG' },
+    webp: { mime: 'image/webp', ext: 'webp', label: 'WEBP' }
+  };
+
+  function isHeic(f) {
+    var n = (f.name || '').toLowerCase();
+    var t = (f.type || '').toLowerCase();
+    return /\.(heic|heif)$/.test(n) || t === 'image/heic' || t === 'image/heif';
+  }
+
+  function baseOf(name) { return name.replace(/\.[^.]+$/, ''); }
+  function extLabel(f) {
+    var t = (f.type || '').toLowerCase();
+    if (t === 'image/jpeg') return 'JPG';
+    if (t === 'image/png') return 'PNG';
+    if (t === 'image/webp') return 'WEBP';
+    if (t === 'image/gif') return 'GIF';
+    if (t === 'image/bmp') return 'BMP';
+    var m = /\.([a-z0-9]+)$/.exec((f.name || '').toLowerCase());
+    if (m) return (m[1] === 'jpeg' ? 'jpg' : m[1]).toUpperCase();
+    return 'IMG';
+  }
+
+  function syncOpts() {
+    qualityWrap.style.display = fmtSel.value === 'png' ? 'none' : '';
+    pngHint.style.display = fmtSel.value === 'jpeg' ? '' : 'none';
+  }
+  fmtSel.addEventListener('change', syncOpts);
+  quality.addEventListener('input', function () { qualityVal.textContent = quality.value; });
+  syncOpts();
+
+  function resetOutput() {
+    results = [];
+    outEl.innerHTML = '';
+    result.className = 'result';
+    result.innerHTML = '';
+    dlAllBtn.style.display = 'none';
+  }
+
+  function convertibleCount() {
+    return files.filter(function (x) { return !x.heic; }).length;
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    files.forEach(function (x, i) {
+      var f = x.file;
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta"></span>' +
+        '<button class="mini" data-i="' + i + '" aria-label="Remove">✕</button>';
+      li.querySelector('.name').textContent = (i + 1) + '. ' + f.name;
+      var meta = li.querySelector('.meta');
+      if (x.heic) meta.textContent = '⚠️ HEIC — not supported by browsers';
+      else meta.textContent = extLabel(f) + ' · ' + mdtlFormatBytes(f.size);
+      listEl.appendChild(li);
+    });
+    var n = convertibleCount();
+    goBtn.disabled = n < 1;
+    goBtn.textContent = n ? 'Convert ' + n + (n === 1 ? ' Image' : ' Images') : 'Convert Images';
+    clearBtn.style.display = files.length ? '' : 'none';
+  }
+
+  function renderOut() {
+    outEl.innerHTML = '';
+    results.forEach(function (r, i) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta"></span>' +
+        '<button class="mini" data-i="' + i + '" aria-label="Download">⬇</button>';
+      li.querySelector('.name').textContent = r.outName;
+      var meta = li.querySelector('.meta');
+      var btn = li.querySelector('.mini');
+      if (r.error) {
+        meta.textContent = '⚠️ ' + r.error;
+        btn.disabled = true;
+      } else {
+        meta.textContent = r.fromLabel + ' → ' + r.toLabel + ' · ' +
+          mdtlFormatBytes(r.origSize) + ' → ' + mdtlFormatBytes(r.blob.size);
+      }
+      outEl.appendChild(li);
+    });
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    files.splice(+b.dataset.i, 1);
+    resetOutput();
+    render();
+  });
+
+  outEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || b.disabled) return;
+    var r = results[+b.dataset.i];
+    if (r && r.blob) mdtlDownload(r.blob, r.outName);
+  });
+
+  clearBtn.addEventListener('click', function () {
+    files = [];
+    resetOutput();
+    render();
+  });
+
+  dlAllBtn.addEventListener('click', function () {
+    var ok = results.filter(function (r) { return !r.error && r.blob; });
+    ok.forEach(function (r, idx) {
+      setTimeout(function () { mdtlDownload(r.blob, r.outName); }, idx * 400);
+    });
+  });
+
+  mdtlDropzone(dz, {
+    accept: '.jpg,.jpeg,.png,.webp,.bmp,.gif,.heic,.heif', multiple: true,
+    onFiles: function (fs) {
+      fs.forEach(function (f) { files.push({ file: f, heic: isHeic(f) }); });
+      resetOutput();
+      render();
+    }
+  });
+
+  /* EXIF orientation normalization: createImageBitmap(from-image) → fallback to <img> */
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () {
+          URL.revokeObjectURL(url);
+          reject(new Error('Could not read this image (corrupted or unsupported format).'));
+        };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else {
+        fallback();
+      }
+    });
+  }
+
+  /* Detect whether the drawn image has any non-opaque pixels (sampled) */
+  function hasTransparency(ctx, w, h) {
+    try {
+      var data = ctx.getImageData(0, 0, w, h).data;
+      var step = Math.max(4, (Math.floor(data.length / 4 / 20000) * 4)); // sample up to ~20k pixels
+      for (var i = 3; i < data.length; i += step) {
+        if (data[i] < 255) return true;
+      }
+    } catch (e) { /* tainted canvas shouldn't happen for local files */ }
+    return false;
+  }
+
+  function canvasToBlob(canvas, mime, q) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (b) {
+        if (!b) return reject(new Error('Failed to save the image.'));
+        if (mime === 'image/webp' && b.type !== 'image/webp') {
+          return reject(new Error('This browser cannot save WEBP. Use Chrome, Edge, or a recent Safari.'));
+        }
+        resolve(b);
+      }, mime, q);
+    });
+  }
+
+  goBtn.addEventListener('click', async function () {
+    var todo = files.filter(function (x) { return !x.heic; });
+    if (!todo.length) return;
+    goBtn.disabled = true;
+    resetOutput();
+    prog.className = 'progress show'; progBar.style.width = '0%';
+
+    var fmt = FMT[fmtSel.value] || FMT.jpeg;
+    var toJpeg = fmt.mime === 'image/jpeg';
+    var q = fmt.mime === 'image/png' ? undefined : (+quality.value) / 100;
+    var okCount = 0, failCount = 0, heicCount = 0, filledCount = 0, totalOrig = 0, totalOut = 0;
+
+    try {
+      // HEIC files → shown as skipped entries first
+      files.filter(function (x) { return x.heic; }).forEach(function (x) {
+        heicCount++;
+        results.push({ error: 'HEIC can’t be read in the browser — export as JPG on your iPhone first.', outName: x.file.name });
+      });
+      renderOut();
+
+      var done = 0;
+      for (var i = 0; i < todo.length; i++) {
+        var f = todo[i].file;
+        var r = { origSize: f.size, outName: f.name, fromLabel: extLabel(f), toLabel: fmt.label };
+        try {
+          var img = await loadImage(f);
+          var w = img.naturalWidth || img.width;
+          var h = img.naturalHeight || img.height;
+          if (!w || !h) throw new Error('Could not read the image dimensions.');
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          if (img.close) img.close();
+          if (toJpeg && hasTransparency(ctx, w, h)) {
+            // JPG has no alpha: repaint white behind the image
+            var bg = document.createElement('canvas');
+            bg.width = w; bg.height = h;
+            var bctx = bg.getContext('2d');
+            bctx.fillStyle = '#ffffff';
+            bctx.fillRect(0, 0, w, h);
+            bctx.drawImage(canvas, 0, 0);
+            canvas = bg;
+            filledCount++;
+          }
+          var blob = await canvasToBlob(canvas, fmt.mime, q);
+          r.blob = blob;
+          r.outName = baseOf(f.name) + '.' + fmt.ext;
+          totalOrig += f.size; totalOut += blob.size;
+          okCount++;
+        } catch (err) {
+          r.error = (err && err.message) ? err.message : 'This file could not be processed.';
+          failCount++;
+        }
+        results.push(r);
+        done++;
+        progBar.style.width = Math.round((done / todo.length) * 100) + '%';
+        renderOut();
+      }
+
+      if (!okCount) throw new Error('No images could be converted. Please make sure your files are JPG, PNG, WEBP, BMP, or GIF.');
+
+      var html = '✅ <b>Done!</b> ' + okCount + ' converted to ' + fmt.label +
+        ' — total ' + mdtlFormatBytes(totalOrig) + ' → ' + mdtlFormatBytes(totalOut) +
+        '. Download files individually below or click <b>Download All</b>.';
+      if (filledCount) html += '<br>ℹ️ ' + filledCount + ' had a transparent background that was <b>filled with white</b> (JPG has no transparency). Choose PNG or WEBP to keep it.';
+      if (heicCount) html += '<br>⚠️ ' + heicCount + ' HEIC file' + (heicCount === 1 ? '' : 's') + ' skipped — export as JPG on your iPhone (Settings → Camera → Formats → "Most Compatible") and try again.';
+      if (failCount) html += '<br>⚠️ ' + failCount + ' could not be processed.';
+      mdtlLogEvent('image-convert', 'success', null,
+        { count: okCount, format: fmt.ext, size_bucket: mdtlSizeBucket(totalOut) });
+      mdtlResult(result, html);
+      dlAllBtn.style.display = '';
+      dlAllBtn.textContent = '⬇ Download All (' + okCount + ')';
+    } catch (e) {
+      mdtlResult(result, '❌ ' + ((e && e.message) ? e.message : 'An error occurred during processing.'), true);
+    } finally {
+      prog.className = 'progress';
+      goBtn.disabled = convertibleCount() < 1;
+    }
+  });
+})();
+</script>
+</body>
+</html>

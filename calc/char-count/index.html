@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Character &amp; Word Counter — Live Count, No Upload | ThisIsMyCalculator</title>
+<meta name="description" content="Free live character and word counter. Characters with and without spaces, UTF-8 and Korean 2-byte (EUC-KR) byte counts, words, lines, and 200-character manuscript pages — all at once, as you type. Your text is never sent to a server.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/char-count/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/char-count/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/char-count/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/char-count/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Character &amp; Word Counter — Live Count, No Upload">
+<meta property="og:description" content="Count characters, words, bytes, and lines as you type. 100% in-browser — your text is never transmitted.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/char-count/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Character & Word Counter - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/char-count/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that counts characters with and without spaces, UTF-8 and Korean 2-byte (EUC-KR) bytes, words, lines, and 200-character manuscript pages in real time. Text is processed only in the browser and never sent to a server.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Do character limits for personal statements include spaces?","acceptedAnswer":{"@type":"Answer","text":"It depends on the company or application system. First check whether the instructions say 'including spaces' or 'excluding spaces'; if nothing is stated, it is safest to stay within the stricter with-spaces count. This tool shows both counts side by side, so you can check against either standard instantly."}},
+{"@type":"Question","name":"Is my text sent to or stored on a server?","acceptedAnswer":{"@type":"Answer","text":"No. Everything is counted inside your browser, and your text is never transmitted or saved anywhere. Closing or refreshing the page erases it completely. It is safe to paste personal statements or essays that contain private information."}},
+{"@type":"Question","name":"Why do byte counts differ between sites?","acceptedAnswer":{"@type":"Answer","text":"Because they assume different encodings. In UTF-8, the current web standard, one Korean character is 3 bytes; in EUC-KR, an older Korean 2-byte encoding still used by some legacy systems, one Korean character is 2 bytes. This tool shows both counts, so read the one that matches the system you are submitting to."}},
+{"@type":"Question","name":"How are manuscript pages calculated?","acceptedAnswer":{"@type":"Answer","text":"It is a quick estimate based on the traditional Korean 200-character manuscript sheet: the with-spaces character count divided by 200, rounded up. Copying text onto real manuscript paper adds blank squares for paragraph indents and line breaks, so the actual page count can come out higher — leave a margin of one or two pages."}},
+{"@type":"Question","name":"Do line breaks count as characters?","acceptedAnswer":{"@type":"Answer","text":"In the with-spaces count, each line break counts as one character; in the without-spaces count it is removed along with all other whitespace. Most web forms count the same way, but the submission form itself is always the final authority — check there when it matters."}}
+]}
+</script>
+<style>
+#mainOut { margin-top: 14px; text-align: center; }
+#statGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+#statGrid .calc-out { margin-top: 0; padding: 12px 14px; text-align: center; }
+#statGrid .num { font-size: 20px; }
+#statGrid .sub { margin-top: 2px; }
+</style>
+<meta name="robots" content="noindex, follow">
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/">ThisIsMyCalculator</a> › <a href="/modutool/calc/#calc">Text Tools</a> › Character &amp; Word Counter</nav>
+  <h1 class="page-title">Character &amp; Word Counter<span class="privacy-badge">🔒 No upload, no storage</span></h1>
+  <p class="page-sub">Characters with and without spaces, bytes, words, lines, and manuscript pages — counted live as you type. Your text is never sent to or stored on a server.</p>
+
+  <div class="card tool-card">
+    <textarea class="big-input" id="txt" spellcheck="false" placeholder="Type or paste your text here. The numbers below update instantly — no button needed."></textarea>
+    <div class="calc-out" id="mainOut">
+      <div class="num"><span id="cntAll">0</span> characters</div>
+      <div class="sub">Characters with spaces (line breaks included)</div>
+    </div>
+    <div id="statGrid">
+      <div class="calc-out"><div class="num" id="cntNoSpace">0</div><div class="sub">Characters without spaces</div></div>
+      <div class="calc-out"><div class="num" id="cntUtf8">0</div><div class="sub">Bytes · UTF-8 (Korean = 3 bytes)</div></div>
+      <div class="calc-out"><div class="num" id="cntEuc">0</div><div class="sub">Bytes · Korean 2-byte (EUC-KR)</div></div>
+      <div class="calc-out"><div class="num" id="cntWords">0</div><div class="sub">Words (split on whitespace)</div></div>
+      <div class="calc-out"><div class="num" id="cntLines">0</div><div class="sub">Lines</div></div>
+      <div class="calc-out"><div class="num" id="cntPages">0</div><div class="sub">Manuscript pages (200-char, rounded up)</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="copyBtn">📋 Copy text</button>
+      <button class="btn secondary" id="clearBtn">🗑️ Clear</button>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>Type directly into the box above, or paste a personal statement, essay, or manuscript you drafted in Word, Google Docs, or a notes app.</li>
+      <li>There is no button to press — <b>characters with and without spaces, byte counts, words, lines, and manuscript pages</b> all update live as you type.</li>
+      <li>When you are done, use <b>Copy text</b> to copy the text exactly as it is and paste it into the submission form, and <b>Clear</b> to empty the box.</li>
+    </ol>
+
+    <h2>What makes this counter different</h2>
+    <p>Plenty of sites will count characters for you, but few say what happens to the text you paste in. A personal statement or college essay carries your name, school, and work history — sensitive information by definition — and if a counter processes text on its server, you have no way of knowing where that text ends up.</p>
+    <p>The ThisIsMyCalculator counter <b>sends your text nowhere.</b> Counting happens entirely inside the browser you are looking at; nothing is written to a server or even to browser storage, and closing the page erases the text completely. Open the network tab in your browser's developer tools and you will see that no request carries your input anywhere.</p>
+    <ul>
+      <li><b>Private</b> — the text never leaves your device, so there is nothing to leak.</li>
+      <li><b>Live</b> — every metric refreshes as you type, with no count button.</li>
+      <li><b>All at once</b> — with/without spaces, bytes, words, lines, and manuscript pages in a single view, instead of a different site per metric.</li>
+    </ul>
+
+    <h2>Character limits: with or without spaces?</h2>
+    <p>When an application form says "within 1,000 characters," whether that includes spaces <b>varies by company and application system</b> — the same employer's own careers page and a job platform can even disagree with each other. This matters most for personal statements and essays submitted to Korean and other Asian application systems, which usually limit by characters rather than by words. When in doubt:</p>
+    <ol>
+      <li>Look for an explicit <b>"including spaces" or "excluding spaces"</b> note in the posting or next to the input field — it is usually there in parentheses.</li>
+      <li>If there is no note, paste a short test sentence with spaces into the actual form and watch which way the remaining-character counter moves.</li>
+      <li>Still unsure? Write to the stricter <b>with-spaces</b> limit. That prevents the classic accident of the form silently cutting off the end of your essay at submission.</li>
+    </ol>
+    <p>Some systems — notably Korean public-sector application forms — limit by <b>bytes</b> instead of characters, and the byte count depends on the encoding. In UTF-8, the current web standard, one Korean character is 3 bytes (letters, digits, and spaces are 1 byte each); in EUC-KR, an older Korean 2-byte encoding still used by some legacy systems, one Korean character is 2 bytes. This tool shows both side by side, so read whichever standard your submission system uses.</p>
+
+    <h2>What are "manuscript pages"?</h2>
+    <p>The manuscript-page figure is based on <i>wongoji</i> — traditional Korean manuscript paper, a grid of 200 squares with one character per square, still widely used as a length unit in Korean writing contests, school essays, and publishing. This tool divides the with-spaces character count by 200 and rounds up. For example, 1,530 characters with spaces gives 1,530 ÷ 200 = 7.65 → <b>8 pages</b>.</p>
+    <p>Treat it as an estimate. On real manuscript paper, each paragraph starts with a blank square, an early line break wastes the rest of that row, and punctuation takes a square of its own — so the true page count usually comes out a little higher. If a contest says "about 10 pages," leave yourself a margin of one or two pages.</p>
+
+    <h2>When to use this</h2>
+    <ul>
+      <li>Trimming a <b>personal statement or essay</b> to a per-question character limit (500 or 1,000 characters) while editing in real time</li>
+      <li>Checking a <b>byte limit</b> on a public-sector or legacy application form before submitting</li>
+      <li>Sizing up blog posts and product descriptions</li>
+      <li>Converting a contest or school essay into <b>manuscript pages</b></li>
+      <li>Checking whether a text message will exceed the 90-byte SMS range and be sent as a long message</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> Pasting from Word or other editors often drags along blank lines and spaces before and after your text, and they all count. If your number here differs from the submission form's counter, delete the leading and trailing whitespace first.</div>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>Do character limits for personal statements include spaces?</summary><p>It depends on the company or application system. First check whether the instructions say 'including spaces' or 'excluding spaces'; if nothing is stated, it is safest to stay within the stricter with-spaces count. This tool shows both counts side by side, so you can check against either standard instantly.</p></details>
+      <details><summary>Is my text sent to or stored on a server?</summary><p>No. Everything is counted inside your browser, and your text is never transmitted or saved anywhere. Closing or refreshing the page erases it completely. It is safe to paste personal statements or essays that contain private information.</p></details>
+      <details><summary>Why do byte counts differ between sites?</summary><p>Because they assume different encodings. In UTF-8, the current web standard, one Korean character is 3 bytes; in EUC-KR, an older Korean 2-byte encoding still used by some legacy systems, one Korean character is 2 bytes. This tool shows both counts, so read the one that matches the system you are submitting to.</p></details>
+      <details><summary>How are manuscript pages calculated?</summary><p>It is a quick estimate based on the traditional Korean 200-character manuscript sheet: the with-spaces character count divided by 200, rounded up. Copying text onto real manuscript paper adds blank squares for paragraph indents and line breaks, so the actual page count can come out higher — leave a margin of one or two pages.</p></details>
+      <details><summary>Do line breaks count as characters?</summary><p>In the with-spaces count, each line break counts as one character; in the without-spaces count it is removed along with all other whitespace. Most web forms count the same way, but the submission form itself is always the final authority — check there when it matters.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/percent-calculator/"><span class="emoji">📊</span><span><b>Percentage Calculator</b><span>Ratios &amp; percent change</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/dday-calculator/"><span class="emoji">📅</span><span><b>D-Day Calculator</b><span>Days until a date</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var txt = document.getElementById('txt');
+  var elAll = document.getElementById('cntAll');
+  var elNoSpace = document.getElementById('cntNoSpace');
+  var elUtf8 = document.getElementById('cntUtf8');
+  var elEuc = document.getElementById('cntEuc');
+  var elWords = document.getElementById('cntWords');
+  var elLines = document.getElementById('cntLines');
+  var elPages = document.getElementById('cntPages');
+  var copyBtn = document.getElementById('copyBtn');
+  var clearBtn = document.getElementById('clearBtn');
+
+  function fmt(n) { return n.toLocaleString('en-US'); }
+
+  function calc() {
+    try {
+      var t = txt.value;
+      var chars = Array.from(t); /* code-point based — an emoji counts as 1 character */
+      var all = chars.length;
+      var noSpace = Array.from(t.replace(/\s/g, '')).length;
+      var utf8 = new Blob([t]).size; /* UTF-8: 1 Korean character = 3 bytes */
+      var euc = 0; /* EUC-KR approximation: ASCII letters/digits/symbols 1 byte, everything else 2 bytes */
+      for (var i = 0; i < chars.length; i++) euc += chars[i].codePointAt(0) <= 0x7F ? 1 : 2;
+      var trimmed = t.trim();
+      var words = trimmed ? trimmed.split(/\s+/).length : 0;
+      var lines = t ? t.split('\n').length : 0;
+      var pages = Math.ceil(all / 200); /* 200-char manuscript sheet, with-spaces count rounded up */
+      elAll.textContent = fmt(all);
+      elNoSpace.textContent = fmt(noSpace);
+      elUtf8.textContent = fmt(utf8);
+      elEuc.textContent = fmt(euc);
+      elWords.textContent = fmt(words);
+      elLines.textContent = fmt(lines);
+      elPages.textContent = fmt(pages);
+    } catch (e) {
+      /* On failure, retry on the next input event — the display keeps its previous state */
+    }
+  }
+
+  txt.addEventListener('input', calc);
+  calc();
+
+  clearBtn.addEventListener('click', function () {
+    txt.value = '';
+    calc();
+    txt.focus();
+  });
+
+  var copyLabel = copyBtn.textContent;
+  var copyTimer = null;
+  function copied(ok) {
+    copyBtn.textContent = ok ? '✅ Copied' : '❌ Copy failed — please select the text and copy it manually';
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(function () { copyBtn.textContent = copyLabel; }, 1800);
+  }
+
+  copyBtn.addEventListener('click', function () {
+    if (!txt.value) { txt.focus(); return; }
+    function fallback() {
+      try {
+        txt.select();
+        var ok = document.execCommand('copy');
+        if (window.getSelection) window.getSelection().removeAllRanges();
+        txt.blur();
+        copied(ok);
+      } catch (e) {
+        copied(false);
+      }
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt.value).then(function () { copied(true); }, fallback);
+      } else {
+        fallback();
+      }
+    } catch (e) {
+      fallback();
+    }
+  });
+})();
+</script>
+</body>
+</html>

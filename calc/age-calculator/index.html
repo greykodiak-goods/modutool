@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Korean Age Calculator — International Age vs Korean Age | ThisIsMyCalculator</title>
+<meta name="description" content="Enter your date of birth to instantly get your international (Western) age, Korean calendar-year age, traditional Korean age, days until your next birthday, and Chinese zodiac sign. Based on Korea's 2023 age unification law. 100% in-browser — nothing is sent to a server.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/age-calculator/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/age-calculator/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/age-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/age-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Korean Age Calculator — International Age vs Korean Age">
+<meta property="og:description" content="Instantly compare your international age with the two Korean age systems. In-browser only — your birth date is never transmitted.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/age-calculator/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<style>
+.guide table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14.5px}
+.guide th,.guide td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+.guide th{background:var(--surface-2);font-size:13.5px}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Korean Age Calculator - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/age-calculator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that instantly calculates international (Western) age, Korean calendar-year age, traditional Korean age, days until the next birthday, and the Chinese zodiac sign from a date of birth. Based on Korea's 2023 age unification law; nothing is sent to a server.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How is international (Western) age calculated?","acceptedAnswer":{"@type":"Answer","text":"Subtract the birth year from the year of the reference date (usually today), then subtract one more if the birthday has not yet passed that year. For example, someone born in November 1990 has not had their birthday by July 2026, so 2026 − 1990 − 1 = 35. This calculator checks whether the birthday has passed automatically and applies the same rule."}},
+{"@type":"Question","name":"What is Korea's 2023 age unification law?","acceptedAnswer":{"@type":"Answer","text":"It refers to amendments to Article 7-2 of the General Act on Public Administration and Article 158 of the Civil Act, passed by the Korean National Assembly in December 2022 and in force since June 28, 2023. Since that date, unless a specific law says otherwise, ages in Korean statutes, contracts, and official documents are calculated and stated as international (Western) age."}},
+{"@type":"Question","name":"Are there cases where Korea still uses calendar-year age?","acceptedAnswer":{"@type":"Answer","text":"Yes. For administrative convenience, some laws still use calendar-year age (based only on the birth year): the Military Service Act for draft physical examination notices, the Youth Protection Act for the legal age to buy alcohol and tobacco, and the Elementary and Secondary Education Act for elementary school entry timing."}},
+{"@type":"Question","name":"Is my date of birth sent to or stored on a server?","acceptedAnswer":{"@type":"Answer","text":"No. All calculations run as JavaScript inside your browser, and the date of birth you enter is never transmitted or saved anywhere. When you close the page, the input disappears with it."}},
+{"@type":"Question","name":"How is the Chinese zodiac sign determined?","acceptedAnswer":{"@type":"Answer","text":"This calculator uses the solar (Gregorian) birth year to show one of the 12 zodiac animals (Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse, Goat, Monkey, Rooster, Dog, Pig). In the traditional calendar the sign changes at Lunar New Year or the start of spring, so people born in January or early February may belong to the previous year's sign under the traditional rule."}}
+]}
+</script>
+<meta name="robots" content="noindex, follow">
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/">ThisIsMyCalculator</a> › <a href="/modutool/calc/#calc">Calculators</a> › Korean Age Calculator</nav>
+  <h1 class="page-title">Korean Age Calculator<span class="privacy-badge">🔒 Nothing sent to a server</span></h1>
+  <p class="page-sub">Enter a date of birth and instantly get the international (Western) age, Korean calendar-year age, traditional Korean age, D-days until the next birthday, and Chinese zodiac sign — based on Korea's 2023 age unification law.</p>
+
+  <div class="card tool-card">
+    <div class="calc-grid">
+      <label class="field">
+        <span>🎂 Date of birth</span>
+        <input type="date" id="birth">
+      </label>
+      <label class="field">
+        <span>📅 Reference date (defaults to today — editable)</span>
+        <input type="date" id="ref">
+      </label>
+    </div>
+    <div class="calc-out" id="out" aria-live="polite">
+      <div class="sub">Enter a date of birth to instantly see all three age systems and the zodiac sign.</div>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>Pick or type a <b>date of birth</b> (e.g. 1990-11-21).</li>
+      <li>Change the <b>reference date</b> if needed. It defaults to today; set it to any other date when you need an age as of a specific day (a contract date, exam date, visa application, and so on).</li>
+      <li>There is no button to press — the <b>international (Western) age</b> appears instantly, together with the Korean calendar-year age, traditional Korean age, D-days until the next birthday, and the Chinese zodiac sign.</li>
+    </ol>
+
+    <h2>Why does Korea have three ages?</h2>
+    <p>If you follow K-pop, K-dramas, or you live in Korea, you have probably noticed that a Korean person can give you two or even three different answers to "How old are you?" — and all of them are correct. Korea has historically used three parallel age systems:</p>
+    <ul>
+      <li><b>International (Western) age</b> (만나이, <i>man-nai</i>) — the age used almost everywhere else in the world. You are born at age 0 and gain a year on each birthday.</li>
+      <li><b>Korean calendar-year age</b> (연나이, <i>yeon-nai</i>) — simply the current year minus the birth year. Everyone born in the same year "ages up" together on January 1, regardless of their birthday.</li>
+      <li><b>Traditional Korean age</b> (세는나이, <i>seneun-nai</i>) — the famous "Korean age." You are 1 year old at birth, and everyone gains a year on New Year's Day. This is the system that can make a Korean person up to two years "older" than their Western age.</li>
+    </ul>
+    <p>Here is the same person — born November 21, 1990 — measured on July 21, 2026 under all three systems:</p>
+    <table>
+      <thead>
+        <tr><th>System</th><th>How it works</th><th>Example (born 1990-11-21, as of 2026-07-21)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>International (Western) age</b></td><td>Year difference, minus 1 if the birthday hasn't passed yet</td><td>36 − 1 = <b>35</b> (birthday not yet reached)</td></tr>
+        <tr><td><b>Korean calendar-year age</b></td><td>Reference year − birth year</td><td>2026 − 1990 = <b>36</b></td></tr>
+        <tr><td><b>Traditional Korean age</b></td><td>Year difference + 1 (born at age 1)</td><td>36 + 1 = <b>37</b></td></tr>
+      </tbody>
+    </table>
+    <p>So when your favorite idol's profile says one age and an international fan wiki says another, neither is wrong — they are counting in different systems. Knowing which system a number uses is the whole trick.</p>
+
+    <h2>The 2023 age unification law</h2>
+    <p>On June 28, 2023, Korea's so-called <b>"age unification law"</b> took effect. Formally, amendments to Article 7-2 of the General Act on Public Administration and Article 158 of the Civil Act made international (Western) age the default: unless a specific law says otherwise, ages in Korean statutes, contracts, and official documents are now <b>calculated and stated as international age</b>. The goal was to end the everyday confusion caused by three coexisting systems.</p>
+    <p>The underlying formula is simple:</p>
+    <ul>
+      <li><b>Birthday already passed this year</b>: age = reference year − birth year</li>
+      <li><b>Birthday not yet passed</b>: age = reference year − birth year − 1</li>
+    </ul>
+    <p>The tricky part is always "has the birthday passed as of the reference date?" — which this calculator determines automatically. All date math runs on your device's <b>local midnight</b>, so time-zone quirks never shift the result by a day.</p>
+
+    <h2>Where calendar-year age still applies</h2>
+    <p>The 2023 law did not convert everything. A few Korean laws deliberately keep <b>calendar-year age</b> (birth year only) for administrative simplicity — worth knowing if you live in Korea:</p>
+    <ul>
+      <li><b>Youth Protection Act</b> — buying alcohol and tobacco becomes legal from January 1 of the year a person turns 19 in international age, regardless of their actual birthday. This is why a convenience store clerk checks your birth <i>year</i>, not your birth date.</li>
+      <li><b>Military Service Act</b> — draft physical examination notices go out by calendar-year age ("from January 1 of the year the person reaches that age").</li>
+      <li><b>Elementary and Secondary Education Act</b> — children start elementary school in March of the year after the year they turn 6, so all children born in the same calendar year enter school together.</li>
+    </ul>
+    <p>In short: for ID checks and military notices, look at the <b>Korean calendar-year age</b> shown by this calculator; for contracts and official paperwork, use the <b>international age</b>.</p>
+
+    <h2>When to use this</h2>
+    <ul>
+      <li>Filling out <b>Korean official or banking paperwork</b> that requires your exact international age</li>
+      <li>Checking your <b>age as of a specific date</b> (visa rules, insurance, exam eligibility) — just change the reference date</li>
+      <li>Working out how old a K-pop idol or drama character is in <b>"Korean age" versus Western age</b></li>
+      <li>Looking up someone's <b>Chinese zodiac sign and next-birthday D-day</b> before sending a gift</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> When a form demands "age X as of [date]," set the reference date field to <b>that document's cutoff date</b> instead of today. Being one day before or after a birthday can change the answer, and this makes the boundary cases exact. If you only need the number of days until a date, the <a href="/modutool/calc/dday-calculator/">D-Day Calculator</a> is quicker.</div>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>How is international (Western) age calculated?</summary><p>Subtract the birth year from the year of the reference date (usually today), then subtract one more if the birthday has not yet passed that year. For example, someone born in November 1990 has not had their birthday by July 2026, so 2026 − 1990 − 1 = 35. This calculator checks whether the birthday has passed automatically and applies the same rule.</p></details>
+      <details><summary>What is Korea's 2023 age unification law?</summary><p>It refers to amendments to Article 7-2 of the General Act on Public Administration and Article 158 of the Civil Act, passed by the Korean National Assembly in December 2022 and in force since June 28, 2023. Since that date, unless a specific law says otherwise, ages in Korean statutes, contracts, and official documents are calculated and stated as international (Western) age.</p></details>
+      <details><summary>Are there cases where Korea still uses calendar-year age?</summary><p>Yes. For administrative convenience, some laws still use calendar-year age (based only on the birth year): the Military Service Act for draft physical examination notices, the Youth Protection Act for the legal age to buy alcohol and tobacco, and the Elementary and Secondary Education Act for elementary school entry timing.</p></details>
+      <details><summary>Is my date of birth sent to or stored on a server?</summary><p>No. All calculations run as JavaScript inside your browser, and the date of birth you enter is never transmitted or saved anywhere. When you close the page, the input disappears with it.</p></details>
+      <details><summary>How is the Chinese zodiac sign determined?</summary><p>This calculator uses the solar (Gregorian) birth year to show one of the 12 zodiac animals (Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse, Goat, Monkey, Rooster, Dog, Pig). In the traditional calendar the sign changes at Lunar New Year or the start of spring, so people born in January or early February may belong to the previous year's sign under the traditional rule.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/dday-calculator/"><span class="emoji">📅</span><span><b>D-Day Calculator</b><span>Days between dates · D-day</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/percent-calculator/"><span class="emoji">🔢</span><span><b>Percentage Calculator</b><span>Ratios &amp; percent change</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var birthEl = document.getElementById('birth');
+  var refEl = document.getElementById('ref');
+  var out = document.getElementById('out');
+
+  var ZODIAC = [
+    ['Rat', '🐭'], ['Ox', '🐮'], ['Tiger', '🐯'], ['Rabbit', '🐰'],
+    ['Dragon', '🐲'], ['Snake', '🐍'], ['Horse', '🐴'], ['Goat', '🐑'],
+    ['Monkey', '🐵'], ['Rooster', '🐔'], ['Dog', '🐶'], ['Pig', '🐷']
+  ];
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function toYmd(dt) { return dt.getFullYear() + '-' + pad2(dt.getMonth() + 1) + '-' + pad2(dt.getDate()); }
+
+  /* "YYYY-MM-DD" → local-midnight Date. Explicit new Date(y, m-1, d) avoids time-zone drift */
+  function fromInput(v) {
+    if (!v) return null;
+    var p = v.split('-');
+    if (p.length !== 3) return null;
+    var y = +p[0], m = +p[1], d = +p[2];
+    if (!y || !m || !d) return null;
+    var dt = new Date(y, m - 1, d);
+    if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return null;
+    return dt;
+  }
+
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  refEl.value = toYmd(today);
+  birthEl.max = toYmd(today);
+
+  function show(html) { out.innerHTML = html; }
+
+  function calc() {
+    try {
+      var b = fromInput(birthEl.value);
+      var r = fromInput(refEl.value);
+      if (!b) {
+        show('<div class="sub">Enter a date of birth to instantly see all three age systems and the zodiac sign.</div>');
+        return;
+      }
+      if (!r) {
+        show('<div class="sub">⚠️ The reference date is not a valid date. Please check it.</div>');
+        return;
+      }
+      if (b.getTime() > r.getTime()) {
+        show('<div class="sub">⚠️ The date of birth is later than the reference date. Please check both dates.</div>');
+        return;
+      }
+
+      var yearDiff = r.getFullYear() - b.getFullYear();
+      var passed = (r.getMonth() > b.getMonth()) ||
+        (r.getMonth() === b.getMonth() && r.getDate() >= b.getDate());
+      var manAge = yearDiff - (passed ? 0 : 1);   /* ① international (Western) age */
+      var yearAge = yearDiff;                      /* ② Korean calendar-year age */
+      var countAge = yearDiff + 1;                 /* ③ traditional Korean age */
+
+      /* ④ D-days until next birthday (local-midnight difference, so the division is exact) */
+      var isBirthday = (r.getMonth() === b.getMonth() && r.getDate() === b.getDate());
+      var nb = new Date(r.getFullYear(), b.getMonth(), b.getDate());
+      if (nb.getTime() <= r.getTime()) nb = new Date(r.getFullYear() + 1, b.getMonth(), b.getDate());
+      var dLeft = Math.round((nb.getTime() - r.getTime()) / 86400000);
+
+      /* ⑤ Zodiac: 12 signs by solar birth year. (year+8)%12 → 0=Rat (2020 = Year of the Rat) */
+      var z = ZODIAC[(b.getFullYear() + 8) % 12];
+
+      show(
+        '<div class="num">' + manAge + ' years old</div>' +
+        '<div class="sub">International (Western) age <b>' + manAge + '</b> · Korean calendar-year age <b>' + yearAge + '</b> · Traditional Korean age <b>' + countAge + '</b></div>' +
+        (isBirthday
+          ? '<div class="sub">🎉 The reference date is the birthday! Next birthday: ' + toYmd(nb) + ' (D-' + dLeft + ')</div>'
+          : '<div class="sub">🎂 D-days until next birthday: ' + toYmd(nb) + ' (D-' + dLeft + ')</div>') +
+        '<div class="sub">Chinese zodiac: ' + z[1] + ' Year of the ' + z[0] + ' · born ' + b.getFullYear() + '</div>'
+      );
+    } catch (e) {
+      show('<div class="sub">⚠️ Something went wrong during calculation. Please check the dates.</div>');
+    }
+  }
+
+  ['input', 'change'].forEach(function (t) {
+    birthEl.addEventListener(t, calc);
+    refEl.addEventListener(t, calc);
+  });
+  calc();
+})();
+</script>
+</body>
+</html>

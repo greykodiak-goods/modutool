@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이미지 워터마크 — 사진에 텍스트 삽입, 무료 | ThisIsMyIMG</title>
+<meta name="description" content="사진 여러 장에 텍스트 워터마크를 한 번에 새기는 무료 도구. 위치·크기·투명도·색·가독성 그림자를 조절할 수 있고, 서버 업로드 없이 브라우저에서 바로 처리되어 사진이 밖으로 나가지 않습니다. 설치·가입·용량제한 없음.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/img/ko/image-watermark/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/img/ko/image-watermark/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/img/image-watermark/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/img/image-watermark/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="이미지 워터마크 — 설치 없이 무료, 서버 업로드 없음">
+<meta property="og:description" content="이름·저작권(©)·SNS 아이디를 사진에 한 번에 새깁니다. 파일이 서버로 전송되지 않는 100% 브라우저 처리.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/img/ko/image-watermark/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyIMG";window.MDTL_SITE_MARK="I";</script>
+<script>window.MDTL_BASE='/modutool/img';</script>
+<link rel="stylesheet" href="/modutool/img/assets/site.css">
+<script src="/modutool/img/assets/site.js"></script>
+<script src="/modutool/img/assets/ads-config.js" defer></script>
+<script src="/modutool/img/assets/auth-config.js" defer></script>
+<script src="/modutool/img/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"이미지 워터마크 - ThisIsMyIMG","url":"https://greykodiak-goods.github.io/modutool/img/ko/image-watermark/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"사진 여러 장에 텍스트 워터마크를 한 번에 새기는 무료 웹 도구. 위치·크기·투명도·색·그림자 조절. 서버 업로드 없이 브라우저에서 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"사진이 정말 서버로 업로드되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 워터마크는 브라우저에 내장된 캔버스 기능으로 내 기기 안에서만 이미지에 새겨집니다. 개발자도구의 네트워크 탭을 열어 확인해도 파일 업로드 요청이 없습니다. 상품 사진, 개인 사진, 공개 전 작업물도 안심하고 워터마크를 넣을 수 있습니다."}},
+{"@type":"Question","name":"한글이나 이모지를 워터마크 텍스트로 쓸 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 폰트 파일을 임베드해야 하는 PDF 도구와 달리, 이 워터마크는 기기에 설치된 시스템 폰트로 그려지므로 한글·일본어·악센트 문자·대부분의 이모지가 정상적으로 표시됩니다. 텍스트가 이미지 픽셀에 직접 새겨지기 때문에, 보는 사람의 기기가 아니라 도구를 실행한 기기에 설치된 폰트 모양으로 고정되어 저장됩니다."}},
+{"@type":"Question","name":"워터마크 위치는 어떤 걸 골라야 하나요?","acceptedAnswer":{"@type":"Answer","text":"우하단은 피사체를 가리지 않고 저작권 표시나 아이디를 눈에 띄지 않게 넣는 고전적인 방식입니다. 중앙은 사진 한가운데에 큰 마크를 하나 올려 잘라내기 어렵게 만듭니다. 타일 반복은 텍스트를 45° 대각선으로 이미지 전체에 반복해 새기므로, 재사용할 깨끗한 영역이 남지 않아 도용 방지에 가장 강력합니다."}},
+{"@type":"Question","name":"원본 파일 형식이 그대로 유지되나요?","acceptedAnswer":{"@type":"Answer","text":"네. JPG는 JPG로, PNG는 PNG로, WEBP는 WEBP로 저장되어 PNG·WEBP의 투명 배경도 그대로 보존됩니다. GIF·BMP는 브라우저 캔버스에서 다시 인코딩할 수 없어 PNG로 평탄화해 저장됩니다. 모든 다운로드 파일은 원본명_워터마크 형태로 이름이 붙어 원본을 덮어쓰지 않습니다."}},
+{"@type":"Question","name":"넣은 워터마크를 남이 지울 수도 있나요?","acceptedAnswer":{"@type":"Answer","text":"워터마크는 이미지 픽셀에 새겨지므로 끄고 켤 수는 없지만, 작정하고 편집하면 구석의 작은 마크는 잘라내거나 덧칠할 수 있습니다. 강하게 보호하려면 타일 패턴에 중간 정도 투명도와 가독성 그림자를 켜서 손대지 않은 영역이 남지 않게 하세요. 눈에 보이는 워터마크는 도용을 완전히 막지는 못해도 무단 재게시를 억제하고 소유권을 분명히 드러냅니다."}}
+]}
+</script>
+<meta name="robots" content="noindex, follow">
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/img/ko/">ThisIsMyIMG</a> › <a href="/modutool/img/ko/#image">이미지 도구</a> › 이미지 워터마크</nav>
+  <h1 class="page-title">이미지 워터마크<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">이름·저작권(©)·SNS 아이디 같은 텍스트 워터마크를 사진 여러 장에 한 번에 새깁니다. 설치·가입·용량제한 없이 무료.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🖼️</span>
+      <strong>이미지를 여기에 끌어다 놓거나 클릭해서 선택</strong><br>
+      여러 장을 한 번에 선택할 수 있습니다 (JPG·PNG·WEBP·GIF·BMP)
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts">
+      <label style="flex:1 1 100%">워터마크 텍스트
+        <input type="text" id="wmText" placeholder="© 홍길동 / @아이디" maxlength="120" style="width:100%">
+      </label>
+    </div>
+    <div class="opts">
+      <label>위치
+        <select id="position">
+          <option value="br">우하단</option>
+          <option value="center">중앙</option>
+          <option value="tile">타일 반복</option>
+        </select>
+      </label>
+      <label>색
+        <select id="colorSel">
+          <option value="#ffffff">흰색</option>
+          <option value="#000000">검정</option>
+          <option value="#888888">회색</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="shadow" checked> 그림자(가독성)</label>
+    </div>
+    <div class="opts">
+      <label>크기
+        <input type="range" id="size" min="2" max="16" value="6">
+        <span id="sizeVal">6%</span>
+      </label>
+      <label>투명도
+        <input type="range" id="opacity" min="10" max="80" value="35">
+        <span id="opacityVal">0.35</span>
+      </label>
+    </div>
+    <div class="preview-wrap" id="previewWrap" style="display:none;margin:14px 0 4px">
+      <canvas id="preview" style="max-width:100%;height:auto;border-radius:10px;display:block;margin:0 auto"></canvas>
+      <p class="page-sub" style="text-align:center;margin:8px 0 0;font-size:13px">첫 번째 이미지 실시간 미리보기</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="convertBtn" disabled>워터마크 넣기</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">전체 지우기</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>위 영역에 이미지를 끌어다 놓거나 클릭해서 선택합니다. JPG·PNG·WEBP·GIF·BMP를 지원하며 여러 장을 한 번에 올릴 수 있습니다.</li>
+      <li><b>워터마크 텍스트</b>를 입력합니다 — 이름, 저작권(©) 표기, SNS 아이디, "샘플 / 복제금지" 같은 문구 모두 가능합니다. 시스템 폰트로 그려지므로 한글과 대부분의 이모지도 그대로 들어갑니다.</li>
+      <li><b>위치</b>(우하단·중앙·타일 반복), <b>크기</b>(이미지 폭에 비례해 해상도가 달라도 일정하게 보임), <b>투명도</b>, <b>색</b>, <b>가독성 그림자</b> 여부를 정합니다. 첫 번째 이미지가 실시간으로 바뀌어 미리 확인할 수 있습니다.</li>
+      <li><b>워터마크 넣기</b> 버튼을 누르면 각 파일이 원본 형식 그대로 <code>원본명_워터마크</code>로 저장됩니다. 한 장씩 또는 전체를 한 번에 다운로드하세요.</li>
+    </ol>
+
+    <h2>왜 사진에 워터마크를 새기나요</h2>
+    <p>눈에 보이는 워터마크는 "이 이미지는 내 것"이라고 알리는 가장 간단한 방법입니다. 쇼핑몰을 운영하든, 오픈마켓에 상품 사진을 올리든, 인스타그램에 작업물을 공유하든, 블로그에 사진을 게시하든, 텍스트 스탬프 하나면 누군가 캡처하거나 재업로드하는 순간 소유권이 분명해집니다. 모든 도용을 막을 수는 없지만, 조용한 복제를 눈에 띄고 출처가 드러나는 행위로 바꿔 놓습니다 — 일상적인 무단 재게시에는 이 억제력만으로도 충분한 경우가 많습니다.</p>
+    <p>ThisIsMyIMG의 워터마크 도구는 <b>파일을 어디로도 보내지 않습니다.</b> 텍스트는 브라우저 안의 캔버스 기술로 이미지에 새겨지고, 서버로는 아무것도 업로드되지 않습니다. 공개 전 디자인, 엠바고가 걸린 클라이언트 작업물, 넘기고 싶지 않은 개인 사진일수록 이 점이 중요합니다. 또 서버 비용이 없으니 장수 제한도 없습니다 — 상품 사진 100장도 파일당 제한·대기줄·가입 없이 한 번에 새길 수 있습니다.</p>
+    <p>세 가지 배치가 흔한 필요를 모두 덮습니다. <b>우하단</b>은 피사체를 방해하지 않는 작고 깔끔한 마크로, 존재하되 튀지 않는 © 표기나 아이디에 알맞습니다. <b>중앙</b>은 화면 한가운데에 조금 더 큰 마크를 하나 올려, 검토용 시안이나 초안을 공유할 때 유용합니다. <b>타일 반복</b>은 텍스트를 45° 대각선으로 이미지 전체에 반복해, 잘라낼 깨끗한 구석이 남지 않습니다 — 도용 방지가 목적일 때 가장 강력합니다.</p>
+    <p>워터마크가 <b>폰트 파일 임베드가 아니라 시스템 폰트로</b> 그려지기 때문에 한글·일본어·악센트 문자·이모지를 입력해도 제대로 표시됩니다 — 별도 폰트 처리 없이는 PDF 스탬프가 잘 못 하는 부분입니다. 크기는 각 이미지 폭의 백분율로 표현되어, 사진이 800px든 6,000px든 한 가지 설정이 비례해서 보입니다. 은은한 <b>그림자</b>는 밝은 하늘 위의 흰 글자와 어두운 영역 위의 검은 글자를 모두 읽기 쉽게 유지하고, 스마트폰 사진의 <b>EXIF 회전 정보를 자동으로 반영</b>해 사진이 옆으로 눕지 않습니다. 모든 파일은 <b>원본 형식을 유지</b>하며 — JPG는 JPG로, PNG·WEBP는 투명 배경까지 그대로 — 출력물은 <code>_워터마크</code>가 붙어 원본이 안전합니다.</p>
+
+    <h2>이럴 때 쓰세요</h2>
+    <ul>
+      <li>블로그·쇼핑몰 <b>사진 도용 방지</b> — 브랜드명을 타일로 깔아 퍼가도 브랜드가 남게</li>
+      <li>사진·일러스트·디자인 작업물에 게시 전 <b>© 저작권 표시</b> 넣기</li>
+      <li>이미지에 <b>SNS 아이디·ID를 표기</b>해 재공유가 내 계정을 가리키게</li>
+      <li>클라이언트에 <b>시안·초안</b>을 보낼 때 "샘플 / 복제금지" 스탬프를 전체에 찍기</li>
+      <li>오픈마켓 업로드 전 <b>수십 장의 상품 사진</b>에 일관된 마크를 한 번에 새기기</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 워터마크를 먼저 넣고 크기 조절·압축을 하세요. 웹용으로 줄일 계획이라면 이 도구에서 원본 해상도로 워터마크를 넣은 뒤, 그 결과를 <a href="/modutool/img/ko/image-resize/">이미지 크기조절</a>이나 <a href="/modutool/img/ko/image-compress/">이미지 압축</a>에 이어서 돌리면 마크가 사진과 함께 깔끔하게 줄어듭니다.</div>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>사진이 정말 서버로 업로드되지 않나요?</summary><p>네. 워터마크는 브라우저에 내장된 캔버스 기능으로 내 기기 안에서만 이미지에 새겨집니다. 개발자도구의 네트워크 탭을 열어 확인해도 파일 업로드 요청이 없습니다. 상품 사진, 개인 사진, 공개 전 작업물도 안심하고 워터마크를 넣을 수 있습니다.</p></details>
+      <details><summary>한글이나 이모지를 워터마크 텍스트로 쓸 수 있나요?</summary><p>네. 폰트 파일을 임베드해야 하는 PDF 도구와 달리, 이 워터마크는 기기에 설치된 시스템 폰트로 그려지므로 한글·일본어·악센트 문자·대부분의 이모지가 정상적으로 표시됩니다. 텍스트가 이미지 픽셀에 직접 새겨지기 때문에, 보는 사람의 기기가 아니라 도구를 실행한 기기에 설치된 폰트 모양으로 고정되어 저장됩니다.</p></details>
+      <details><summary>워터마크 위치는 어떤 걸 골라야 하나요?</summary><p>우하단은 피사체를 가리지 않고 저작권 표시나 아이디를 눈에 띄지 않게 넣는 고전적인 방식입니다. 중앙은 사진 한가운데에 큰 마크를 하나 올려 잘라내기 어렵게 만듭니다. 타일 반복은 텍스트를 45° 대각선으로 이미지 전체에 반복해 새기므로, 재사용할 깨끗한 영역이 남지 않아 도용 방지에 가장 강력합니다.</p></details>
+      <details><summary>원본 파일 형식이 그대로 유지되나요?</summary><p>네. JPG는 JPG로, PNG는 PNG로, WEBP는 WEBP로 저장되어 PNG·WEBP의 투명 배경도 그대로 보존됩니다. GIF·BMP는 브라우저 캔버스에서 다시 인코딩할 수 없어 PNG로 평탄화해 저장됩니다. 모든 다운로드 파일은 원본명_워터마크 형태로 이름이 붙어 원본을 덮어쓰지 않습니다.</p></details>
+      <details><summary>넣은 워터마크를 남이 지울 수도 있나요?</summary><p>워터마크는 이미지 픽셀에 새겨지므로 끄고 켤 수는 없지만, 작정하고 편집하면 구석의 작은 마크는 잘라내거나 덧칠할 수 있습니다. 강하게 보호하려면 타일 패턴에 중간 정도 투명도와 가독성 그림자를 켜서 손대지 않은 영역이 남지 않게 하세요. 눈에 보이는 워터마크는 도용을 완전히 막지는 못해도 무단 재게시를 억제하고 소유권을 분명히 드러냅니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/img/ko/image-resize/"><span class="emoji">📐</span><span><b>이미지 크기조절</b><span>픽셀·퍼센트로 크기 조절</span></span></a>
+      <a class="tool-tile" href="/modutool/img/ko/image-compress/"><span class="emoji">🗜️</span><span><b>이미지 압축</b><span>해상도 유지, 용량만 줄이기</span></span></a>
+      <a class="tool-tile" href="/modutool/img/ko/image-crop/"><span class="emoji">✂️</span><span><b>이미지 자르기</b><span>필요한 영역만 잘라내기</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var files = [];
+  var firstImg = null, firstW = 0, firstH = 0;
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var wmText = document.getElementById('wmText');
+  var positionSel = document.getElementById('position');
+  var colorSel = document.getElementById('colorSel');
+  var shadowChk = document.getElementById('shadow');
+  var sizeInput = document.getElementById('size');
+  var sizeVal = document.getElementById('sizeVal');
+  var opacityInput = document.getElementById('opacity');
+  var opacityVal = document.getElementById('opacityVal');
+  var previewWrap = document.getElementById('previewWrap');
+  var preview = document.getElementById('preview');
+  var convertBtn = document.getElementById('convertBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+
+  var WM_FONT = '700 {SZ}px system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif';
+
+  /* 원본 형식 유지; GIF/BMP → PNG (캔버스가 다시 인코딩 불가) */
+  function outFormat(file) {
+    var t = (file.type || '').toLowerCase();
+    if (t === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) return { mime: 'image/jpeg', ext: 'jpg', flat: true };
+    if (t === 'image/webp' || /\.webp$/i.test(file.name)) return { mime: 'image/webp', ext: 'webp', flat: false };
+    return { mime: 'image/png', ext: 'png', flat: false };
+  }
+
+  function opts() {
+    return {
+      text: wmText.value,
+      position: positionSel.value,
+      color: colorSel.value,
+      shadow: shadowChk.checked,
+      sizePct: +sizeInput.value,
+      opacity: (+opacityInput.value) / 100
+    };
+  }
+
+  /* 이미지가 이미 그려진 컨텍스트(w×h)에 텍스트 워터마크를 그린다. */
+  function drawWatermark(ctx, w, h, o) {
+    if (!o.text) return;
+    var fontSize = Math.max(10, Math.round(w * o.sizePct / 100));
+    ctx.save();
+    ctx.globalAlpha = o.opacity;
+    ctx.fillStyle = o.color;
+    ctx.font = WM_FONT.replace('{SZ}', fontSize);
+    ctx.textBaseline = 'middle';
+    if (o.shadow) {
+      ctx.shadowColor = (o.color === '#ffffff') ? 'rgba(0,0,0,.6)' : 'rgba(255,255,255,.6)';
+      ctx.shadowBlur = Math.max(2, Math.round(fontSize * 0.12));
+    }
+    if (o.position === 'tile') {
+      ctx.textAlign = 'center';
+      ctx.translate(w / 2, h / 2);
+      ctx.rotate(-Math.PI / 4);
+      var tw = ctx.measureText(o.text).width;
+      var stepX = Math.max(fontSize * 4, tw + fontSize * 2.2);
+      var stepY = fontSize * 3;
+      var diag = Math.sqrt(w * w + h * h);
+      for (var y = -diag; y <= diag; y += stepY) {
+        for (var x = -diag; x <= diag; x += stepX) {
+          ctx.fillText(o.text, x, y);
+        }
+      }
+    } else if (o.position === 'center') {
+      ctx.textAlign = 'center';
+      ctx.fillText(o.text, w / 2, h / 2);
+    } else {
+      ctx.textAlign = 'right';
+      var pad = Math.round(fontSize * 0.7);
+      ctx.fillText(o.text, w - pad, h - pad);
+    }
+    ctx.restore();
+  }
+
+  function renderList() {
+    listEl.innerHTML = '';
+    files.forEach(function (f, i) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = (i + 1) + '. ' + f.name;
+      var meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = mdtlFormatBytes(f.size);
+      var del = document.createElement('button');
+      del.className = 'mini';
+      del.textContent = '✕';
+      del.setAttribute('aria-label', '제거');
+      del.dataset.i = i;
+      li.appendChild(name); li.appendChild(meta); li.appendChild(del);
+      listEl.appendChild(li);
+    });
+    clearBtn.style.display = files.length ? '' : 'none';
+    syncButton();
+  }
+
+  function syncButton() {
+    var ready = files.length > 0 && wmText.value.trim().length > 0;
+    convertBtn.disabled = !ready;
+    convertBtn.textContent = files.length ? files.length + '장 워터마크 넣기' : '워터마크 넣기';
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    var removedFirst = (+b.dataset.i === 0);
+    files.splice(+b.dataset.i, 1);
+    if (removedFirst) loadFirst();
+    renderList();
+  });
+
+  clearBtn.addEventListener('click', function () {
+    files = [];
+    firstImg = null;
+    previewWrap.style.display = 'none';
+    result.className = 'result'; result.innerHTML = '';
+    renderList();
+  });
+
+  mdtlDropzone(dz, {
+    accept: 'image/*', multiple: true,
+    onFiles: function (fs) {
+      var wasEmpty = files.length === 0;
+      files = files.concat(fs);
+      result.className = 'result'; result.innerHTML = '';
+      if (wasEmpty) loadFirst();
+      renderList();
+    }
+  });
+
+  /* EXIF 회전 정규화: createImageBitmap(from-image) → <img> 폴백 */
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () {
+          URL.revokeObjectURL(url);
+          reject(new Error('이미지를 읽을 수 없습니다. 브라우저가 지원하지 않는 형식일 수 있습니다(예: HEIC).'));
+        };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else {
+        fallback();
+      }
+    });
+  }
+
+  function loadFirst() {
+    firstImg = null;
+    if (!files.length) { previewWrap.style.display = 'none'; return; }
+    loadImage(files[0]).then(function (img) {
+      firstImg = img;
+      firstW = img.naturalWidth || img.width;
+      firstH = img.naturalHeight || img.height;
+      previewWrap.style.display = '';
+      renderPreview();
+    }).catch(function () {
+      previewWrap.style.display = 'none';
+    });
+  }
+
+  function renderPreview() {
+    if (!firstImg) return;
+    var maxW = 560;
+    var scale = Math.min(1, maxW / firstW);
+    var pw = Math.max(1, Math.round(firstW * scale));
+    var ph = Math.max(1, Math.round(firstH * scale));
+    preview.width = pw; preview.height = ph;
+    var ctx = preview.getContext('2d');
+    ctx.clearRect(0, 0, pw, ph);
+    ctx.drawImage(firstImg, 0, 0, pw, ph);
+    drawWatermark(ctx, pw, ph, opts());
+  }
+
+  sizeInput.addEventListener('input', function () { sizeVal.textContent = sizeInput.value + '%'; renderPreview(); });
+  opacityInput.addEventListener('input', function () { opacityVal.textContent = ((+opacityInput.value) / 100).toFixed(2); renderPreview(); });
+  positionSel.addEventListener('change', renderPreview);
+  colorSel.addEventListener('change', renderPreview);
+  shadowChk.addEventListener('change', renderPreview);
+  wmText.addEventListener('input', function () { syncButton(); renderPreview(); });
+
+  function canvasToBlob(canvas, mime, q) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (b) {
+        if (!b) return reject(new Error('이미지 저장에 실패했습니다.'));
+        if (mime === 'image/webp' && b.type !== 'image/webp') {
+          return reject(new Error('이 브라우저는 WEBP 저장을 지원하지 않습니다. 크롬·엣지·최신 사파리를 사용해 주세요.'));
+        }
+        resolve(b);
+      }, mime, q);
+    });
+  }
+
+  function outName(name, ext) {
+    return name.replace(/\.[^.]*$/, '') + '_워터마크.' + ext;
+  }
+
+  function renderResult(outs, failed) {
+    result.className = 'result show';
+    result.innerHTML = '';
+    var head = document.createElement('p');
+    head.style.margin = '0';
+    head.innerHTML = '✅ <b>완료!</b> ' + outs.length + '장' +
+      (failed.length ? ' · 실패 ' + failed.length + '장' : '') +
+      (outs.length === 1 ? ' — 파일이 자동으로 다운로드되었습니다.' : '');
+    result.appendChild(head);
+    var ul = document.createElement('ul');
+    ul.className = 'file-list';
+    outs.forEach(function (o) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      var name = document.createElement('span');
+      name.className = 'name';
+      name.textContent = o.name;
+      var meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = o.w + '×' + o.h + ' · ' + mdtlFormatBytes(o.blob.size);
+      var dl = document.createElement('button');
+      dl.className = 'mini';
+      dl.textContent = '⬇';
+      dl.setAttribute('aria-label', '다운로드');
+      dl.addEventListener('click', function () { mdtlDownload(o.blob, o.name); });
+      li.appendChild(name); li.appendChild(meta); li.appendChild(dl);
+      ul.appendChild(li);
+    });
+    result.appendChild(ul);
+    if (outs.length > 1) {
+      var row = document.createElement('div');
+      row.className = 'btn-row';
+      var allBtn = document.createElement('button');
+      allBtn.className = 'btn';
+      allBtn.textContent = '⬇ 전체 다운로드 (' + outs.length + '장)';
+      allBtn.addEventListener('click', function () {
+        outs.forEach(function (o, idx) {
+          setTimeout(function () { mdtlDownload(o.blob, o.name); }, idx * 400);
+        });
+      });
+      row.appendChild(allBtn);
+      result.appendChild(row);
+    }
+    failed.forEach(function (f) {
+      var p = document.createElement('p');
+      p.style.margin = '8px 0 0';
+      p.style.fontSize = '13.5px';
+      var em = document.createElement('i');
+      em.textContent = f.name;
+      p.appendChild(document.createTextNode('⚠️ '));
+      p.appendChild(em);
+      p.appendChild(document.createTextNode(' — ' + f.msg));
+      result.appendChild(p);
+    });
+  }
+
+  convertBtn.addEventListener('click', async function () {
+    if (!files.length) return;
+    if (!wmText.value.trim()) {
+      mdtlResult(result, '❌ 워터마크 텍스트를 먼저 입력해 주세요.', true);
+      return;
+    }
+    convertBtn.disabled = true;
+    prog.className = 'progress show';
+    progBar.style.width = '0%';
+    result.className = 'result'; result.innerHTML = '';
+    var o = opts();
+    var outs = [];
+    var failed = [];
+    try {
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        try {
+          var fmt = outFormat(f);
+          var img = await loadImage(f);
+          var w = img.naturalWidth || img.width;
+          var h = img.naturalHeight || img.height;
+          if (!w || !h) throw new Error('이미지 크기를 읽을 수 없습니다.');
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          if (fmt.flat) { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); }
+          ctx.drawImage(img, 0, 0, w, h);
+          if (img.close) img.close();
+          drawWatermark(ctx, w, h, o);
+          var q = fmt.mime === 'image/png' ? undefined : 0.92;
+          var blob = await canvasToBlob(canvas, fmt.mime, q);
+          outs.push({ name: outName(f.name, fmt.ext), blob: blob, w: w, h: h });
+        } catch (err) {
+          failed.push({ name: f.name, msg: (err && err.message) ? err.message : '처리 중 오류가 발생했습니다.' });
+        }
+        progBar.style.width = Math.round(((i + 1) / files.length) * 100) + '%';
+      }
+      if (!outs.length) {
+        throw new Error('워터마크를 넣은 이미지가 없습니다.' + (failed.length ? ' (' + failed[0].msg + ')' : ''));
+      }
+      renderResult(outs, failed);
+      if (outs.length === 1) mdtlDownload(outs[0].blob, outs[0].name);
+      mdtlLogEvent('image-watermark', 'success', null, { count: outs.length });
+    } catch (e) {
+      mdtlResult(result, '❌ ' + ((e && e.message) ? e.message : '처리 중 오류가 발생했습니다.'), true);
+    } finally {
+      prog.className = 'progress';
+      syncButton();
+    }
+  });
+})();
+</script>
+</body>
+</html>

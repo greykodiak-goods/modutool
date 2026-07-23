@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trigonometry Calculator — sin cos tan & Right Triangle Solver | ThisIsMyCalculator</title>
+<meta name="description" content="Enter an angle and get sin, cos and tan to 6 decimal places instantly. Degree-radian conversion, inverse functions (asin, acos, atan), and a right triangle solver that finds every side and angle from just two known values. Free, 100% in-browser — no input is sent to a server.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/trig-calculator/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/trig-calculator/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/trig-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/trig-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Trigonometry Calculator — sin cos tan values & right triangle solver">
+<meta property="og:description" content="Instant sin cos tan as you type. Degree-radian conversion, inverse trig functions, and a right triangle solver: enter 2 values, get the rest. 100% in-browser — no input is sent to a server.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/trig-calculator/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Trigonometry Calculator - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/trig-calculator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web calculator that computes sin, cos and tan the moment you enter an angle, and solves a right triangle automatically from any two known values. Supports degree-radian conversion and inverse trig functions. Runs entirely in the browser — no input is sent to a server.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How do I convert between degrees (°) and radians (rad)?","acceptedAnswer":{"@type":"Answer","text":"The single conversion anchor is 180° = π rad. Multiply degrees by π/180 (about 0.017453) to get radians, and multiply radians by 180/π (about 57.2958) to get degrees. For example, 30° is π/6 ≈ 0.5236 rad. This calculator always shows both units on the first line of the result."}},
+{"@type":"Question","name":"Why does tan 90° show as \"Undefined\"?","acceptedAnswer":{"@type":"Answer","text":"Because tan θ = sin θ ÷ cos θ, and cos 90° = 0 — you cannot divide by zero. At every angle where cos θ equals 0, such as 90° and 270°, the tangent is undefined, and this calculator displays \"Undefined\" instead of a value at those angles."}},
+{"@type":"Question","name":"Which two values do I enter in the right triangle solver?","acceptedAnswer":{"@type":"Answer","text":"Any 2 of base a, height b, hypotenuse c and acute angle θ. The calculator detects which combination you entered and uses the Pythagorean theorem and trigonometric ratios to find the remaining values, plus the perimeter and area. Note that the hypotenuse c must be longer than either leg, and θ must be greater than 0° and less than 90°."}},
+{"@type":"Question","name":"How accurate are the results?","acceptedAnswer":{"@type":"Answer","text":"Calculations use your browser's built-in double-precision (64-bit) floating-point arithmetic, accurate to roughly 15 significant digits, and results are displayed rounded to 6 decimal places. That is more than enough precision for checking homework and for practical engineering work."}},
+{"@type":"Question","name":"Is my input sent to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All calculations are done with JavaScript inside your browser, and your input is never transmitted anywhere. Once the page is open it keeps working even if your internet connection drops, and there is no sign-up or installation."}}
+]}
+</script>
+<style>
+.tool-card h2 { font-size: 18px; margin: 26px 0 14px; }
+.tool-card h2:first-child { margin-top: 0; }
+#triGrid { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 640px) { #triGrid { grid-template-columns: repeat(4, 1fr); } }
+#triSvg { display: block; margin: 0 auto 14px; width: 100%; max-width: 260px; height: auto; }
+.guide table { border-collapse: collapse; width: 100%; min-width: 420px; }
+.guide th, .guide td { border: 1px solid var(--line); padding: 8px 10px; text-align: center; font-size: 14.5px; }
+.guide th { background: var(--surface-2); }
+</style>
+<meta name="robots" content="noindex, follow">
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/">ThisIsMyCalculator</a> › <a href="/modutool/calc/#calc">Calculators</a> › Trigonometry Calculator</nav>
+  <h1 class="page-title">Trigonometry Calculator<span class="privacy-badge">🔒 No data sent to a server</span></h1>
+  <p class="page-sub">Enter an angle and get sin, cos and tan instantly. Degree-radian conversion, inverse functions and an automatic right triangle solver — all free.</p>
+
+  <div class="card tool-card">
+    <h2>📐 Trig values (sin, cos, tan)</h2>
+    <div class="calc-grid">
+      <div class="opts">
+        <label><input type="radio" name="trigUnit" value="deg" checked> Degrees (°)</label>
+        <label><input type="radio" name="trigUnit" value="rad"> Radians (rad)</label>
+      </div>
+      <label class="field"><span>Angle</span><input type="number" id="angleIn" step="any" inputmode="decimal" placeholder="e.g. 30"></label>
+      <div class="calc-out" id="trigOut"><div class="sub">Enter an angle and the result appears instantly. (e.g. 30)</div></div>
+    </div>
+
+    <h2>↩️ Inverse trig functions (asin, acos, atan)</h2>
+    <div class="calc-grid">
+      <label class="field"><span>Value (asin and acos take -1 to 1)</span><input type="number" id="invIn" step="any" inputmode="decimal" placeholder="e.g. 0.5"></label>
+      <div class="calc-out" id="invOut"><div class="sub">Enter a value to get asin, acos and atan in degrees (°) and radians.</div></div>
+    </div>
+  </div>
+
+  <div class="card tool-card">
+    <h2>📏 Right triangle solver — enter any 2 values, get the rest</h2>
+    <svg id="triSvg" viewBox="0 0 240 150" role="img" aria-label="Right triangle: base a, height b, hypotenuse c, acute angle θ">
+      <polygon points="20,130 220,130 220,20" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M204 130 L204 114 L220 114" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+      <path d="M52 130 A 32 32 0 0 0 48 114.6" fill="none" stroke="var(--warn)" stroke-width="1.5"/>
+      <text x="120" y="146" text-anchor="middle" font-size="14" fill="var(--text)">a</text>
+      <text x="228" y="80" font-size="14" fill="var(--text)">b</text>
+      <text x="104" y="64" font-size="14" fill="var(--text)">c</text>
+      <text x="60" y="125" font-size="13" fill="var(--warn)">θ</text>
+    </svg>
+    <div class="calc-grid" id="triGrid">
+      <label class="field"><span>Base a</span><input type="number" id="triA" step="any" inputmode="decimal" placeholder="e.g. 3"></label>
+      <label class="field"><span>Height b</span><input type="number" id="triB" step="any" inputmode="decimal" placeholder="e.g. 4"></label>
+      <label class="field"><span>Hypotenuse c</span><input type="number" id="triC" step="any" inputmode="decimal" placeholder=""></label>
+      <label class="field"><span>Angle θ (°)</span><input type="number" id="triT" step="any" inputmode="decimal" placeholder=""></label>
+    </div>
+    <div class="btn-row">
+      <button class="btn secondary" id="triClear">Clear</button>
+    </div>
+    <div class="calc-out" id="triOut"><div class="sub">Enter <b>any 2</b> of base a, height b, hypotenuse c and angle θ. The rest is calculated automatically.</div></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>In the <b>Trig values</b> card, pick degrees (°) or radians, type an angle, and sin, cos and tan appear to 6 decimal places immediately. Angles outside the domain, like tan 90°, are flagged as "Undefined".</li>
+      <li>Need the inverse functions? Enter a value in the field below and asin, acos and atan are shown in both degrees and radians at the same time.</li>
+      <li>In the <b>Right triangle solver</b> card, fill in <b>just 2</b> of the four fields — base a, height b, hypotenuse c, angle θ. The calculator detects which combination you entered and finds the remaining side and angle, plus the perimeter and area.</li>
+      <li>There is no calculate button — results update live as you type.</li>
+    </ol>
+
+    <h2>The trig ratios — SOH-CAH-TOA</h2>
+    <p>In a right triangle, the three sides are named relative to one acute angle θ. The side across from θ is the <b>opposite</b>, the side touching θ is the <b>adjacent</b>, and the longest side, across from the right angle, is the <b>hypotenuse</b>. The trig ratios are simply ratios of these side lengths, and the classic mnemonic for them is SOH-CAH-TOA.</p>
+    <ul>
+      <li><b>sin θ = opposite ÷ hypotenuse</b> — SOH (Sine = Opposite / Hypotenuse)</li>
+      <li><b>cos θ = adjacent ÷ hypotenuse</b> — CAH (Cosine = Adjacent / Hypotenuse)</li>
+      <li><b>tan θ = opposite ÷ adjacent</b> — TOA (Tangent = Opposite / Adjacent)</li>
+    </ul>
+    <p>The three values are not independent. The identity <b>tan θ = sin θ ÷ cos θ</b> always holds, and so does the Pythagorean identity <b>sin²θ + cos²θ = 1</b>. Both are handy for checking answers you worked out by hand. The right triangle solver above uses exactly these ratios together with the Pythagorean theorem (a² + b² = c²) internally.</p>
+
+    <h2>Special angle table (0°, 30°, 45°, 60°, 90°)</h2>
+    <p>These are the special angles that show up most often on tests. Exact fraction and radical forms are listed alongside decimal approximations, so you can check your memorized values against the calculator.</p>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>θ</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th></tr></thead>
+        <tbody>
+          <tr><th>sin θ</th><td>0</td><td>1/2 = 0.5</td><td>√2/2 ≈ 0.7071</td><td>√3/2 ≈ 0.8660</td><td>1</td></tr>
+          <tr><th>cos θ</th><td>1</td><td>√3/2 ≈ 0.8660</td><td>√2/2 ≈ 0.7071</td><td>1/2 = 0.5</td><td>0</td></tr>
+          <tr><th>tan θ</th><td>0</td><td>√3/3 ≈ 0.5774</td><td>1</td><td>√3 ≈ 1.7321</td><td>Undefined</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Why is tan 90° "Undefined"? Because tan θ = sin θ ÷ cos θ, and cos 90° = 0, so the division would be by zero. For the same reason, this calculator shows "Undefined" for the tangent at 90°, 270° and every other angle where cos θ equals 0.</p>
+
+    <h2>Degrees (°) ↔ radians (rad) conversion formula</h2>
+    <p>Math, physics and engineering use both angle units, and the entire conversion rests on one fact: <b>180° = π rad</b>.</p>
+    <ul>
+      <li><b>Degrees → radians</b>: rad = degrees × π ÷ 180 — e.g. 30° = 30 × π/180 = π/6 ≈ 0.5236 rad</li>
+      <li><b>Radians → degrees</b>: degrees = rad × 180 ÷ π — e.g. 1 rad = 180/π ≈ 57.2958°</li>
+    </ul>
+    <p>Whichever unit you type in, this calculator always shows both units on the first line of the result, so you never need a separate conversion table.</p>
+
+    <h2>Everything runs in your browser — nothing is uploaded</h2>
+    <p>Every calculation on this page is handled by your browser's built-in JavaScript math functions. The numbers you type are <b>never sent to a server</b> and never leave your device. Once the page is open, it keeps working even if your internet connection drops, and there is no sign-up, no app install, and no waiting through ads. When you do not have a scientific calculator at hand, your phone's browser is all you need.</p>
+
+    <h2>When to use it</h2>
+    <ul>
+      <li><b>Studying for exams</b> — Verify memorized special angles, check workbook answers, practice unit conversion in the radians chapter. Non-special values like sin 75° are one keystroke away.</li>
+      <li><b>Engineering and construction</b> — Ramp design: to rise 0.6 m at a 5° incline, the slope length is 0.6 ÷ sin 5° ≈ 6.88 m. The same math covers roof pitch, stair angles and drainage gradients.</li>
+      <li><b>On-site work</b> — Check the safe ladder angle (about 75°), work out the mounting angle and projection of an awning frame, or the diagonal distance between brackets.</li>
+      <li><b>DIY and woodworking</b> — Confirm a square corner from the diagonal (the 3-4-5 rule), and get the angle and length for a bevel cut.</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> The most common source of wrong answers on a scientific calculator is a DEG/RAD mode mix-up. Compute sin 30 in radian mode, for instance, and you get -0.988 instead of 0.5. Here the unit toggle is always visible and both units are printed with every result, so mode mistakes simply cannot happen.</div>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>How do I convert between degrees (°) and radians (rad)?</summary><p>The single conversion anchor is 180° = π rad. Multiply degrees by π/180 (about 0.017453) to get radians, and multiply radians by 180/π (about 57.2958) to get degrees. For example, 30° is π/6 ≈ 0.5236 rad. This calculator always shows both units on the first line of the result.</p></details>
+      <details><summary>Why does tan 90° show as "Undefined"?</summary><p>Because tan θ = sin θ ÷ cos θ, and cos 90° = 0 — you cannot divide by zero. At every angle where cos θ equals 0, such as 90° and 270°, the tangent is undefined, and this calculator displays "Undefined" instead of a value at those angles.</p></details>
+      <details><summary>Which two values do I enter in the right triangle solver?</summary><p>Any 2 of base a, height b, hypotenuse c and acute angle θ. The calculator detects which combination you entered and uses the Pythagorean theorem and trigonometric ratios to find the remaining values, plus the perimeter and area. Note that the hypotenuse c must be longer than either leg, and θ must be greater than 0° and less than 90°.</p></details>
+      <details><summary>How accurate are the results?</summary><p>Calculations use your browser's built-in double-precision (64-bit) floating-point arithmetic, accurate to roughly 15 significant digits, and results are displayed rounded to 6 decimal places. That is more than enough precision for checking homework and for practical engineering work.</p></details>
+      <details><summary>Is my input sent to a server?</summary><p>No. All calculations are done with JavaScript inside your browser, and your input is never transmitted anywhere. Once the page is open it keeps working even if your internet connection drops, and there is no sign-up or installation.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/percent-calculator/"><span class="emoji">💯</span><span><b>Percentage Calculator</b><span>Ratios, change, discounts</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/pyeong-calculator/"><span class="emoji">🏠</span><span><b>Pyeong Converter</b><span>m² ↔ pyeong conversion</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── shared formatters ── */
+  function parseNum(el) {
+    var s = el.value.trim();
+    if (s === '') return null;
+    var n = parseFloat(s);
+    return isFinite(n) ? n : null;
+  }
+  function fmt6(n) {
+    var s = n.toFixed(6);
+    return s === '-0.000000' ? '0.000000' : s;
+  }
+  function fmt(n) {
+    var r = Math.round(n * 1e6) / 1e6;
+    if (Object.is(r, -0)) r = 0;
+    return String(r);
+  }
+
+  /* ── ① trig values (sin, cos, tan) ── */
+  var angleIn = document.getElementById('angleIn');
+  var trigOut = document.getElementById('trigOut');
+  function calcTrig() {
+    try {
+      var unitEl = document.querySelector('input[name="trigUnit"]:checked');
+      var unit = unitEl ? unitEl.value : 'deg';
+      var v = parseNum(angleIn);
+      if (v === null) {
+        trigOut.innerHTML = '<div class="sub">Enter an angle and the result appears instantly. (e.g. 30)</div>';
+        return;
+      }
+      var rad = unit === 'deg' ? v * Math.PI / 180 : v;
+      var deg = unit === 'deg' ? v : v * 180 / Math.PI;
+      var sin = Math.sin(rad), cos = Math.cos(rad);
+      var undef = Math.abs(cos) < 1e-12;
+      if (unit === 'deg') {
+        var m = ((v % 180) + 180) % 180;
+        undef = undef || Math.abs(m - 90) < 1e-9;
+      }
+      trigOut.innerHTML =
+        '<div class="sub">θ = ' + fmt(deg) + '° = ' + fmt6(rad) + ' rad</div>' +
+        '<div>sin θ = <b>' + fmt6(sin) + '</b></div>' +
+        '<div>cos θ = <b>' + fmt6(cos) + '</b></div>' +
+        '<div>tan θ = <b>' + (undef ? 'Undefined' : fmt6(sin / cos)) + '</b>' +
+        (undef ? ' <span class="sub">(cos θ = 0, so this would divide by zero)</span>' : '') + '</div>';
+    } catch (e) {
+      trigOut.innerHTML = '<div>⚠️ Something went wrong. Please check your input.</div>';
+    }
+  }
+
+  /* ── ① inverse trig functions (asin, acos, atan) ── */
+  var invIn = document.getElementById('invIn');
+  var invOut = document.getElementById('invOut');
+  function calcInv() {
+    try {
+      var v = parseNum(invIn);
+      if (v === null) {
+        invOut.innerHTML = '<div class="sub">Enter a value to get asin, acos and atan in degrees (°) and radians.</div>';
+        return;
+      }
+      var html = '';
+      if (v < -1 || v > 1) {
+        html += '<div>asin(' + fmt(v) + ') = <b>Undefined</b> <span class="sub">(outside the range -1 to 1)</span></div>';
+        html += '<div>acos(' + fmt(v) + ') = <b>Undefined</b> <span class="sub">(outside the range -1 to 1)</span></div>';
+      } else {
+        var as = Math.asin(v), ac = Math.acos(v);
+        html += '<div>asin(' + fmt(v) + ') = <b>' + fmt(as * 180 / Math.PI) + '°</b> = ' + fmt6(as) + ' rad</div>';
+        html += '<div>acos(' + fmt(v) + ') = <b>' + fmt(ac * 180 / Math.PI) + '°</b> = ' + fmt6(ac) + ' rad</div>';
+      }
+      var at = Math.atan(v);
+      html += '<div>atan(' + fmt(v) + ') = <b>' + fmt(at * 180 / Math.PI) + '°</b> = ' + fmt6(at) + ' rad</div>';
+      invOut.innerHTML = html;
+    } catch (e) {
+      invOut.innerHTML = '<div>⚠️ Something went wrong. Please check your input.</div>';
+    }
+  }
+
+  /* ── ② right triangle solver ── */
+  var triA = document.getElementById('triA');
+  var triB = document.getElementById('triB');
+  var triC = document.getElementById('triC');
+  var triT = document.getElementById('triT');
+  var triOut = document.getElementById('triOut');
+  var TRI_HINT = '<div class="sub">Enter <b>any 2</b> of base a, height b, hypotenuse c and angle θ. The rest is calculated automatically.</div>';
+  function triErr(msg) { triOut.innerHTML = '<div>⚠️ ' + msg + '</div>'; }
+  function calcTri() {
+    try {
+      var a = parseNum(triA), b = parseNum(triB), c = parseNum(triC), t = parseNum(triT);
+      var has = { a: a !== null, b: b !== null, c: c !== null, t: t !== null };
+      var keys = ['a', 'b', 'c', 't'].filter(function (k) { return has[k]; });
+      if (keys.length < 2) { triOut.innerHTML = TRI_HINT; return; }
+      if (keys.length > 2) { triErr('Please enter only 2 values. Leave the other fields empty and they will be calculated automatically.'); return; }
+      if ((has.a && a <= 0) || (has.b && b <= 0) || (has.c && c <= 0)) { triErr('Side lengths must be numbers greater than 0.'); return; }
+      if (has.t && (t <= 0 || t >= 90)) { triErr('The acute angle θ of a right triangle must be greater than 0° and less than 90°.'); return; }
+      var combo = keys.join('');
+      var rad;
+      if (combo === 'ab') {
+        c = Math.sqrt(a * a + b * b); rad = Math.atan2(b, a);
+      } else if (combo === 'ac') {
+        if (c <= a) { triErr('Impossible combination. The hypotenuse c must be longer than the base a.'); return; }
+        b = Math.sqrt(c * c - a * a); rad = Math.acos(a / c);
+      } else if (combo === 'bc') {
+        if (c <= b) { triErr('Impossible combination. The hypotenuse c must be longer than the height b.'); return; }
+        a = Math.sqrt(c * c - b * b); rad = Math.asin(b / c);
+      } else if (combo === 'at') {
+        rad = t * Math.PI / 180; b = a * Math.tan(rad); c = a / Math.cos(rad);
+      } else if (combo === 'bt') {
+        rad = t * Math.PI / 180; a = b / Math.tan(rad); c = b / Math.sin(rad);
+      } else { /* 'ct' */
+        rad = t * Math.PI / 180; a = c * Math.cos(rad); b = c * Math.sin(rad);
+      }
+      t = rad * 180 / Math.PI;
+      function mark(k) { return has[k] ? ' <span class="sub">(input)</span>' : ''; }
+      triOut.innerHTML =
+        '<div>Base a = <b>' + fmt(a) + '</b>' + mark('a') + '</div>' +
+        '<div>Height b = <b>' + fmt(b) + '</b>' + mark('b') + '</div>' +
+        '<div>Hypotenuse c = <b>' + fmt(c) + '</b>' + mark('c') + '</div>' +
+        '<div>Angle θ = <b>' + fmt(t) + '°</b> = ' + fmt6(rad) + ' rad' + mark('t') + '</div>' +
+        '<div class="sub">Other acute angle ' + fmt(90 - t) + '° · Perimeter ' + fmt(a + b + c) + ' · Area ' + fmt(a * b / 2) + '</div>';
+    } catch (e) {
+      triErr('Something went wrong. Please check your input.');
+    }
+  }
+
+  /* ── event wiring (no button — instant calculation on input) ── */
+  angleIn.addEventListener('input', calcTrig);
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="trigUnit"]'), function (r) {
+    r.addEventListener('change', calcTrig);
+  });
+  invIn.addEventListener('input', calcInv);
+  [triA, triB, triC, triT].forEach(function (el) { el.addEventListener('input', calcTri); });
+  document.getElementById('triClear').addEventListener('click', function () {
+    triA.value = ''; triB.value = ''; triC.value = ''; triT.value = '';
+    calcTri();
+  });
+
+  calcTrig(); calcInv(); calcTri();
+})();
+</script>
+</body>
+</html>
