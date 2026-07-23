@@ -17,21 +17,25 @@ jobs:
         run: |
           BASE="${{ inputs.base_url }}"
           fail=0
-          for p in "/" "/ko/" "/pdf-merge/" "/pdf-compress/" "/pdf-watermark/" "/pdf-page-numbers/" "/pdf-sign/" "/image-crop/" "/image-convert/" "/image-rotate/" "/image-watermark/" "/pricing/" "/login/" "/admin/" "/sitemap.xml" "/robots.txt" "/assets/site.js" "/assets/vendor/pdf-lib.min.js" "/assets/vendor/fontkit.umd.min.js"; do
+          for p in "/" "/ko/" "/pdf/" "/pdf/ko/" "/pdf/pdf-merge/" "/pdf/pdf-compress/" "/pdf/pdf-sign/" "/pdf/pricing/" "/pdf/login/" "/pdf/admin/" "/img/" "/img/ko/" "/img/image-compress/" "/img/image-redact/" "/img/image-exif/" "/calc/" "/calc/age-calculator/" "/calc/vat-calculator/" "/calc/interest-calculator/" "/calc/unit-converter/" "/calc/qr-generator/" "/calc/password-generator/" "/calc/text-diff/" "/sitemap.xml" "/robots.txt" "/pdf/sitemap.xml" "/pdf/assets/site.js" "/pdf/assets/vendor/pdf-lib.min.js" "/calc/assets/vendor/qrcode-generator.js" "/pdf-merge/" "/ko/image-compress/"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
             echo "$code  $BASE$p"
             [ "$code" = "200" ] || fail=1
           done
-          echo "--- brand check ---"
-          curl -sL "$BASE/" | grep -o "ThisIsMyPDF" | head -1 || fail=1
-          echo "--- canonical check ---"
-          curl -sL "$BASE/pdf-merge/" | grep -o '<link rel="canonical" href="[^"]*"' || fail=1
-          echo "--- telemetry wired into site.js ---"
-          curl -sL "$BASE/assets/site.js" | grep -q "mdtlLogEvent" && echo "site.js: mdtlLogEvent OK" || { echo "site.js: mdtlLogEvent MISSING"; fail=1; }
-          echo "--- /admin noindex (백오피스는 색인 금지) ---"
-          curl -sL "$BASE/admin/" | grep -q "noindex" && echo "admin: noindex OK" || { echo "admin: noindex MISSING"; fail=1; }
-          echo "--- admin NOT in sitemap ---"
-          curl -sL "$BASE/sitemap.xml" | grep -q "/admin/" && { echo "admin leaked into sitemap"; fail=1; } || echo "admin absent from sitemap OK"
+          echo "--- portal lists all three brands ---"
+          for b in ThisIsMyPDF ThisIsMyIMG ThisIsMyCalculator; do
+            curl -sL "$BASE/" | grep -q "$b" && echo "portal: $b OK" || { echo "portal: $b MISSING"; fail=1; }
+          done
+          echo "--- subsite brand + canonical ---"
+          curl -sL "$BASE/img/" | grep -o "ThisIsMyIMG" | head -1 || fail=1
+          curl -sL "$BASE/pdf/pdf-merge/" | grep -o '<link rel="canonical" href="[^"]*"' || fail=1
+          echo "--- old URL redirects to new brand path ---"
+          curl -sL "$BASE/pdf-merge/" | grep -q "url=$BASE/pdf/pdf-merge/" && echo "redirect stub OK" || { echo "redirect stub BROKEN"; fail=1; }
+          echo "--- telemetry wired ---"
+          curl -sL "$BASE/pdf/assets/site.js" | grep -q "mdtlLogEvent" && echo "site.js: mdtlLogEvent OK" || { echo "site.js: mdtlLogEvent MISSING"; fail=1; }
+          echo "--- admin noindex + not in sitemap ---"
+          curl -sL "$BASE/pdf/admin/" | grep -q "noindex" && echo "admin: noindex OK" || { echo "admin: noindex MISSING"; fail=1; }
+          curl -sL "$BASE/pdf/sitemap.xml" | grep -q "/admin/" && { echo "admin leaked into sitemap"; fail=1; } || echo "admin absent from sitemap OK"
           echo "--- supabase auth reachable (회원 백엔드) ---"
           curl -s -o /dev/null -w "auth health: %{http_code}\n" "https://gysvtgnpacqjpdijbcaw.supabase.co/auth/v1/health" -H "apikey: sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT"
           exit $fail

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>단위 변환기 — 길이·무게·넓이(평)·온도·부피 즉시 변환 | ThisIsMyCalculator</title>
+<meta name="description" content="무료 단위 변환기. 길이(mm~마일), 무게(mg~파운드), 넓이(㎡·평·ft²·에이커), 온도(°C·°F·K), 부피(ml·L·컵·갤런)를 실시간 변환합니다. 1평=3.305785㎡ 기준, 온도는 공식으로 정확 변환, 유효숫자 6자리 표시. 입력값은 서버로 전송되지 않습니다.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/ko/unit-converter/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/unit-converter/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/unit-converter/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/unit-converter/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="단위 변환기 — 길이·무게·넓이(평)·온도·부피">
+<meta property="og:description" content="카테고리와 단위만 고르면 입력 즉시 변환. 평↔㎡, 인치↔cm, 화씨↔섭씨까지 한 곳에서. 100% 브라우저 계산.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/ko/unit-converter/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"단위 변환기 - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/ko/unit-converter/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"길이·무게·넓이(평 포함)·온도·부피를 실시간 변환하는 무료 웹 단위 변환기. 온도는 공식으로 정확 변환, 나머지는 표준 환산계수 사용, 유효숫자 최대 6자리 표시. 서버 전송 없이 브라우저에서만 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"평↔제곱미터는 어떤 기준으로 변환하나요?","acceptedAnswer":{"@type":"Answer","text":"1평 = 3.305785㎡(정확히는 400/121㎡)를 사용합니다. 부동산 실무 표준 계수이며, 반대로 1㎡ = 정확히 0.3025평입니다. 평은 한 변이 6자(약 1.818m)인 정사각형 넓이에서 유래한 단위로, 공식 문서는 ㎡를 쓰지만 일상 대화에서는 여전히 평이 쓰입니다. 아파트 평형 맥락까지 필요하면 전용 평수 계산기를 이용하세요."}},
+{"@type":"Question","name":"온도 변환은 어떤 공식을 쓰나요?","acceptedAnswer":{"@type":"Answer","text":"온도는 눈금의 0점이 서로 달라 단순 곱셈으로는 변환할 수 없으므로 공식을 사용합니다. °F = °C × 9/5 + 32, °C = (°F − 32) × 5/9, K = °C + 273.15입니다. 예를 들어 100°C = 212°F = 373.15K입니다. 켈빈은 절대영도(−273.15°C)에서 시작하는 절대온도 눈금입니다."}},
+{"@type":"Question","name":"야드파운드법 단위는 미터법과 어떻게 연결되나요?","acceptedAnswer":{"@type":"Answer","text":"국제 협약으로 정확한 정의값이 정해져 있습니다. 1인치 = 정확히 25.4mm, 1파운드 = 정확히 453.59237g, 1피트 = 30.48cm입니다. 이 변환기는 이 정의값을 그대로 사용합니다. 다만 갤런은 미국 액량 갤런(3.785412L) 기준이며 영국 갤런(4.546L)과 다르고, 컵은 240ml 기준으로 계량컵 규격(미국 236.6ml·미터법 250ml·일본 200ml)에 따라 차이가 있습니다."}},
+{"@type":"Question","name":"결과의 정밀도와 반올림은 어떻게 처리되나요?","acceptedAnswer":{"@type":"Answer","text":"내부 계산은 부동소수점 전체 정밀도로 수행하고, 화면 표시만 유효숫자 최대 6자리로 반올림하며 끝의 불필요한 0은 제거합니다. 요리·생활·부동산 용도로는 충분한 정밀도입니다. 공학·법령·무역 등 정밀 용도라면 본문에 적힌 정의값 원본 계수에 해당 분야의 반올림 규정을 직접 적용하세요."}},
+{"@type":"Question","name":"입력한 값이 서버로 전송되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 변환은 브라우저에 내장된 상수와 공식만으로 처리되며, 네트워크 요청이 발생하지 않고 입력값이 저장되지도 않습니다. 페이지가 한 번 열리면 인터넷이 끊겨도 계속 사용할 수 있습니다."}}
+]}
+</script>
+<style>
+.tool-card h2{font-size:16px;margin:0 0 12px}
+@media (min-width:600px){.calc-grid{grid-template-columns:1fr 1fr 1fr}}
+.tool-card .btn-row .btn{padding:8px 14px;font-size:14px}
+.guide table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+.guide th,.guide td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+.guide th{background:var(--surface-2);font-size:13.5px}
+</style>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/ko/">ThisIsMyCalculator</a> › <a href="/modutool/calc/ko/#calc">계산기</a> › 단위 변환기</nav>
+  <h1 class="page-title">단위 변환기<span class="privacy-badge">🔒 입력값 전송 없음</span></h1>
+  <p class="page-sub">길이·무게·넓이(평 포함)·온도·부피 — 단위 두 개를 고르고 숫자만 입력하면 실시간으로 변환됩니다. 무료.</p>
+
+  <div class="card tool-card">
+    <h2>📐 단위 변환</h2>
+    <label class="field" style="margin-bottom:14px">
+      <span>카테고리</span>
+      <select id="catSel" aria-label="단위 카테고리">
+        <option value="length">길이</option>
+        <option value="weight">무게</option>
+        <option value="area">넓이</option>
+        <option value="temp">온도</option>
+        <option value="volume">부피</option>
+      </select>
+    </label>
+    <div class="calc-grid">
+      <label class="field">
+        <span>값</span>
+        <input type="number" id="valIn" inputmode="decimal" step="any" placeholder="예: 100" aria-label="변환할 값">
+      </label>
+      <label class="field">
+        <span>변환 전 단위</span>
+        <select id="fromSel" aria-label="변환 전 단위"></select>
+      </label>
+      <label class="field">
+        <span>변환 후 단위</span>
+        <select id="toSel" aria-label="변환 후 단위"></select>
+      </label>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn secondary" id="swapBtn" aria-label="변환 방향 바꾸기">⇄ 방향 바꾸기</button>
+    </div>
+    <div class="calc-out" id="out" aria-live="polite"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li><b>카테고리</b>를 고르세요 — 길이·무게·넓이·온도·부피. 카테고리를 바꾸면 앞뒤 단위 목록이 그에 맞게 바뀝니다.</li>
+      <li>값을 입력하면 버튼 없이 <b>결과가 즉시</b> 표시되고, 수정하는 대로 실시간 갱신됩니다. 결과 아래의 "1 단위 = X" 기준선으로 자릿수를 한눈에 검산할 수 있습니다.</li>
+      <li><b>⇄ 방향 바꾸기</b>를 누르면 다시 입력할 필요 없이 변환 방향이 뒤집힙니다.</li>
+    </ol>
+
+    <h2>평 ↔ 제곱미터 — 한국에서 가장 자주 쓰는 변환</h2>
+    <p>넓이 카테고리의 기본 설정이 <b>㎡ → 평</b>인 이유는 단순합니다. 한국에서 단위 변환이 가장 자주 필요한 순간이 부동산이기 때문입니다. 기준은 부동산 실무 표준인 <b>1평 = 3.305785㎡</b>(정확히 400/121㎡), 반대로 <b>1㎡ = 정확히 0.3025평</b>입니다. 84㎡를 넣으면 25.41평이 바로 나옵니다. 아파트 평형(59·74·84㎡ 국민평형), 전용면적·공급면적 차이 같은 부동산 맥락까지 필요하다면 전용 <a href="/modutool/calc/ko/pyeong-calculator/">평수 계산기</a>를 쓰세요 — 평형 빠른 버튼과 가로×세로 평수 계산까지 지원합니다.</p>
+
+    <h2>변환에 쓰는 계수와 공식</h2>
+    <p>정확한 정의값이 있는 단위는 그 값을 그대로 씁니다. <b>1인치 = 25.4mm</b>, <b>1파운드 = 453.59237g</b>, <b>1갤런(미국 액량) = 3.785412L</b>. 모든 변환은 카테고리의 기준 단위(미터·킬로그램·제곱미터·리터)를 거쳐 계산되므로 어떤 단위 조합이든 일관된 결과가 나옵니다.</p>
+    <p><b>온도만은 예외</b>입니다. 눈금의 0점이 서로 달라 곱셈 한 번으로는 변환할 수 없어, 다음 공식을 그대로 적용합니다.</p>
+    <ul>
+      <li><b>°F = °C × 9/5 + 32</b> (반대로 °C = (°F − 32) × 5/9)</li>
+      <li><b>K = °C + 273.15</b> — 켈빈은 절대영도(−273.15°C)에서 시작하는 절대온도</li>
+    </ul>
+    <p>0점이 다르기 때문에 0°C는 0°F가 아니라 32°F이고, "온도가 두 배"라는 말은 눈금이 다르면 성립하지 않습니다.</p>
+
+    <h2>외워두면 좋은 기준값</h2>
+    <table>
+      <thead><tr><th>카테고리</th><th>기준값</th></tr></thead>
+      <tbody>
+        <tr><td>길이</td><td>1인치 = 2.54cm · 1피트 = 30.48cm · 1마일 ≈ 1.609km</td></tr>
+        <tr><td>무게</td><td>1온스 ≈ 28.35g · 1파운드 ≈ 453.6g · 1kg ≈ 2.205lb</td></tr>
+        <tr><td>넓이</td><td>1평 = 3.305785㎡ · 1㎡ ≈ 10.76ft² · 1에이커 ≈ 4,047㎡</td></tr>
+        <tr><td>온도</td><td>0°C = 32°F · 100°C = 212°F · 0K = −273.15°C</td></tr>
+        <tr><td>부피</td><td>1컵(240ml) · 1L ≈ 4.17컵 · 1갤런(미국) ≈ 3.785L</td></tr>
+      </tbody>
+    </table>
+
+    <h2>이름은 같은데 크기가 다른 단위 주의</h2>
+    <ul>
+      <li><b>갤런</b> — 이 변환기는 <b>미국 액량 갤런(3.785412L)</b> 기준입니다. 영국 갤런은 4.54609L로 약 20% 큽니다.</li>
+      <li><b>컵</b> — 레시피마다 다릅니다: 미국 표기 기준 240ml(여기서 사용), 미국 관습 236.6ml, 미터법 250ml, 일본 200ml. 베이킹처럼 정밀해야 하면 저울 계량을 권합니다.</li>
+      <li><b>톤</b> — 여기서는 미터법 톤(1,000kg)입니다. 미국 쇼트톤(907.2kg)·영국 롱톤(1,016kg)과 다릅니다.</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 결과 아래의 "1 단위 = X" 기준선은 환산계수 조회표로도 쓸 수 있습니다. 원하는 단위 조합만 맞춰 두면 값을 넣지 않아도 계수를 바로 읽을 수 있습니다.</div>
+
+    <h2>정밀도와 반올림</h2>
+    <p>내부 계산은 부동소수점 전체 정밀도로 하고, <b>화면 표시만 유효숫자 최대 6자리</b>로 반올림하며 끝자리 0은 제거합니다. 요리·생활·부동산 용도에는 충분하고도 남는 정밀도입니다. 공학·무역·법령 등 정밀 용도라면 위 정의값 계수에 해당 분야의 반올림 규정을 직접 적용해 검산하세요.</p>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>평↔제곱미터는 어떤 기준으로 변환하나요?</summary><p>1평 = 3.305785㎡(정확히는 400/121㎡)를 사용합니다. 부동산 실무 표준 계수이며, 반대로 1㎡ = 정확히 0.3025평입니다. 평은 한 변이 6자(약 1.818m)인 정사각형 넓이에서 유래한 단위로, 공식 문서는 ㎡를 쓰지만 일상 대화에서는 여전히 평이 쓰입니다. 아파트 평형 맥락까지 필요하면 전용 평수 계산기를 이용하세요.</p></details>
+      <details><summary>온도 변환은 어떤 공식을 쓰나요?</summary><p>온도는 눈금의 0점이 서로 달라 단순 곱셈으로는 변환할 수 없으므로 공식을 사용합니다. °F = °C × 9/5 + 32, °C = (°F − 32) × 5/9, K = °C + 273.15입니다. 예를 들어 100°C = 212°F = 373.15K입니다. 켈빈은 절대영도(−273.15°C)에서 시작하는 절대온도 눈금입니다.</p></details>
+      <details><summary>야드파운드법 단위는 미터법과 어떻게 연결되나요?</summary><p>국제 협약으로 정확한 정의값이 정해져 있습니다. 1인치 = 정확히 25.4mm, 1파운드 = 정확히 453.59237g, 1피트 = 30.48cm입니다. 이 변환기는 이 정의값을 그대로 사용합니다. 다만 갤런은 미국 액량 갤런(3.785412L) 기준이며 영국 갤런(4.546L)과 다르고, 컵은 240ml 기준으로 계량컵 규격(미국 236.6ml·미터법 250ml·일본 200ml)에 따라 차이가 있습니다.</p></details>
+      <details><summary>결과의 정밀도와 반올림은 어떻게 처리되나요?</summary><p>내부 계산은 부동소수점 전체 정밀도로 수행하고, 화면 표시만 유효숫자 최대 6자리로 반올림하며 끝의 불필요한 0은 제거합니다. 요리·생활·부동산 용도로는 충분한 정밀도입니다. 공학·법령·무역 등 정밀 용도라면 본문에 적힌 정의값 원본 계수에 해당 분야의 반올림 규정을 직접 적용하세요.</p></details>
+      <details><summary>입력한 값이 서버로 전송되나요?</summary><p>아니요. 변환은 브라우저에 내장된 상수와 공식만으로 처리되며, 네트워크 요청이 발생하지 않고 입력값이 저장되지도 않습니다. 페이지가 한 번 열리면 인터넷이 끊겨도 계속 사용할 수 있습니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/ko/pyeong-calculator/"><span class="emoji">📐</span><span><b>평수 계산기</b><span>평↔㎡·아파트 평형표</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/ko/percent-calculator/"><span class="emoji">➗</span><span><b>퍼센트 계산기</b><span>비율·증감률·할인율</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var CATS = {
+    length: {
+      units: [
+        ['mm', '밀리미터 (mm)', 'mm', 0.001],
+        ['cm', '센티미터 (cm)', 'cm', 0.01],
+        ['m', '미터 (m)', 'm', 1],
+        ['km', '킬로미터 (km)', 'km', 1000],
+        ['in', '인치 (in)', 'in', 0.0254],
+        ['ft', '피트 (ft)', 'ft', 0.3048],
+        ['yd', '야드 (yd)', 'yd', 0.9144],
+        ['mi', '마일 (mi)', 'mi', 1609.344]
+      ],
+      def: ['in', 'cm']
+    },
+    weight: {
+      units: [
+        ['mg', '밀리그램 (mg)', 'mg', 0.000001],
+        ['g', '그램 (g)', 'g', 0.001],
+        ['kg', '킬로그램 (kg)', 'kg', 1],
+        ['t', '톤 (t)', 't', 1000],
+        ['oz', '온스 (oz)', 'oz', 0.028349523125],
+        ['lb', '파운드 (lb)', 'lb', 0.45359237]
+      ],
+      def: ['kg', 'lb']
+    },
+    area: {
+      units: [
+        ['m2', '제곱미터 (㎡)', '㎡', 1],
+        ['py', '평 (坪)', '평', 3.305785],
+        ['ft2', '제곱피트 (ft²)', 'ft²', 0.09290304],
+        ['ac', '에이커 (ac)', '에이커', 4046.8564224]
+      ],
+      def: ['m2', 'py']
+    },
+    temp: {
+      units: [
+        ['c', '섭씨 (°C)', '°C', null],
+        ['f', '화씨 (°F)', '°F', null],
+        ['k', '켈빈 (K)', 'K', null]
+      ],
+      def: ['c', 'f']
+    },
+    volume: {
+      units: [
+        ['ml', '밀리리터 (ml)', 'ml', 0.001],
+        ['l', '리터 (L)', 'L', 1],
+        ['cup', '컵 (240ml)', '컵', 0.24],
+        ['gal', '갤런 (미국)', '갤런', 3.785411784]
+      ],
+      def: ['ml', 'cup']
+    }
+  };
+  var TEMP_FORMULA = {
+    'c>f': '°F = °C × 9/5 + 32',
+    'f>c': '°C = (°F − 32) × 5/9',
+    'c>k': 'K = °C + 273.15',
+    'k>c': '°C = K − 273.15',
+    'f>k': 'K = (°F − 32) × 5/9 + 273.15',
+    'k>f': '°F = (K − 273.15) × 9/5 + 32'
+  };
+
+  var catSel = document.getElementById('catSel');
+  var fromSel = document.getElementById('fromSel');
+  var toSel = document.getElementById('toSel');
+  var valIn = document.getElementById('valIn');
+  var swapBtn = document.getElementById('swapBtn');
+  var out = document.getElementById('out');
+
+  function unit(cat, id) {
+    var us = CATS[cat].units;
+    for (var i = 0; i < us.length; i++) if (us[i][0] === id) return us[i];
+    return us[0];
+  }
+  function toC(id, v) {
+    if (id === 'f') return (v - 32) * 5 / 9;
+    if (id === 'k') return v - 273.15;
+    return v;
+  }
+  function fromC(id, c) {
+    if (id === 'f') return c * 9 / 5 + 32;
+    if (id === 'k') return c + 273.15;
+    return c;
+  }
+  function convert(cat, fromId, toId, v) {
+    if (cat === 'temp') return fromC(toId, toC(fromId, v));
+    return v * unit(cat, fromId)[3] / unit(cat, toId)[3];
+  }
+  function fmt(n) {
+    if (!isFinite(n)) return null;
+    if (n === 0) return '0';
+    var p = Number(n.toPrecision(6));
+    return p.toLocaleString('ko-KR', { maximumFractionDigits: 20 });
+  }
+  function idle(msg) {
+    out.innerHTML = '<div class="num">—</div><div class="sub">' + msg + '</div>';
+  }
+
+  function fillSelects() {
+    var cat = catSel.value;
+    var us = CATS[cat].units;
+    var html = '';
+    for (var i = 0; i < us.length; i++) {
+      html += '<option value="' + us[i][0] + '">' + us[i][1] + '</option>';
+    }
+    fromSel.innerHTML = html;
+    toSel.innerHTML = html;
+    fromSel.value = CATS[cat].def[0];
+    toSel.value = CATS[cat].def[1];
+  }
+
+  function update() {
+    try {
+      var cat = catSel.value;
+      var fu = unit(cat, fromSel.value);
+      var tu = unit(cat, toSel.value);
+      var refLine;
+      if (cat === 'temp') {
+        refLine = fu[0] === tu[0] ? '같은 눈금이라 값이 그대로입니다.'
+          : '공식: ' + TEMP_FORMULA[fu[0] + '>' + tu[0]];
+      } else {
+        refLine = '1' + fu[2] + ' = ' + fmt(convert(cat, fu[0], tu[0], 1)) + tu[2];
+      }
+      var v = parseFloat(valIn.value);
+      if (!isFinite(v)) {
+        idle('변환할 값을 입력하세요. ' + refLine);
+        return;
+      }
+      if (cat !== 'temp' && v < 0) {
+        idle('이 카테고리는 0 이상의 값만 변환할 수 있습니다. ' + refLine);
+        return;
+      }
+      var r = convert(cat, fu[0], tu[0], v);
+      var rs = fmt(r);
+      if (rs === null) { idle('변환 범위를 벗어난 값입니다. ' + refLine); return; }
+      out.innerHTML =
+        '<div class="num">' + rs + tu[2] + '</div>' +
+        '<div class="sub">' + fmt(v) + fu[2] + ' → ' + rs + tu[2] + ' · ' + refLine + '</div>';
+    } catch (e) {
+      idle('계산 중 오류가 발생했습니다. 숫자만 입력해 주세요.');
+    }
+  }
+
+  catSel.addEventListener('change', function () { fillSelects(); update(); });
+  fromSel.addEventListener('change', update);
+  toSel.addEventListener('change', update);
+  valIn.addEventListener('input', update);
+  swapBtn.addEventListener('click', function () {
+    var f = fromSel.value;
+    fromSel.value = toSel.value;
+    toSel.value = f;
+    update();
+  });
+
+  fillSelects();
+  update();
+})();
+</script>
+</body>
+</html>

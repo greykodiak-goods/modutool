@@ -3,79 +3,120 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ThisIsMyPDF — 설치 없이 브라우저에서 쓰는 무료 도구 모음</title>
-<meta name="description" content="PDF 합치기·나누기·변환, 이미지 압축, 만나이·퍼센트·글자수 계산기 등 무료 웹 도구 모음. 파일이 서버로 전송되지 않는 100% 브라우저 처리로 안전하고 빠릅니다.">
+<title>ThisIsMy Tools — 업로드 없는 무료 PDF·이미지·계산기·유틸 모음</title>
+<meta name="description" content="ThisIsMy 도구 전체를 한 화면에서: PDF 합치기·나누기·압축, 이미지 블라인드·EXIF 제거, 계산기, QR 생성까지. 100% 브라우저 처리 — 파일은 서버로 전송되지 않습니다.">
 <link rel="canonical" href="https://greykodiak-goods.github.io/modutool/ko/">
 <link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/ko/">
 <link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/">
 <link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ThisIsMyPDF — 설치 없이 브라우저에서 쓰는 무료 도구 모음">
-<meta property="og:description" content="PDF·이미지·계산기 무료 웹 도구. 파일이 서버로 전송되지 않아 안전합니다.">
+<meta property="og:title" content="ThisIsMy Tools — 모든 도구, 한 화면">
+<meta property="og:description" content="브라우저 안에서만 처리되는 PDF·이미지·계산기·유틸 도구. 업로드 없음, 가입 없음, 제한 없음.">
 <meta property="og:url" content="https://greykodiak-goods.github.io/modutool/ko/">
 <meta property="og:locale" content="ko_KR">
 <meta name="theme-color" content="#2563eb">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
-<script>window.MDTL_BASE='/modutool';</script>
-<link rel="stylesheet" href="/modutool/assets/site.css">
-<script src="/modutool/assets/site.js"></script>
-<script src="/modutool/assets/ads-config.js" defer></script>
-<script src="/modutool/assets/auth-config.js" defer></script>
-<script src="/modutool/assets/auth.js" defer></script>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","name":"ThisIsMyPDF","url":"https://greykodiak-goods.github.io/modutool/ko/","description":"설치 없이 브라우저에서 쓰는 무료 도구 모음 — PDF, 이미지, 계산기","inLanguage":"ko"}
-</script>
+<style>
+  :root { --bg:#f6f8fb; --surface:#fff; --text:#101828; --text-soft:#5b6575; --line:#e4e8ef; --accent:#2563eb; --radius:14px; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0d1220; --surface:#161d2f; --text:#e7ecf5; --text-soft:#9aa5b8; --line:#27304a; --accent:#5b8bf7; }
+  }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans KR',sans-serif; line-height:1.6; }
+  .wrap { max-width:1040px; margin:0 auto; padding:28px 20px 60px; }
+  header.top { display:flex; align-items:center; gap:10px; padding:6px 0 26px; }
+  .mark { width:34px; height:34px; border-radius:9px; background:var(--accent); color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:18px; }
+  .site-name { font-weight:800; font-size:19px; }
+  .lang { margin-left:auto; font-size:13.5px; }
+  .lang a { color:var(--accent); text-decoration:none; font-weight:600; }
+  h1 { font-size:clamp(24px,4.6vw,34px); line-height:1.25; letter-spacing:-.5px; }
+  .sub { color:var(--text-soft); margin:10px 0 34px; max-width:640px; }
+  .brand-head { display:flex; align-items:baseline; gap:12px; margin:34px 0 12px; flex-wrap:wrap; }
+  .brand-head .mark2 { width:26px; height:26px; border-radius:7px; color:#fff; font-weight:800; display:inline-flex; align-items:center; justify-content:center; font-size:14px; transform:translateY(4px); }
+  .brand-head h2 { font-size:20px; }
+  .brand-head a.open { font-size:13.5px; color:var(--accent); text-decoration:none; font-weight:600; }
+  .brand-head .tag { font-size:13px; color:var(--text-soft); width:100%; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(225px,1fr)); gap:10px; }
+  .tile { display:flex; gap:10px; align-items:flex-start; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:13px 14px; text-decoration:none; color:var(--text); transition:border-color .15s, transform .15s; }
+  .tile:hover { border-color:var(--accent); transform:translateY(-1px); }
+  .tile .e { font-size:20px; line-height:1.3; }
+  .tile b { font-size:14.5px; display:block; }
+  .tile span.d { font-size:12.5px; color:var(--text-soft); display:block; margin-top:2px; }
+  footer { margin-top:48px; padding-top:18px; border-top:1px solid var(--line); font-size:13px; color:var(--text-soft); }
+  footer a { color:var(--text-soft); margin-right:14px; }
+</style>
 </head>
 <body>
-<header id="site-header" class="site-header"></header>
-<main>
-  <div class="hero">
-    <h1>설치 없이, 가입 없이,<br>브라우저에서 바로 쓰는 도구</h1>
-    <p>모든 파일 처리는 내 컴퓨터(브라우저) 안에서만 이뤄집니다.<br>파일이 서버로 전송되지 않아 안전하고, 그래서 더 빠릅니다.</p>
+<div class="wrap">
+  <header class="top">
+    <span class="mark">T</span><span class="site-name">ThisIsMy Tools</span>
+    <span class="lang"><a href="../">English</a></span>
+  </header>
+
+  <h1>모든 도구. 업로드 제로.</h1>
+  <p class="sub">ThisIsMy 도구 전체를 한 화면에서 — PDF·이미지·계산기·생활 유틸. 모든 처리는 <b>브라우저 안에서만</b> 이뤄지고 파일과 입력값은 어떤 서버로도 전송되지 않습니다.</p>
+
+  <div class="brand-head">
+    <span class="mark2" style="background:#2563eb">P</span><h2>ThisIsMyPDF</h2>
+    <a class="open" href="../pdf/ko/">사이트 열기 →</a>
+    <span class="tag">파일을 업로드하지 않는 PDF 도구</span>
+  </div>
+  <div class="grid">
+    <a class="tile" href="../pdf/ko/pdf-merge/"><span class="e">📎</span><span><b>PDF 합치기</b><span class="d">드래그로 순서 바꿔 병합</span></span></a>
+    <a class="tile" href="../pdf/ko/pdf-split/"><span class="e">✂️</span><span><b>PDF 나누기</b><span class="d">범위 추출·페이지별 분할</span></span></a>
+    <a class="tile" href="../pdf/ko/pdf-extract/"><span class="e">📑</span><span><b>페이지 추출</b><span class="d">필요한 쪽만 뽑아내기</span></span></a>
+    <a class="tile" href="../pdf/ko/pdf-organize/"><span class="e">🗂️</span><span><b>PDF 정리</b><span class="d">삭제·순서변경·회전</span></span></a>
+    <a class="tile" href="../pdf/ko/pdf-rotate/"><span class="e">🔁</span><span><b>PDF 회전</b><span class="d">옆으로 누운 스캔 교정</span></span></a>
+    <a class="tile" href="../pdf/ko/pdf-compress/"><span class="e">🗜️</span><span><b>PDF 압축</b><span class="d">3단계 품질로 용량 줄이기</span></span></a>
+    <a class="tile" href="../pdf/ko/pdf-watermark/"><span class="e">💧</span><span><b>PDF 워터마크</b><span class="d">전 페이지 텍스트 도장</span></span></a>
+    <a class="tile" href="../pdf/ko/pdf-page-numbers/"><span class="e">🔢</span><span><b>쪽번호 넣기</b><span class="d">PDF에 페이지 번호 추가</span></span></a>
+    <a class="tile" href="../pdf/ko/pdf-sign/"><span class="e">✍️</span><span><b>PDF 서명</b><span class="d">서명 그려서 배치</span></span></a>
+    <a class="tile" href="../pdf/ko/pdf-to-jpg/"><span class="e">🖼️</span><span><b>PDF → JPG</b><span class="d">페이지를 이미지로 저장</span></span></a>
+    <a class="tile" href="../pdf/ko/img-to-pdf/"><span class="e">📄</span><span><b>이미지 → PDF</b><span class="d">사진을 PDF로 묶기</span></span></a>
   </div>
 
-  <div class="cat-title" id="pdf">PDF 도구</div>
-  <div class="tool-grid">
-    <a class="tool-tile" href="/modutool/ko/pdf-merge/"><span class="emoji">📎</span><span><b>PDF 합치기</b><span>여러 PDF를 순서 정해 하나로 병합</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pdf-organize/"><span class="emoji">🗂️</span><span><b>PDF 페이지 삭제·순서변경</b><span>미리보기로 지우고 옮기고 회전</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pdf-split/"><span class="emoji">✂️</span><span><b>PDF 나누기</b><span>페이지 범위 추출·분할 저장</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pdf-rotate/"><span class="emoji">🔄</span><span><b>PDF 회전</b><span>페이지별·전체 90도 회전</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pdf-extract/"><span class="emoji">📑</span><span><b>PDF 페이지 추출</b><span>원하는 쪽만 뽑아 새 PDF로</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pdf-compress/"><span class="emoji">📉</span><span><b>PDF 용량 줄이기</b><span>화질 선택 압축 — 제출·첨부용</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pdf-watermark/"><span class="emoji">💧</span><span><b>PDF 워터마크</b><span>대외비·초안 문구 일괄 삽입</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pdf-page-numbers/"><span class="emoji">🔢</span><span><b>PDF 쪽번호 넣기</b><span>위치·형식 골라 일괄 삽입</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pdf-sign/"><span class="emoji">✍️</span><span><b>PDF 서명</b><span>사인 그려서 원하는 위치에</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pdf-to-jpg/"><span class="emoji">🖼️</span><span><b>PDF → JPG 변환</b><span>각 페이지를 고화질 이미지로</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/img-to-pdf/"><span class="emoji">📄</span><span><b>이미지 → PDF</b><span>사진·스캔본을 PDF 한 파일로</span></span></a>
+  <div class="brand-head">
+    <span class="mark2" style="background:#0ea5e9">I</span><h2>ThisIsMyIMG</h2>
+    <a class="open" href="../img/ko/">사이트 열기 →</a>
+    <span class="tag">파일을 업로드하지 않는 이미지 도구</span>
+  </div>
+  <div class="grid">
+    <a class="tile" href="../img/ko/image-redact/"><span class="e">🫥</span><span><b>이미지 블라인드</b><span class="d">계좌번호·이름·얼굴 모자이크</span></span></a>
+    <a class="tile" href="../img/ko/image-exif/"><span class="e">📍</span><span><b>EXIF 제거</b><span class="d">사진 위치정보·메타데이터 삭제</span></span></a>
+    <a class="tile" href="../img/ko/image-split/"><span class="e">🧩</span><span><b>이미지 분할</b><span class="d">인스타 격자·캐러셀 분할</span></span></a>
+    <a class="tile" href="../img/ko/image-color-picker/"><span class="e">🎨</span><span><b>색상 추출</b><span class="d">이미지에서 HEX·RGB 스포이드</span></span></a>
+    <a class="tile" href="../img/ko/image-compress/"><span class="e">🗜️</span><span><b>이미지 압축</b><span class="d">화질 유지, 용량만 줄이기</span></span></a>
+    <a class="tile" href="../img/ko/image-resize/"><span class="e">📐</span><span><b>이미지 크기조절</b><span class="d">리사이즈 + 포맷 변환</span></span></a>
+    <a class="tile" href="../img/ko/image-crop/"><span class="e">✂️</span><span><b>이미지 자르기</b><span class="d">원하는 영역만·비율 프리셋</span></span></a>
+    <a class="tile" href="../img/ko/image-convert/"><span class="e">🔀</span><span><b>포맷 변환</b><span class="d">JPG·PNG·WEBP 상호 변환</span></span></a>
+    <a class="tile" href="../img/ko/image-rotate/"><span class="e">🔁</span><span><b>회전·반전</b><span class="d">방향 교정·거울 반전</span></span></a>
+    <a class="tile" href="../img/ko/image-watermark/"><span class="e">💧</span><span><b>워터마크</b><span class="d">사진에 텍스트 삽입</span></span></a>
   </div>
 
-  <div class="cat-title" id="image">이미지 도구</div>
-  <div class="tool-grid">
-    <a class="tool-tile" href="/modutool/ko/image-compress/"><span class="emoji">🗜️</span><span><b>이미지 압축</b><span>화질 유지하며 용량 줄이기</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/image-resize/"><span class="emoji">📐</span><span><b>이미지 크기조절·변환</b><span>리사이즈 + JPG/PNG/WEBP 변환</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/image-crop/"><span class="emoji">✂️</span><span><b>이미지 자르기</b><span>원하는 영역만·비율 프리셋</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/image-convert/"><span class="emoji">🔀</span><span><b>이미지 포맷 변환</b><span>JPG·PNG·WEBP 상호 변환</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/image-rotate/"><span class="emoji">🔁</span><span><b>이미지 회전·반전</b><span>방향 교정·좌우/상하 반전</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/image-watermark/"><span class="emoji">💧</span><span><b>이미지 워터마크</b><span>사진에 텍스트 삽입</span></span></a>
+  <div class="brand-head">
+    <span class="mark2" style="background:#16a34a">C</span><h2>ThisIsMyCalculator</h2>
+    <a class="open" href="../calc/ko/">사이트 열기 →</a>
+    <span class="tag">빠르고 무료인 계산기·생활 유틸</span>
+  </div>
+  <div class="grid">
+    <a class="tile" href="../calc/ko/age-calculator/"><span class="e">🎂</span><span><b>만나이 계산기</b><span class="d">생년월일로 만나이·연나이</span></span></a>
+    <a class="tile" href="../calc/ko/percent-calculator/"><span class="e">％</span><span><b>퍼센트 계산기</b><span class="d">비율·증감률·할인가</span></span></a>
+    <a class="tile" href="../calc/ko/char-count/"><span class="e">🔤</span><span><b>글자수 세기</b><span class="d">공백 포함/제외·바이트</span></span></a>
+    <a class="tile" href="../calc/ko/dday-calculator/"><span class="e">📅</span><span><b>D-day 계산기</b><span class="d">디데이·날짜 간격</span></span></a>
+    <a class="tile" href="../calc/ko/trig-calculator/"><span class="e">📐</span><span><b>삼각함수</b><span class="d">sin·cos·tan 풀이</span></span></a>
+    <a class="tile" href="../calc/ko/pyeong-calculator/"><span class="e">🏠</span><span><b>평수 계산기</b><span class="d">평 ↔ ㎡ 변환</span></span></a>
+    <a class="tile" href="../calc/ko/vat-calculator/"><span class="e">🧾</span><span><b>부가세 계산기</b><span class="d">공급가 ↔ 합계 역산</span></span></a>
+    <a class="tile" href="../calc/ko/interest-calculator/"><span class="e">💰</span><span><b>이자 계산기</b><span class="d">예금·적금·대출 상환</span></span></a>
+    <a class="tile" href="../calc/ko/unit-converter/"><span class="e">⚖️</span><span><b>단위 변환기</b><span class="d">길이·무게·넓이·온도</span></span></a>
+    <a class="tile" href="../calc/ko/qr-generator/"><span class="e">🔳</span><span><b>QR코드 생성</b><span class="d">URL·텍스트·와이파이 QR</span></span></a>
+    <a class="tile" href="../calc/ko/password-generator/"><span class="e">🔑</span><span><b>비밀번호 생성</b><span class="d">로컬 생성, 전송 없음</span></span></a>
+    <a class="tile" href="../calc/ko/text-diff/"><span class="e">🆚</span><span><b>텍스트 비교</b><span class="d">두 글의 차이 하이라이트</span></span></a>
   </div>
 
-  <div class="cat-title" id="calc">계산기</div>
-  <div class="tool-grid">
-    <a class="tool-tile" href="/modutool/ko/age-calculator/"><span class="emoji">🎂</span><span><b>만나이 계산기</b><span>생년월일로 만나이·연나이 계산</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/percent-calculator/"><span class="emoji">％</span><span><b>퍼센트 계산기</b><span>비율·증감률·할인가 계산</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/char-count/"><span class="emoji">🔤</span><span><b>글자수 세기</b><span>공백 포함/제외·바이트 실시간</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/dday-calculator/"><span class="emoji">📅</span><span><b>D-day 계산기</b><span>디데이·날짜 간격·날짜 더하기</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/trig-calculator/"><span class="emoji">📐</span><span><b>삼각함수 계산기</b><span>sin·cos·tan, 직각삼각형 풀이</span></span></a>
-    <a class="tool-tile" href="/modutool/ko/pyeong-calculator/"><span class="emoji">🏠</span><span><b>평수 계산기</b><span>평 ↔ ㎡ 변환, 전용/공급면적</span></span></a>
-  </div>
-
-  <div class="ad-slot" data-slot="bottom"></div>
-
-  <article class="guide">
-    <h2>ThisIsMyPDF는 왜 안전한가요?</h2>
-    <p>흔한 온라인 변환 사이트는 파일을 자기 서버에 업로드해서 처리합니다. ThisIsMyPDF는 다릅니다 — 최신 브라우저에 내장된 기술(WebAssembly·Canvas)로 <strong>모든 처리가 내 기기 안에서만</strong> 이뤄집니다. 계약서, 신분증 사본, 가족 사진 같은 민감한 파일이 외부로 나가지 않으며, 인터넷이 느려도 처리 속도가 빠릅니다. 회원가입도, 설치도, 파일 개수 제한도 없습니다.</p>
-  </article>
-</main>
-<footer id="site-footer" class="site-footer"></footer>
+  <footer>
+    <div style="margin-bottom:8px">© ThisIsMy Tools — 모든 처리는 브라우저 안에서 이뤄지며 파일은 서버로 전송되지 않습니다.</div>
+    <a href="../pdf/ko/pricing/">프리미엄</a><a href="../pdf/ko/about/">소개</a><a href="../pdf/ko/privacy/">개인정보처리방침</a><a href="../pdf/ko/terms/">이용약관</a>
+  </footer>
+</div>
 </body>
 </html>

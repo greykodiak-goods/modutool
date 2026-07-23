@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이자 계산기 — 예금·적금 이자, 대출 원리금균등 상환액 | ThisIsMyCalculator</title>
+<meta name="description" content="무료 이자 계산기. 예금(목돈 거치, 단리/월복리), 적금(매월 납입, 잔여개월 단리), 대출(원리금균등 월 상환액)까지 3가지 모드. 이자소득세 15.4% 세후 이자를 함께 표시하고, 입력 즉시 실시간 계산됩니다. 입력 금액은 서버로 전송되지 않습니다.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/ko/interest-calculator/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/interest-calculator/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/interest-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/interest-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="이자 계산기 — 예금·적금·대출 한 번에">
+<meta property="og:description" content="예금 단리/월복리, 적금 잔여개월 단리, 대출 원리금균등까지 — 모드만 고르면 세전·세후(15.4%) 이자가 실시간 계산. 100% 브라우저 계산.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/ko/interest-calculator/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"이자 계산기 - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/ko/interest-calculator/","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"예금(단리/월복리)·적금(잔여개월 단리)·대출(원리금균등) 이자를 한 번에 계산하는 무료 웹 계산기. 이자소득세 15.4% 세후 금액 표시. 서버 전송 없이 브라우저에서만 처리.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"단리와 복리는 뭐가 다른가요?","acceptedAnswer":{"@type":"Answer","text":"단리는 항상 원금에만 이자가 붙습니다(이자 = 원금 × 연이율 × 기간). 복리는 매 기간 발생한 이자를 원금에 합산해 다음 기간에는 '이자에도 이자'가 붙습니다(월복리 만기금액 = 원금 × (1+연이율/12)^개월). 기간이 짧으면 차이가 작지만 기간과 금리가 커질수록 차이가 빠르게 벌어지므로, 상품 비교 때는 복리 주기(월/분기/연)까지 확인해야 합니다."}},
+{"@type":"Question","name":"같은 금리인데 적금 이자가 예금보다 훨씬 적은 이유는?","acceptedAnswer":{"@type":"Answer","text":"적금은 매달 넣는 돈이 각각 '남은 개월 수'만큼만 이자를 받기 때문입니다. 12개월 적금이면 1회차 납입금은 12개월치 이자를 받지만 마지막 회차는 1개월치만 받습니다. 평균적으로 돈이 예치된 기간이 약 절반이라, 같은 총액을 첫날 예금으로 넣었을 때의 절반 수준 이자가 됩니다. 이 계산기는 한국 은행권 표준인 '월납입액 × 월이율 × n(n+1)/2' 잔여개월 단리 방식을 사용합니다."}},
+{"@type":"Question","name":"원리금균등 상환액은 어떤 공식으로 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"표준 원리금균등 공식 M = P × r × (1+r)^n ÷ ((1+r)^n − 1)을 사용합니다. P는 대출금, r은 월이율(연이율 ÷ 12), n은 개월 수입니다. 매달 같은 금액을 갚되 초반에는 이자 비중이, 후반에는 원금 비중이 큽니다. 금리가 0%면 단순히 P ÷ n입니다."}},
+{"@type":"Question","name":"이자소득세 15.4%는 어떻게 적용되나요?","acceptedAnswer":{"@type":"Answer","text":"예금·적금 이자에는 이자소득세 14% + 지방소득세 1.4%, 합계 15.4%가 원천징수됩니다. 은행이 만기 지급 때 알아서 떼므로 실수령 이자는 세전 이자 × 0.846입니다. 이 계산기는 '세후(15.4%) 보기'를 켜면 세금·세후 이자·세후 수령액을 함께 표시합니다. 비과세 종합저축 등 비과세·세금우대 상품은 예외입니다."}},
+{"@type":"Question","name":"은행 앱의 예상 이자와 왜 조금 다르게 나오나요?","acceptedAnswer":{"@type":"Answer","text":"은행은 개월 단위가 아니라 실제 일수 기준(365일/366일)으로 일할계산하고, 우대금리 조건·중도 해지 금리·중간 단계의 원 단위 처리 방식이 상품마다 다르기 때문입니다. 이 계산기는 깔끔한 월 단위 산식을 쓰므로 상품 비교용 근사치로 활용하고, 확정 금액은 은행이 제시하는 상품설명서·만기 명세를 기준으로 하세요."}}
+]}
+</script>
+<style>
+.tool-card h2{font-size:16px;margin:0 0 12px}
+@media (min-width:600px){.calc-grid{grid-template-columns:1fr 1fr}}
+.int-rows{display:grid;gap:6px;margin-top:10px;font-size:14.5px}
+.int-rows>div{display:flex;justify-content:space-between;gap:12px;border-top:1px dashed var(--line);padding-top:6px}
+.int-rows b{font-variant-numeric:tabular-nums}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;margin:2px 0 0}
+.chk input{width:16px;height:16px}
+.guide table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+.guide th,.guide td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+.guide th{background:var(--surface-2);font-size:13.5px}
+</style>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/ko/">ThisIsMyCalculator</a> › <a href="/modutool/calc/ko/#calc">계산기</a> › 이자 계산기</nav>
+  <h1 class="page-title">이자 계산기<span class="privacy-badge">🔒 입력값 전송 없음</span></h1>
+  <p class="page-sub">예금(단리/월복리)·적금(잔여개월 단리)·대출(원리금균등)을 한 곳에서 — 세전·세후(15.4%) 이자가 입력 즉시 계산됩니다. 무료.</p>
+
+  <div class="card tool-card">
+    <h2>💰 예금 · 적금 · 대출</h2>
+    <label class="field" style="margin-bottom:14px">
+      <span>무엇을 계산할까요?</span>
+      <select id="mode" aria-label="계산 모드">
+        <option value="deposit">예금 — 목돈을 한 번에 거치</option>
+        <option value="savings">적금 — 매월 같은 금액 납입</option>
+        <option value="loan">대출 — 원리금균등 상환</option>
+      </select>
+    </label>
+    <div class="calc-grid">
+      <label class="field">
+        <span id="amtLabel">원금 (예치 금액)</span>
+        <input type="text" id="amtIn" inputmode="decimal" placeholder="예: 10,000,000" autocomplete="off" aria-label="금액 입력">
+      </label>
+      <label class="field">
+        <span>연이율 (%)</span>
+        <input type="number" id="rateIn" inputmode="decimal" min="0" step="any" placeholder="예: 3.5" aria-label="연이율(%)">
+      </label>
+      <label class="field">
+        <span>기간 (개월)</span>
+        <input type="number" id="monthsIn" inputmode="numeric" min="1" step="1" placeholder="예: 12" aria-label="기간(개월)">
+      </label>
+      <label class="field" id="compoundField">
+        <span>이자 방식</span>
+        <select id="compoundSel" aria-label="단리 또는 월복리">
+          <option value="simple">단리</option>
+          <option value="compound">복리 (월복리)</option>
+        </select>
+      </label>
+    </div>
+    <label class="chk" id="taxWrap"><input type="checkbox" id="taxChk" checked> 세후(15.4%) 보기 — 이자소득세 원천징수 반영</label>
+    <div class="calc-out" id="out" aria-live="polite"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>모드를 고르세요. <b>예금</b>은 목돈을 한 번에 넣고 만기까지 두는 경우, <b>적금</b>은 매달 같은 금액을 납입하는 경우, <b>대출</b>은 원리금균등 방식으로 매달 갚는 경우입니다.</li>
+      <li>금액·연이율·기간(개월)을 입력하면 버튼 없이 <b>결과가 즉시</b> 나오고, 값을 고칠 때마다 실시간 갱신됩니다. 쉼표 있는 숫자(예: 10,000,000)도 그대로 인식합니다.</li>
+      <li>예금은 <b>단리/월복리</b>를 선택할 수 있고, 예금·적금에서는 <b>세후(15.4%) 보기</b>가 기본으로 켜져 있어 이자소득세를 뗀 실수령액까지 한눈에 보입니다.</li>
+    </ol>
+
+    <h2>이 계산기가 쓰는 공식</h2>
+    <ul>
+      <li><b>예금 단리:</b> 이자 = 원금 × 연이율 × (개월 ÷ 12). 예: 1,000만원, 연 3.5%, 12개월 → 세전 350,000원.</li>
+      <li><b>예금 월복리:</b> 이자 = 원금 × ((1 + 연이율 ÷ 12)<sup>개월</sup> − 1). 위와 같은 조건이면 약 355,670원 — 매달 붙은 이자에도 다시 이자가 붙어 단리보다 조금 많습니다.</li>
+      <li><b>적금 (잔여개월 단리, 한국 은행권 표준):</b> 이자 = 월납입액 × (연이율 ÷ 12) × n(n+1) ÷ 2. 각 회차 납입금이 만기까지 남은 개월 수만큼 단리 이자를 받습니다. 예: 월 50만원, 연 3.5%, 12개월 → 총납입 600만원, 세전 이자 113,750원.</li>
+      <li><b>대출 원리금균등:</b> 월 상환액 M = P × r × (1+r)<sup>n</sup> ÷ ((1+r)<sup>n</sup> − 1), r = 연이율 ÷ 12. 금리 0%면 M = P ÷ n. 총이자 = M × n − 대출금.</li>
+    </ul>
+
+    <h2>적금 이자가 "적어 보이는" 이유</h2>
+    <p>연 3.5% 12개월 적금에 총 600만원을 부었는데 이자가 113,750원이면, 600만원을 첫날 예금했을 때의 21만원에 한참 못 미쳐 당황하기 쉽습니다. 하지만 계산이 틀린 게 아닙니다. 1회차 납입금만 12개월 내내 예치되고, 2회차는 11개월, 마지막 회차는 딱 1개월만 예치됩니다. 회차별 예치 기간을 다 더하면 n(n+1)/2 = 78 '개월·계좌'로, 144가 아니라 그 절반 남짓입니다. 광고 속 적금 금리는 <b>만기 잔액이 아니라 각 회차의 잔여 개월</b>에 적용된다는 점을 기억하세요.</p>
+
+    <h2>이자소득세 15.4% — 실수령액 기준으로 보기</h2>
+    <p>예금·적금 이자에는 <b>이자소득세 14% + 지방소득세 1.4% = 15.4%</b>가 원천징수됩니다. 은행이 만기 지급 시 알아서 떼기 때문에 통장에 찍히는 이자는 항상 세전 이자 × 0.846입니다. 세전 350,000원이면 세금 53,900원을 뗀 <b>296,100원</b>이 실수령 이자입니다. 상품 비교나 목돈 계획은 세후 숫자로 하는 것이 현실적이라, 이 계산기는 세후 보기를 기본으로 켜 두었습니다. 비과세 종합저축·ISA 등 비과세·세금우대 계좌는 예외이니 해당되면 체크를 끄고 세전 기준으로 보세요.</p>
+
+    <h2>원리금균등 상환, 이렇게 움직입니다</h2>
+    <p>원리금균등은 매달 갚는 총액이 같지만 구성이 달라집니다. 초반에는 잔액이 커서 이자 비중이 높고, 후반으로 갈수록 원금 비중이 커집니다. 실무적으로 두 가지가 중요합니다.</p>
+    <ul>
+      <li><b>기간을 늘리면 월 상환액은 줄지만 총이자는 늘어납니다</b> — 1억원, 연 4% 기준 10년이면 월 약 1,012,000원(총이자 약 2,150만원), 20년이면 월 약 606,000원(총이자 약 4,540만원).</li>
+      <li><b>중도상환은 초반일수록 이득</b>입니다. 잔액이 클 때 갚아야 앞으로 붙을 이자가 크게 줄기 때문입니다(중도상환수수료는 별도 확인).</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 목돈이 이미 있다면 예금, 매달 모아가는 중이라면 적금이 맞는 도구입니다. "적금 금리 5% vs 예금 금리 3.5%"처럼 헤드라인 금리만 보면 착시가 생기니, 이 계산기에 같은 조건을 넣고 <b>세후 이자 금액</b>으로 비교하세요.</div>
+
+    <h2>결과는 추정치입니다</h2>
+    <p>이 계산기는 월 단위 산식을 씁니다. 실제 은행은 <b>일할계산</b>(365일/366일 기준)을 하고, 우대금리 충족 여부·중도 해지 금리·원 단위 처리 방식이 상품마다 달라 실제 만기 명세와 얼마간 차이가 날 수 있습니다. 상품 비교와 계획용 참고치로 쓰시고, 확정 금액과 가입 판단은 은행 상품설명서를 기준으로 하세요. 이 페이지는 금융 자문이 아닙니다.</p>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>단리와 복리는 뭐가 다른가요?</summary><p>단리는 항상 원금에만 이자가 붙습니다(이자 = 원금 × 연이율 × 기간). 복리는 매 기간 발생한 이자를 원금에 합산해 다음 기간에는 '이자에도 이자'가 붙습니다(월복리 만기금액 = 원금 × (1+연이율/12)^개월). 기간이 짧으면 차이가 작지만 기간과 금리가 커질수록 차이가 빠르게 벌어지므로, 상품 비교 때는 복리 주기(월/분기/연)까지 확인해야 합니다.</p></details>
+      <details><summary>같은 금리인데 적금 이자가 예금보다 훨씬 적은 이유는?</summary><p>적금은 매달 넣는 돈이 각각 '남은 개월 수'만큼만 이자를 받기 때문입니다. 12개월 적금이면 1회차 납입금은 12개월치 이자를 받지만 마지막 회차는 1개월치만 받습니다. 평균적으로 돈이 예치된 기간이 약 절반이라, 같은 총액을 첫날 예금으로 넣었을 때의 절반 수준 이자가 됩니다. 이 계산기는 한국 은행권 표준인 '월납입액 × 월이율 × n(n+1)/2' 잔여개월 단리 방식을 사용합니다.</p></details>
+      <details><summary>원리금균등 상환액은 어떤 공식으로 계산하나요?</summary><p>표준 원리금균등 공식 M = P × r × (1+r)^n ÷ ((1+r)^n − 1)을 사용합니다. P는 대출금, r은 월이율(연이율 ÷ 12), n은 개월 수입니다. 매달 같은 금액을 갚되 초반에는 이자 비중이, 후반에는 원금 비중이 큽니다. 금리가 0%면 단순히 P ÷ n입니다.</p></details>
+      <details><summary>이자소득세 15.4%는 어떻게 적용되나요?</summary><p>예금·적금 이자에는 이자소득세 14% + 지방소득세 1.4%, 합계 15.4%가 원천징수됩니다. 은행이 만기 지급 때 알아서 떼므로 실수령 이자는 세전 이자 × 0.846입니다. 이 계산기는 '세후(15.4%) 보기'를 켜면 세금·세후 이자·세후 수령액을 함께 표시합니다. 비과세 종합저축 등 비과세·세금우대 상품은 예외입니다.</p></details>
+      <details><summary>은행 앱의 예상 이자와 왜 조금 다르게 나오나요?</summary><p>은행은 개월 단위가 아니라 실제 일수 기준(365일/366일)으로 일할계산하고, 우대금리 조건·중도 해지 금리·중간 단계의 원 단위 처리 방식이 상품마다 다르기 때문입니다. 이 계산기는 깔끔한 월 단위 산식을 쓰므로 상품 비교용 근사치로 활용하고, 확정 금액은 은행이 제시하는 상품설명서·만기 명세를 기준으로 하세요.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>함께 쓰면 좋은 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/ko/vat-calculator/"><span class="emoji">🧾</span><span><b>부가세 계산기</b><span>공급가액↔합계 역산</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/ko/percent-calculator/"><span class="emoji">➗</span><span><b>퍼센트 계산기</b><span>비율·증감률·할인율</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var TAX = 15.4;
+  var modeEl = document.getElementById('mode');
+  var amtIn = document.getElementById('amtIn');
+  var amtLabel = document.getElementById('amtLabel');
+  var rateIn = document.getElementById('rateIn');
+  var monthsIn = document.getElementById('monthsIn');
+  var compoundField = document.getElementById('compoundField');
+  var compoundSel = document.getElementById('compoundSel');
+  var taxWrap = document.getElementById('taxWrap');
+  var taxChk = document.getElementById('taxChk');
+  var out = document.getElementById('out');
+
+  var LABELS = { deposit: '원금 (예치 금액)', savings: '월 납입액', loan: '대출금' };
+  var PLACEHOLDERS = { deposit: '예: 10,000,000', savings: '예: 500,000', loan: '예: 100,000,000' };
+
+  function parseNum(s) {
+    if (s == null) return NaN;
+    s = String(s).replace(/,/g, '').trim();
+    if (s === '') return NaN;
+    var n = Number(s);
+    return isFinite(n) ? n : NaN;
+  }
+  function fmt(n) {
+    return Math.round(n).toLocaleString('ko-KR');
+  }
+  function idle(msg) {
+    out.innerHTML = '<div class="num">—</div><div class="sub">' + msg + '</div>';
+  }
+  function row(label, val) {
+    return '<div><span>' + label + '</span><b>' + val + '</b></div>';
+  }
+
+  function update() {
+    try {
+      var mode = modeEl.value;
+      var amt = parseNum(amtIn.value);
+      var rate = parseNum(rateIn.value);
+      var m = parseNum(monthsIn.value);
+      if (!isFinite(amt) || amt < 0 || !isFinite(rate) || rate < 0 || !isFinite(m) || m < 1) {
+        var touched = amtIn.value.trim() || rateIn.value.trim() || monthsIn.value.trim();
+        idle(touched ? '금액·이율은 0 이상, 기간은 1개월 이상으로 입력해 주세요.' : '금액·연이율·기간을 입력하면 즉시 계산됩니다.');
+        return;
+      }
+      m = Math.floor(m);
+      var html = '';
+
+      if (mode === 'loan') {
+        var i = rate / 1200;
+        var M;
+        if (i === 0) {
+          M = amt / m;
+        } else {
+          var g = Math.pow(1 + i, m);
+          M = amt * i * g / (g - 1);
+        }
+        var totalPay = M * m;
+        var totalInt = totalPay - amt;
+        html = '<div class="num">월 ' + fmt(M) + '원</div>' +
+          '<div class="sub">M = P × r × (1+r)^n ÷ ((1+r)^n − 1), r = 연 ' + rate + '% ÷ 12, n = ' + m + '</div>' +
+          '<div class="int-rows">' +
+          row('월 상환액', fmt(M) + '원') +
+          row('총 이자', fmt(totalInt) + '원') +
+          row('총 상환액', fmt(totalPay) + '원') +
+          '</div>';
+      } else {
+        var principal, interest, sub;
+        if (mode === 'deposit') {
+          principal = amt;
+          if (compoundSel.value === 'compound') {
+            interest = amt * (Math.pow(1 + rate / 1200, m) - 1);
+            sub = '월복리: 이자 = 원금 × ((1 + ' + rate + '% ÷ 12)^' + m + ' − 1)';
+          } else {
+            interest = amt * (rate / 100) * (m / 12);
+            sub = '단리: 이자 = 원금 × ' + rate + '% × ' + m + '/12';
+          }
+        } else {
+          principal = amt * m;
+          interest = amt * (rate / 1200) * (m * (m + 1) / 2);
+          sub = '이자 = 월납입액 × ' + rate + '% ÷ 12 × n(n+1)/2, n = ' + m + ' (각 회차 잔여개월 단리)';
+        }
+        var showTax = taxChk.checked;
+        var rowsHtml = row(mode === 'deposit' ? '원금' : '총 납입액', fmt(principal) + '원') +
+          row('세전 이자', fmt(interest) + '원');
+        var total;
+        if (showTax) {
+          var taxAmt = interest * TAX / 100;
+          var netInt = interest - taxAmt;
+          total = principal + netInt;
+          rowsHtml += row('이자소득세 (15.4%)', '− ' + fmt(taxAmt) + '원') +
+            row('세후 이자', fmt(netInt) + '원') +
+            row('세후 수령액', fmt(total) + '원');
+        } else {
+          total = principal + interest;
+          rowsHtml += row('세전 수령액', fmt(total) + '원');
+        }
+        html = '<div class="num">' + fmt(total) + '원</div><div class="sub">' + sub + '</div>' +
+          '<div class="int-rows">' + rowsHtml + '</div>';
+      }
+      out.innerHTML = html;
+    } catch (e) {
+      idle('계산 중 오류가 발생했습니다. 입력값을 확인해 주세요.');
+    }
+  }
+
+  function onMode() {
+    var mode = modeEl.value;
+    amtLabel.textContent = LABELS[mode];
+    amtIn.placeholder = PLACEHOLDERS[mode];
+    compoundField.style.display = mode === 'deposit' ? '' : 'none';
+    taxWrap.style.display = mode === 'loan' ? 'none' : '';
+    update();
+  }
+
+  modeEl.addEventListener('change', onMode);
+  compoundSel.addEventListener('change', update);
+  taxChk.addEventListener('change', update);
+  amtIn.addEventListener('input', update);
+  rateIn.addEventListener('input', update);
+  monthsIn.addEventListener('input', update);
+  onMode();
+})();
+</script>
+</body>
+</html>

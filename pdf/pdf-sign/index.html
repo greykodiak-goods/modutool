@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign PDF — Draw Your Signature and Place It Anywhere, Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Draw your signature with a mouse or finger and place it anywhere in a PDF, free. 100% in-browser processing — your signature and document are never uploaded to a server, so contracts and consent forms stay private. No installs, no sign-up, no login.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/pdf/pdf-sign/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/pdf/ko/pdf-sign/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/pdf/pdf-sign/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/pdf/pdf-sign/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sign PDF — Draw Your Signature and Place It Anywhere, Free, No Upload">
+<meta property="og:description" content="Draw a signature and drop it exactly where it belongs. 100% in-browser — your signature and files never leave your device.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/pdf/pdf-sign/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyPDF";window.MDTL_SITE_MARK="P";</script>
+<script>window.MDTL_BASE='/modutool/pdf';</script>
+<link rel="stylesheet" href="/modutool/pdf/assets/site.css">
+<script src="/modutool/pdf/assets/site.js"></script>
+<script src="/modutool/pdf/assets/ads-config.js" defer></script>
+<script src="/modutool/pdf/assets/auth-config.js" defer></script>
+<script src="/modutool/pdf/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Sign PDF - ThisIsMyPDF","url":"https://greykodiak-goods.github.io/modutool/pdf/pdf-sign/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool for drawing a signature and placing it anywhere in a PDF. Processed entirely in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my PDF and signature really never uploaded?","acceptedAnswer":{"@type":"Answer","text":"Correct. Drawing your signature, previewing the PDF, placing, and saving all happen entirely inside your browser. Open your browser network tab and you will see no upload requests. A handwritten signature is sensitive personal data — the safest place for it is your own device, and that is exactly where it stays."}},
+{"@type":"Question","name":"Is this a legally binding electronic signature?","acceptedAnswer":{"@type":"Answer","text":"No. This tool inserts an image of your handwritten signature into the document. It is not a certificate-based digital signature and does not add a cryptographic signature value. For contracts where legal signature validity matters, use a qualified e-signature service. It is well suited for everyday sign-and-return workflows where both sides agree a signature image is enough."}},
+{"@type":"Question","name":"I placed the signature in the wrong spot. Can I move it?","acceptedAnswer":{"@type":"Answer","text":"Yes. Just click a different spot on the preview and the signature moves there. You can also adjust the size slider at any time, and reposition as often as you like before saving. Your original file is never modified, so you can always start over."}},
+{"@type":"Question","name":"Can I sign more than one page?","acceptedAnswer":{"@type":"Answer","text":"Each save inserts the signature at one position. To sign several places, download the signed file, load it again, and repeat. Your drawn signature stays on the pad while you flip pages or load a new file, so you only need to click the next position."}},
+{"@type":"Question","name":"Does it work on rotated (sideways-scanned) PDFs?","acceptedAnswer":{"@type":"Answer","text":"Pages that carry rotation metadata are not officially supported yet (v1). A warning appears when you view such a page; you can still proceed, but the signature may land slightly off, so check the saved result. We recommend fixing the rotation first with our page organizer tool, then signing."}}
+]}
+</script>
+<style>
+.sec-label { font-size: 13.5px; font-weight: 700; color: var(--text-soft); margin: 0 0 8px; }
+#pad { width: 400px; max-width: 100%; height: auto; border: 2px dashed var(--line); border-radius: 12px; background: #fff; touch-action: none; cursor: crosshair; display: block; }
+.pad-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.pen-btn { width: 30px; height: 30px; border-radius: 99px; border: 2px solid var(--line); cursor: pointer; padding: 0; }
+.pen-btn.on { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.pv-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.pv-bar .pg { font-size: 13.5px; color: var(--text-soft); min-width: 90px; }
+.mini-nav { border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 8px; width: 32px; height: 30px; cursor: pointer; font-size: 13px; }
+.mini-nav:hover { background: var(--accent-soft); }
+.mini-nav:disabled { opacity: .4; cursor: not-allowed; }
+.size-lab { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--text-soft); margin-left: auto; }
+.size-lab input { accent-color: var(--accent); }
+.pv-stage { position: relative; display: inline-block; max-width: 100%; }
+#pv { max-width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 8px; background: #fff; cursor: crosshair; }
+#marker { position: absolute; display: none; opacity: .75; pointer-events: none; outline: 1.5px dashed var(--accent); outline-offset: 2px; }
+.rot-warn { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; font-size: 13.5px; background: color-mix(in srgb, var(--warn) 10%, transparent); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); color: var(--warn); }
+.hint { font-size: 13.5px; color: var(--text-soft); margin: 10px 0 0; }
+</style>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/pdf/">ThisIsMyPDF</a> › <a href="/modutool/pdf/#pdf">PDF Tools</a> › Sign PDF</nav>
+  <h1 class="page-title">Sign PDF<span class="privacy-badge">🔒 No server upload</span></h1>
+  <p class="page-sub">Draw your signature with a mouse or finger, then place it anywhere in your PDF. Free — no installs, no sign-up.</p>
+
+  <div class="card tool-card">
+    <p class="sec-label">① Draw your signature — use your mouse (or finger on mobile)</p>
+    <canvas id="pad" width="400" height="160" aria-label="Signature drawing pad"></canvas>
+    <div class="pad-row">
+      <button type="button" class="pen-btn on" data-color="#111827" style="background:#111827" aria-label="Black pen"></button>
+      <button type="button" class="pen-btn" data-color="#1d4ed8" style="background:#1d4ed8" aria-label="Blue pen"></button>
+      <button class="btn secondary" id="clearPad" type="button">Clear</button>
+    </div>
+
+    <p class="sec-label" style="margin-top:22px">② Upload the PDF to sign</p>
+    <div class="dropzone" id="dz">
+      <span class="big">✍️</span>
+      <strong>Drag &amp; drop a PDF file here, or click to select</strong><br>
+      When the preview appears, click where the signature should go
+    </div>
+
+    <div id="pvBox" style="display:none">
+      <p class="sec-label" style="margin-top:22px">③ Pick the position — click the preview where the signature belongs</p>
+      <div class="pv-bar">
+        <button class="mini-nav" id="prevBtn" type="button" aria-label="Previous page">◀</button>
+        <span class="pg" id="pageLabel"></span>
+        <button class="mini-nav" id="nextBtn" type="button" aria-label="Next page">▶</button>
+        <label class="size-lab">Signature size <input type="range" id="sizeRange" min="10" max="40" value="20"> <span id="sizeVal">20%</span></label>
+      </div>
+      <div class="pv-stage">
+        <canvas id="pv"></canvas>
+        <img id="marker" alt="Signature position preview">
+      </div>
+      <div class="rot-warn" id="rotWarn" style="display:none">⚠️ This page carries rotation metadata, which is not officially supported yet (v1). You can proceed, but the signature may land slightly off — check the saved result.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="applyBtn" disabled>Insert signature &amp; save PDF</button>
+    </div>
+    <p class="hint" id="hint"></p>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to sign a PDF</h2>
+    <ol>
+      <li><b>Draw your signature</b> on the pad above with a mouse or your finger. Pick black or blue ink, and hit <b>Clear</b> to try again if it does not look right.</li>
+      <li><b>Upload the PDF</b> and a page preview appears. Use the ◀ ▶ buttons to reach the page that needs signing.</li>
+      <li><b>Click the exact spot</b> where the signature belongs — a translucent preview of your signature appears there. Adjust the size slider, or click somewhere else to reposition.</li>
+      <li>Press <b>Insert signature &amp; save PDF</b> and a signed copy downloads. Your original file stays untouched.</li>
+    </ol>
+
+    <h2>Being honest about what this signature is</h2>
+    <p>This tool does one thing: it <b>inserts an image of your handwritten signature into a PDF.</b> It is <b>not a certificate-based digital signature</b> — it adds no cryptographic signature value and does not prove the document was unmodified. If legal signature validity is what your contract requires, use a qualified e-signature service instead.</p>
+    <p>So when is it the right tool? Most paperwork that crosses your inbox only needs a "please sign and send it back." Instead of printing, signing with a pen, and scanning the sheet again, you draw your signature once here and reply in seconds — no printer, no scanner, no app to install.</p>
+    <div class="tip">🔒 <b>Important:</b> a handwritten signature is sensitive personal data in its own right. This tool <b>never transmits your signature or your PDF anywhere.</b> Drawing, placing, and saving all happen on your device, so your signature never ends up on someone else's server.</div>
+
+    <h2>Why this tool?</h2>
+    <p>Most online PDF signing services upload your document to <b>their servers</b> for processing, and many gate the feature behind an account or a daily usage cap. Documents that need a signature — contracts, consent forms, HR paperwork — are usually exactly the ones you least want floating around on a third-party server.</p>
+    <p>ThisIsMyPDF signs your document using technology built into your browser. The file never leaves your device, so <b>there is nothing to leak</b>; there is no upload wait, so even long documents finish in seconds; and since we pay for no processing servers, there are <b>no usage caps, no size limits, and no watermarks.</b> No login either.</p>
+
+    <h2>When to use it</h2>
+    <ul>
+      <li>Signing a <b>contract received by email</b> and sending it straight back — no print-and-scan round trip</li>
+      <li>Adding a confirmation signature to a <b>quote or purchase order</b> from a client</li>
+      <li>Signing a <b>parental consent form</b> or school permission slip and returning it the same evening</li>
+      <li>Freelance <b>work confirmations and simple HR paperwork</b> — anywhere a plain signature is all that is asked</li>
+    </ul>
+
+    <h2>Tips for a better signature</h2>
+    <p><b>On mobile, draw with your finger</b> — it produces a far more natural signature than a mouse. Open this page on your phone, sign the pad, and continue right there; the pad shrinks to fit your screen without losing stroke quality. Start with the default size of 20% of the page width and fine-tune it with the slider to match the signature box in your document. Blue ink can make a scanned form look convincingly "signed on paper".</p>
+    <p>Pages that were scanned sideways and carry <b>rotation metadata</b> are not officially supported yet (v1). If the warning appears, fix the orientation first with the ⟳ rotate button in <a href="/modutool/pdf/pdf-organize/">Delete &amp; Reorder Pages</a>, save, and sign that file instead. Need to send several signed documents as one file? Finish with <a href="/modutool/pdf/pdf-merge/">Merge PDF</a>.</p>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>Are my PDF and signature really never uploaded?</summary><p>Correct. Drawing your signature, previewing the PDF, placing, and saving all happen entirely inside your browser. Open your browser network tab and you will see no upload requests. A handwritten signature is sensitive personal data — the safest place for it is your own device, and that is exactly where it stays.</p></details>
+      <details><summary>Is this a legally binding electronic signature?</summary><p>No. This tool inserts an image of your handwritten signature into the document. It is not a certificate-based digital signature and does not add a cryptographic signature value. For contracts where legal signature validity matters, use a qualified e-signature service. It is well suited for everyday sign-and-return workflows where both sides agree a signature image is enough.</p></details>
+      <details><summary>I placed the signature in the wrong spot. Can I move it?</summary><p>Yes. Just click a different spot on the preview and the signature moves there. You can also adjust the size slider at any time, and reposition as often as you like before saving. Your original file is never modified, so you can always start over.</p></details>
+      <details><summary>Can I sign more than one page?</summary><p>Each save inserts the signature at one position. To sign several places, download the signed file, load it again, and repeat. Your drawn signature stays on the pad while you flip pages or load a new file, so you only need to click the next position.</p></details>
+      <details><summary>Does it work on rotated (sideways-scanned) PDFs?</summary><p>Pages that carry rotation metadata are not officially supported yet (v1). A warning appears when you view such a page; you can still proceed, but the signature may land slightly off, so check the saved result. We recommend fixing the rotation first with our page organizer tool, then signing.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/pdf/pdf-merge/"><span class="emoji">📎</span><span><b>Merge PDF</b><span>Combine PDFs into one</span></span></a>
+      <a class="tool-tile" href="/modutool/pdf/pdf-organize/"><span class="emoji">🗂️</span><span><b>Organize Pages</b><span>Delete, reorder, rotate</span></span></a>
+      <a class="tool-tile" href="/modutool/pdf/pdf-watermark/"><span class="emoji">💧</span><span><b>Watermark PDF</b><span>Stamp text on pages</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/pdf/assets/vendor/pdf-lib.min.js"></script>
+<script>
+/* Polyfill for Map.prototype.getOrInsertComputed used by pdf.js 5.x on browsers that lack it (e.g. Chromium 141) — same pattern as pdf-organize */
+(function () {
+  window.__mdtlNeedsMapUpsertPolyfill = typeof Map.prototype.getOrInsertComputed !== 'function';
+  window.__mdtlMapUpsertPolyfillSrc =
+    '(function(){var f=function(p){' +
+    'if(typeof p.getOrInsertComputed!=="function"){p.getOrInsertComputed=function(k,cb){if(!this.has(k))this.set(k,cb(k));return this.get(k);};}' +
+    'if(typeof p.getOrInsert!=="function"){p.getOrInsert=function(k,v){if(!this.has(k))this.set(k,v);return this.get(k);};}' +
+    '};f(Map.prototype);f(WeakMap.prototype);})();';
+  if (window.__mdtlNeedsMapUpsertPolyfill) { (0, eval)(window.__mdtlMapUpsertPolyfillSrc); }
+})();
+</script>
+<script type="module">
+import * as pdfjsLib from '/modutool/pdf/assets/vendor/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/modutool/pdf/assets/vendor/pdf.worker.min.mjs';
+
+const workerReady = (async () => {
+  if (!window.__mdtlNeedsMapUpsertPolyfill) return;
+  try {
+    const res = await fetch('/modutool/pdf/assets/vendor/pdf.worker.min.mjs');
+    if (!res.ok) return;
+    const src = await res.text();
+    const blob = new Blob([window.__mdtlMapUpsertPolyfillSrc, '\n', src], { type: 'text/javascript' });
+    pdfjsLib.GlobalWorkerOptions.workerPort = new Worker(URL.createObjectURL(blob), { type: 'module' });
+  } catch (e) { /* fall back to default workerSrc */ }
+})();
+
+const pad = document.getElementById('pad');
+const padCtx = pad.getContext('2d');
+const clearPadBtn = document.getElementById('clearPad');
+const padRow = clearPadBtn.parentElement;
+const dz = document.getElementById('dz');
+const pvBox = document.getElementById('pvBox');
+const pv = document.getElementById('pv');
+const marker = document.getElementById('marker');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const pageLabel = document.getElementById('pageLabel');
+const sizeRange = document.getElementById('sizeRange');
+const sizeVal = document.getElementById('sizeVal');
+const rotWarn = document.getElementById('rotWarn');
+const applyBtn = document.getElementById('applyBtn');
+const hint = document.getElementById('hint');
+const prog = document.getElementById('prog');
+const progBar = prog.querySelector('div');
+const result = document.getElementById('result');
+
+/* ── ① Signature pad ── */
+let penColor = '#111827';
+let drawing = false;
+let hasInk = false;
+let inkBounds = null;   // ink bounding box { x1, y1, x2, y2 } — used to trim margins on export
+let sigCache = null;    // { url, w, h } — trimmed signature PNG dataURL cache
+
+padCtx.lineWidth = 2.5;
+padCtx.lineCap = 'round';
+padCtx.lineJoin = 'round';
+
+function padPos(e) {
+  const r = pad.getBoundingClientRect();   // map CSS-scaled coords back to buffer coords
+  return {
+    x: (e.clientX - r.left) * (pad.width / r.width),
+    y: (e.clientY - r.top) * (pad.height / r.height),
+  };
+}
+function extendBounds(x, y) {
+  const m = 5;
+  if (!inkBounds) inkBounds = { x1: x - m, y1: y - m, x2: x + m, y2: y + m };
+  else {
+    inkBounds.x1 = Math.min(inkBounds.x1, x - m);
+    inkBounds.y1 = Math.min(inkBounds.y1, y - m);
+    inkBounds.x2 = Math.max(inkBounds.x2, x + m);
+    inkBounds.y2 = Math.max(inkBounds.y2, y + m);
+  }
+}
+pad.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  pad.setPointerCapture(e.pointerId);
+  drawing = true;
+  const p = padPos(e);
+  padCtx.strokeStyle = penColor;
+  padCtx.beginPath();
+  padCtx.moveTo(p.x, p.y);
+  padCtx.lineTo(p.x + 0.01, p.y + 0.01);   // make a single tap visible as a dot
+  padCtx.stroke();
+  extendBounds(p.x, p.y);
+  hasInk = true;
+  sigCache = null;
+});
+pad.addEventListener('pointermove', (e) => {
+  if (!drawing) return;
+  const p = padPos(e);
+  padCtx.lineTo(p.x, p.y);
+  padCtx.stroke();
+  extendBounds(p.x, p.y);
+});
+['pointerup', 'pointercancel'].forEach((t) => pad.addEventListener(t, () => {
+  if (!drawing) return;
+  drawing = false;
+  sigCache = null;
+  refreshMarker();
+  updateUI();
+}));
+
+clearPadBtn.addEventListener('click', () => {
+  padCtx.clearRect(0, 0, pad.width, pad.height);
+  hasInk = false; inkBounds = null; sigCache = null;
+  refreshMarker();
+  updateUI();
+});
+
+padRow.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-color]');
+  if (!b) return;
+  penColor = b.dataset.color;
+  padRow.querySelectorAll('button[data-color]').forEach((x) => x.classList.toggle('on', x === b));
+});
+
+function getSig() {
+  if (!hasInk || !inkBounds) return null;
+  if (sigCache) return sigCache;
+  const x1 = Math.max(0, Math.floor(inkBounds.x1));
+  const y1 = Math.max(0, Math.floor(inkBounds.y1));
+  const x2 = Math.min(pad.width, Math.ceil(inkBounds.x2));
+  const y2 = Math.min(pad.height, Math.ceil(inkBounds.y2));
+  const w = Math.max(1, x2 - x1), h = Math.max(1, y2 - y1);
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  c.getContext('2d').drawImage(pad, x1, y1, w, h, 0, 0, w, h);   // keep transparent background
+  sigCache = { url: c.toDataURL('image/png'), w, h };
+  return sigCache;
+}
+
+/* ── ② PDF load + preview ── */
+let pdfDoc = null, srcBytes = null, srcName = '', pageCount = 0, curPage = 1;
+let curRotated = false;
+let placement = null;   // { page, fx, fy, rotated } — click point as a fraction (0-1) of page width/height
+let rendering = false;
+
+mdtlDropzone(dz, {
+  accept: '.pdf,application/pdf',
+  onFiles: (fs) => loadFile(fs[0]),
+});
+
+async function loadFile(file) {
+  result.className = 'result';
+  prog.className = 'progress show'; progBar.style.width = '10%';
+  try {
+    await workerReady;
+    srcBytes = new Uint8Array(await file.arrayBuffer());
+    srcName = file.name.replace(/\.pdf$/i, '');
+    pdfDoc = await pdfjsLib.getDocument({ data: srcBytes.slice() }).promise;
+    pageCount = pdfDoc.numPages;
+    curPage = 1;
+    placement = null;
+    pvBox.style.display = '';
+    progBar.style.width = '60%';
+    await renderPage();
+    progBar.style.width = '100%';
+  } catch (e) {
+    pdfDoc = null; srcBytes = null;
+    pvBox.style.display = 'none';
+    const msg = /password|encrypt/i.test(String(e && e.name) + String(e && e.message))
+      ? 'Password-protected PDFs cannot be signed. Please remove the password first.'
+      : 'Could not open this PDF. Please check that the file is not corrupted.';
+    mdtlResult(result, '❌ ' + msg, true);
+  } finally {
+    prog.className = 'progress';
+    updateUI();
+  }
+}
+
+async function renderPage() {
+  if (!pdfDoc || rendering) return;
+  rendering = true;
+  try {
+    const page = await pdfDoc.getPage(curPage);
+    curRotated = (((page.rotate || 0) % 360) + 360) % 360 !== 0;
+    rotWarn.style.display = curRotated ? '' : 'none';
+    const base = page.getViewport({ scale: 1 });
+    const avail = Math.max(240, Math.min(pvBox.clientWidth - 2, 800));
+    const scale = Math.min(1.6, avail / base.width);
+    const vp = page.getViewport({ scale });
+    pv.width = Math.ceil(vp.width);
+    pv.height = Math.ceil(vp.height);
+    await page.render({ canvasContext: pv.getContext('2d'), viewport: vp }).promise;
+    pageLabel.textContent = 'Page ' + curPage + ' / ' + pageCount;
+    prevBtn.disabled = curPage <= 1;
+    nextBtn.disabled = curPage >= pageCount;
+  } finally {
+    rendering = false;
+  }
+  positionMarker();
+}
+
+prevBtn.addEventListener('click', async () => { if (curPage > 1) { curPage--; await renderPage(); updateUI(); } });
+nextBtn.addEventListener('click', async () => { if (curPage < pageCount) { curPage++; await renderPage(); updateUI(); } });
+
+/* ── ③ Position picking ── */
+pv.addEventListener('click', (e) => {
+  if (!pdfDoc) return;
+  const r = pv.getBoundingClientRect();
+  placement = {
+    page: curPage,
+    fx: (e.clientX - r.left) / r.width,
+    fy: (e.clientY - r.top) / r.height,
+    rotated: curRotated,
+  };
+  result.className = 'result';
+  refreshMarker();
+  updateUI();
+});
+
+function refreshMarker() {
+  const sig = getSig();
+  if (sig) marker.src = sig.url;
+  positionMarker();
+}
+function positionMarker() {
+  const sig = getSig();
+  if (!pdfDoc || !placement || !sig || placement.page !== curPage) {
+    marker.style.display = 'none';
+    return;
+  }
+  const dispW = pv.offsetWidth, dispH = pv.offsetHeight;
+  const mw = dispW * (+sizeRange.value / 100);
+  const mh = mw * (sig.h / sig.w);
+  marker.style.display = '';
+  marker.style.width = mw + 'px';
+  marker.style.left = (placement.fx * dispW - mw / 2) + 'px';
+  marker.style.top = (placement.fy * dispH - mh / 2) + 'px';
+}
+sizeRange.addEventListener('input', () => {
+  sizeVal.textContent = sizeRange.value + '%';
+  positionMarker();
+});
+window.addEventListener('resize', positionMarker);
+
+/* ── ④ Apply + save ── */
+function updateUI() {
+  const sig = getSig();
+  const ready = !!(sig && pdfDoc && placement);
+  applyBtn.disabled = !ready;
+  if (ready) {
+    hint.textContent = '✔ Ready — the button will insert your signature on page ' + placement.page + '.';
+  } else if (!sig && !pdfDoc) {
+    hint.textContent = '① Draw your signature on the pad, then ② upload a PDF.';
+  } else if (!sig) {
+    hint.textContent = 'Draw your signature on the pad first.';
+  } else if (!pdfDoc) {
+    hint.textContent = 'Upload the PDF you want to sign.';
+  } else {
+    hint.textContent = 'Click the preview where the signature should go.';
+  }
+}
+
+applyBtn.addEventListener('click', async () => {
+  const sig = getSig();
+  if (!sig || !pdfDoc || !placement || !srcBytes) return;
+  applyBtn.disabled = true;
+  prog.className = 'progress show'; progBar.style.width = '15%';
+  result.className = 'result';
+  try {
+    const doc = await PDFLib.PDFDocument.load(srcBytes);
+    const png = await doc.embedPng(sig.url);
+    progBar.style.width = '55%';
+    const page = doc.getPage(placement.page - 1);
+    const size = page.getSize();
+    const w = size.width * (+sizeRange.value / 100);
+    const h = w * (sig.h / sig.w);
+    /* Preview click point (fractions fx, fy) → PDF point coords.
+       PDF's origin is bottom-left, so flip the y axis (height - y), and offset by
+       w/2, h/2 so the click point becomes the signature's center.
+       Rotated pages are unsupported in v1 (a warning is shown). */
+    const x = placement.fx * size.width - w / 2;
+    const y = size.height - placement.fy * size.height - h / 2;
+    page.drawImage(png, { x, y, width: w, height: h });
+    const bytes = await doc.save();
+    progBar.style.width = '100%';
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    mdtlDownload(blob, srcName + '_signed.pdf');
+    mdtlLogEvent('pdf-sign', 'success', null,
+      { pages: pageCount, size_bucket: mdtlSizeBucket(blob.size) });
+    mdtlResult(result,
+      '✅ <b>Done!</b> Signature inserted on page ' + placement.page + ' — a ' + mdtlFormatBytes(blob.size) +
+      ' file has been downloaded. Your original file was not modified.' +
+      (placement.rotated ? '<br>⚠️ That page is rotated, so the position may be slightly off — please check the result.' : ''));
+  } catch (e) {
+    mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'Something went wrong while inserting the signature.'), true);
+  } finally {
+    prog.className = 'progress';
+    updateUI();
+  }
+});
+
+updateUI();
+</script>
+</body>
+</html>

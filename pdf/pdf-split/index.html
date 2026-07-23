@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Split PDF — Extract Pages Online Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Extract just the pages you need from a PDF, or split every page into its own file — free. Everything runs in your browser with no server upload, so contracts and other sensitive documents stay on your device. No installs, no sign-up, no size limits.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/pdf/pdf-split/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/pdf/ko/pdf-split/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/pdf/pdf-split/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/pdf/pdf-split/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Split PDF — Extract Pages, No Upload">
+<meta property="og:description" content="Range extraction (1-3,5,7-9) or one file per page. 100% in-browser processing — your files never leave your device.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/pdf/pdf-split/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyPDF";window.MDTL_SITE_MARK="P";</script>
+<script>window.MDTL_BASE='/modutool/pdf';</script>
+<link rel="stylesheet" href="/modutool/pdf/assets/site.css">
+<script src="/modutool/pdf/assets/site.js"></script>
+<script src="/modutool/pdf/assets/ads-config.js" defer></script>
+<script src="/modutool/pdf/assets/auth-config.js" defer></script>
+<script src="/modutool/pdf/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Split PDF - ThisIsMyPDF","url":"https://greykodiak-goods.github.io/modutool/pdf/pdf-split/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that extracts selected pages from a PDF or splits every page into a separate PDF. Processed entirely in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my files really never uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Correct. The entire split runs inside your browser, on your own computer or phone. Open your browser's network tab and you will see no file upload requests. Sensitive documents like contracts, medical records, and ID scans are safe to use here."}},
+{"@type":"Question","name":"How do I enter a page range?","acceptedAnswer":{"@type":"Answer","text":"Separate entries with commas and write consecutive runs with a hyphen. For example, entering 1-3,5,7-9 produces pages 1 to 3, page 5, and pages 7 to 9 — seven pages in the order you typed them, combined into one new PDF. To extract a single page, just type its number (e.g. 5)."}},
+{"@type":"Question","name":"I clicked Split all but only one file downloaded. Why?","acceptedAnswer":{"@type":"Answer","text":"Browsers block multiple consecutive downloads by default. Right after the first file downloads, look near the address bar for a prompt asking to allow multiple file downloads, click Allow, and run it again — every page will then download in order."}},
+{"@type":"Question","name":"Can I split a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"PDFs with an open password cannot be read for security reasons, so a notice is shown instead. Remove the password in a PDF viewer, save a copy, and try again with that file."}},
+{"@type":"Question","name":"Will the split PDF lose quality or content?","acceptedAnswer":{"@type":"Answer","text":"No. Pages are not re-rendered — the original page data is copied as-is, so text and image quality, fonts, and links stay identical to the source."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/pdf/">ThisIsMyPDF</a> › <a href="/modutool/pdf/#pdf">PDF Tools</a> › Split PDF</nav>
+  <h1 class="page-title">Split PDF<span class="privacy-badge">🔒 No server upload</span></h1>
+  <p class="page-sub">Extract just the pages you need, or split every page into its own PDF. Free — no installs, no sign-up, no size limits.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">✂️</span>
+      <strong>Drag &amp; drop the PDF to split here, or click to select</strong><br>
+      One file — the total page count appears as soon as it loads
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="opts" id="modeOpts" style="display:none">
+      <label><input type="radio" name="mode" value="range" checked> ✂️ Extract range — only the pages you pick, as one file</label>
+      <label><input type="radio" name="mode" value="all"> 📚 Split all — every page as its own PDF</label>
+    </div>
+    <div class="opts" id="rangeWrap" style="display:none">
+      <label for="rangeInput">Page range
+        <input type="text" id="rangeInput" placeholder="e.g. 1-3,5,7-9" autocomplete="off">
+      </label>
+    </div>
+    <p id="splitNote" style="display:none;margin:12px 0 0;font-size:13.5px;color:var(--text-soft)">ℹ️ One PDF per page will download in sequence, 0.4 s apart. If your browser asks whether to &quot;allow multiple file downloads&quot;, click <b>Allow</b>.</p>
+    <div class="btn-row">
+      <button class="btn" id="goBtn" disabled>Extract pages</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to split a PDF</h2>
+    <ol>
+      <li>Drag <b>one PDF file</b> into the area above, or click it to browse. The total page count appears in the list the moment the file is read.</li>
+      <li>Pick a mode. Choose <b>Extract range</b> to pull only the pages you need into a single file, or <b>Split all</b> to turn every page into its own PDF.</li>
+      <li>If you chose Extract range, specify pages with commas and hyphens, like <b>1-3,5,7-9</b>.</li>
+      <li>Click the button. Processing is instant and the download starts automatically. File names follow the pattern <b>original_1-3.pdf</b> (range extraction) or <b>original_p1.pdf</b> (split all), so you can tell which pages are inside at a glance.</li>
+    </ol>
+
+    <h2>What makes this different from other PDF splitter sites</h2>
+    <p>Typical online PDF splitters work by <b>uploading your file to their servers</b>, cutting it there, and sending the pieces back. You have no way to verify when your document is deleted or who can view it during processing. If the file is a contract, a medical record, a tax return, or a pay stub, that's a real concern.</p>
+    <p>ThisIsMyPDF's PDF splitter <b>never sends your file anywhere.</b> The entire extraction and splitting job runs on your own device, using technology built into your browser. That design gives you three advantages:</p>
+    <ul>
+      <li><b>Privacy</b> — your file never leaves your device, so there is simply nothing to leak.</li>
+      <li><b>Speed</b> — with no upload or download queue, even documents tens of MB in size finish in seconds.</li>
+      <li><b>No limits</b> — we pay no server costs for processing, so we don't cap file size or how often you use it.</li>
+    </ul>
+
+    <h2>Two split modes</h2>
+    <h3>1. Extract range — only the pages you need, as one file</h3>
+    <p>Type page numbers separated by commas and a new PDF is built from just those pages. Consecutive runs can be shortened with a hyphen:</p>
+    <ul>
+      <li><b>5</b> — extracts page 5 only</li>
+      <li><b>2-4</b> — extracts pages 2 through 4</li>
+      <li><b>1-3,5,7-9</b> — pages 1–3, page 5, and pages 7–9: seven pages, arranged in the order you typed them</li>
+    </ul>
+    <p>If a range points past the last page or the format is off, the tool tells you exactly which part is wrong — so even long documents can be sliced without mistakes.</p>
+    <h3>2. Split all — every page as its own PDF</h3>
+    <p>Every page of the document becomes an independent PDF file. A 10-page document produces ten files, from <b>original_p1.pdf</b> to <b>original_p10.pdf</b>, downloading one after another at 0.4-second intervals. Most browsers block consecutive downloads by default, so when the <b>"allow multiple file downloads"</b> prompt appears right after the first file, click Allow.</p>
+    <div class="tip">💡 <b>Tip:</b> Want to reassemble the pages in a different order? Follow up with <a href="/modutool/pdf/pdf-merge/">Merge PDF</a>. For example, to move an appendix to the front, extract the appendix and the body separately here, then swap their order in the merge tool — no desktop editor required.</div>
+
+    <h2>When to use it</h2>
+    <ul>
+      <li>Pulling <b>just the signature page or a specific clause</b> out of a long contract to send to the other party or an agency</li>
+      <li>Separating a batch scan into individual documents — <b>splitting IDs, bank statements, and certificates</b> into their own files</li>
+      <li>Cutting course materials or an ebook <b>into chapters</b> to share only what's needed or load onto a tablet</li>
+      <li>Breaking a <b>large PDF that exceeds email or upload size limits</b> into a few smaller files</li>
+      <li>Building a <b>handout version of a slide deck</b> — cover plus key pages only</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>Are my files really never uploaded to a server?</summary><p>Correct. The entire split runs inside your browser, on your own computer or phone. Open your browser's network tab and you will see no file upload requests. Sensitive documents like contracts, medical records, and ID scans are safe to use here.</p></details>
+      <details><summary>How do I enter a page range?</summary><p>Separate entries with commas and write consecutive runs with a hyphen. For example, entering <b>1-3,5,7-9</b> produces pages 1 to 3, page 5, and pages 7 to 9 — seven pages in the order you typed them, combined into one new PDF. To extract a single page, just type its number (e.g. 5).</p></details>
+      <details><summary>I clicked Split all but only one file downloaded. Why?</summary><p>Browsers block multiple consecutive downloads by default. Right after the first file downloads, look near the address bar for a prompt asking to allow multiple file downloads, click Allow, and run it again — every page will then download in order.</p></details>
+      <details><summary>Can I split a password-protected PDF?</summary><p>PDFs with an open password cannot be read for security reasons, so a notice is shown instead. Remove the password in a PDF viewer, save a copy, and try again with that file.</p></details>
+      <details><summary>Will the split PDF lose quality or content?</summary><p>No. Pages are not re-rendered — the original page data is copied as-is, so text and image quality, fonts, and links stay identical to the source.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/pdf/pdf-merge/"><span class="emoji">📎</span><span><b>Merge PDF</b><span>Combine PDFs into one</span></span></a>
+      <a class="tool-tile" href="/modutool/pdf/pdf-to-jpg/"><span class="emoji">🖼️</span><span><b>PDF to JPG</b><span>Pages as images</span></span></a>
+      <a class="tool-tile" href="/modutool/pdf/img-to-pdf/"><span class="emoji">📄</span><span><b>Image to PDF</b><span>Turn photos into a PDF</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/pdf/assets/vendor/pdf-lib.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var file = null, srcDoc = null, pageCount = 0, baseName = '';
+  var busy = false;
+  var dz = document.getElementById('dz');
+  var listEl = document.getElementById('fileList');
+  var modeOpts = document.getElementById('modeOpts');
+  var rangeWrap = document.getElementById('rangeWrap');
+  var rangeInput = document.getElementById('rangeInput');
+  var splitNote = document.getElementById('splitNote');
+  var goBtn = document.getElementById('goBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+
+  function esc(t) { var d = document.createElement('i'); d.textContent = t; return d.outerHTML; }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function mode() {
+    var r = document.querySelector('input[name="mode"]:checked');
+    return r ? r.value : 'range';
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    if (file) {
+      var li = document.createElement('li');
+      li.className = 'file-item';
+      li.innerHTML =
+        '<span class="name"></span><span class="meta">' + pageCount + ' pages · ' + mdtlFormatBytes(file.size) + '</span>' +
+        '<button class="mini" data-act="del" aria-label="Remove">✕</button>';
+      li.querySelector('.name').textContent = file.name;
+      listEl.appendChild(li);
+    }
+    var has = !!file;
+    modeOpts.style.display = has ? '' : 'none';
+    rangeWrap.style.display = (has && mode() === 'range') ? '' : 'none';
+    splitNote.style.display = (has && mode() === 'all') ? '' : 'none';
+    goBtn.disabled = !has || busy;
+    goBtn.textContent = !has ? 'Extract pages' :
+      (mode() === 'range' ? 'Extract selected pages' : 'Split all (' + pageCount + ' files)');
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || busy) return;
+    file = null; srcDoc = null; pageCount = 0; baseName = '';
+    result.className = 'result';
+    render();
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="mode"]'), function (r) {
+    r.addEventListener('change', render);
+  });
+
+  mdtlDropzone(dz, {
+    accept: '.pdf,application/pdf', multiple: false,
+    onFiles: function (fs) { loadFile(fs[0]); }
+  });
+
+  async function loadFile(f) {
+    if (busy) return;
+    result.className = 'result';
+    try {
+      var bytes = await f.arrayBuffer();
+      var doc = await PDFLib.PDFDocument.load(bytes, { ignoreEncryption: false });
+      file = f; srcDoc = doc; pageCount = doc.getPageCount();
+      baseName = f.name.replace(/\.pdf$/i, '') || 'document';
+      if (!rangeInput.value.trim()) rangeInput.value = '1-' + pageCount;
+      render();
+    } catch (err) {
+      file = null; srcDoc = null; pageCount = 0; baseName = '';
+      render();
+      var msg = (err && err.message && /encrypt/i.test(err.message))
+        ? 'This PDF is password-protected. Remove the password first, then try again. (' + esc(f.name) + ')'
+        : 'Could not read the PDF. The file may be corrupted or not a PDF. (' + esc(f.name) + ')';
+      mdtlResult(result, '❌ ' + msg, true);
+    }
+  }
+
+  function parseRanges(str, max) {
+    var s = String(str || '').replace(/\s+/g, '');
+    if (!s) throw new Error('Enter the page range to extract. Example: 1-3,5,7-9');
+    var parts = s.split(',');
+    var indices = [], norm = [];
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      if (!p) continue;
+      var m = p.match(/^(\d+)(?:-(\d+))?$/);
+      if (!m) throw new Error('Could not understand ' + esc(p) + '. Use only numbers, commas, and hyphens. Example: 1-3,5,7-9');
+      var a = parseInt(m[1], 10);
+      var b = m[2] ? parseInt(m[2], 10) : a;
+      if (a < 1 || b < 1) throw new Error('Page numbers start at 1.');
+      if (a > b) throw new Error(esc(p) + ' — the start page is greater than the end page.');
+      if (b > max) throw new Error(esc(p) + ' — this PDF has only ' + max + ' pages, so page ' + b + ' does not exist.');
+      for (var k = a; k <= b; k++) indices.push(k - 1);
+      norm.push(a === b ? String(a) : a + '-' + b);
+    }
+    if (!indices.length) throw new Error('Enter the page range to extract. Example: 1-3,5,7-9');
+    return { indices: indices, label: norm.join(',') };
+  }
+
+  goBtn.addEventListener('click', async function () {
+    if (!file || !srcDoc || busy) return;
+    busy = true;
+    render();
+    prog.className = 'progress show'; progBar.style.width = '0%';
+    result.className = 'result';
+    try {
+      if (mode() === 'range') {
+        var r = parseRanges(rangeInput.value, pageCount);
+        progBar.style.width = '30%';
+        var out = await PDFLib.PDFDocument.create();
+        var pages = await out.copyPages(srcDoc, r.indices);
+        pages.forEach(function (pg) { out.addPage(pg); });
+        var data = await out.save();
+        progBar.style.width = '100%';
+        var blob = new Blob([data], { type: 'application/pdf' });
+        var name = baseName + '_' + r.label + '.pdf';
+        mdtlDownload(blob, name);
+        mdtlLogEvent('pdf-split', 'success', null,
+          { pages: r.indices.length, size_bucket: mdtlSizeBucket(blob.size) });
+        mdtlResult(result,
+          '✅ <b>Done!</b> Extracted ' + r.indices.length + ' pages — ' + esc(name) + ' (' +
+          mdtlFormatBytes(blob.size) + ') has been downloaded.');
+      } else {
+        var total = 0;
+        for (var i = 0; i < pageCount; i++) {
+          var one = await PDFLib.PDFDocument.create();
+          var cp = await one.copyPages(srcDoc, [i]);
+          one.addPage(cp[0]);
+          var d = await one.save();
+          var b2 = new Blob([d], { type: 'application/pdf' });
+          total += b2.size;
+          mdtlDownload(b2, baseName + '_p' + (i + 1) + '.pdf');
+          progBar.style.width = Math.round(((i + 1) / pageCount) * 100) + '%';
+          if (i < pageCount - 1) await wait(400);
+        }
+        mdtlLogEvent('pdf-split', 'success', null,
+          { pages: pageCount, count: pageCount, size_bucket: mdtlSizeBucket(total) });
+        mdtlResult(result,
+          '✅ <b>Done!</b> Split ' + pageCount + ' pages into ' + pageCount + ' separate PDFs and downloaded them. (Total ' +
+          mdtlFormatBytes(total) + ')<br>ℹ️ If only one file downloaded, allow the "multiple file downloads" prompt near the address bar and run it again.');
+      }
+    } catch (e) {
+      mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'An error occurred while processing.'), true);
+    } finally {
+      prog.className = 'progress';
+      busy = false;
+      render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

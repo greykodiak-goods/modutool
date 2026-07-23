@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR코드 생성기 — URL·텍스트·와이파이 무료, 업로드 없음 | ThisIsMyCalculator</title>
+<meta name="description" content="링크·텍스트·와이파이 접속용 QR코드를 무료로 만드는 도구. 실시간 미리보기, 256~1024px PNG 다운로드, 오류 복원 레벨 선택. 입력한 내용은 전부 브라우저 안에서만 처리되고 서버로 전송되지 않습니다.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/ko/qr-generator/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/qr-generator/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/qr-generator/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/qr-generator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="QR코드 생성기 — URL·텍스트·와이파이, 서버 전송 없음">
+<meta property="og:description" content="링크·텍스트·와이파이 QR코드를 실시간 미리보기로 만들고 PNG로 저장. 100% 브라우저 처리 — 입력한 내용은 기기를 떠나지 않습니다.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/ko/qr-generator/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<style>
+  .qr-panel { margin-top: 14px; }
+  .qr-panel textarea { width: 100%; min-height: 90px; resize: vertical; font: inherit; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--text); box-sizing: border-box; }
+  .qr-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .qr-fields label { display: block; font-size: 13.5px; color: var(--text-soft); }
+  .qr-fields input[type=text], .qr-fields input[type=password], .qr-fields select { width: 100%; margin-top: 4px; padding: 9px 10px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--text); box-sizing: border-box; font: inherit; }
+  .qr-check { display: flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--text-soft); margin-top: 10px; }
+  .qr-preview { margin-top: 18px; text-align: center; }
+  .qr-preview canvas { max-width: min(100%, 320px); height: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; display: none; }
+  .qr-placeholder { color: var(--text-soft); font-size: 14px; padding: 40px 10px; border: 1px dashed var(--line); border-radius: 10px; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"QR코드 생성기 - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/ko/qr-generator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"URL·텍스트·와이파이 접속용 QR코드를 실시간 미리보기로 만들고 PNG로 저장하는 무료 웹 도구. 서버 전송 없이 브라우저에서만 생성됩니다.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"여기서 만든 QR코드에 유효기간이 있나요?","acceptedAnswer":{"@type":"Answer","text":"없습니다. QR코드는 입력한 텍스트를 사각형 패턴으로 그려 놓은 것일 뿐, 뒤에 서버·계정·단축링크 서비스가 없습니다. 내용 자체가 유효한 한(예: URL이 살아 있는 한) 코드는 영원히 인식됩니다. 어딘가에 호스팅되어 있다가 중단될 것이 아예 없기 때문입니다."}},
+{"@type":"Question","name":"와이파이 비밀번호를 입력해도 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"이 도구 자체는 아무것도 전송하거나 저장하지 않습니다 — QR코드는 전부 브라우저 안에서 생성되며, 네트워크 탭에서 아무 요청도 나가지 않는 것을 직접 확인할 수 있습니다. 다만 와이파이 QR코드의 성격은 알아두세요: 비밀번호가 패턴 안에 평문으로 인코딩되므로 코드를 스캔한 사람(코드 사진을 가진 사람 포함)은 누구나 비밀번호를 읽을 수 있습니다. 인쇄한 코드는 비밀번호를 알려줘도 되는 사람에게만 보여주세요."}},
+{"@type":"Question","name":"QR코드 하나에 글자를 얼마나 담을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"오류 복원 레벨이 가장 낮은 L 기준 최대 약 2,953바이트입니다 — 영문·숫자로 약 2,900자, 한글은 UTF-8에서 한 글자에 3바이트라 약 980자 정도입니다. 복원 레벨을 올리면 복구용 데이터가 자리를 차지해 한도가 줄어들고, H 레벨은 약 1,270바이트입니다. 내용이 넘치면 깨진 코드를 만드는 대신 안내 메시지를 보여줍니다."}},
+{"@type":"Question","name":"오류 복원 레벨을 올리면 왜 코드가 더 빽빽해지나요?","acceptedAnswer":{"@type":"Answer","text":"오류 복원은 코드가 일부 더러워지거나 찢기거나 가려져도 인식되도록 복구용 데이터를 추가하는 기능입니다 — L은 약 7%, M은 15%, Q는 25%, H는 30%의 손상까지 버팁니다. 그 추가 데이터가 들어갈 자리가 필요하므로 같은 내용이라도 모듈(사각형)이 많아져 더 빽빽해집니다. 일반 용도는 M이면 충분하고, 작게 인쇄하거나 험하게 다뤄질 코드에만 Q·H를 쓰세요."}},
+{"@type":"Question","name":"QR코드 가운데에 로고를 넣을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"이 도구에서는 안 됩니다 — 표준 형태의 깨끗한 코드만 생성합니다. 로고 삽입은 코드 일부를 일부러 가리고 높은 오류 복원력으로 버티게 하는 방식이라 가능은 하지만 잘못하면 인식이 안 되기 쉽습니다. 브랜드 코드가 필요하면 여기서 복원 레벨 H로 PNG를 만든 뒤 이미지 편집기에서 코드 면적의 20% 이하로 로고를 얹고, 반드시 실제 폰으로 스캔 테스트를 하세요."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/ko/">ThisIsMyCalculator</a> › <a href="/modutool/calc/ko/#calc">생활 도구</a> › QR코드 생성기</nav>
+  <h1 class="page-title">QR코드 생성기<span class="privacy-badge">🔒 서버 전송·저장 없음</span></h1>
+  <p class="page-sub">링크·텍스트·와이파이 접속 정보를 QR코드로 — 실시간 미리보기, 선명한 PNG 저장. 전부 브라우저 안에서 만들어지며 입력한 내용은 전송·저장되지 않습니다.</p>
+
+  <div class="card tool-card">
+    <div class="opts">
+      <label>내용 종류
+        <select id="typeSel">
+          <option value="text" selected>URL / 텍스트</option>
+          <option value="wifi">와이파이 접속</option>
+        </select>
+      </label>
+      <label>크기
+        <select id="sizeSel">
+          <option value="256">256 px</option>
+          <option value="512" selected>512 px</option>
+          <option value="1024">1024 px</option>
+        </select>
+      </label>
+      <label>오류 복원
+        <select id="ecSel">
+          <option value="L">L — 코드 최소</option>
+          <option value="M" selected>M — 권장</option>
+          <option value="Q">Q — 튼튼</option>
+          <option value="H">H — 가장 튼튼</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="qr-panel" id="panelText">
+      <textarea id="txt" spellcheck="false" placeholder="URL을 붙여넣거나 아무 텍스트나 입력하세요 — 입력하는 대로 아래에 QR코드가 나타납니다."></textarea>
+    </div>
+
+    <div class="qr-panel" id="panelWifi" style="display:none">
+      <div class="qr-fields">
+        <label>네트워크 이름 (SSID)<input type="text" id="wifiSsid" autocomplete="off" placeholder="우리집와이파이"></label>
+        <label>비밀번호<input type="password" id="wifiPass" autocomplete="off" placeholder="와이파이 비밀번호"></label>
+        <label>보안 방식
+          <select id="wifiSec">
+            <option value="WPA" selected>WPA / WPA2 / WPA3</option>
+            <option value="WEP">WEP (구형)</option>
+            <option value="nopass">없음 (개방 네트워크)</option>
+          </select>
+        </label>
+      </div>
+      <label class="qr-check"><input type="checkbox" id="wifiHidden"> 숨김 네트워크 (SSID 미노출)</label>
+    </div>
+
+    <div class="qr-preview">
+      <canvas id="qrCanvas"></canvas>
+      <div class="qr-placeholder" id="qrPlaceholder">위에 내용을 입력하면 여기에 QR코드가 나타납니다.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="dlBtn" disabled>PNG 다운로드</button>
+      <button class="btn secondary" id="copyBtn" disabled>이미지 복사</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li><b>내용 종류</b>를 고릅니다: 링크·전화번호·메시지는 <b>URL / 텍스트</b>, 손님이 스캔해서 바로 접속하게 하려면 <b>와이파이 접속</b>.</li>
+      <li>내용을 입력하면 미리보기가 실시간으로 갱신됩니다 — 따로 누를 버튼이 없습니다.</li>
+      <li>필요하면 <b>크기</b>(저장될 PNG의 픽셀)와 <b>오류 복원</b>을 조절하세요. 기본값(512px, M 레벨)이면 대부분 충분합니다.</li>
+      <li><b>PNG 다운로드</b>를 누르면 <b>qr-code.png</b>로 저장되고, <b>이미지 복사</b>를 누르면 채팅·문서에 바로 붙여넣을 수 있습니다.</li>
+    </ol>
+
+    <h2>QR 버전과 오류 복원, 짧고 정직하게</h2>
+    <p>QR코드는 <b>버전</b>이라는 정해진 단계로 커집니다 — 버전 1이 21×21 격자이고, 버전이 하나 오를 때마다 한 변에 4모듈씩 늘어 버전 40(177×177)까지 있습니다. 이 도구는 입력한 내용이 들어가는 가장 작은 버전을 자동으로 고르므로, 내용이 길수록 코드가 빽빽해질 뿐입니다.</p>
+    <p><b>오류 복원</b>은 코드 일부가 더러워지거나 가려져도 인식되도록 복구용 데이터를 미리 넣어 두는 기능입니다: <b>L</b>은 약 7%, <b>M</b>은 15%, <b>Q</b>는 25%, <b>H</b>는 30% 손상까지 버팁니다. 대신 레벨이 높을수록 내용이 들어갈 자리가 줄고 코드가 빽빽해지는 실제 트레이드오프가 있습니다. <b>일반 용도는 M이 정답</b>이고, 작게 인쇄하거나 장비에 붙여 험하게 쓸 코드에만 H를 고르세요.</p>
+
+    <h2>와이파이 QR코드: 손님은 이렇게 씁니다</h2>
+    <p>와이파이 QR코드는 네트워크 이름·보안 방식·비밀번호를 iOS와 Android가 모두 기본 지원하는 표준 형식으로 담습니다. 손님이 카메라를 켜고 코드를 비춘 뒤 안내를 탭하면 끝 — <i>"대문자 B에 언더바, 숫자 7…"</i> 하고 불러줄 필요가 없습니다. 인쇄해서 냉장고에 붙이거나, 카페 카운터에 액자로 세우거나, 에어비앤비 안내 카드에 넣어 두면 좋습니다.</p>
+    <p>정직한 주의 하나: 비밀번호는 코드 안에 평문으로 들어갑니다. 코드를 스캔한 사람 — 코드 사진을 가진 사람 포함 — 은 누구나 비밀번호를 읽을 수 있으니, 인쇄물은 비밀번호 자체와 같은 수준으로 관리하세요.</p>
+
+    <h2>인쇄 크기: 코드는 얼마나 크게?</h2>
+    <ul>
+      <li>경험칙: <b>스캔 거리 ≈ 코드 인쇄 폭의 10배</b>. 3cm 코드는 약 30cm 거리(테이블 안내)에서 편하게 찍히고, 3m 떨어져 보는 포스터라면 30cm짜리 코드가 필요합니다.</li>
+      <li>코드 둘레의 흰 여백(<b>콰이어트 존</b>)을 살려 두세요. 이 도구는 표준 4모듈 여백을 포함해 저장합니다 — 잘라내지 마세요.</li>
+      <li>내용이 길수록 같은 인쇄 크기에서 사각형이 작아집니다. 빽빽한 코드가 잘 안 찍히면 인쇄를 키우기 전에 내용부터 줄이세요(짧은 URL 사용).</li>
+      <li>인쇄용은 <b>1024px</b>로 받아야 확대해도 선명합니다.</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 전단지 500장을 뽑기 전에 인쇄본을 실제 폰으로 꼭 스캔해 보세요. 10초면 크기 실수를 전부 잡아냅니다.</div>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>여기서 만든 QR코드에 유효기간이 있나요?</summary><p>없습니다. QR코드는 입력한 텍스트를 사각형 패턴으로 그려 놓은 것일 뿐, 뒤에 서버·계정·단축링크 서비스가 없습니다. 내용 자체가 유효한 한(예: URL이 살아 있는 한) 코드는 영원히 인식됩니다. 어딘가에 호스팅되어 있다가 중단될 것이 아예 없기 때문입니다.</p></details>
+      <details><summary>와이파이 비밀번호를 입력해도 안전한가요?</summary><p>이 도구 자체는 아무것도 전송하거나 저장하지 않습니다 — QR코드는 전부 브라우저 안에서 생성되며, 네트워크 탭에서 아무 요청도 나가지 않는 것을 직접 확인할 수 있습니다. 다만 와이파이 QR코드의 성격은 알아두세요: 비밀번호가 패턴 안에 평문으로 인코딩되므로 코드를 스캔한 사람(코드 사진을 가진 사람 포함)은 누구나 비밀번호를 읽을 수 있습니다. 인쇄한 코드는 비밀번호를 알려줘도 되는 사람에게만 보여주세요.</p></details>
+      <details><summary>QR코드 하나에 글자를 얼마나 담을 수 있나요?</summary><p>오류 복원 레벨이 가장 낮은 L 기준 최대 약 2,953바이트입니다 — 영문·숫자로 약 2,900자, 한글은 UTF-8에서 한 글자에 3바이트라 약 980자 정도입니다. 복원 레벨을 올리면 복구용 데이터가 자리를 차지해 한도가 줄어들고, H 레벨은 약 1,270바이트입니다. 내용이 넘치면 깨진 코드를 만드는 대신 안내 메시지를 보여줍니다.</p></details>
+      <details><summary>오류 복원 레벨을 올리면 왜 코드가 더 빽빽해지나요?</summary><p>오류 복원은 코드가 일부 더러워지거나 찢기거나 가려져도 인식되도록 복구용 데이터를 추가하는 기능입니다 — L은 약 7%, M은 15%, Q는 25%, H는 30%의 손상까지 버팁니다. 그 추가 데이터가 들어갈 자리가 필요하므로 같은 내용이라도 모듈(사각형)이 많아져 더 빽빽해집니다. 일반 용도는 M이면 충분하고, 작게 인쇄하거나 험하게 다뤄질 코드에만 Q·H를 쓰세요.</p></details>
+      <details><summary>QR코드 가운데에 로고를 넣을 수 있나요?</summary><p>이 도구에서는 안 됩니다 — 표준 형태의 깨끗한 코드만 생성합니다. 로고 삽입은 코드 일부를 일부러 가리고 높은 오류 복원력으로 버티게 하는 방식이라 가능은 하지만 잘못하면 인식이 안 되기 쉽습니다. 브랜드 코드가 필요하면 여기서 복원 레벨 H로 PNG를 만든 뒤 이미지 편집기에서 코드 면적의 20% 이하로 로고를 얹고, 반드시 실제 폰으로 스캔 테스트를 하세요.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/ko/password-generator/"><span class="emoji">🔑</span><span><b>비밀번호 생성기</b><span>내 기기에서 만드는 강력한 무작위 비밀번호</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/ko/text-diff/"><span class="emoji">🔀</span><span><b>텍스트 비교</b><span>두 글의 달라진 부분 찾기</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/ko/char-count/"><span class="emoji">🔤</span><span><b>글자수 세기</b><span>글자·단어·바이트 실시간 카운트</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/calc/assets/vendor/qrcode-generator.js"></script>
+<script>
+(function () {
+  'use strict';
+  var typeSel = document.getElementById('typeSel');
+  var sizeSel = document.getElementById('sizeSel');
+  var ecSel = document.getElementById('ecSel');
+  var panelText = document.getElementById('panelText');
+  var panelWifi = document.getElementById('panelWifi');
+  var txt = document.getElementById('txt');
+  var wifiSsid = document.getElementById('wifiSsid');
+  var wifiPass = document.getElementById('wifiPass');
+  var wifiSec = document.getElementById('wifiSec');
+  var wifiHidden = document.getElementById('wifiHidden');
+  var canvas = document.getElementById('qrCanvas');
+  var placeholder = document.getElementById('qrPlaceholder');
+  var dlBtn = document.getElementById('dlBtn');
+  var copyBtn = document.getElementById('copyBtn');
+  var result = document.getElementById('result');
+
+  var hasQR = false;
+  var lastCopyLog = 0;
+  var copySupported = !!(navigator.clipboard && navigator.clipboard.write && window.ClipboardItem);
+  if (!copySupported) copyBtn.style.display = 'none';
+
+  /* WIFI: 형식 규약상 특수문자는 백슬래시로 이스케이프해야 한다. */
+  function wifiEsc(s) { return s.replace(/([\\;,":])/g, '\\$1'); }
+
+  function payload() {
+    if (typeSel.value === 'wifi') {
+      var ssid = wifiSsid.value;
+      if (!ssid.trim()) return '';
+      var sec = wifiSec.value;
+      var out = 'WIFI:T:' + sec + ';S:' + wifiEsc(ssid) + ';';
+      if (sec !== 'nopass') out += 'P:' + wifiEsc(wifiPass.value) + ';';
+      if (wifiHidden.checked) out += 'H:true;';
+      return out + ';';
+    }
+    return txt.value.trim();
+  }
+
+  function setEmpty() {
+    hasQR = false;
+    canvas.style.display = 'none';
+    placeholder.style.display = '';
+    dlBtn.disabled = true;
+    copyBtn.disabled = true;
+  }
+
+  function draw() {
+    var data = payload();
+    result.className = 'result';
+    if (!data) { setEmpty(); return; }
+    try {
+      var qr = qrcode(0, ecSel.value); // type 0 = 내용에 맞는 최소 버전 자동 선택
+      qr.addData(data, 'Byte');
+      qr.make();
+      var count = qr.getModuleCount();
+      var target = parseInt(sizeSel.value, 10) || 512;
+      var quiet = 4; // 표준 콰이어트 존(여백) — 모듈 단위
+      var cell = Math.max(1, Math.floor(target / (count + quiet * 2)));
+      var dim = cell * (count + quiet * 2);
+      canvas.width = dim;
+      canvas.height = dim;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, dim, dim);
+      ctx.fillStyle = '#000000';
+      for (var r = 0; r < count; r++) {
+        for (var c = 0; c < count; c++) {
+          if (qr.isDark(r, c)) ctx.fillRect((c + quiet) * cell, (r + quiet) * cell, cell, cell);
+        }
+      }
+      canvas.style.display = 'inline-block';
+      placeholder.style.display = 'none';
+      hasQR = true;
+      dlBtn.disabled = false;
+      copyBtn.disabled = false;
+    } catch (e) {
+      setEmpty();
+      mdtlResult(result, '❌ 이 오류 복원 레벨로 담기에는 내용이 너무 깁니다. 내용을 줄이거나 오류 복원을 L로 낮춰 보세요.', true);
+    }
+  }
+
+  var debTimer = null;
+  function drawDebounced() {
+    if (debTimer) clearTimeout(debTimer);
+    debTimer = setTimeout(draw, 300);
+  }
+
+  function switchType() {
+    var wifi = typeSel.value === 'wifi';
+    panelText.style.display = wifi ? 'none' : '';
+    panelWifi.style.display = wifi ? '' : 'none';
+    draw();
+  }
+
+  typeSel.addEventListener('change', switchType);
+  sizeSel.addEventListener('change', draw);
+  ecSel.addEventListener('change', draw);
+  wifiSec.addEventListener('change', draw);
+  wifiHidden.addEventListener('change', draw);
+  [txt, wifiSsid, wifiPass].forEach(function (el) { el.addEventListener('input', drawDebounced); });
+
+  dlBtn.addEventListener('click', function () {
+    if (!hasQR) return;
+    canvas.toBlob(function (blob) {
+      if (!blob) { mdtlResult(result, '❌ PNG를 만들지 못했습니다. 다시 시도해 주세요.', true); return; }
+      mdtlDownload(blob, 'qr-code.png');
+      mdtlLogEvent('qr-generator', 'success', null, { format: 'png', width: parseInt(sizeSel.value, 10), count: 1 });
+      mdtlResult(result, '✅ <b>저장 완료!</b> <b>qr-code.png</b>로 저장되었습니다. 인쇄 전에 폰 카메라로 스캔 테스트를 해 보세요 — 10초면 됩니다.');
+    }, 'image/png');
+  });
+
+  copyBtn.addEventListener('click', function () {
+    if (!hasQR || !copySupported) return;
+    try {
+      canvas.toBlob(function (blob) {
+        if (!blob) { mdtlResult(result, '❌ 이미지를 복사하지 못했습니다. PNG 다운로드를 이용해 주세요.', true); return; }
+        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(function () {
+          var now = Date.now();
+          if (now - lastCopyLog > 3000) { // 복사 텔레메트리는 3초에 1회로 제한
+            lastCopyLog = now;
+            mdtlLogEvent('qr-generator', 'success', null, { format: 'png', width: parseInt(sizeSel.value, 10), count: 1 });
+          }
+          mdtlResult(result, '✅ <b>복사 완료!</b> 채팅이나 문서에 QR코드 이미지를 바로 붙여넣을 수 있습니다.');
+        }, function () {
+          mdtlResult(result, '❌ 브라우저가 이미지 복사를 막았습니다. PNG 다운로드를 이용해 주세요.', true);
+        });
+      }, 'image/png');
+    } catch (e) {
+      mdtlResult(result, '❌ 브라우저가 이미지 복사를 막았습니다. PNG 다운로드를 이용해 주세요.', true);
+    }
+  });
+
+  setEmpty();
+})();
+</script>
+</body>
+</html>

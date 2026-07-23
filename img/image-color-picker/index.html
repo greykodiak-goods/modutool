@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Color Picker from Image — Get HEX &amp; RGB Codes Free, No Upload | ThisIsMyIMG</title>
+<meta name="description" content="Free eyedropper tool that reads HEX and RGB color codes from any image. Hover to preview, click to lock a color, click a swatch to copy. Runs entirely in your browser — the image is never uploaded to a server.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/img/image-color-picker/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/img/ko/image-color-picker/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/img/image-color-picker/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/img/image-color-picker/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Color Picker from Image — HEX &amp; RGB Eyedropper, No Server Upload">
+<meta property="og:description" content="Hover an image to read colors, click to collect swatches, copy HEX codes. 100% in-browser — your image never leaves your device.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/img/image-color-picker/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyIMG";window.MDTL_SITE_MARK="I";</script>
+<script>window.MDTL_BASE='/modutool/img';</script>
+<link rel="stylesheet" href="/modutool/img/assets/site.css">
+<script src="/modutool/img/assets/site.js"></script>
+<script src="/modutool/img/assets/ads-config.js" defer></script>
+<script src="/modutool/img/assets/auth-config.js" defer></script>
+<script src="/modutool/img/assets/auth.js" defer></script>
+<style>
+  .pick-stage { display:none; margin-top:14px; }
+  .pick-stage.show { display:block; }
+  .pick-wrap { position:relative; display:inline-block; max-width:100%; }
+  .pick-wrap canvas { max-width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); cursor:crosshair; }
+  .pick-chip { position:absolute; display:none; pointer-events:none; background:rgba(17,24,39,.92); color:#fff; font-size:12px; padding:4px 8px; border-radius:8px; white-space:nowrap; z-index:5; }
+  .pick-chip .dot { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:6px; vertical-align:-2px; border:1px solid rgba(255,255,255,.6); }
+  .pick-hint { font-size:12.5px; color:var(--text-soft); margin:8px 0 0; }
+  .pick-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .pick-swatch { display:flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:8px; padding:4px 8px; background:none; cursor:pointer; font-size:12.5px; font-family:inherit; color:inherit; }
+  .pick-swatch .sw { width:18px; height:18px; border-radius:4px; border:1px solid var(--line); }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Color Picker from Image - ThisIsMyIMG","url":"https://greykodiak-goods.github.io/modutool/img/image-color-picker/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web eyedropper that reads HEX and RGB color values from any pixel of an image. Processed in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is my image uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The image is drawn onto a canvas inside your browser and colors are read from that canvas on your device. You can open the Network tab of your browser's developer tools and confirm no file is sent anywhere. Closing the tab removes everything."}},
+{"@type":"Question","name":"Why does the HEX differ slightly from what Photoshop or my design file shows?","acceptedAnswer":{"@type":"Answer","text":"Browser canvases work in sRGB. If your photo was saved in a wider color space such as Display P3 (common on iPhones), the browser converts it to sRGB before we read the pixel, so saturated colors can come out a few steps different from what a color-managed editor reports. For pixels that were already sRGB — most web graphics and screenshots — the values match exactly."}},
+{"@type":"Question","name":"How do I pick exactly the right pixel?","acceptedAnswer":{"@type":"Answer","text":"Zoom in: use your browser's zoom (Ctrl/Cmd +) on desktop or pinch-zoom on mobile — the readout follows the zoomed pixels, so you can land on a 1-pixel detail. The floating chip shows the color under the cursor before you click, so watch it stabilize before locking a pick."}},
+{"@type":"Question","name":"What's the difference between HEX and RGB?","acceptedAnswer":{"@type":"Answer","text":"They are two notations for the same color. RGB lists the red, green, and blue components as numbers from 0 to 255, e.g. rgb(37, 99, 235). HEX writes those same three numbers in base-16 as one string, #2563EB. CSS accepts both; design tools and brand guidelines usually quote HEX, which is why the copy buttons here copy the HEX form."}},
+{"@type":"Question","name":"Why does a color from my screenshot not match the website's CSS?","acceptedAnswer":{"@type":"Answer","text":"Screenshots saved as JPG blur colors slightly at edges — compression mixes neighboring pixels, so a pixel at the boundary of text or a button border can read as a blend. Pick from the middle of a flat color area and use a PNG screenshot when you can; PNG is lossless, so flat areas keep their exact values."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/img/">ThisIsMyIMG</a> › <a href="/modutool/img/#image">Image Tools</a> › Color Picker</nav>
+  <h1 class="page-title">Color Picker from Image<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Hover to read the color under the cursor, click to lock it, click a swatch to copy the HEX code. Free — no install, no sign-up.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🎨</span>
+      <strong>Drag &amp; drop an image here, or click to select</strong><br>
+      One image at a time (JPG · PNG · WEBP · GIF · BMP)
+    </div>
+    <div class="pick-stage" id="stage">
+      <div class="pick-wrap" id="wrap">
+        <canvas id="preview"></canvas>
+        <div class="pick-chip" id="chip"></div>
+      </div>
+      <p class="pick-hint">Move over the image to read a color · click to keep it (up to 12, newest first) · click a swatch to copy its HEX.</p>
+      <div class="pick-row" id="picks"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="copyBtn" disabled>Copy HEX</button>
+      <button class="btn secondary" id="clearPicksBtn" style="display:none">Clear Picks</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Remove Image</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drop an image into the area above, or click to select it — a screenshot, a photo, a logo, anything.</li>
+      <li><b>Move the pointer</b> over the preview. A small chip follows the cursor showing the <b>HEX and RGB</b> values of the pixel underneath.</li>
+      <li><b>Click</b> to lock a color. It joins the swatch row below the image (up to 12, newest first), so you can collect a whole palette in one pass.</li>
+      <li>Click any <b>swatch</b> — or the <b>Copy HEX</b> button for the most recent pick — and the code is copied to your clipboard, ready to paste into CSS, Figma, or a brand doc.</li>
+    </ol>
+
+    <h2>What the values mean</h2>
+    <p>Every pixel on screen is a mix of red, green, and blue light, each from 0 to 255. <b>RGB</b> notation lists them directly — <code>rgb(37, 99, 235)</code> — while <b>HEX</b> packs the same three numbers into base-16: <code>#2563EB</code>. They are interchangeable; HEX is simply the form most tools and style guides expect, so that is what the copy buttons produce.</p>
+    <p>One honest caveat: browser canvases read colors in <b>sRGB</b>. A photo saved in a wider gamut (Display P3 is common on recent phones) is converted to sRGB first, so very saturated colors can read a few steps off from what a color-managed editor like Photoshop reports. For ordinary web graphics and screenshots the values match exactly.</p>
+
+    <h2>Getting a precise pick</h2>
+    <ul>
+      <li><b>Zoom in</b> — browser zoom (Ctrl/Cmd +) or pinch-zoom on mobile. The eyedropper follows the zoomed image, so single-pixel details become easy targets.</li>
+      <li><b>Pick from flat areas</b> — JPG compression blends pixels at edges, so a pixel on the boundary of text or a border reads as a mix. The middle of a solid region gives the true value.</li>
+      <li><b>Prefer PNG screenshots</b> — PNG is lossless, so UI colors survive exactly. JPG screenshots can shift flat colors by a point or two.</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> Building a palette from a photo? Lock several picks across highlights, midtones, and shadows — the swatch row keeps your 12 most recent picks so you can compare and copy them one by one.</div>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>Matching a brand color from a logo when nobody can find the style guide</li>
+      <li>Recreating a color scheme you spotted in a screenshot</li>
+      <li>Pulling accent colors from a photo for a slide deck or thumbnail</li>
+      <li>Checking what color a rendered page actually shipped with</li>
+      <li>Collecting a quick palette before starting a design</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Is my image uploaded anywhere?</summary><p>No. The image is drawn onto a canvas inside your browser and colors are read from that canvas on your device. You can open the Network tab of your browser's developer tools and confirm no file is sent anywhere. Closing the tab removes everything.</p></details>
+      <details><summary>Why does the HEX differ slightly from what Photoshop or my design file shows?</summary><p>Browser canvases work in sRGB. If your photo was saved in a wider color space such as Display P3 (common on iPhones), the browser converts it to sRGB before we read the pixel, so saturated colors can come out a few steps different from what a color-managed editor reports. For pixels that were already sRGB — most web graphics and screenshots — the values match exactly.</p></details>
+      <details><summary>How do I pick exactly the right pixel?</summary><p>Zoom in: use your browser's zoom (Ctrl/Cmd +) on desktop or pinch-zoom on mobile — the readout follows the zoomed pixels, so you can land on a 1-pixel detail. The floating chip shows the color under the cursor before you click, so watch it stabilize before locking a pick.</p></details>
+      <details><summary>What's the difference between HEX and RGB?</summary><p>They are two notations for the same color. RGB lists the red, green, and blue components as numbers from 0 to 255, e.g. rgb(37, 99, 235). HEX writes those same three numbers in base-16 as one string, #2563EB. CSS accepts both; design tools and brand guidelines usually quote HEX, which is why the copy buttons here copy the HEX form.</p></details>
+      <details><summary>Why does a color from my screenshot not match the website's CSS?</summary><p>Screenshots saved as JPG blur colors slightly at edges — compression mixes neighboring pixels, so a pixel at the boundary of text or a button border can read as a blend. Pick from the middle of a flat color area and use a PNG screenshot when you can; PNG is lossless, so flat areas keep their exact values.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/img/image-crop/"><span class="emoji">✂️</span><span><b>Crop Image</b><span>Cut out exactly the part you want</span></span></a>
+      <a class="tool-tile" href="/modutool/img/image-resize/"><span class="emoji">📐</span><span><b>Image Resizer</b><span>Resize + format conversion</span></span></a>
+      <a class="tool-tile" href="/modutool/img/image-compress/"><span class="emoji">🗜️</span><span><b>Compress Image</b><span>Keep resolution, shrink file size</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('wrap');
+  var preview = document.getElementById('preview');
+  var pctx = preview.getContext('2d');
+  var chip = document.getElementById('chip');
+  var picksRow = document.getElementById('picks');
+  var copyBtn = document.getElementById('copyBtn');
+  var clearPicksBtn = document.getElementById('clearPicksBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+
+  var srcImage = null;
+  // Offscreen sample canvas at the same resolution as the preview; pixel reads
+  // happen here with willReadFrequently so hover lookups stay cheap.
+  var sample = document.createElement('canvas');
+  var sctx = sample.getContext('2d', { willReadFrequently: true });
+  var picks = [];            // [{hex, rgb}] newest first, max 12
+  var MAX_PICKS = 12;
+  var lastLogAt = 0;         // telemetry guard: log at most once per 3 s
+
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Could not read this image. Your browser may not support the format (e.g., HEIC).')); };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else { fallback(); }
+    });
+  }
+
+  function toHex(n) { var s = n.toString(16).toUpperCase(); return s.length === 1 ? '0' + s : s; }
+
+  function colorAt(e) {
+    var r = preview.getBoundingClientRect();
+    if (!r.width || !r.height) return null;
+    var px = Math.floor((e.clientX - r.left) * preview.width / r.width);
+    var py = Math.floor((e.clientY - r.top) * preview.height / r.height);
+    px = Math.max(0, Math.min(px, preview.width - 1));
+    py = Math.max(0, Math.min(py, preview.height - 1));
+    var d = sctx.getImageData(px, py, 1, 1).data;
+    return {
+      hex: '#' + toHex(d[0]) + toHex(d[1]) + toHex(d[2]),
+      rgb: 'rgb(' + d[0] + ', ' + d[1] + ', ' + d[2] + ')',
+      lx: e.clientX - r.left,
+      ly: e.clientY - r.top
+    };
+  }
+
+  function copyText(t) {
+    return new Promise(function (resolve, reject) {
+      function legacy() {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = t;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) resolve(); else reject(new Error('copy failed'));
+        } catch (err) { reject(err); }
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(t).then(resolve, legacy);
+      } else { legacy(); }
+    });
+  }
+
+  function logCopy() {
+    var now = Date.now();
+    if (now - lastLogAt >= 3000) {
+      lastLogAt = now;
+      mdtlLogEvent('image-color-picker', 'success', null, { count: picks.length });
+    }
+  }
+
+  function copyPick(p) {
+    copyText(p.hex).then(function () {
+      logCopy();
+      mdtlResult(result, '✅ <b>' + p.hex + '</b> copied to clipboard (' + p.rgb + ').');
+    }, function () {
+      mdtlResult(result, '❌ Could not access the clipboard. You can select and copy the HEX text from a swatch instead.', true);
+    });
+  }
+
+  function renderPicks() {
+    picksRow.innerHTML = '';
+    picks.forEach(function (p, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pick-swatch';
+      b.dataset.i = i;
+      b.title = p.rgb + ' — click to copy';
+      var sw = document.createElement('span');
+      sw.className = 'sw';
+      sw.style.background = p.hex;
+      var label = document.createElement('span');
+      label.textContent = p.hex;
+      b.appendChild(sw); b.appendChild(label);
+      picksRow.appendChild(b);
+    });
+    copyBtn.disabled = picks.length === 0;
+    copyBtn.textContent = picks.length ? 'Copy HEX (' + picks[0].hex + ')' : 'Copy HEX';
+    clearPicksBtn.style.display = picks.length ? '' : 'none';
+  }
+
+  function setImage(img) {
+    srcImage = img;
+    var w = img.width || img.naturalWidth;
+    var h = img.height || img.naturalHeight;
+    var maxW = 900;
+    var scale = Math.min(1, maxW / w);
+    preview.width = Math.max(1, Math.round(w * scale));
+    preview.height = Math.max(1, Math.round(h * scale));
+    sample.width = preview.width;
+    sample.height = preview.height;
+    pctx.drawImage(img, 0, 0, preview.width, preview.height);
+    sctx.drawImage(img, 0, 0, sample.width, sample.height);
+    picks = [];
+    renderPicks();
+    stage.className = 'pick-stage show';
+    clearBtn.style.display = '';
+    result.className = 'result';
+  }
+
+  function resetAll() {
+    srcImage = null;
+    picks = [];
+    stage.className = 'pick-stage';
+    chip.style.display = 'none';
+    copyBtn.disabled = true;
+    copyBtn.textContent = 'Copy HEX';
+    clearPicksBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+
+  mdtlDropzone(dz, {
+    accept: 'image/*,.jpg,.jpeg,.png,.webp,.gif,.bmp',
+    multiple: false,
+    onFiles: function (fs) {
+      loadImage(fs[0]).then(setImage)
+        .catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+    }
+  });
+
+  clearBtn.addEventListener('click', resetAll);
+  clearPicksBtn.addEventListener('click', function () { picks = []; renderPicks(); result.className = 'result'; });
+
+  preview.addEventListener('pointermove', function (e) {
+    if (!srcImage) return;
+    var c = colorAt(e);
+    if (!c) return;
+    chip.style.display = 'block';
+    chip.innerHTML = '<span class="dot"></span>' + c.hex + ' · ' + c.rgb;
+    chip.querySelector('.dot').style.background = c.hex;
+    var r = preview.getBoundingClientRect();
+    var cx = Math.min(c.lx + 14, Math.max(0, r.width - chip.offsetWidth - 4));
+    var cy = c.ly - 34;
+    if (cy < 0) cy = c.ly + 18;
+    chip.style.left = cx + 'px';
+    chip.style.top = cy + 'px';
+  });
+  preview.addEventListener('pointerleave', function () { chip.style.display = 'none'; });
+
+  preview.addEventListener('click', function (e) {
+    if (!srcImage) return;
+    var c = colorAt(e);
+    if (!c) return;
+    picks.unshift({ hex: c.hex, rgb: c.rgb });
+    if (picks.length > MAX_PICKS) picks.length = MAX_PICKS;
+    renderPicks();
+  });
+
+  picksRow.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    var p = picks[+b.dataset.i];
+    if (p) copyPick(p);
+  });
+
+  copyBtn.addEventListener('click', function () {
+    if (picks.length) copyPick(picks[0]);
+  });
+})();
+</script>
+</body>
+</html>

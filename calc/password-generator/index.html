@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Password Generator — Strong Random Passwords, Made Locally | ThisIsMyCalculator</title>
+<meta name="description" content="Free strong password generator with length 8–64, character-class options, and a live entropy strength meter. Passwords are generated locally with crypto.getRandomValues and are never transmitted or stored anywhere — not even in your browser's storage.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/password-generator/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/password-generator/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/password-generator/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/password-generator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Password Generator — Strong &amp; Local, Never Transmitted">
+<meta property="og:description" content="Generate strong random passwords with a cryptographic RNG, entirely on your device. Nothing is sent or stored anywhere.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/password-generator/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<style>
+  .pw-out-row { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+  .pw-out-row input { flex: 1 1 240px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 17px; letter-spacing: .5px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); min-width: 0; }
+  .pw-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px 18px; margin-top: 16px; }
+  .pw-opts label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; }
+  .pw-len { margin-top: 16px; }
+  .pw-len label { font-size: 14px; color: var(--text-soft); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .pw-len input[type=range] { flex: 1 1 200px; accent-color: var(--accent); }
+  .pw-len b { color: var(--text); font-size: 15px; min-width: 88px; }
+  .pw-meter { margin-top: 16px; }
+  .pw-meter .track { height: 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; }
+  .pw-meter .fill { height: 100%; width: 0; border-radius: 6px; transition: width .2s, background .2s; }
+  .pw-meter .lbl { font-size: 13.5px; color: var(--text-soft); margin-top: 6px; }
+  .pw-hint { font-size: 13px; color: var(--danger); margin-top: 8px; display: none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Password Generator - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/password-generator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that generates strong random passwords locally using the browser's cryptographic random number generator. Passwords are never transmitted or stored.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How is the randomness generated?","acceptedAnswer":{"@type":"Answer","text":"With crypto.getRandomValues — the cryptographically secure random number generator (CSPRNG) built into every modern browser, the same class of generator used for encryption keys. It runs entirely on your device. The tool additionally uses rejection sampling when mapping random bytes to characters, so every character in the pool is exactly equally likely (no modulo bias)."}},
+{"@type":"Question","name":"Why exclude look-alike characters?","acceptedAnswer":{"@type":"Answer","text":"Characters like 0/O, 1/l/I, and | are nearly indistinguishable in many fonts. If you ever have to read a password off a screen or type it by hand — on a TV, a router label, or over the phone — look-alikes cause maddening errors. Excluding the six look-alike characters shrinks the pool slightly (a fraction of a bit of entropy per character), which is a worthwhile trade for anything typed by hand. For passwords that only live in a password manager, feel free to turn the option off."}},
+{"@type":"Question","name":"What do the entropy bits mean?","acceptedAnswer":{"@type":"Answer","text":"Entropy measures how many guesses an attacker would need: n bits means 2^n equally likely possibilities. It is computed as length × log2(pool size), so a 16-character password from a 90-character pool has about 104 bits. As a rough guide, 45 bits falls to a determined offline attack, around 70 bits is solid for most accounts, and 100+ bits is beyond any realistic brute force. Entropy only applies to random passwords — a human-invented password of the same length has far fewer effective bits."}},
+{"@type":"Question","name":"Is the generated password stored anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. It exists only in this page's memory and disappears when you leave or generate a new one. It is not sent to any server, not written to localStorage or cookies, and not logged — our anonymous usage counter records only that a password of a certain length was copied, never the password itself. You can verify in the Network tab that nothing leaves your device."}},
+{"@type":"Question","name":"Should I use a password manager instead?","acceptedAnswer":{"@type":"Answer","text":"Honestly: yes, for day-to-day accounts a password manager is the better system — it generates, stores, and fills unique passwords so you never reuse one. This tool complements a manager rather than replacing it: it is handy for the passwords a manager cannot fill (Wi-Fi keys, device PINs, an OS account, the manager's own master password) or when you need a one-off strong password on a machine without your manager."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/">ThisIsMyCalculator</a> › <a href="/modutool/calc/#calc">Everyday Tools</a> › Password Generator</nav>
+  <h1 class="page-title">Password Generator<span class="privacy-badge">🔒 Local only — never transmitted</span></h1>
+  <p class="page-sub">Strong random passwords generated on your device with <b>crypto.getRandomValues</b>, the browser's cryptographic RNG. Nothing is transmitted, logged, or stored — not even in your browser's local storage.</p>
+
+  <div class="card tool-card">
+    <div class="pw-out-row">
+      <input type="text" id="pwOut" readonly spellcheck="false" autocomplete="off" aria-label="Generated password">
+      <button class="btn" id="copyBtn">📋 Copy</button>
+      <button class="btn secondary" id="genBtn">🎲 Regenerate</button>
+    </div>
+
+    <div class="pw-meter" id="meter">
+      <div class="track"><div class="fill" id="meterFill"></div></div>
+      <div class="lbl" id="meterLbl"></div>
+    </div>
+
+    <div class="pw-len">
+      <label>Length <b id="lenLbl">16 characters</b>
+        <input type="range" id="lenRange" min="8" max="64" value="16">
+      </label>
+    </div>
+
+    <div class="pw-opts">
+      <label><input type="checkbox" id="optLower" checked> Lowercase (a–z)</label>
+      <label><input type="checkbox" id="optUpper" checked> Uppercase (A–Z)</label>
+      <label><input type="checkbox" id="optDigit" checked> Digits (0–9)</label>
+      <label><input type="checkbox" id="optSymbol" checked> Symbols (!@#$%…)</label>
+      <label><input type="checkbox" id="optNoLook" checked> Exclude look-alikes (0O1lI|)</label>
+    </div>
+    <div class="pw-hint" id="noClassHint">Select at least one character class to generate a password.</div>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>A password is already waiting above — it was generated the moment the page loaded, on your device.</li>
+      <li>Adjust the <b>length</b> and <b>character classes</b>; the password and its strength meter regenerate instantly with every change.</li>
+      <li>Click <b>Copy</b> and paste it into the sign-up form or your password manager. <b>Regenerate</b> rolls a fresh one any time.</li>
+    </ol>
+
+    <h2>Why "generated locally" is the whole point</h2>
+    <p>A password generator that runs on a server is a contradiction: the most secret string you own would begin its life in someone else's infrastructure and logs. This tool generates every character <b>inside your browser</b> using <code>crypto.getRandomValues</code>, the same cryptographically secure generator the browser uses for TLS. The password is never transmitted, never logged, and never written to any storage — close the tab and it is gone. Open your browser's Network tab and you will see that no request carries it anywhere.</p>
+    <p>Two implementation details worth knowing, because they separate careful generators from careless ones:</p>
+    <ul>
+      <li><b>No modulo bias.</b> Naively mapping random bytes onto a character pool with <code>%</code> makes early characters in the pool slightly more likely. This tool uses rejection sampling — biased byte values are discarded — so every character is exactly equally probable.</li>
+      <li><b>Every selected class appears.</b> Many sites reject passwords missing a digit or symbol. The generator verifies at least one character from each class you selected and re-rolls if needed, without weakening randomness.</li>
+    </ul>
+
+    <h2>How long should a password be?</h2>
+    <ul>
+      <li><b>16 characters</b> (the default) with all classes on gives ~104 bits of entropy — beyond any realistic brute-force attack, online or offline.</li>
+      <li><b>12 characters</b> is a reasonable floor when a site enforces a shorter limit — still ~78 bits with all classes.</li>
+      <li><b>20+ characters</b> for things that guard everything else: your password manager's master password, disk encryption, your primary email.</li>
+      <li>Length beats complexity: adding 4 characters helps more than adding one more symbol class. When a form allows it, go longer.</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> The strength meter measures randomly generated passwords only. A human-made password of the same length ("Summer2026!") is dramatically weaker than the meter would suggest, because attackers try human patterns first.</div>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>How is the randomness generated?</summary><p>With crypto.getRandomValues — the cryptographically secure random number generator (CSPRNG) built into every modern browser, the same class of generator used for encryption keys. It runs entirely on your device. The tool additionally uses rejection sampling when mapping random bytes to characters, so every character in the pool is exactly equally likely (no modulo bias).</p></details>
+      <details><summary>Why exclude look-alike characters?</summary><p>Characters like 0/O, 1/l/I, and | are nearly indistinguishable in many fonts. If you ever have to read a password off a screen or type it by hand — on a TV, a router label, or over the phone — look-alikes cause maddening errors. Excluding the six look-alike characters shrinks the pool slightly (a fraction of a bit of entropy per character), which is a worthwhile trade for anything typed by hand. For passwords that only live in a password manager, feel free to turn the option off.</p></details>
+      <details><summary>What do the entropy bits mean?</summary><p>Entropy measures how many guesses an attacker would need: n bits means 2^n equally likely possibilities. It is computed as length × log2(pool size), so a 16-character password from a 90-character pool has about 104 bits. As a rough guide, 45 bits falls to a determined offline attack, around 70 bits is solid for most accounts, and 100+ bits is beyond any realistic brute force. Entropy only applies to random passwords — a human-invented password of the same length has far fewer effective bits.</p></details>
+      <details><summary>Is the generated password stored anywhere?</summary><p>No. It exists only in this page's memory and disappears when you leave or generate a new one. It is not sent to any server, not written to localStorage or cookies, and not logged — our anonymous usage counter records only that a password of a certain length was copied, never the password itself. You can verify in the Network tab that nothing leaves your device.</p></details>
+      <details><summary>Should I use a password manager instead?</summary><p>Honestly: yes, for day-to-day accounts a password manager is the better system — it generates, stores, and fills unique passwords so you never reuse one. This tool complements a manager rather than replacing it: it is handy for the passwords a manager cannot fill (Wi-Fi keys, device PINs, an OS account, the manager's own master password) or when you need a one-off strong password on a machine without your manager.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/qr-generator/"><span class="emoji">🔳</span><span><b>QR Code Generator</b><span>Links, text &amp; Wi-Fi login as QR codes</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/text-diff/"><span class="emoji">🔀</span><span><b>Text Diff</b><span>Compare two texts line by line</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/char-count/"><span class="emoji">🔤</span><span><b>Character Counter</b><span>Live character, word &amp; byte counts</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var pwOut = document.getElementById('pwOut');
+  var copyBtn = document.getElementById('copyBtn');
+  var genBtn = document.getElementById('genBtn');
+  var lenRange = document.getElementById('lenRange');
+  var lenLbl = document.getElementById('lenLbl');
+  var meterFill = document.getElementById('meterFill');
+  var meterLbl = document.getElementById('meterLbl');
+  var noClassHint = document.getElementById('noClassHint');
+  var result = document.getElementById('result');
+  var opts = {
+    lower: document.getElementById('optLower'),
+    upper: document.getElementById('optUpper'),
+    digit: document.getElementById('optDigit'),
+    symbol: document.getElementById('optSymbol')
+  };
+  var optNoLook = document.getElementById('optNoLook');
+
+  var SETS = {
+    lower: 'abcdefghijklmnopqrstuvwxyz',
+    upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    digit: '0123456789',
+    symbol: '!@#$%^&*()-_=+[]{};:,.?/'
+  };
+  var LOOKALIKES = /[0O1lI|]/g;
+  var lastCopyLog = 0;
+
+  function activeSets() {
+    var out = [];
+    Object.keys(SETS).forEach(function (k) {
+      if (!opts[k].checked) return;
+      var s = SETS[k];
+      if (optNoLook.checked) s = s.replace(LOOKALIKES, '');
+      if (s.length) out.push(s);
+    });
+    return out;
+  }
+
+  /* Rejection sampling: discard bytes >= limit so each pool index is exactly equally likely (avoids modulo bias). */
+  function randIndices(n, poolLen) {
+    var limit = Math.floor(256 / poolLen) * poolLen;
+    var out = [];
+    var buf = new Uint8Array(Math.max(16, n * 2));
+    while (out.length < n) {
+      crypto.getRandomValues(buf);
+      for (var i = 0; i < buf.length && out.length < n; i++) {
+        if (buf[i] < limit) out.push(buf[i] % poolLen);
+      }
+    }
+    return out;
+  }
+
+  function hasAllClasses(pw, sets) {
+    return sets.every(function (s) {
+      for (var i = 0; i < pw.length; i++) { if (s.indexOf(pw.charAt(i)) !== -1) return true; }
+      return false;
+    });
+  }
+
+  function updateMeter(len, poolSize) {
+    var bits = Math.round(len * Math.log2(poolSize));
+    var label, color;
+    if (bits < 45) { label = 'Weak'; color = 'var(--danger)'; }
+    else if (bits < 70) { label = 'Fair'; color = 'var(--warn)'; }
+    else if (bits < 100) { label = 'Strong'; color = 'var(--ok)'; }
+    else { label = 'Very strong'; color = 'var(--ok)'; }
+    meterFill.style.width = Math.min(100, Math.round(bits / 1.28)) + '%';
+    meterFill.style.background = color;
+    meterLbl.textContent = label + ' — about ' + bits + ' bits of entropy (' + len + ' chars × pool of ' + poolSize + ')';
+  }
+
+  function generate() {
+    result.className = 'result';
+    var sets = activeSets();
+    var enabled = sets.length > 0;
+    genBtn.disabled = !enabled;
+    copyBtn.disabled = !enabled;
+    noClassHint.style.display = enabled ? 'none' : 'block';
+    if (!enabled) {
+      pwOut.value = '';
+      meterFill.style.width = '0';
+      meterLbl.textContent = '';
+      return;
+    }
+    var pool = sets.join('');
+    var len = parseInt(lenRange.value, 10) || 16;
+    var pw = '';
+    /* Guarantee at least one character from each selected class; re-roll (fresh randomness) up to 100 tries. */
+    for (var attempt = 0; attempt < 100; attempt++) {
+      pw = '';
+      var idx = randIndices(len, pool.length);
+      for (var i = 0; i < len; i++) pw += pool.charAt(idx[i]);
+      if (hasAllClasses(pw, sets)) break;
+    }
+    pwOut.value = pw;
+    updateMeter(len, pool.length);
+  }
+
+  function updateLenLbl() { lenLbl.textContent = lenRange.value + ' characters'; }
+
+  lenRange.addEventListener('input', function () { updateLenLbl(); generate(); });
+  Object.keys(opts).forEach(function (k) { opts[k].addEventListener('change', generate); });
+  optNoLook.addEventListener('change', generate);
+  genBtn.addEventListener('click', generate);
+
+  var copyLabel = copyBtn.textContent;
+  var copyTimer = null;
+  function copied(ok) {
+    copyBtn.textContent = ok ? '✅ Copied ✓' : '❌ Copy failed';
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(function () { copyBtn.textContent = copyLabel; }, 1800);
+    if (ok) {
+      var now = Date.now();
+      if (now - lastCopyLog > 3000) { // rate-limit copy telemetry to once per 3s; only the length is logged, never the password
+        lastCopyLog = now;
+        mdtlLogEvent('password-generator', 'success', null, { n: parseInt(lenRange.value, 10) });
+      }
+    }
+  }
+
+  copyBtn.addEventListener('click', function () {
+    if (!pwOut.value) return;
+    function fallback() {
+      try {
+        pwOut.select();
+        var ok = document.execCommand('copy');
+        if (window.getSelection) window.getSelection().removeAllRanges();
+        pwOut.blur();
+        copied(ok);
+      } catch (e) { copied(false); }
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pwOut.value).then(function () { copied(true); }, fallback);
+      } else { fallback(); }
+    } catch (e) { fallback(); }
+  });
+
+  updateLenLbl();
+  generate();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>비밀번호 생성기 — 강력한 무작위 비밀번호, 내 기기에서 생성 | ThisIsMyCalculator</title>
+<meta name="description" content="8~64자 길이·문자 종류 선택·엔트로피 강도 측정을 갖춘 무료 비밀번호 생성기. 비밀번호는 브라우저의 암호학적 난수(crypto.getRandomValues)로 내 기기에서만 만들어지며 어디에도 전송·저장되지 않습니다.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/ko/password-generator/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/password-generator/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/password-generator/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/password-generator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="비밀번호 생성기 — 강력·로컬 생성, 전송 없음">
+<meta property="og:description" content="암호학적 난수로 강력한 무작위 비밀번호를 내 기기에서 생성. 어디에도 전송·저장되지 않습니다.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/ko/password-generator/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<style>
+  .pw-out-row { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+  .pw-out-row input { flex: 1 1 240px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 17px; letter-spacing: .5px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); min-width: 0; }
+  .pw-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px 18px; margin-top: 16px; }
+  .pw-opts label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; }
+  .pw-len { margin-top: 16px; }
+  .pw-len label { font-size: 14px; color: var(--text-soft); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .pw-len input[type=range] { flex: 1 1 200px; accent-color: var(--accent); }
+  .pw-len b { color: var(--text); font-size: 15px; min-width: 60px; }
+  .pw-meter { margin-top: 16px; }
+  .pw-meter .track { height: 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; }
+  .pw-meter .fill { height: 100%; width: 0; border-radius: 6px; transition: width .2s, background .2s; }
+  .pw-meter .lbl { font-size: 13.5px; color: var(--text-soft); margin-top: 6px; }
+  .pw-hint { font-size: 13px; color: var(--danger); margin-top: 8px; display: none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"비밀번호 생성기 - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/ko/password-generator/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"브라우저의 암호학적 난수 생성기로 강력한 무작위 비밀번호를 내 기기에서 만드는 무료 웹 도구. 비밀번호는 어디에도 전송·저장되지 않습니다.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"난수는 어떻게 만들어지나요?","acceptedAnswer":{"@type":"Answer","text":"crypto.getRandomValues — 모든 최신 브라우저에 내장된 암호학적으로 안전한 난수 생성기(CSPRNG)로, 암호화 키를 만들 때 쓰는 것과 같은 등급입니다. 전부 내 기기 안에서 실행됩니다. 여기에 더해 무작위 바이트를 문자로 바꿀 때 기각 샘플링을 사용해, 풀에 있는 모든 문자가 정확히 같은 확률로 뽑히도록(모듈로 편향 없음) 처리합니다."}},
+{"@type":"Question","name":"헷갈리는 문자 제외는 왜 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"0과 O, 1과 l과 I, | 같은 문자는 많은 글꼴에서 거의 구분이 안 됩니다. 화면에 뜬 비밀번호를 눈으로 읽고 손으로 입력해야 하는 상황 — TV, 공유기 설정, 전화로 불러줄 때 — 에서 이런 문자는 짜증나는 오타의 주범입니다. 헷갈리는 6개 문자를 빼면 풀이 약간 줄어(글자당 엔트로피 소수점 수준) 손으로 입력할 비밀번호라면 남는 장사입니다. 비밀번호 관리자에만 넣어둘 비밀번호라면 꺼도 됩니다."}},
+{"@type":"Question","name":"엔트로피 비트가 무슨 뜻인가요?","acceptedAnswer":{"@type":"Answer","text":"공격자가 시도해야 하는 경우의 수를 나타내는 단위로, n비트면 2^n가지 가능성이 있다는 뜻입니다. 길이 × log2(문자 풀 크기)로 계산하며, 90자 풀에서 뽑은 16자 비밀번호는 약 104비트입니다. 대략 45비트는 작정한 오프라인 공격에 뚫리고, 70비트 안팎이면 대부분의 계정에 충분하며, 100비트 이상은 현실적인 무차별 대입 범위를 벗어납니다. 단, 이 계산은 무작위 생성 비밀번호에만 적용됩니다 — 사람이 지은 같은 길이의 비밀번호는 실질 엔트로피가 훨씬 낮습니다."}},
+{"@type":"Question","name":"생성된 비밀번호가 어딘가에 저장되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 비밀번호는 이 페이지의 메모리에만 존재하고, 페이지를 떠나거나 새로 생성하면 사라집니다. 서버로 전송되지 않고, localStorage나 쿠키에도 기록되지 않으며, 로그에도 남지 않습니다 — 익명 사용 통계에는 '몇 자짜리 비밀번호가 복사됐다'는 숫자만 남고 비밀번호 자체는 절대 포함되지 않습니다. 네트워크 탭에서 아무것도 나가지 않는 것을 직접 확인할 수 있습니다."}},
+{"@type":"Question","name":"비밀번호 관리자를 쓰는 게 낫지 않나요?","acceptedAnswer":{"@type":"Answer","text":"솔직히 말하면 맞습니다 — 일상 계정에는 비밀번호 관리자가 더 나은 체계입니다. 계정마다 고유한 비밀번호를 생성·저장·자동입력해 재사용을 원천 차단하니까요. 이 도구는 관리자를 대체하는 게 아니라 보완합니다: 관리자가 채워줄 수 없는 비밀번호(와이파이 키, 기기 PIN, OS 계정, 관리자 자체의 마스터 비밀번호)나, 내 관리자가 없는 컴퓨터에서 일회성으로 강력한 비밀번호가 필요할 때 유용합니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/ko/">ThisIsMyCalculator</a> › <a href="/modutool/calc/ko/#calc">생활 도구</a> › 비밀번호 생성기</nav>
+  <h1 class="page-title">비밀번호 생성기<span class="privacy-badge">🔒 내 기기에서만 생성 — 전송 없음</span></h1>
+  <p class="page-sub">브라우저의 암호학적 난수 생성기 <b>crypto.getRandomValues</b>로 내 기기에서 만드는 강력한 무작위 비밀번호. 어디에도 전송·기록·저장되지 않습니다 — 브라우저 저장소에도요.</p>
+
+  <div class="card tool-card">
+    <div class="pw-out-row">
+      <input type="text" id="pwOut" readonly spellcheck="false" autocomplete="off" aria-label="생성된 비밀번호">
+      <button class="btn" id="copyBtn">📋 복사</button>
+      <button class="btn secondary" id="genBtn">🎲 다시 생성</button>
+    </div>
+
+    <div class="pw-meter" id="meter">
+      <div class="track"><div class="fill" id="meterFill"></div></div>
+      <div class="lbl" id="meterLbl"></div>
+    </div>
+
+    <div class="pw-len">
+      <label>길이 <b id="lenLbl">16자</b>
+        <input type="range" id="lenRange" min="8" max="64" value="16">
+      </label>
+    </div>
+
+    <div class="pw-opts">
+      <label><input type="checkbox" id="optLower" checked> 소문자 (a–z)</label>
+      <label><input type="checkbox" id="optUpper" checked> 대문자 (A–Z)</label>
+      <label><input type="checkbox" id="optDigit" checked> 숫자 (0–9)</label>
+      <label><input type="checkbox" id="optSymbol" checked> 특수문자 (!@#$%…)</label>
+      <label><input type="checkbox" id="optNoLook" checked> 헷갈리는 문자 제외 (0O1lI|)</label>
+    </div>
+    <div class="pw-hint" id="noClassHint">문자 종류를 하나 이상 선택해야 비밀번호를 만들 수 있습니다.</div>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>위에 이미 비밀번호가 준비되어 있습니다 — 페이지가 열리는 순간 내 기기에서 생성된 것입니다.</li>
+      <li><b>길이</b>와 <b>문자 종류</b>를 조절하면 비밀번호와 강도 측정이 즉시 다시 생성됩니다.</li>
+      <li><b>복사</b>를 눌러 가입 폼이나 비밀번호 관리자에 붙여넣으세요. <b>다시 생성</b>은 언제든 새로 뽑아 줍니다.</li>
+    </ol>
+
+    <h2>"내 기기에서 생성"이 핵심인 이유</h2>
+    <p>서버에서 돌아가는 비밀번호 생성기는 그 자체로 모순입니다: 내가 가진 가장 비밀스러운 문자열이 남의 인프라와 로그에서 태어나는 셈이니까요. 이 도구는 모든 글자를 <b>브라우저 안에서</b>, 브라우저가 TLS 암호화에 쓰는 것과 같은 암호학적 난수 생성기 <code>crypto.getRandomValues</code>로 만듭니다. 비밀번호는 전송되지 않고, 로그에 남지 않고, 어떤 저장소에도 기록되지 않습니다 — 탭을 닫으면 사라집니다. 브라우저 네트워크 탭을 열면 아무 요청도 비밀번호를 싣고 나가지 않는 것을 볼 수 있습니다.</p>
+    <p>꼼꼼한 생성기와 대충 만든 생성기를 가르는 구현 디테일 두 가지:</p>
+    <ul>
+      <li><b>모듈로 편향 없음.</b> 무작위 바이트를 <code>%</code> 연산으로 문자 풀에 대충 매핑하면 풀 앞쪽 문자가 미세하게 더 자주 나옵니다. 이 도구는 기각 샘플링 — 편향을 만드는 바이트 값은 버림 — 을 사용해 모든 문자가 정확히 같은 확률로 뽑힙니다.</li>
+      <li><b>선택한 종류는 반드시 포함.</b> 숫자나 특수문자가 빠진 비밀번호를 거부하는 사이트가 많습니다. 생성기는 선택한 각 문자 종류가 최소 1자씩 들어갔는지 확인하고, 아니면 무작위성을 해치지 않는 방식으로 새로 뽑습니다.</li>
+    </ul>
+
+    <h2>비밀번호는 몇 자가 적당할까</h2>
+    <ul>
+      <li><b>16자</b>(기본값) + 전체 문자 종류 = 약 104비트 엔트로피 — 온라인·오프라인 어느 쪽의 현실적인 무차별 대입도 불가능한 수준입니다.</li>
+      <li>사이트가 짧은 길이를 강제한다면 <b>12자</b>가 합리적인 하한선입니다 — 전체 종류 기준 약 78비트.</li>
+      <li>다른 모든 것을 지키는 비밀번호 — 비밀번호 관리자의 마스터 비밀번호, 디스크 암호화, 주 이메일 — 는 <b>20자 이상</b>으로.</li>
+      <li>길이가 복잡성을 이깁니다: 특수문자 종류 하나 추가보다 4자 연장이 더 효과적입니다. 폼이 허용하면 길게 가세요.</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 강도 측정은 무작위 생성 비밀번호에만 유효합니다. 사람이 지은 같은 길이의 비밀번호("여름2026!")는 공격자가 사람의 패턴부터 시도하기 때문에 측정치보다 훨씬 약합니다.</div>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>난수는 어떻게 만들어지나요?</summary><p>crypto.getRandomValues — 모든 최신 브라우저에 내장된 암호학적으로 안전한 난수 생성기(CSPRNG)로, 암호화 키를 만들 때 쓰는 것과 같은 등급입니다. 전부 내 기기 안에서 실행됩니다. 여기에 더해 무작위 바이트를 문자로 바꿀 때 기각 샘플링을 사용해, 풀에 있는 모든 문자가 정확히 같은 확률로 뽑히도록(모듈로 편향 없음) 처리합니다.</p></details>
+      <details><summary>헷갈리는 문자 제외는 왜 필요한가요?</summary><p>0과 O, 1과 l과 I, | 같은 문자는 많은 글꼴에서 거의 구분이 안 됩니다. 화면에 뜬 비밀번호를 눈으로 읽고 손으로 입력해야 하는 상황 — TV, 공유기 설정, 전화로 불러줄 때 — 에서 이런 문자는 짜증나는 오타의 주범입니다. 헷갈리는 6개 문자를 빼면 풀이 약간 줄어(글자당 엔트로피 소수점 수준) 손으로 입력할 비밀번호라면 남는 장사입니다. 비밀번호 관리자에만 넣어둘 비밀번호라면 꺼도 됩니다.</p></details>
+      <details><summary>엔트로피 비트가 무슨 뜻인가요?</summary><p>공격자가 시도해야 하는 경우의 수를 나타내는 단위로, n비트면 2^n가지 가능성이 있다는 뜻입니다. 길이 × log2(문자 풀 크기)로 계산하며, 90자 풀에서 뽑은 16자 비밀번호는 약 104비트입니다. 대략 45비트는 작정한 오프라인 공격에 뚫리고, 70비트 안팎이면 대부분의 계정에 충분하며, 100비트 이상은 현실적인 무차별 대입 범위를 벗어납니다. 단, 이 계산은 무작위 생성 비밀번호에만 적용됩니다 — 사람이 지은 같은 길이의 비밀번호는 실질 엔트로피가 훨씬 낮습니다.</p></details>
+      <details><summary>생성된 비밀번호가 어딘가에 저장되나요?</summary><p>아니요. 비밀번호는 이 페이지의 메모리에만 존재하고, 페이지를 떠나거나 새로 생성하면 사라집니다. 서버로 전송되지 않고, localStorage나 쿠키에도 기록되지 않으며, 로그에도 남지 않습니다 — 익명 사용 통계에는 '몇 자짜리 비밀번호가 복사됐다'는 숫자만 남고 비밀번호 자체는 절대 포함되지 않습니다. 네트워크 탭에서 아무것도 나가지 않는 것을 직접 확인할 수 있습니다.</p></details>
+      <details><summary>비밀번호 관리자를 쓰는 게 낫지 않나요?</summary><p>솔직히 말하면 맞습니다 — 일상 계정에는 비밀번호 관리자가 더 나은 체계입니다. 계정마다 고유한 비밀번호를 생성·저장·자동입력해 재사용을 원천 차단하니까요. 이 도구는 관리자를 대체하는 게 아니라 보완합니다: 관리자가 채워줄 수 없는 비밀번호(와이파이 키, 기기 PIN, OS 계정, 관리자 자체의 마스터 비밀번호)나, 내 관리자가 없는 컴퓨터에서 일회성으로 강력한 비밀번호가 필요할 때 유용합니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/ko/qr-generator/"><span class="emoji">🔳</span><span><b>QR코드 생성기</b><span>링크·텍스트·와이파이를 QR코드로</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/ko/text-diff/"><span class="emoji">🔀</span><span><b>텍스트 비교</b><span>두 글의 달라진 부분 찾기</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/ko/char-count/"><span class="emoji">🔤</span><span><b>글자수 세기</b><span>글자·단어·바이트 실시간 카운트</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var pwOut = document.getElementById('pwOut');
+  var copyBtn = document.getElementById('copyBtn');
+  var genBtn = document.getElementById('genBtn');
+  var lenRange = document.getElementById('lenRange');
+  var lenLbl = document.getElementById('lenLbl');
+  var meterFill = document.getElementById('meterFill');
+  var meterLbl = document.getElementById('meterLbl');
+  var noClassHint = document.getElementById('noClassHint');
+  var result = document.getElementById('result');
+  var opts = {
+    lower: document.getElementById('optLower'),
+    upper: document.getElementById('optUpper'),
+    digit: document.getElementById('optDigit'),
+    symbol: document.getElementById('optSymbol')
+  };
+  var optNoLook = document.getElementById('optNoLook');
+
+  var SETS = {
+    lower: 'abcdefghijklmnopqrstuvwxyz',
+    upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    digit: '0123456789',
+    symbol: '!@#$%^&*()-_=+[]{};:,.?/'
+  };
+  var LOOKALIKES = /[0O1lI|]/g;
+  var lastCopyLog = 0;
+
+  function activeSets() {
+    var out = [];
+    Object.keys(SETS).forEach(function (k) {
+      if (!opts[k].checked) return;
+      var s = SETS[k];
+      if (optNoLook.checked) s = s.replace(LOOKALIKES, '');
+      if (s.length) out.push(s);
+    });
+    return out;
+  }
+
+  /* 기각 샘플링: limit 이상의 바이트를 버려 풀의 모든 문자가 정확히 같은 확률로 뽑히게 한다(모듈로 편향 방지). */
+  function randIndices(n, poolLen) {
+    var limit = Math.floor(256 / poolLen) * poolLen;
+    var out = [];
+    var buf = new Uint8Array(Math.max(16, n * 2));
+    while (out.length < n) {
+      crypto.getRandomValues(buf);
+      for (var i = 0; i < buf.length && out.length < n; i++) {
+        if (buf[i] < limit) out.push(buf[i] % poolLen);
+      }
+    }
+    return out;
+  }
+
+  function hasAllClasses(pw, sets) {
+    return sets.every(function (s) {
+      for (var i = 0; i < pw.length; i++) { if (s.indexOf(pw.charAt(i)) !== -1) return true; }
+      return false;
+    });
+  }
+
+  function updateMeter(len, poolSize) {
+    var bits = Math.round(len * Math.log2(poolSize));
+    var label, color;
+    if (bits < 45) { label = '약함'; color = 'var(--danger)'; }
+    else if (bits < 70) { label = '보통'; color = 'var(--warn)'; }
+    else if (bits < 100) { label = '강함'; color = 'var(--ok)'; }
+    else { label = '매우 강함'; color = 'var(--ok)'; }
+    meterFill.style.width = Math.min(100, Math.round(bits / 1.28)) + '%';
+    meterFill.style.background = color;
+    meterLbl.textContent = label + ' — 엔트로피 약 ' + bits + '비트 (' + len + '자 × 문자 풀 ' + poolSize + '개)';
+  }
+
+  function generate() {
+    result.className = 'result';
+    var sets = activeSets();
+    var enabled = sets.length > 0;
+    genBtn.disabled = !enabled;
+    copyBtn.disabled = !enabled;
+    noClassHint.style.display = enabled ? 'none' : 'block';
+    if (!enabled) {
+      pwOut.value = '';
+      meterFill.style.width = '0';
+      meterLbl.textContent = '';
+      return;
+    }
+    var pool = sets.join('');
+    var len = parseInt(lenRange.value, 10) || 16;
+    var pw = '';
+    /* 선택한 문자 종류가 최소 1자씩 들어갈 때까지 새 난수로 다시 뽑는다(최대 100회). */
+    for (var attempt = 0; attempt < 100; attempt++) {
+      pw = '';
+      var idx = randIndices(len, pool.length);
+      for (var i = 0; i < len; i++) pw += pool.charAt(idx[i]);
+      if (hasAllClasses(pw, sets)) break;
+    }
+    pwOut.value = pw;
+    updateMeter(len, pool.length);
+  }
+
+  function updateLenLbl() { lenLbl.textContent = lenRange.value + '자'; }
+
+  lenRange.addEventListener('input', function () { updateLenLbl(); generate(); });
+  Object.keys(opts).forEach(function (k) { opts[k].addEventListener('change', generate); });
+  optNoLook.addEventListener('change', generate);
+  genBtn.addEventListener('click', generate);
+
+  var copyLabel = copyBtn.textContent;
+  var copyTimer = null;
+  function copied(ok) {
+    copyBtn.textContent = ok ? '✅ 복사됨 ✓' : '❌ 복사 실패';
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(function () { copyBtn.textContent = copyLabel; }, 1800);
+    if (ok) {
+      var now = Date.now();
+      if (now - lastCopyLog > 3000) { // 복사 텔레메트리는 3초에 1회로 제한 — 길이만 기록, 비밀번호는 절대 전송 안 함
+        lastCopyLog = now;
+        mdtlLogEvent('password-generator', 'success', null, { n: parseInt(lenRange.value, 10) });
+      }
+    }
+  }
+
+  copyBtn.addEventListener('click', function () {
+    if (!pwOut.value) return;
+    function fallback() {
+      try {
+        pwOut.select();
+        var ok = document.execCommand('copy');
+        if (window.getSelection) window.getSelection().removeAllRanges();
+        pwOut.blur();
+        copied(ok);
+      } catch (e) { copied(false); }
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pwOut.value).then(function () { copied(true); }, fallback);
+      } else { fallback(); }
+    } catch (e) { fallback(); }
+  });
+
+  updateLenLbl();
+  generate();
+})();
+</script>
+</body>
+</html>

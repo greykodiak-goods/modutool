@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interest Calculator — Deposits, Monthly Savings &amp; Loan Payments | ThisIsMyCalculator</title>
+<meta name="description" content="Free interest calculator with three modes: lump-sum deposit (simple or monthly compound), monthly savings plan (Korean-style simple interest per installment), and amortized loan payment (equal monthly payments). Optional tax rate on interest. Results update live as you type — 100% in-browser, nothing sent to a server.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/interest-calculator/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/interest-calculator/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/interest-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/interest-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Interest Calculator — Deposits, Monthly Savings &amp; Loan Payments">
+<meta property="og:description" content="Deposit interest, monthly-savings interest, and amortized loan payments — pick a mode and results appear as you type. 100% in-browser.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/interest-calculator/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Interest Calculator - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/interest-calculator/","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web calculator for the three everyday interest problems: interest on a lump-sum deposit (simple or monthly compound), interest on a monthly savings plan (simple interest on each installment's remaining months), and the equal monthly payment on an amortized loan. Optional tax rate on interest. Runs entirely in the browser; no input is sent to a server.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is the difference between simple and compound interest?","acceptedAnswer":{"@type":"Answer","text":"Simple interest is always charged on the original principal only: interest = principal × rate × time. Compound interest adds each period's interest to the principal, so later periods earn interest on interest: with monthly compounding, balance = principal × (1 + rate/12)^months. Over short terms the difference is small, but it grows quickly with time and rate — that is why the compounding basis (monthly, quarterly, annual) matters when comparing products."}},
+{"@type":"Question","name":"Why is the interest on a monthly savings plan so much less than on a lump-sum deposit at the same rate?","acceptedAnswer":{"@type":"Answer","text":"Because each monthly installment only earns interest for the months it is actually in the account. In a 12-month plan, the first deposit earns 12 months of interest but the last one earns only 1 month. Averaged out, your money is invested for roughly half the term, so the total interest is close to half of what the same total amount would earn as a day-one lump sum. This calculator uses the standard Korean bank formula: interest = monthly deposit × (rate ÷ 12) × n(n+1)/2."}},
+{"@type":"Question","name":"What formula is used for the loan payment?","acceptedAnswer":{"@type":"Answer","text":"The standard amortization (equal total payment) formula: M = P × r × (1+r)^n ÷ ((1+r)^n − 1), where P is the loan amount, r the monthly rate (annual rate ÷ 12), and n the number of months. Every month you pay the same amount M; early payments are mostly interest and later ones mostly principal. If the rate is 0%, the payment is simply P ÷ n."}},
+{"@type":"Question","name":"Is tax deducted from the interest?","acceptedAnswer":{"@type":"Answer","text":"In most countries interest income is taxed — in South Korea, for example, banks withhold 15.4% of deposit and savings interest at source. This calculator shows pre-tax interest by default; enter your local rate in the optional tax-rate field to see the after-tax figures. Loan payments are not affected by the tax field."}},
+{"@type":"Question","name":"Why do the bank's numbers differ slightly from this calculator?","acceptedAnswer":{"@type":"Answer","text":"Banks typically accrue interest by exact days (a 365- or 366-day year) rather than flat months, apply preferential-rate conditions, round at intermediate steps, and may use a different compounding basis. This calculator uses clean monthly arithmetic, so treat its results as close estimates for comparing options — the binding numbers are on the bank's own schedule or contract."}}
+]}
+</script>
+<style>
+.tool-card h2{font-size:16px;margin:0 0 12px}
+@media (min-width:600px){.calc-grid{grid-template-columns:1fr 1fr}}
+.int-rows{display:grid;gap:6px;margin-top:10px;font-size:14.5px}
+.int-rows>div{display:flex;justify-content:space-between;gap:12px;border-top:1px dashed var(--line);padding-top:6px}
+.int-rows b{font-variant-numeric:tabular-nums}
+.guide table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+.guide th,.guide td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+.guide th{background:var(--surface-2);font-size:13.5px}
+</style>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/">ThisIsMyCalculator</a> › <a href="/modutool/calc/#calc">Calculators</a> › Interest Calculator</nav>
+  <h1 class="page-title">Interest Calculator<span class="privacy-badge">🔒 Nothing sent to a server</span></h1>
+  <p class="page-sub">Deposit interest, monthly-savings interest, and amortized loan payments — three calculations in one tool, updating live as you type. Free, no sign-up.</p>
+
+  <div class="card tool-card">
+    <h2>💰 Deposit · Savings plan · Loan</h2>
+    <label class="field" style="margin-bottom:14px">
+      <span>What are you calculating?</span>
+      <select id="mode" aria-label="Calculation mode">
+        <option value="deposit">Deposit — lump sum earning interest</option>
+        <option value="savings">Savings plan — fixed monthly deposits</option>
+        <option value="loan">Loan — equal monthly payments</option>
+      </select>
+    </label>
+    <div class="calc-grid">
+      <label class="field">
+        <span id="amtLabel">Principal</span>
+        <input type="text" id="amtIn" inputmode="decimal" placeholder="e.g. 10,000,000" autocomplete="off" aria-label="Amount">
+      </label>
+      <label class="field">
+        <span>Annual interest rate (%)</span>
+        <input type="number" id="rateIn" inputmode="decimal" min="0" step="any" placeholder="e.g. 3.5" aria-label="Annual interest rate in percent">
+      </label>
+      <label class="field">
+        <span>Term (months)</span>
+        <input type="number" id="monthsIn" inputmode="numeric" min="1" step="1" placeholder="e.g. 12" aria-label="Term in months">
+      </label>
+      <label class="field" id="compoundField">
+        <span>Interest type</span>
+        <select id="compoundSel" aria-label="Simple or compound interest">
+          <option value="simple">Simple interest</option>
+          <option value="compound">Compound (monthly)</option>
+        </select>
+      </label>
+      <label class="field" id="taxField">
+        <span>Tax rate on interest (%, optional)</span>
+        <input type="number" id="taxIn" inputmode="decimal" min="0" max="100" step="any" value="0" aria-label="Tax rate on interest in percent">
+      </label>
+    </div>
+    <div class="calc-out" id="out" aria-live="polite"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>Pick a mode: a <b>deposit</b> (one lump sum sitting for the term), a <b>savings plan</b> (the same amount deposited every month), or a <b>loan</b> repaid in equal monthly payments.</li>
+      <li>Fill in the amount, annual rate and term in months. There is no button — <b>every figure updates as you type</b>, so you can play what-if with the rate or term. Thousands separators (e.g. 10,000,000) are recognized.</li>
+      <li>For deposits, choose <b>simple or monthly compound</b> interest. If interest income is taxed where you live, enter the rate in the optional <b>tax field</b> to see after-tax figures (leave it at 0 to see gross interest only).</li>
+    </ol>
+
+    <h2>The formulas, exactly as implemented</h2>
+    <ul>
+      <li><b>Deposit, simple:</b> interest = principal × (rate ÷ 100) × (months ÷ 12). Example: 10,000,000 at 3.5% for 12 months → 350,000.</li>
+      <li><b>Deposit, monthly compound:</b> interest = principal × ((1 + rate ÷ 1200)<sup>months</sup> − 1). The same deposit above → about 355,670, slightly more because each month's interest starts earning too.</li>
+      <li><b>Savings plan (simple interest per installment):</b> interest = monthly deposit × (rate ÷ 1200) × n(n+1) ÷ 2. Each installment earns simple interest for the months remaining until maturity — the standard method Korean banks use for installment savings. Example: 500,000/month at 3.5% for 12 months → total deposited 6,000,000, interest 113,750.</li>
+      <li><b>Loan (equal total payment):</b> M = P × r × (1+r)<sup>n</sup> ÷ ((1+r)<sup>n</sup> − 1), with r = annual rate ÷ 12. When the rate is 0%, the payment is simply P ÷ n. Total interest = M × n − P.</li>
+    </ul>
+
+    <h2>Why savings-plan interest looks "small"</h2>
+    <p>A common surprise: 6,000,000 total paid into a 12-month savings plan at 3.5% earns about 113,750 — nowhere near the 210,000 that 6,000,000 would earn as a day-one deposit. Nothing is wrong. Only your first installment is invested for the full 12 months; the second sits for 11 months, and the final one for just 1 month. Summing those periods gives n(n+1)/2 = 78 "deposit-months" instead of 144, so the effective time your money spends in the account is a bit over half the term. When banks advertise a savings-plan rate, remember it applies to each installment's remaining months, not to your final balance.</p>
+
+    <h2>How an amortized loan payment behaves</h2>
+    <p>With equal total payments (the most common consumer structure), you pay the same amount every month, but its composition shifts: early payments are mostly interest computed on the still-large balance, and later payments are mostly principal. Two practical consequences:</p>
+    <ul>
+      <li><b>Stretching the term lowers the monthly payment but raises total interest</b> — a 100,000,000 loan at 4% costs about 1,012,451/month over 10 years (total interest ≈ 21.5 million) versus about 605,980/month over 20 years (total interest ≈ 45.4 million).</li>
+      <li><b>Early repayment saves the most near the start</b>, when the balance — and therefore each month's interest share — is largest.</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> to compare a savings plan against a deposit fairly, compare the interest per amount-actually-invested-over-time, not the headline rates. A 5% savings plan can earn less cash than a 3% deposit of the same total, purely because of timing.</div>
+
+    <h2>Estimates, not bank statements</h2>
+    <p>This calculator uses clean monthly arithmetic. Banks accrue interest by exact days (365/366-day years), apply preferential-rate conditions, round at intermediate steps, and tax interest income at your local rate — in South Korea, for instance, 15.4% is withheld at source. Use these results to compare options and sanity-check offers; the binding numbers are the ones on the bank's own schedule or contract. Nothing here is financial advice.</p>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>What is the difference between simple and compound interest?</summary><p>Simple interest is always charged on the original principal only: interest = principal × rate × time. Compound interest adds each period's interest to the principal, so later periods earn interest on interest: with monthly compounding, balance = principal × (1 + rate/12)^months. Over short terms the difference is small, but it grows quickly with time and rate — that is why the compounding basis (monthly, quarterly, annual) matters when comparing products.</p></details>
+      <details><summary>Why is the interest on a monthly savings plan so much less than on a lump-sum deposit at the same rate?</summary><p>Because each monthly installment only earns interest for the months it is actually in the account. In a 12-month plan, the first deposit earns 12 months of interest but the last one earns only 1 month. Averaged out, your money is invested for roughly half the term, so the total interest is close to half of what the same total amount would earn as a day-one lump sum. This calculator uses the standard Korean bank formula: interest = monthly deposit × (rate ÷ 12) × n(n+1)/2.</p></details>
+      <details><summary>What formula is used for the loan payment?</summary><p>The standard amortization (equal total payment) formula: M = P × r × (1+r)^n ÷ ((1+r)^n − 1), where P is the loan amount, r the monthly rate (annual rate ÷ 12), and n the number of months. Every month you pay the same amount M; early payments are mostly interest and later ones mostly principal. If the rate is 0%, the payment is simply P ÷ n.</p></details>
+      <details><summary>Is tax deducted from the interest?</summary><p>In most countries interest income is taxed — in South Korea, for example, banks withhold 15.4% of deposit and savings interest at source. This calculator shows pre-tax interest by default; enter your local rate in the optional tax-rate field to see the after-tax figures. Loan payments are not affected by the tax field.</p></details>
+      <details><summary>Why do the bank's numbers differ slightly from this calculator?</summary><p>Banks typically accrue interest by exact days (a 365- or 366-day year) rather than flat months, apply preferential-rate conditions, round at intermediate steps, and may use a different compounding basis. This calculator uses clean monthly arithmetic, so treat its results as close estimates for comparing options — the binding numbers are on the bank's own schedule or contract.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/vat-calculator/"><span class="emoji">🧾</span><span><b>VAT Calculator</b><span>Add or back out VAT</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/percent-calculator/"><span class="emoji">➗</span><span><b>Percentage Calculator</b><span>Ratios, change, discounts</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var modeEl = document.getElementById('mode');
+  var amtIn = document.getElementById('amtIn');
+  var amtLabel = document.getElementById('amtLabel');
+  var rateIn = document.getElementById('rateIn');
+  var monthsIn = document.getElementById('monthsIn');
+  var compoundField = document.getElementById('compoundField');
+  var compoundSel = document.getElementById('compoundSel');
+  var taxField = document.getElementById('taxField');
+  var taxIn = document.getElementById('taxIn');
+  var out = document.getElementById('out');
+
+  var LABELS = { deposit: 'Principal', savings: 'Monthly deposit', loan: 'Loan amount' };
+  var PLACEHOLDERS = { deposit: 'e.g. 10,000,000', savings: 'e.g. 500,000', loan: 'e.g. 100,000,000' };
+
+  function parseNum(s) {
+    if (s == null) return NaN;
+    s = String(s).replace(/,/g, '').trim();
+    if (s === '') return NaN;
+    var n = Number(s);
+    return isFinite(n) ? n : NaN;
+  }
+  function fmt(n) {
+    return Math.round(n).toLocaleString('en-US');
+  }
+  function idle(msg) {
+    out.innerHTML = '<div class="num">—</div><div class="sub">' + msg + '</div>';
+  }
+  function row(label, val) {
+    return '<div><span>' + label + '</span><b>' + val + '</b></div>';
+  }
+
+  function update() {
+    try {
+      var mode = modeEl.value;
+      var amt = parseNum(amtIn.value);
+      var rate = parseNum(rateIn.value);
+      var m = parseNum(monthsIn.value);
+      if (!isFinite(amt) || amt < 0 || !isFinite(rate) || rate < 0 || !isFinite(m) || m < 1) {
+        var touched = amtIn.value.trim() || rateIn.value.trim() || monthsIn.value.trim();
+        idle(touched ? 'Enter a non-negative amount and rate, and a term of at least 1 month.' : 'Fill in the amount, rate and term for an instant result.');
+        return;
+      }
+      m = Math.floor(m);
+      var tax = parseNum(taxIn.value);
+      if (!isFinite(tax) || tax < 0 || tax > 100) tax = 0;
+      var html = '';
+
+      if (mode === 'loan') {
+        var i = rate / 1200;
+        var M;
+        if (i === 0) {
+          M = amt / m;
+        } else {
+          var g = Math.pow(1 + i, m);
+          M = amt * i * g / (g - 1);
+        }
+        var totalPay = M * m;
+        var totalInt = totalPay - amt;
+        html = '<div class="num">' + fmt(M) + ' / month</div>' +
+          '<div class="sub">M = P × r × (1+r)^n ÷ ((1+r)^n − 1), r = ' + rate + '% ÷ 12, n = ' + m + '</div>' +
+          '<div class="int-rows">' +
+          row('Monthly payment', fmt(M)) +
+          row('Total interest', fmt(totalInt)) +
+          row('Total repaid', fmt(totalPay)) +
+          '</div>';
+      } else {
+        var principal, interest, sub;
+        if (mode === 'deposit') {
+          principal = amt;
+          if (compoundSel.value === 'compound') {
+            interest = amt * (Math.pow(1 + rate / 1200, m) - 1);
+            sub = 'Compound (monthly): interest = P × ((1 + ' + rate + '% ÷ 12)^' + m + ' − 1)';
+          } else {
+            interest = amt * (rate / 100) * (m / 12);
+            sub = 'Simple: interest = P × ' + rate + '% × ' + m + '/12';
+          }
+        } else {
+          principal = amt * m;
+          interest = amt * (rate / 1200) * (m * (m + 1) / 2);
+          sub = 'Interest = monthly deposit × ' + rate + '% ÷ 12 × n(n+1)/2, n = ' + m + ' (simple interest on each installment)';
+        }
+        var rowsHtml = row(mode === 'deposit' ? 'Principal' : 'Total deposited', fmt(principal)) +
+          row('Interest (pre-tax)', fmt(interest));
+        var total;
+        if (tax > 0) {
+          var taxAmt = interest * tax / 100;
+          var netInt = interest - taxAmt;
+          total = principal + netInt;
+          rowsHtml += row('Tax on interest (' + tax + '%)', '− ' + fmt(taxAmt)) +
+            row('Interest after tax', fmt(netInt)) +
+            row('Total at maturity (after tax)', fmt(total));
+        } else {
+          total = principal + interest;
+          rowsHtml += row('Total at maturity (pre-tax)', fmt(total));
+        }
+        html = '<div class="num">' + fmt(total) + '</div><div class="sub">' + sub + '</div>' +
+          '<div class="int-rows">' + rowsHtml + '</div>';
+      }
+      out.innerHTML = html;
+    } catch (e) {
+      idle('Something went wrong. Please check your input.');
+    }
+  }
+
+  function onMode() {
+    var mode = modeEl.value;
+    amtLabel.textContent = LABELS[mode];
+    amtIn.placeholder = PLACEHOLDERS[mode];
+    compoundField.style.display = mode === 'deposit' ? '' : 'none';
+    taxField.style.display = mode === 'loan' ? 'none' : '';
+    update();
+  }
+
+  modeEl.addEventListener('change', onMode);
+  compoundSel.addEventListener('change', update);
+  amtIn.addEventListener('input', update);
+  rateIn.addEventListener('input', update);
+  monthsIn.addEventListener('input', update);
+  taxIn.addEventListener('input', update);
+  onMode();
+})();
+</script>
+</body>
+</html>

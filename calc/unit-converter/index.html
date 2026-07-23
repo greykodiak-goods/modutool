@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit Converter — Length, Weight, Area, Temperature &amp; Volume | ThisIsMyCalculator</title>
+<meta name="description" content="Free unit converter for length (mm–miles), weight (mg–pounds), area (m², pyeong, ft², acres), temperature (°C/°F/K) and volume (ml, liters, cups, gallons). Pick units, type a value, and the result converts live with a 1-unit reference line. 100% in-browser — nothing is sent to a server.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/calc/unit-converter/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/calc/ko/unit-converter/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/calc/unit-converter/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/calc/unit-converter/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Unit Converter — Length, Weight, Area, Temperature &amp; Volume">
+<meta property="og:description" content="Five categories, live conversion as you type, temperature by exact formula, 6-significant-digit precision. 100% in-browser.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/calc/unit-converter/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyCalculator";window.MDTL_SITE_MARK="C";</script>
+<script>window.MDTL_BASE='/modutool/calc';</script>
+<link rel="stylesheet" href="/modutool/calc/assets/site.css">
+<script src="/modutool/calc/assets/site.js"></script>
+<script src="/modutool/calc/assets/ads-config.js" defer></script>
+<script src="/modutool/calc/assets/auth-config.js" defer></script>
+<script src="/modutool/calc/assets/auth.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Unit Converter - ThisIsMyCalculator","url":"https://greykodiak-goods.github.io/modutool/calc/unit-converter/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web unit converter covering length, weight, area (including the Korean pyeong), temperature and volume. Temperature converts by exact formula; other categories use standard conversion factors, with results shown to at most 6 significant digits. Runs entirely in the browser; no input is sent to a server.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What conversion factor is used for the Korean pyeong?","acceptedAnswer":{"@type":"Answer","text":"1 pyeong = 3.305785 m² (precisely 400/121 m²), the standard factor used in Korean real estate, and going the other way 1 m² = 0.3025 pyeong exactly. The pyeong derives from a square measuring 6 cheok (traditional Korean feet, about 1.818 m) per side and is still the everyday unit for Korean apartments and land, even though official documents use square meters."}},
+{"@type":"Question","name":"What formulas are used for temperature conversion?","acceptedAnswer":{"@type":"Answer","text":"Temperature is not a simple multiplication because the scales have different zero points, so exact formulas are used: °F = °C × 9/5 + 32, °C = (°F − 32) × 5/9, K = °C + 273.15. For example 100 °C = 212 °F = 373.15 K. That offset is also why a 1-degree step means the same in Celsius and Kelvin but only 5/9 as much in Fahrenheit."}},
+{"@type":"Question","name":"What is the difference between metric and imperial (US customary) units?","acceptedAnswer":{"@type":"Answer","text":"Metric units (mm, m, km, g, kg, L) scale by powers of ten, while imperial and US customary units (inches, feet, miles, ounces, pounds, gallons) use historical ratios like 12 inches to a foot. The bridges are exact definitions: 1 inch = 25.4 mm, 1 pound = 453.59237 g. Note that this tool uses the US liquid gallon (3.785412 L) and a 240 ml cup; UK imperial gallons (4.546 L) and metric 250 ml cups differ."}},
+{"@type":"Question","name":"How precise are the results?","acceptedAnswer":{"@type":"Answer","text":"Conversion factors are exact where an exact definition exists (e.g. 1 in = 25.4 mm, 1 lb = 0.45359237 kg) and results are displayed to at most 6 significant digits with trailing zeros trimmed. Internal math runs at full floating-point precision, so rounding only happens at display time. For engineering or legal purposes, apply your own rounding rules to the raw factors."}},
+{"@type":"Question","name":"Is the value I enter sent to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All conversions run inside your browser using built-in constants and formulas — no network request is made, nothing is stored, and the page keeps working offline once it has loaded."}}
+]}
+</script>
+<style>
+.tool-card h2{font-size:16px;margin:0 0 12px}
+@media (min-width:600px){.calc-grid{grid-template-columns:1fr 1fr 1fr}}
+.tool-card .btn-row .btn{padding:8px 14px;font-size:14px}
+.guide table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+.guide th,.guide td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+.guide th{background:var(--surface-2);font-size:13.5px}
+</style>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/calc/">ThisIsMyCalculator</a> › <a href="/modutool/calc/#calc">Calculators</a> › Unit Converter</nav>
+  <h1 class="page-title">Unit Converter<span class="privacy-badge">🔒 Nothing sent to a server</span></h1>
+  <p class="page-sub">Length, weight, area (including Korean pyeong), temperature and volume — pick two units, type a value, and the conversion appears live. Free, no sign-up.</p>
+
+  <div class="card tool-card">
+    <h2>📐 Convert between units</h2>
+    <label class="field" style="margin-bottom:14px">
+      <span>Category</span>
+      <select id="catSel" aria-label="Unit category">
+        <option value="length">Length</option>
+        <option value="weight">Weight / Mass</option>
+        <option value="area">Area</option>
+        <option value="temp">Temperature</option>
+        <option value="volume">Volume</option>
+      </select>
+    </label>
+    <div class="calc-grid">
+      <label class="field">
+        <span>Value</span>
+        <input type="number" id="valIn" inputmode="decimal" step="any" placeholder="e.g. 100" aria-label="Value to convert">
+      </label>
+      <label class="field">
+        <span>From</span>
+        <select id="fromSel" aria-label="Convert from unit"></select>
+      </label>
+      <label class="field">
+        <span>To</span>
+        <select id="toSel" aria-label="Convert to unit"></select>
+      </label>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn secondary" id="swapBtn" aria-label="Swap the from and to units">⇄ Swap units</button>
+    </div>
+    <div class="calc-out" id="out" aria-live="polite"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to use</h2>
+    <ol>
+      <li>Pick a <b>category</b> — length, weight, area, temperature or volume. The From/To lists update to the units of that category.</li>
+      <li>Type a value. There is no button — the <b>result appears instantly</b> and updates as you edit. A small reference line below the result shows what 1 of your From unit equals, so you can sanity-check the scale at a glance.</li>
+      <li>Use <b>⇄ Swap units</b> to flip the direction without retyping.</li>
+    </ol>
+
+    <h2>The factors and formulas behind the results</h2>
+    <p>Wherever an exact legal definition exists, this converter uses it: <b>1 inch = 25.4 mm</b>, <b>1 pound = 453.59237 g</b>, <b>1 US gallon = 3.785412 L</b>, <b>1 pyeong = 3.305785 m²</b> (400/121 m², the Korean real-estate area unit — see the dedicated <a href="/modutool/calc/pyeong-calculator/">pyeong calculator</a> for apartment-size context). Every conversion goes through the category's base unit (meters, kilograms, square meters, liters), so any pair of units in a category converts consistently.</p>
+    <p><b>Temperature is the exception</b> — the scales start at different zero points, so a factor alone can't do it. The converter applies the exact formulas:</p>
+    <ul>
+      <li><b>°F = °C × 9/5 + 32</b> (and back: °C = (°F − 32) × 5/9)</li>
+      <li><b>K = °C + 273.15</b> — the Kelvin scale starts at absolute zero, −273.15 °C</li>
+    </ul>
+    <p>That zero-point offset is why "double the temperature" makes no sense across scales, and why 0 °C is 32 °F, not 0 °F.</p>
+
+    <h2>Handy anchor values</h2>
+    <table>
+      <thead><tr><th>Category</th><th>Worth memorizing</th></tr></thead>
+      <tbody>
+        <tr><td>Length</td><td>1 in = 2.54 cm · 1 ft = 30.48 cm · 1 mi ≈ 1.609 km</td></tr>
+        <tr><td>Weight</td><td>1 oz ≈ 28.35 g · 1 lb ≈ 453.6 g · 1 kg ≈ 2.205 lb</td></tr>
+        <tr><td>Area</td><td>1 pyeong = 3.305785 m² · 1 m² ≈ 10.76 ft² · 1 acre ≈ 4,047 m²</td></tr>
+        <tr><td>Temperature</td><td>0 °C = 32 °F · 100 °C = 212 °F · 0 K = −273.15 °C</td></tr>
+        <tr><td>Volume</td><td>1 cup (240 ml) · 1 L ≈ 4.17 cups · 1 US gal ≈ 3.785 L</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Watch out for "same name, different unit"</h2>
+    <p>Several everyday units have regional variants, and this tool picks one deliberately:</p>
+    <ul>
+      <li><b>Gallon</b> — this converter uses the <b>US liquid gallon (3.785412 L)</b>. The UK imperial gallon is 4.54609 L, about 20% bigger.</li>
+      <li><b>Cup</b> — recipes disagree: US legal cup 240 ml (used here), US customary 236.6 ml, metric cup 250 ml, Japanese cup 200 ml. For baking, a few ml rarely matters; for precise work, weigh instead.</li>
+      <li><b>Ton</b> — here, the metric ton (1,000 kg). The US short ton (907.2 kg) and UK long ton (1,016 kg) are different animals.</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> the "1 From = X To" reference line under every result doubles as a factor lookup — set the units you care about and read the line, no value needed beyond any number in the box.</div>
+
+    <h2>Precision, honestly stated</h2>
+    <p>Internal math runs at full floating-point precision and only the display is rounded — to at most <b>6 significant digits</b>, with trailing zeros trimmed. That is more than enough for cooking, travel, real estate and homework. If you are doing engineering, trade or legal work, use the exact defined factors above and apply the rounding rules your field requires.</p>
+
+    <h2>Frequently asked questions</h2>
+    <div class="faq">
+      <details><summary>What conversion factor is used for the Korean pyeong?</summary><p>1 pyeong = 3.305785 m² (precisely 400/121 m²), the standard factor used in Korean real estate, and going the other way 1 m² = 0.3025 pyeong exactly. The pyeong derives from a square measuring 6 cheok (traditional Korean feet, about 1.818 m) per side and is still the everyday unit for Korean apartments and land, even though official documents use square meters.</p></details>
+      <details><summary>What formulas are used for temperature conversion?</summary><p>Temperature is not a simple multiplication because the scales have different zero points, so exact formulas are used: °F = °C × 9/5 + 32, °C = (°F − 32) × 5/9, K = °C + 273.15. For example 100 °C = 212 °F = 373.15 K. That offset is also why a 1-degree step means the same in Celsius and Kelvin but only 5/9 as much in Fahrenheit.</p></details>
+      <details><summary>What is the difference between metric and imperial (US customary) units?</summary><p>Metric units (mm, m, km, g, kg, L) scale by powers of ten, while imperial and US customary units (inches, feet, miles, ounces, pounds, gallons) use historical ratios like 12 inches to a foot. The bridges are exact definitions: 1 inch = 25.4 mm, 1 pound = 453.59237 g. Note that this tool uses the US liquid gallon (3.785412 L) and a 240 ml cup; UK imperial gallons (4.546 L) and metric 250 ml cups differ.</p></details>
+      <details><summary>How precise are the results?</summary><p>Conversion factors are exact where an exact definition exists (e.g. 1 in = 25.4 mm, 1 lb = 0.45359237 kg) and results are displayed to at most 6 significant digits with trailing zeros trimmed. Internal math runs at full floating-point precision, so rounding only happens at display time. For engineering or legal purposes, apply your own rounding rules to the raw factors.</p></details>
+      <details><summary>Is the value I enter sent to a server?</summary><p>No. All conversions run inside your browser using built-in constants and formulas — no network request is made, nothing is stored, and the page keeps working offline once it has loaded.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/calc/pyeong-calculator/"><span class="emoji">📐</span><span><b>Pyeong Calculator</b><span>Pyeong ↔ m², apartment sizes</span></span></a>
+      <a class="tool-tile" href="/modutool/calc/percent-calculator/"><span class="emoji">➗</span><span><b>Percentage Calculator</b><span>Ratios, change, discounts</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var CATS = {
+    length: {
+      units: [
+        ['mm', 'Millimeters (mm)', 'mm', 0.001],
+        ['cm', 'Centimeters (cm)', 'cm', 0.01],
+        ['m', 'Meters (m)', 'm', 1],
+        ['km', 'Kilometers (km)', 'km', 1000],
+        ['in', 'Inches (in)', 'in', 0.0254],
+        ['ft', 'Feet (ft)', 'ft', 0.3048],
+        ['yd', 'Yards (yd)', 'yd', 0.9144],
+        ['mi', 'Miles (mi)', 'mi', 1609.344]
+      ],
+      def: ['m', 'ft']
+    },
+    weight: {
+      units: [
+        ['mg', 'Milligrams (mg)', 'mg', 0.000001],
+        ['g', 'Grams (g)', 'g', 0.001],
+        ['kg', 'Kilograms (kg)', 'kg', 1],
+        ['t', 'Metric tons (t)', 't', 1000],
+        ['oz', 'Ounces (oz)', 'oz', 0.028349523125],
+        ['lb', 'Pounds (lb)', 'lb', 0.45359237]
+      ],
+      def: ['kg', 'lb']
+    },
+    area: {
+      units: [
+        ['m2', 'Square meters (m²)', 'm²', 1],
+        ['py', 'Pyeong (평)', 'pyeong', 3.305785],
+        ['ft2', 'Square feet (ft²)', 'ft²', 0.09290304],
+        ['ac', 'Acres', 'acres', 4046.8564224]
+      ],
+      def: ['m2', 'py']
+    },
+    temp: {
+      units: [
+        ['c', 'Celsius (°C)', '°C', null],
+        ['f', 'Fahrenheit (°F)', '°F', null],
+        ['k', 'Kelvin (K)', 'K', null]
+      ],
+      def: ['c', 'f']
+    },
+    volume: {
+      units: [
+        ['ml', 'Milliliters (ml)', 'ml', 0.001],
+        ['l', 'Liters (L)', 'L', 1],
+        ['cup', 'Cups (240 ml)', 'cups', 0.24],
+        ['gal', 'US gallons (gal)', 'gal', 3.785411784]
+      ],
+      def: ['l', 'gal']
+    }
+  };
+  var TEMP_FORMULA = {
+    'c>f': '°F = °C × 9/5 + 32',
+    'f>c': '°C = (°F − 32) × 5/9',
+    'c>k': 'K = °C + 273.15',
+    'k>c': '°C = K − 273.15',
+    'f>k': 'K = (°F − 32) × 5/9 + 273.15',
+    'k>f': '°F = (K − 273.15) × 9/5 + 32'
+  };
+
+  var catSel = document.getElementById('catSel');
+  var fromSel = document.getElementById('fromSel');
+  var toSel = document.getElementById('toSel');
+  var valIn = document.getElementById('valIn');
+  var swapBtn = document.getElementById('swapBtn');
+  var out = document.getElementById('out');
+
+  function unit(cat, id) {
+    var us = CATS[cat].units;
+    for (var i = 0; i < us.length; i++) if (us[i][0] === id) return us[i];
+    return us[0];
+  }
+  function toC(id, v) {
+    if (id === 'f') return (v - 32) * 5 / 9;
+    if (id === 'k') return v - 273.15;
+    return v;
+  }
+  function fromC(id, c) {
+    if (id === 'f') return c * 9 / 5 + 32;
+    if (id === 'k') return c + 273.15;
+    return c;
+  }
+  function convert(cat, fromId, toId, v) {
+    if (cat === 'temp') return fromC(toId, toC(fromId, v));
+    return v * unit(cat, fromId)[3] / unit(cat, toId)[3];
+  }
+  function fmt(n) {
+    if (!isFinite(n)) return null;
+    if (n === 0) return '0';
+    var p = Number(n.toPrecision(6));
+    return p.toLocaleString('en-US', { maximumFractionDigits: 20 });
+  }
+  function idle(msg) {
+    out.innerHTML = '<div class="num">—</div><div class="sub">' + msg + '</div>';
+  }
+
+  function fillSelects() {
+    var cat = catSel.value;
+    var us = CATS[cat].units;
+    var html = '';
+    for (var i = 0; i < us.length; i++) {
+      html += '<option value="' + us[i][0] + '">' + us[i][1] + '</option>';
+    }
+    fromSel.innerHTML = html;
+    toSel.innerHTML = html;
+    fromSel.value = CATS[cat].def[0];
+    toSel.value = CATS[cat].def[1];
+  }
+
+  function update() {
+    try {
+      var cat = catSel.value;
+      var fu = unit(cat, fromSel.value);
+      var tu = unit(cat, toSel.value);
+      var refLine;
+      if (cat === 'temp') {
+        refLine = fu[0] === tu[0] ? 'Same scale — the value is unchanged.'
+          : 'Formula: ' + TEMP_FORMULA[fu[0] + '>' + tu[0]];
+      } else {
+        refLine = '1 ' + fu[2] + ' = ' + fmt(convert(cat, fu[0], tu[0], 1)) + ' ' + tu[2];
+      }
+      var v = parseFloat(valIn.value);
+      if (!isFinite(v)) {
+        idle('Enter a value to convert. ' + refLine);
+        return;
+      }
+      if (cat !== 'temp' && v < 0) {
+        idle('This category needs a value of 0 or more. ' + refLine);
+        return;
+      }
+      var r = convert(cat, fu[0], tu[0], v);
+      var rs = fmt(r);
+      if (rs === null) { idle('That value is out of range. ' + refLine); return; }
+      out.innerHTML =
+        '<div class="num">' + rs + ' ' + tu[2] + '</div>' +
+        '<div class="sub">' + fmt(v) + ' ' + fu[2] + ' → ' + rs + ' ' + tu[2] + ' · ' + refLine + '</div>';
+    } catch (e) {
+      idle('Something went wrong. Please enter numbers only.');
+    }
+  }
+
+  catSel.addEventListener('change', function () { fillSelects(); update(); });
+  fromSel.addEventListener('change', update);
+  toSel.addEventListener('change', update);
+  valIn.addEventListener('input', update);
+  swapBtn.addEventListener('click', function () {
+    var f = fromSel.value;
+    fromSel.value = toSel.value;
+    toSel.value = f;
+    update();
+  });
+
+  fillSelects();
+  update();
+})();
+</script>
+</body>
+</html>
