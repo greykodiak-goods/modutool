@@ -23,8 +23,8 @@
     "brandKo": "ThisIsMyCalculator",
     "mark": "C",
     "domain": "thisismycalculator.com",
-    "categories": ["calc"],
-    "tagline": "Fast, free online calculators",
-    "taglineKo": "빠르고 무료인 온라인 계산기"
+    "categories": ["calc", "util"],
+    "tagline": "Fast, free online calculators & utilities",
+    "taglineKo": "빠르고 무료인 온라인 계산기·유틸"
   }
 }

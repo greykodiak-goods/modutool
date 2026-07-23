@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blur &amp; Redact Image — Hide Sensitive Info Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Free tool to blur or black out sensitive information in an image — account numbers, names, faces, addresses in screenshots. Draw as many boxes as you need. Everything runs in your browser with no server upload, so private screenshots stay private.">
+<link rel="canonical" href="__ORIGIN__/image-redact/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/image-redact/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/image-redact/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/image-redact/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Blur &amp; Redact Image — Free, No Server Upload">
+<meta property="og:description" content="Draw boxes to pixelate or black out private info in screenshots. 100% in-browser — your image never leaves your device.">
+<meta property="og:url" content="__ORIGIN__/image-redact/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .redact-stage { display:none; margin-top:14px; }
+  .redact-stage.show { display:block; }
+  .redact-wrap { position:relative; display:inline-block; max-width:100%; touch-action:none; }
+  .redact-wrap canvas { max-width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); cursor:crosshair; }
+  .redact-hint { font-size:12.5px; color:var(--text-soft); margin:8px 0 0; }
+  .drag-box { position:absolute; border:2px dashed var(--accent); background:rgba(37,99,235,.15); pointer-events:none; display:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Blur & Redact Image - ThisIsMyPDF","url":"__ORIGIN__/image-redact/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that pixelates or blacks out sensitive areas of an image. Processed in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is my screenshot really never uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Correct. Blurring and blacking out happen entirely on your device using the canvas feature built into your browser. If you open the Network tab of your browser's developer tools, you will see no file upload request. That is exactly why this tool is safe for bank screenshots, ID photos, contracts, and chat captures."}},
+{"@type":"Question","name":"Can a mosaic (pixelation) be reversed to reveal the original?","acceptedAnswer":{"@type":"Answer","text":"The saved file only contains the averaged color blocks — the original pixels are not stored anywhere in it, so it cannot simply be 'decoded'. However, very weak pixelation over large text can sometimes be guessed by AI tools. For truly critical information such as resident registration numbers or account numbers, use the solid black-out mode, which removes the information completely."}},
+{"@type":"Question","name":"Can I hide several areas in one image?","acceptedAnswer":{"@type":"Answer","text":"Yes. Draw as many boxes as you need — each drag adds another masked region, and you can mix pixelated boxes and black boxes in the same image. Made a mistake? Undo removes only the last box, and Clear areas starts the masking over without reloading the image."}},
+{"@type":"Question","name":"Does the tool change the image quality or size?","acceptedAnswer":{"@type":"Answer","text":"Everything outside the boxes you draw keeps its original pixels. The file is re-encoded on save — JPG stays JPG and PNG or WEBP is saved as PNG with transparency preserved — so the visible quality is unchanged while the masked regions are permanently replaced."}},
+{"@type":"Question","name":"Does it also remove hidden location (EXIF) data?","acceptedAnswer":{"@type":"Answer","text":"Yes, as a side effect of saving: the output is generated from a clean canvas, so EXIF metadata including GPS position, camera model, and capture time is not carried over. If you only want to strip metadata without masking anything, use our dedicated EXIF removal tool."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/">ThisIsMyPDF</a> › <a href="/#image">Image Tools</a> › Blur &amp; Redact</nav>
+  <h1 class="page-title">Blur &amp; Redact Image<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Drag boxes over account numbers, names, faces, or addresses to pixelate or black them out. Free — no install, no sign-up, no size limits.</p>
+
+  <div class="card tool-card">
+    <div class="dropzone" id="dz">
+      <span class="big">🫥</span>
+      <strong>Drag &amp; drop an image here, or click to select</strong><br>
+      One image at a time (JPG · PNG · WEBP · GIF · BMP)
+    </div>
+    <div class="opts">
+      <label>Masking style
+        <select id="modeSel">
+          <option value="pixel" selected>Mosaic (pixelate)</option>
+          <option value="black">Black-out (solid)</option>
+        </select>
+      </label>
+      <label>Mosaic strength
+        <select id="strengthSel">
+          <option value="0.010">Fine</option>
+          <option value="0.018" selected>Normal</option>
+          <option value="0.032">Strong</option>
+        </select>
+      </label>
+    </div>
+    <div class="redact-stage" id="stage">
+      <div class="redact-wrap" id="wrap">
+        <canvas id="preview"></canvas>
+        <div class="drag-box" id="dragBox"></div>
+      </div>
+      <p class="redact-hint">Drag across the image to mask an area. Repeat for as many areas as you need — you can mix mosaic and black boxes.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="saveBtn" disabled>Download Masked Image</button>
+      <button class="btn secondary" id="undoBtn" style="display:none">Undo Last Box</button>
+      <button class="btn secondary" id="resetBtn" style="display:none">Clear Areas</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Remove Image</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drop the screenshot or photo into the area above, or click to select it.</li>
+      <li>Pick a <b>masking style</b> — <b>Mosaic</b> pixelates the area, <b>Black-out</b> covers it completely. You can change the style between boxes and mix both in one image.</li>
+      <li><b>Drag across the preview</b> to cover each sensitive area: account numbers, names, phone numbers, faces, license plates. Every drag adds another box; <b>Undo Last Box</b> removes the most recent one.</li>
+      <li>Click <b>Download Masked Image</b>. The masked copy downloads as <b>filename_masked</b>, and your original file on disk is untouched.</li>
+    </ol>
+
+    <h2>Why masking sensitive info in the browser matters</h2>
+    <p>The images people redact are, almost by definition, the most sensitive files they own — bank-transfer screenshots, ID cards, contracts, chat logs. Uploading exactly those images to an unknown server to "hide private info" is backwards. This tool draws and masks entirely <b>inside your browser</b>: the image never leaves your device, and closing the tab destroys everything.</p>
+    <p>A second benefit of how saving works: the output file is rebuilt from a clean canvas, so hidden <b>EXIF metadata — GPS location, capture time, camera model — is not carried over</b> into the masked copy.</p>
+
+    <h2>Mosaic or black-out — which should you use?</h2>
+    <ul>
+      <li><b>Mosaic (pixelate)</b> — natural-looking, good for faces, backgrounds, and general context you want softened. Choose <b>Strong</b> for text you want unreadable.</li>
+      <li><b>Black-out</b> — removes the information entirely. Use it for critical identifiers: resident registration numbers, account numbers, addresses, signatures. A black box can never be "enhanced" back.</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> For text that must stay secret, prefer <b>Black-out</b>. Research has shown weak pixelation over known fonts can sometimes be reconstructed — solid boxes cannot.</div>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>Marketplace listings — hiding your name and address on parcel-label photos</li>
+      <li>Bank or pay-app screenshots shared to confirm a transfer</li>
+      <li>Contracts and certificates where only part of the page should be visible</li>
+      <li>Chat screenshots with other people's names and profile photos</li>
+      <li>Photos with license plates or bystanders' faces</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Is my screenshot really never uploaded to a server?</summary><p>Correct. Blurring and blacking out happen entirely on your device using the canvas feature built into your browser. If you open the Network tab of your browser's developer tools, you will see no file upload request. That is exactly why this tool is safe for bank screenshots, ID photos, contracts, and chat captures.</p></details>
+      <details><summary>Can a mosaic (pixelation) be reversed to reveal the original?</summary><p>The saved file only contains the averaged color blocks — the original pixels are not stored anywhere in it, so it cannot simply be "decoded". However, very weak pixelation over large text can sometimes be guessed by AI tools. For truly critical information such as resident registration numbers or account numbers, use the solid black-out mode, which removes the information completely.</p></details>
+      <details><summary>Can I hide several areas in one image?</summary><p>Yes. Draw as many boxes as you need — each drag adds another masked region, and you can mix pixelated boxes and black boxes in the same image. Made a mistake? Undo removes only the last box, and Clear areas starts the masking over without reloading the image.</p></details>
+      <details><summary>Does the tool change the image quality or size?</summary><p>Everything outside the boxes you draw keeps its original pixels. The file is re-encoded on save — JPG stays JPG and PNG or WEBP is saved as PNG with transparency preserved — so the visible quality is unchanged while the masked regions are permanently replaced.</p></details>
+      <details><summary>Does it also remove hidden location (EXIF) data?</summary><p>Yes, as a side effect of saving: the output is generated from a clean canvas, so EXIF metadata including GPS position, camera model, and capture time is not carried over. If you only want to strip metadata without masking anything, use our dedicated EXIF removal tool.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/image-exif/"><span class="emoji">📍</span><span><b>Remove EXIF</b><span>Strip GPS &amp; metadata from photos</span></span></a>
+      <a class="tool-tile" href="/image-crop/"><span class="emoji">✂️</span><span><b>Crop Image</b><span>Cut out exactly the part you want</span></span></a>
+      <a class="tool-tile" href="/image-compress/"><span class="emoji">🗜️</span><span><b>Compress Image</b><span>Keep resolution, shrink file size</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var modeSel = document.getElementById('modeSel');
+  var strengthSel = document.getElementById('strengthSel');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('wrap');
+  var preview = document.getElementById('preview');
+  var pctx = preview.getContext('2d');
+  var dragBox = document.getElementById('dragBox');
+  var saveBtn = document.getElementById('saveBtn');
+  var undoBtn = document.getElementById('undoBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+
+  var srcImage = null, srcW = 0, srcH = 0, srcName = 'image', srcFmt = { mime: 'image/png', ext: 'png' }, srcSize = 0;
+  var rects = [];   // {x,y,w,h (0..1 fractions), mode:'pixel'|'black'}
+
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Could not read this image. Your browser may not support the format (e.g., HEIC).')); };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else { fallback(); }
+    });
+  }
+
+  function chooseFormat(file) {
+    var t = (file.type || '').toLowerCase();
+    if (t === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) return { mime: 'image/jpeg', ext: 'jpg' };
+    return { mime: 'image/png', ext: 'png' };
+  }
+
+  /* Apply masked regions onto ctx whose canvas is W×H and already holds the base image. */
+  function applyRects(ctx, W, H) {
+    var frac = parseFloat(strengthSel.value) || 0.018;
+    rects.forEach(function (r) {
+      var x = Math.round(r.x * W), y = Math.round(r.y * H);
+      var w = Math.max(1, Math.round(r.w * W)), h = Math.max(1, Math.round(r.h * H));
+      if (r.mode === 'black') {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(x, y, w, h);
+        return;
+      }
+      var block = Math.max(2, Math.round(Math.max(W, H) * frac));
+      var sw = Math.max(1, Math.ceil(w / block)), sh = Math.max(1, Math.ceil(h / block));
+      var tmp = document.createElement('canvas');
+      tmp.width = sw; tmp.height = sh;
+      var tctx = tmp.getContext('2d');
+      tctx.imageSmoothingEnabled = true;
+      tctx.drawImage(ctx.canvas, x, y, w, h, 0, 0, sw, sh);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(tmp, 0, 0, sw, sh, x, y, w, h);
+      ctx.imageSmoothingEnabled = true;
+    });
+  }
+
+  function render() {
+    if (!srcImage) return;
+    pctx.clearRect(0, 0, preview.width, preview.height);
+    pctx.drawImage(srcImage, 0, 0, preview.width, preview.height);
+    applyRects(pctx, preview.width, preview.height);
+    var has = rects.length > 0;
+    saveBtn.disabled = !has;
+    undoBtn.style.display = has ? '' : 'none';
+    resetBtn.style.display = has ? '' : 'none';
+  }
+
+  function setImage(img, file) {
+    srcImage = img;
+    srcW = img.width || img.naturalWidth;
+    srcH = img.height || img.naturalHeight;
+    srcName = (file.name || 'image').replace(/\.[a-z0-9]+$/i, '') || 'image';
+    srcFmt = chooseFormat(file);
+    srcSize = file.size || 0;
+    rects = [];
+    var maxW = 900;
+    var scale = Math.min(1, maxW / srcW);
+    preview.width = Math.max(1, Math.round(srcW * scale));
+    preview.height = Math.max(1, Math.round(srcH * scale));
+    stage.className = 'redact-stage show';
+    clearBtn.style.display = '';
+    result.className = 'result';
+    render();
+  }
+
+  function resetAll() {
+    srcImage = null; rects = [];
+    stage.className = 'redact-stage';
+    saveBtn.disabled = true;
+    undoBtn.style.display = 'none';
+    resetBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+
+  mdtlDropzone(dz, {
+    accept: 'image/*,.jpg,.jpeg,.png,.webp,.gif,.bmp',
+    multiple: false,
+    onFiles: function (fs) {
+      loadImage(fs[0]).then(function (img) { setImage(img, fs[0]); })
+        .catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+    }
+  });
+
+  clearBtn.addEventListener('click', resetAll);
+  undoBtn.addEventListener('click', function () { rects.pop(); render(); });
+  resetBtn.addEventListener('click', function () { rects = []; render(); });
+  strengthSel.addEventListener('change', render);
+
+  // Drag to add a masked region --------------------------------------------
+  var dragging = false, sx = 0, sy = 0;
+  function localPoint(e) {
+    var r = preview.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(e.clientX - r.left, r.width)),
+      y: Math.max(0, Math.min(e.clientY - r.top, r.height)),
+      dw: r.width, dh: r.height
+    };
+  }
+  wrap.addEventListener('pointerdown', function (e) {
+    if (!srcImage) return;
+    e.preventDefault();
+    wrap.setPointerCapture(e.pointerId);
+    var p = localPoint(e);
+    dragging = true; sx = p.x; sy = p.y;
+    dragBox.style.display = 'block';
+    dragBox.style.left = sx + 'px'; dragBox.style.top = sy + 'px';
+    dragBox.style.width = '0px'; dragBox.style.height = '0px';
+  });
+  wrap.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    var p = localPoint(e);
+    dragBox.style.left = Math.min(sx, p.x) + 'px';
+    dragBox.style.top = Math.min(sy, p.y) + 'px';
+    dragBox.style.width = Math.abs(p.x - sx) + 'px';
+    dragBox.style.height = Math.abs(p.y - sy) + 'px';
+  });
+  wrap.addEventListener('pointerup', function (e) {
+    if (!dragging) return;
+    dragging = false;
+    dragBox.style.display = 'none';
+    var p = localPoint(e);
+    var x = Math.min(sx, p.x), y = Math.min(sy, p.y);
+    var w = Math.abs(p.x - sx), h = Math.abs(p.y - sy);
+    if (w * (srcW / p.dw) < 3 || h * (srcH / p.dh) < 3) return; // ignore accidental taps
+    rects.push({ x: x / p.dw, y: y / p.dh, w: w / p.dw, h: h / p.dh, mode: modeSel.value });
+    render();
+  });
+  wrap.addEventListener('pointercancel', function () { dragging = false; dragBox.style.display = 'none'; });
+
+  // Export -------------------------------------------------------------------
+  saveBtn.addEventListener('click', function () {
+    if (!srcImage || !rects.length) return;
+    try {
+      var c = document.createElement('canvas');
+      c.width = srcW; c.height = srcH;
+      var ctx = c.getContext('2d');
+      ctx.drawImage(srcImage, 0, 0, srcW, srcH);
+      applyRects(ctx, srcW, srcH);
+      c.toBlob(function (blob) {
+        if (!blob) { mdtlResult(result, '❌ Could not create the image. The image may be too large for this device.', true); return; }
+        mdtlDownload(blob, srcName + '_masked.' + srcFmt.ext);
+        mdtlLogEvent('image-redact', 'success', null,
+          { count: rects.length, format: srcFmt.ext, size_bucket: mdtlSizeBucket(srcSize), width: srcW, height: srcH });
+        mdtlResult(result, '✅ <b>Done!</b> ' + rects.length + ' area' + (rects.length > 1 ? 's' : '') + ' masked — the image has been downloaded.' +
+          '<br>The output is rebuilt from a clean canvas, so EXIF metadata (GPS location etc.) is not carried over. Your original file is untouched.');
+      }, srcFmt.mime, 0.92);
+    } catch (e) {
+      mdtlResult(result, '❌ An error occurred while saving. Please reload the image and try again.', true);
+    }
+  });
+})();
+</script>
+</body>
+</html>

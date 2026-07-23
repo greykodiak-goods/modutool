@@ -27,8 +27,9 @@ const SITE_KEY = process.env.SITE || '';
 let site = null, siteSlugs = null;
 const CAT_SLUGS = {
   pdf: ['pdf-merge','pdf-split','pdf-extract','pdf-organize','pdf-rotate','pdf-compress','pdf-watermark','pdf-page-numbers','pdf-sign','pdf-to-jpg','img-to-pdf'],
-  image: ['image-compress','image-resize','image-crop','image-convert','image-rotate','image-watermark','img-to-pdf'],
-  calc: ['age-calculator','percent-calculator','char-count','dday-calculator','trig-calculator','pyeong-calculator'],
+  image: ['image-compress','image-resize','image-crop','image-convert','image-rotate','image-watermark','img-to-pdf','image-redact','image-exif','image-split','image-color-picker'],
+  calc: ['age-calculator','percent-calculator','char-count','dday-calculator','trig-calculator','pyeong-calculator','vat-calculator','interest-calculator','unit-converter'],
+  util: ['qr-generator','password-generator','text-diff'],
 };
 const SUPPORT_SLUGS = ['about','privacy','terms','pricing','login','signup','account'];
 if (SITE_KEY) {
@@ -39,7 +40,7 @@ if (SITE_KEY) {
 }
 const isToolDir = (name) => /-|calculator|count|compress|resize|convert|rotate|watermark|merge|split|extract|organize|sign|numbers|to-jpg|to-pdf/.test(name) && name !== 'assets';
 
-const SKIP = new Set(['dist', 'scripts', 'node_modules', 'tests', '.git', 'supabase']);
+const SKIP = new Set(['dist', 'scripts', 'node_modules', 'tests', '.git', 'supabase', 'portal', 'docs']);
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 function copyFiltered(srcDir, dstDir, inKo) {
