@@ -1,0 +1,61 @@
+# Convex 배포 — 개발 컨테이너는 네트워크 정책이 convex.dev를 차단하므로 러너(개방망)에서 배포한다.
+# 사전조건: 레포 Settings → Secrets and variables → Actions → CONVEX_DEPLOY_KEY 등록.
+name: Convex deploy
+on:
+  workflow_dispatch:
+    inputs:
+      seed_admin_email:
+        description: "adminUsers에 시드할 관리자 이메일 (비우면 시드 생략)"
+        required: false
+        default: "greykodiak1@gmail.com"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install deps
+        run: npm install --no-audit --no-fund
+      - name: Guard secret exists
+        run: |
+          if [ -z "${{ secrets.CONVEX_DEPLOY_KEY }}" ]; then
+            echo "::error::CONVEX_DEPLOY_KEY secret이 없습니다. 레포 Settings → Secrets → Actions에 등록하세요."
+            exit 1
+          fi
+      - name: Deploy schema + functions
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        run: npx convex deploy --yes
+      - name: Seed admin email
+        if: inputs.seed_admin_email != ''
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        run: npx convex run admin:seedAdmin '{"email":"${{ inputs.seed_admin_email }}"}'
+      - name: E2E — /log-event HTTP action
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        run: |
+          # deploy key 형식 dev:<name>|... 에서 deployment 이름 추출 → .convex.site URL
+          NAME=$(echo "$CONVEX_DEPLOY_KEY" | sed -E 's/^[a-z]+:([^|]+)\|.*/\1/')
+          SITE="https://$NAME.convex.site"
+          echo "endpoint: $SITE/log-event"
+          fail=0
+          echo "--- valid insert (expect 201) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SITE/log-event" \
+            -H "Content-Type: application/json" -H "Origin: https://greykodiak-goods.github.io" \
+            --data '{"tool":"convex-ci","outcome":"error","reason":"ci_e2e","lang":"en","site":"pdf","ua":"ci/runner","meta":{"seed":true}}')
+          echo "insert: $code"; [ "$code" = "201" ] || fail=1
+          echo "--- bad json (expect 400) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SITE/log-event" \
+            -H "Content-Type: application/json" --data 'not-json')
+          echo "bad json: $code"; [ "$code" = "400" ] || fail=1
+          echo "--- CORS preflight (expect 204 + allow-origin) ---"
+          hdr=$(curl -s -D - -o /dev/null -X OPTIONS "$SITE/log-event" \
+            -H "Origin: https://greykodiak-goods.github.io" -H "Access-Control-Request-Method: POST")
+          echo "$hdr" | head -8
+          echo "$hdr" | grep -qi "access-control-allow-origin" || fail=1
+          exit $fail
