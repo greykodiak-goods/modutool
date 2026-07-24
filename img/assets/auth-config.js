@@ -5,3 +5,8 @@ window.MDTL_AUTH = {
   url: 'https://gysvtgnpacqjpdijbcaw.supabase.co',
   anonKey: 'sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT'
 };
+
+/* Convex 이관 스위치 — 프로비저닝 후 deployment의 .convex.site URL을 넣으면
+   텔레메트리가 즉시 Convex로 전환된다(사이트 재배포만, 페이지 수정 없음).
+   예: window.MDTL_CONVEX = { url: 'https://something-123.convex.site' }; */
+window.MDTL_CONVEX = null;

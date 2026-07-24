@@ -294,7 +294,8 @@
   window.mdtlLogEvent = function (tool, outcome, reason, meta) {
     try {
       var a = telAuth();
-      if (!a || telLocal() || telOptedOut()) return;
+      var hasConvex = !!(window.MDTL_CONVEX && window.MDTL_CONVEX.url);
+      if ((!a && !hasConvex) || telLocal() || telOptedOut()) return;
       var ALLOWED = { success: 1, no_result: 1, error: 1, unsupported: 1, cancelled: 1, view: 1 };
       outcome = ALLOWED[outcome] ? outcome : 'error';
       tool = String(tool || telToolSlug()).slice(0, 40);
@@ -309,6 +310,17 @@
         lang: telLang(), site: telCategory(tool), ua: telUa(),
         session_id: telSid(), meta: telCleanMeta(meta)
       };
+      /* 백엔드 스위치: MDTL_CONVEX.url 설정 시 Convex HTTP action, 아니면 Supabase REST.
+         (Convex 이관 컷오버 — auth-config.js에서 한 줄로 전환, 페이로드 형식 동일) */
+      var cv = window.MDTL_CONVEX;
+      if (cv && cv.url) {
+        fetch(cv.url.replace(/\/$/, '') + '/log-event', {
+          method: 'POST', keepalive: true,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(row)
+        }).catch(function () {});
+        return;
+      }
       var bearer = a.anonKey;
       try {
         var ref = (a.url.match(/https:\/\/([a-z0-9]+)\./) || [])[1];
