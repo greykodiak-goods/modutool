@@ -51,3 +51,17 @@
 - 백오피스가 reactive query라 새 실패 이벤트가 **실시간 반영**(현재는 새로고침 필요).
 - 무료 티어가 이 트래픽 규모에 충분, 콜드스타트 없음.
 - 유의: 무빌드 정적 사이트와의 궁합은 Supabase(REST 직접 호출)보다 한 단계 번거로움 — HTTP action으로 해소(텔레메트리는 이미 해소, 인증만 벤더링 필요).
+
+---
+
+## 진행 현황 갱신 (2026-07-24) — key 전까지 가능한 전 단계 완료
+
+- ✅ 스캐폴드 **strict 타입검증 통과** (convex 패키지 실설치 + tsc, `convex/tsconfig.json`)
+- ✅ `_generated` 임시 boilerplate 커밋(첫 `npx convex dev`가 정식본으로 덮어씀)
+- ✅ 브라우저 클라이언트 번들 `assets/vendor/convex-http.min.js` (17KB, esbuild — admin 전환용)
+- ✅ **텔레메트리 이중 백엔드 배선**: `auth-config.js`의 `window.MDTL_CONVEX = { url }` 한 줄이면 전 사이트가
+  Convex HTTP action으로 전환(실브라우저 검증: Convex 4/4 — Supabase 유출 0건, 페이로드 동일 / Supabase 기본 11/11)
+- ⏳ 남은 것: **deploy key 수령 → `CONVEX_DEPLOY_KEY=... npx convex deploy` → adminUsers 시드 → MDTL_CONVEX url 설정 → 재배포** (예상 15분)
+- 참고: 익명 로컬 배포(`convex dev --local`)는 이 컨테이너의 프록시가 백엔드 바이너리 다운로드를 막아 불가 — 실검증은 key 수령 후 실배포로.
+- ⚠️ 배경: Supabase 무료 2개 한도로 thisismy-tools가 INACTIVE로 밀림(2026-07-24) → 로그인·텔레메트리 중단 중.
+  Convex 전환이 이 문제의 근본 해결(도구 자체는 100% 클라이언트라 영향 없음).
