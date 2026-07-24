@@ -7,10 +7,12 @@ import pw from '/opt/node22/lib/node_modules/playwright/index.js';
 const { chromium } = pw;
 
 const ROOT = new URL('../dist', import.meta.url).pathname;
+const PREFIX = '/modutool';   // 우산 빌드는 BASE_PATH=/modutool 기준
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
 
 const server = createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]);
+  if (p.startsWith(PREFIX)) p = p.slice(PREFIX.length) || '/';
   if (p.endsWith('/')) p += 'index.html';
   const f = join(ROOT, p);
   try {
@@ -44,7 +46,7 @@ await page.route('**/rest/v1/tool_events', (route) => {
 // 로컬에서도 텔레메트리 켜기(검증용 플래그)
 await page.addInitScript(() => { try { localStorage.setItem('mdtl-tel-force', '1'); } catch (e) {} });
 
-await page.goto(`${base}/pdf-compress/`, { waitUntil: 'domcontentloaded' });
+await page.goto(`${base}${PREFIX}/pdf/pdf-compress/`, { waitUntil: 'domcontentloaded' });
 await page.waitForFunction(() => typeof window.mdtlLogEvent === 'function' && typeof window.mdtlResult === 'function');
 
 // 1) 민감 파일명이 담긴 에러 메시지를 표시 → 전역 자동 캡처가 error 이벤트를 보내야 함

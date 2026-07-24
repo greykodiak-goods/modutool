@@ -259,9 +259,10 @@
     if (mb < 50) return '20-50MB';
     return '50MB+';
   };
-  /* meta 화이트리스트 — 비식별 수치/열거값만 통과(파일명·경로·텍스트 원문 차단) */
+  /* meta 화이트리스트 — 비식별 수치/열거값만 통과(파일명·경로·텍스트 원문 차단)
+     ref = 리퍼러의 도메인만(경로·쿼리 제외 — 방문 분석용, 비식별) */
   var TEL_META_KEYS = ['pages', 'count', 'n', 'size_bucket', 'result_bucket', 'level',
-    'saved_pct', 'err_name', 'width', 'height', 'format', 'quality'];
+    'saved_pct', 'err_name', 'width', 'height', 'format', 'quality', 'ref'];
   function telCleanMeta(meta) {
     var out = {};
     if (meta && typeof meta === 'object') {
@@ -294,7 +295,7 @@
     try {
       var a = telAuth();
       if (!a || telLocal() || telOptedOut()) return;
-      var ALLOWED = { success: 1, no_result: 1, error: 1, unsupported: 1, cancelled: 1 };
+      var ALLOWED = { success: 1, no_result: 1, error: 1, unsupported: 1, cancelled: 1, view: 1 };
       outcome = ALLOWED[outcome] ? outcome : 'error';
       tool = String(tool || telToolSlug()).slice(0, 40);
       reason = reason ? String(reason).slice(0, 60) : null;
@@ -340,10 +341,26 @@
     return telOrigResult.apply(this, arguments);
   };
 
+  /* 자체 방문 분석(pageview) — GA 없이 프라이버시 우선.
+     쿠키·핑거프린팅 없음. 리퍼러는 도메인만, 자기 사이트 내부 이동은 (internal)로 축약. */
+  function telPageview() {
+    try {
+      var ref = null;
+      if (document.referrer) {
+        try {
+          var host = new URL(document.referrer).hostname;
+          ref = host === location.hostname ? '(internal)' : host;
+        } catch (e) {}
+      }
+      window.mdtlLogEvent(null, 'view', null, ref ? { ref: ref } : {});
+    } catch (e) {}
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     if (window.mdtlAutoShell !== false) window.mdtlShell();
     if (window.mdtlAuthHeader) window.mdtlAuthHeader();
     if (!(window.mdtlIsPremium && window.mdtlIsPremium())) window.mdtlInitAds();  // 프리미엄 = 광고 제거
     window.mdtlLangBanner();
+    telPageview();
   });
 })();

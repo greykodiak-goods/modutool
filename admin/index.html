@@ -106,16 +106,53 @@
     var reasons = d.top_reasons || [];
     var daily = d.daily || [];
     var recent = d.recent || [];
+    var viewsTotal = d.views_total || 0;
+    var visitors = d.visitors_est || 0;
+    var topPages = d.top_pages || [];
+    var topRefs = d.top_refs || [];
+    var viewsDaily = d.views_daily || [];
 
     var html = '';
 
     // KPIs
     html += '<div class="kpis">';
-    html += '<div class="kpi"><div class="n">' + n(total) + '</div><div class="l">전체 이벤트</div></div>';
+    html += '<div class="kpi"><div class="n">' + n(viewsTotal) + '</div><div class="l">페이지뷰</div></div>';
+    html += '<div class="kpi"><div class="n">' + n(visitors) + '</div><div class="l">방문 브라우저(추정)</div></div>';
+    html += '<div class="kpi"><div class="n">' + n(total) + '</div><div class="l">도구 사용 이벤트</div></div>';
     html += '<div class="kpi warn"><div class="n">' + n(fail) + '</div><div class="l">미달성·오류</div></div>';
     html += '<div class="kpi"><div class="n">' + pct(fail, total) + '%</div><div class="l">실패율</div></div>';
-    html += '<div class="kpi"><div class="n">' + n(tools.length) + '</div><div class="l">기록된 도구 수</div></div>';
     html += '</div>';
+
+    // 트래픽: 일별 방문 + 인기 페이지 + 유입 출처
+    html += '<div class="sect">일별 페이지뷰</div>';
+    if (!viewsDaily.length) { html += '<p class="muted">데이터 없음 (pageview 수집은 이번 배포부터 시작)</p>'; }
+    else {
+      var vmax = viewsDaily.reduce(function (m, x) { return Math.max(m, x.views || 0); }, 1);
+      html += '<div class="daily">';
+      viewsDaily.forEach(function (x) {
+        html += '<div class="col" title="' + esc(x.ymd) + ' · ' + n(x.views) + '뷰">' +
+          '<i style="height:' + Math.max(2, Math.round((x.views / vmax) * 60)) + 'px"></i></div>';
+      });
+      html += '</div>';
+    }
+    if (topPages.length) {
+      html += '<div class="sect">인기 페이지 <small>상위 30</small></div>';
+      html += '<div class="tblwrap"><table class="bo"><thead><tr>' +
+        '<th>페이지</th><th class="num">뷰</th><th class="num">세션</th><th class="num">ko</th><th class="num">en</th></tr></thead><tbody>';
+      topPages.forEach(function (t) {
+        html += '<tr><td><b>' + esc(t.page) + '</b></td><td class="num">' + n(t.views) + '</td>' +
+          '<td class="num">' + n(t.sessions) + '</td><td class="num">' + n(t.ko) + '</td><td class="num">' + n(t.en) + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+    if (topRefs.length) {
+      html += '<div class="sect">유입 출처 <small>리퍼러 도메인만 수집</small></div>';
+      html += '<div class="tblwrap"><table class="bo"><thead><tr><th>출처</th><th class="num">뷰</th></tr></thead><tbody>';
+      topRefs.forEach(function (r) {
+        html += '<tr><td>' + esc(r.ref) + '</td><td class="num">' + n(r.c) + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    }
 
     // outcome chips
     var chips = ['error', 'no_result', 'unsupported', 'cancelled', 'success'];

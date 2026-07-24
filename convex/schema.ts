@@ -15,6 +15,7 @@ export default defineSchema({
       v.literal("error"),
       v.literal("unsupported"),
       v.literal("cancelled"),
+      v.literal("view"),
     ),
     reason: v.optional(v.string()),
     lang: v.optional(v.string()),

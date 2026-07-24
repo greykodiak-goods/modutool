@@ -4,11 +4,11 @@
 import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
-const OUTCOMES = new Set(["success", "no_result", "error", "unsupported", "cancelled"]);
+const OUTCOMES = new Set(["success", "no_result", "error", "unsupported", "cancelled", "view"]);
 // site.js telCleanMeta와 동일한 화이트리스트 — 서버에서 한 번 더 강제(다층 방어)
 const META_KEYS = new Set([
   "pages", "count", "n", "size_bucket", "result_bucket", "level",
-  "saved_pct", "err_name", "width", "height", "format", "quality", "seed",
+  "saved_pct", "err_name", "width", "height", "format", "quality", "seed", "ref",
 ]);
 
 export const logEvent = internalMutation({
@@ -39,7 +39,7 @@ export const logEvent = internalMutation({
     if (JSON.stringify(clean).length > 2000) throw new Error("meta too large");
     await ctx.db.insert("toolEvents", {
       tool,
-      outcome: outcome as "success" | "no_result" | "error" | "unsupported" | "cancelled",
+      outcome: outcome as "success" | "no_result" | "error" | "unsupported" | "cancelled" | "view",
       reason: args.reason ? String(args.reason).slice(0, 60) : undefined,
       lang: args.lang === "ko" || args.lang === "en" ? args.lang : undefined,
       site: args.site ? String(args.site).slice(0, 12) : undefined,
