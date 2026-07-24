@@ -20,24 +20,27 @@ jobs:
           node-version: 22
       - name: Install deps
         run: npm install --no-audit --no-fund
-      - name: Guard secret exists
+      - name: Guard key exists (Secrets 우선, Variables 폴백)
+        env:
+          KEY: ${{ secrets.CONVEX_DEPLOY_KEY != '' && secrets.CONVEX_DEPLOY_KEY || vars.CONVEX_DEPLOY_KEY }}
         run: |
-          if [ -z "${{ secrets.CONVEX_DEPLOY_KEY }}" ]; then
-            echo "::error::CONVEX_DEPLOY_KEY secret이 없습니다. 레포 Settings → Secrets → Actions에 등록하세요."
+          if [ -z "$KEY" ]; then
+            echo "::error::CONVEX_DEPLOY_KEY가 없습니다. 레포 Settings → Secrets and variables → Actions → 'Secrets' 탭 → New repository secret (이름 정확히 CONVEX_DEPLOY_KEY)"
             exit 1
           fi
+          echo "key present (${#KEY} chars)"
       - name: Deploy schema + functions
         env:
-          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY != '' && secrets.CONVEX_DEPLOY_KEY || vars.CONVEX_DEPLOY_KEY }}
         run: npx convex deploy --yes
       - name: Seed admin email
         if: inputs.seed_admin_email != ''
         env:
-          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY != '' && secrets.CONVEX_DEPLOY_KEY || vars.CONVEX_DEPLOY_KEY }}
         run: npx convex run admin:seedAdmin '{"email":"${{ inputs.seed_admin_email }}"}'
       - name: E2E — /log-event HTTP action
         env:
-          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY != '' && secrets.CONVEX_DEPLOY_KEY || vars.CONVEX_DEPLOY_KEY }}
         run: |
           # deploy key 형식 dev:<name>|... 에서 deployment 이름 추출 → .convex.site URL
           NAME=$(echo "$CONVEX_DEPLOY_KEY" | sed -E 's/^[a-z]+:([^|]+)\|.*/\1/')
