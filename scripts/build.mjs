@@ -30,6 +30,7 @@ const CAT_SLUGS = {
   image: ['image-compress','image-resize','image-crop','image-convert','image-rotate','image-watermark','img-to-pdf','image-redact','image-exif','image-split','image-color-picker','image-bg-remove','image-object-remove'],
   calc: ['age-calculator','percent-calculator','char-count','dday-calculator','trig-calculator','pyeong-calculator','vat-calculator','interest-calculator','unit-converter'],
   util: ['qr-generator','password-generator','text-diff'],
+  video: ['video-trim','video-to-mp3','video-to-gif','video-compress','audio-trim'],
 };
 const SUPPORT_SLUGS = ['about','privacy','terms','pricing','login','signup','account'];
 if (SITE_KEY) {
@@ -50,6 +51,8 @@ function copyFiltered(srcDir, dstDir, inKo) {
     if (statSync(sp).isDirectory()) {
       // 툴 폴더이고 SITE 필터가 있으면 소속 카테고리만 복사 (ko도 동일 규칙)
       if (site && (inKo || name !== 'ko') && isToolDir(name) && !siteSlugs.has(name)) continue;
+      // ffmpeg(31MB)는 영상 도구 전용 — SITE 빌드에서 video 외 사이트엔 미포함
+      if (name === 'ffmpeg' && SITE_KEY && SITE_KEY !== 'video') continue;
       mkdirSync(dp, { recursive: true });
       copyFiltered(sp, dp, inKo || name === 'ko');
     } else {

@@ -25,7 +25,7 @@ rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 
 /* 1) 서브사이트 3종 (전부 색인 허용 — 각자 정본 URL) */
-for (const key of ['pdf', 'img', 'calc']) {
+for (const key of ['pdf', 'img', 'calc', 'video']) {
   execFileSync(process.execPath, [join(root, 'scripts/build.mjs'), `${origin}/${key}`, join(dist, key)], {
     env: { ...process.env, SITE: key, BASE_PATH: `${base}/${key}`, NOINDEX: '' },
     stdio: 'inherit',
@@ -66,7 +66,7 @@ for (const [site, slugs] of Object.entries(REDIRECTS)) {
 /* 4) 루트 sitemap index + robots + 404 */
 writeFileSync(join(dist, 'sitemap.xml'),
   '<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-  ['pdf', 'img', 'calc'].map((k) => `  <sitemap><loc>${origin}/${k}/sitemap.xml</loc></sitemap>`).join('\n') +
+  ['pdf', 'img', 'calc', 'video'].map((k) => `  <sitemap><loc>${origin}/${k}/sitemap.xml</loc></sitemap>`).join('\n') +
   '\n</sitemapindex>\n');
 writeFileSync(join(dist, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`);
 cpSync(join(dist, 'pdf', '404.html'), join(dist, '404.html'));
