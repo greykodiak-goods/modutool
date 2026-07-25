@@ -5,7 +5,9 @@
     "brandKo": "ThisIsMyPDF",
     "mark": "P",
     "domain": "thisismypdf.com",
-    "categories": ["pdf"],
+    "categories": [
+      "pdf"
+    ],
     "tagline": "PDF tools that never upload your files",
     "taglineKo": "파일을 업로드하지 않는 PDF 도구"
   },
@@ -14,7 +16,9 @@
     "brandKo": "ThisIsMyIMG",
     "mark": "I",
     "domain": "thisismyimg.com",
-    "categories": ["image"],
+    "categories": [
+      "image"
+    ],
     "tagline": "Image tools that never upload your files",
     "taglineKo": "파일을 업로드하지 않는 이미지 도구"
   },
@@ -23,8 +27,22 @@
     "brandKo": "ThisIsMyCalculator",
     "mark": "C",
     "domain": "thisismycalculator.com",
-    "categories": ["calc", "util"],
+    "categories": [
+      "calc",
+      "util"
+    ],
     "tagline": "Fast, free online calculators & utilities",
     "taglineKo": "빠르고 무료인 온라인 계산기·유틸"
+  },
+  "video": {
+    "brand": "ThisIsMyVideo",
+    "brandKo": "ThisIsMyVideo",
+    "mark": "V",
+    "domain": "thisismyvideo.com",
+    "categories": [
+      "video"
+    ],
+    "tagline": "Video & audio tools that never upload your files",
+    "taglineKo": "파일을 업로드하지 않는 영상·오디오 도구"
   }
 }

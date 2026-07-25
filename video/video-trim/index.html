@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trim Video Online — Free Cutter, No Upload | ThisIsMyVideo</title>
+<meta name="description" content="Free video trimmer that runs entirely in your browser — cut the exact part you need from MP4, WebM or MOV without uploading anything. No watermark, no sign-up, no size limits from us.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/video/video-trim/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/video/ko/video-trim/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/video/video-trim/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/video/video-trim/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Trim Video — Free, On-Device, No Upload">
+<meta property="og:description" content="Cut videos in your browser. Files never leave your device — no upload wait, no watermark.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/video/video-trim/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyVideo";window.MDTL_SITE_MARK="V";</script>
+<script>window.MDTL_BASE='/modutool/video';</script>
+<link rel="stylesheet" href="/modutool/video/assets/site.css">
+<script src="/modutool/video/assets/site.js"></script>
+<script src="/modutool/video/assets/ads-config.js" defer></script>
+<script src="/modutool/video/assets/auth-config.js" defer></script>
+<script src="/modutool/video/assets/auth.js" defer></script>
+<style>
+  .vt-stage { display:none; margin-top:14px; }
+  .vt-stage.show { display:block; }
+  .vt-stage video { max-width:100%; border-radius:10px; border:1px solid var(--line); background:#000; }
+  .vt-range { margin:12px 0 4px; }
+  .vt-range label { display:block; font-size:13px; margin:8px 0 2px; }
+  .vt-range input[type=range] { width:100%; }
+  .vt-times { font-size:14px; font-variant-numeric:tabular-nums; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Trim Video - ThisIsMyVideo","url":"https://greykodiak-goods.github.io/modutool/video/video-trim/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that trims videos on your device using FFmpeg compiled to WebAssembly. No server upload, no watermark.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is my video really never uploaded?","acceptedAnswer":{"@type":"Answer","text":"Correct. The tool downloads FFmpeg compiled to WebAssembly (about 31 MB, once, then cached) and cuts your video inside the browser. Nothing is transmitted — which also means no upload wait: a 500 MB video starts processing instantly."}},
+{"@type":"Question","name":"Why is trimming so fast, and why can the cut point shift slightly?","acceptedAnswer":{"@type":"Answer","text":"By default the tool copies the video stream without re-encoding (lossless and nearly instant). Video files can only be cut cleanly at keyframes, so the actual start may snap up to a couple of seconds earlier than your slider position. For most clips this is invisible; frame-exact cutting would require re-encoding the whole clip."}},
+{"@type":"Question","name":"Does the output lose quality or get a watermark?","acceptedAnswer":{"@type":"Answer","text":"No and no. Stream copy means the kept part is bit-for-bit identical to the original — same resolution, same bitrate, no generation loss, and there is never a watermark."}},
+{"@type":"Question","name":"What formats are supported?","acceptedAnswer":{"@type":"Answer","text":"MP4, WebM, MOV and MKV work well. The output keeps the same container and codecs as the input. Some exotic codecs may fail to open — if that happens, the tool tells you instead of producing a broken file."}},
+{"@type":"Question","name":"Is there a file size limit?","acceptedAnswer":{"@type":"Answer","text":"We impose none, but processing happens in your browser's memory, so the practical limit depends on your device — roughly 1–2 GB on a desktop and less on phones. Very large files may fail to load; that is the honest trade-off of never using a server."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/video/">ThisIsMyVideo</a> › <a href="/modutool/video/#video">Video Tools</a> › Trim Video</nav>
+  <h1 class="page-title">Trim Video<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Cut the exact part you need from a video — no upload, no watermark, no re-encoding quality loss. Free, right in your browser.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🎬</span>
+      <strong>Drag &amp; drop a video here, or click to select</strong><br>
+      MP4 · WebM · MOV · MKV · <span class="engine-note">first use downloads a ~31 MB on-device engine</span>
+    </div>
+    <div class="vt-stage" id="stage">
+      <video id="player" controls playsinline></video>
+      <div class="vt-range">
+        <label>Start: <span id="startLabel" class="vt-times">0:00.0</span></label>
+        <input type="range" id="startRange" min="0" max="100" step="0.1" value="0">
+        <label>End: <span id="endLabel" class="vt-times">0:00.0</span></label>
+        <input type="range" id="endRange" min="0" max="100" step="0.1" value="100">
+        <p class="vt-times" id="clipLabel"></p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="trimBtn" disabled>Trim &amp; Download</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Remove Video</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drop your video into the area above. On first use the on-device engine (~31 MB) downloads once and is cached — after that it starts instantly.</li>
+      <li>Play the preview and set the <b>Start</b> and <b>End</b> sliders. The preview jumps to the slider position as you drag, so you can find the exact moment.</li>
+      <li>Click <b>Trim &amp; Download</b>. The kept part is copied without re-encoding — nearly instant, no quality loss — and downloads as <b>filename_trim</b> in the original format.</li>
+    </ol>
+
+    <h2>Why an in-browser trimmer beats upload sites</h2>
+    <p>Video is where "no upload" matters most: uploading a 500 MB clip to a converter site takes minutes before any work starts, and you are trusting a stranger's server with your footage. This tool ships FFmpeg — the same engine professionals use — compiled to WebAssembly, so the cut happens <b>on your device</b>: processing starts instantly, private footage stays private, and there is no watermark and no artificial size cap.</p>
+    <p>Honest note: by default we cut with <b>stream copy</b> (no re-encoding). It is lossless and nearly instant, but cuts snap to keyframes, so the actual start can be up to a couple of seconds before your chosen point. That is the right trade-off for clipping recordings, lectures, and gameplay; frame-exact editing belongs in a video editor.</p>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>Clipping a highlight from a long screen recording or lecture</li>
+      <li>Cutting dead air from the start and end of a phone video</li>
+      <li>Making a clip small enough to send in chat apps</li>
+      <li>Trimming gameplay or meeting recordings without installing an editor</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Is my video really never uploaded?</summary><p>Correct. The tool downloads FFmpeg compiled to WebAssembly (about 31 MB, once, then cached) and cuts your video inside the browser. Nothing is transmitted — which also means no upload wait: a 500 MB video starts processing instantly.</p></details>
+      <details><summary>Why is trimming so fast, and why can the cut point shift slightly?</summary><p>By default the tool copies the video stream without re-encoding (lossless and nearly instant). Video files can only be cut cleanly at keyframes, so the actual start may snap up to a couple of seconds earlier than your slider position. For most clips this is invisible; frame-exact cutting would require re-encoding the whole clip.</p></details>
+      <details><summary>Does the output lose quality or get a watermark?</summary><p>No and no. Stream copy means the kept part is bit-for-bit identical to the original — same resolution, same bitrate, no generation loss, and there is never a watermark.</p></details>
+      <details><summary>What formats are supported?</summary><p>MP4, WebM, MOV and MKV work well. The output keeps the same container and codecs as the input. Some exotic codecs may fail to open — if that happens, the tool tells you instead of producing a broken file.</p></details>
+      <details><summary>Is there a file size limit?</summary><p>We impose none, but processing happens in your browser's memory, so the practical limit depends on your device — roughly 1–2 GB on a desktop and less on phones. Very large files may fail to load; that is the honest trade-off of never using a server.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/video/image-compress/"><span class="emoji">🗜️</span><span><b>Compress Image</b><span>Shrink photos for sharing</span></span></a>
+      <a class="tool-tile" href="/modutool/video/img-to-pdf/"><span class="emoji">📄</span><span><b>Image → PDF</b><span>Turn photos into a PDF</span></span></a>
+      <a class="tool-tile" href="/modutool/video/qr-generator/"><span class="emoji">🔳</span><span><b>QR Generator</b><span>Share links the easy way</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/video/assets/vendor/ffmpeg/ffmpeg.js"></script>
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var stage = document.getElementById('stage');
+  var player = document.getElementById('player');
+  var startRange = document.getElementById('startRange');
+  var endRange = document.getElementById('endRange');
+  var startLabel = document.getElementById('startLabel');
+  var endLabel = document.getElementById('endLabel');
+  var clipLabel = document.getElementById('clipLabel');
+  var trimBtn = document.getElementById('trimBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var file = null, dur = 0, ext = 'mp4', baseName = 'video', objUrl = null;
+  var ffmpeg = null, ffLoading = null;
+
+  function loadFF() {
+    if (ffmpeg) return Promise.resolve(ffmpeg);
+    if (ffLoading) return ffLoading;
+    ffLoading = (function () {
+      mdtlResult(result, '⏳ Loading the on-device engine (~31 MB, first time only)…');
+      var f = new FFmpegWASM.FFmpeg();
+      /* 공식 패턴: core는 blob URL로 로드(워커 내 동적 import 호환), 워커 스크립트는 동일출처 전체 URL */
+      var toBlobURL = function (url, type) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('engine fetch failed: ' + url);
+          return r.blob();
+        }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+      };
+      return Promise.all([
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.js', 'text/javascript'),
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.wasm', 'application/wasm')
+      ]).then(function (urls) {
+        return f.load({
+          coreURL: urls[0],
+          wasmURL: urls[1],
+          classWorkerURL: location.origin + '/modutool/video/assets/vendor/ffmpeg/814.ffmpeg.js'
+        });
+      }).then(function () {
+        ffmpeg = f;
+        result.className = 'result';
+        return f;
+      });
+    })();
+    ffLoading.catch(function () { ffLoading = null; });
+    return ffLoading;
+  }
+
+  function fmt(t) {
+    t = Math.max(0, t);
+    var m = Math.floor(t / 60), s = (t - m * 60).toFixed(1);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function updateLabels(seek) {
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    if (s >= e) { if (seek === 'start') { e = Math.min(dur, s + 0.1); endRange.value = e; } else { s = Math.max(0, e - 0.1); startRange.value = s; } }
+    startLabel.textContent = fmt(s);
+    endLabel.textContent = fmt(e);
+    clipLabel.textContent = 'Clip length: ' + fmt(e - s) + ' / ' + fmt(dur);
+    if (seek === 'start') player.currentTime = s;
+    if (seek === 'end') player.currentTime = e;
+    trimBtn.disabled = !(e - s > 0.2);
+  }
+  startRange.addEventListener('input', function () { updateLabels('start'); });
+  endRange.addEventListener('input', function () { updateLabels('end'); });
+
+  function resetAll() {
+    file = null; dur = 0;
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    player.removeAttribute('src'); player.load();
+    stage.className = 'vt-stage';
+    trimBtn.disabled = true; clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'video/*,.mp4,.webm,.mov,.mkv,.m4v',
+    multiple: false,
+    onFiles: function (fs) {
+      resetAll();
+      file = fs[0];
+      var m = /\.([a-z0-9]+)$/i.exec(file.name || '');
+      ext = m ? m[1].toLowerCase() : 'mp4';
+      if (ext === 'm4v') ext = 'mp4';
+      baseName = (file.name || 'video').replace(/\.[a-z0-9]+$/i, '') || 'video';
+      objUrl = URL.createObjectURL(file);
+      player.src = objUrl;
+      player.onloadedmetadata = function () {
+        dur = player.duration || 0;
+        if (!isFinite(dur) || dur <= 0) { mdtlResult(result, '❌ Could not read this video. The codec may be unsupported by your browser preview — trimming may still work, but the sliders need a readable duration.', true); return; }
+        startRange.max = dur; endRange.max = dur;
+        startRange.value = 0; endRange.value = dur;
+        stage.className = 'vt-stage show';
+        clearBtn.style.display = '';
+        updateLabels();
+        loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'Engine load failed.'), true); });
+      };
+      player.onerror = function () { mdtlResult(result, '❌ This video format could not be opened in the browser.', true); };
+    }
+  });
+
+  trimBtn.addEventListener('click', function () {
+    if (!file || trimBtn.disabled) return;
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    card.classList.add('busy');
+    mdtlResult(result, '⏳ Trimming (no re-encoding — nearly instant)…');
+    var done = function () { card.classList.remove('busy'); };
+    loadFF().then(function (ff) {
+      return file.arrayBuffer().then(function (buf) {
+        var inName = 'in.' + ext, outName = 'out.' + ext;
+        return ff.writeFile(inName, new Uint8Array(buf))
+          .then(function () {
+            return ff.exec(['-ss', String(s), '-i', inName, '-t', String(e - s), '-c', 'copy', '-avoid_negative_ts', 'make_zero', outName]);
+          })
+          .then(function () { return ff.readFile(outName); })
+          .then(function (data) {
+            ff.deleteFile(inName).catch(function () {});
+            ff.deleteFile(outName).catch(function () {});
+            if (!data || !data.length) throw new Error('Empty output — this codec may not support stream-copy trimming.');
+            var blob = new Blob([data], { type: file.type || 'video/mp4' });
+            mdtlDownload(blob, baseName + '_trim.' + ext);
+            mdtlLogEvent('video-trim', 'success', null,
+              { size_bucket: mdtlSizeBucket(file.size), result_bucket: mdtlSizeBucket(blob.size), format: ext, n: Math.round(e - s) });
+            mdtlResult(result, '✅ <b>Done!</b> ' + fmt(e - s) + ' clip downloaded (' + mdtlFormatBytes(blob.size) + ') — no re-encoding, no quality loss. Your original file is untouched.' +
+              '<br>Start looks a moment early? Cuts snap to keyframes — see the FAQ.');
+          });
+      });
+    }).then(done, function (err) {
+      done();
+      mdtlResult(result, '❌ Trimming failed: ' + (err && err.message ? err.message : 'unknown error') + '<br>Very large files can exceed browser memory — try a shorter source or a desktop browser.', true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

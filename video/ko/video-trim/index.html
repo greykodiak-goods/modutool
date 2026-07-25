@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>동영상 자르기 — 무료·업로드 없음·워터마크 없음 | ThisIsMyVideo</title>
+<meta name="description" content="브라우저 안에서만 동작하는 무료 동영상 자르기 — MP4·WebM·MOV에서 필요한 구간만 잘라냅니다. 업로드 대기 없음, 워터마크 없음, 재인코딩 화질 손실 없음.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/video/ko/video-trim/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/video/ko/video-trim/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/video/video-trim/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/video/video-trim/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="동영상 자르기 — 무료, 온디바이스, 업로드 없음">
+<meta property="og:description" content="영상이 기기를 떠나지 않는 트리머. 업로드 대기 0초, 워터마크 없음.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/video/ko/video-trim/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyVideo";window.MDTL_SITE_MARK="V";</script>
+<script>window.MDTL_BASE='/modutool/video';</script>
+<link rel="stylesheet" href="/modutool/video/assets/site.css">
+<script src="/modutool/video/assets/site.js"></script>
+<script src="/modutool/video/assets/ads-config.js" defer></script>
+<script src="/modutool/video/assets/auth-config.js" defer></script>
+<script src="/modutool/video/assets/auth.js" defer></script>
+<style>
+  .vt-stage { display:none; margin-top:14px; }
+  .vt-stage.show { display:block; }
+  .vt-stage video { max-width:100%; border-radius:10px; border:1px solid var(--line); background:#000; }
+  .vt-range { margin:12px 0 4px; }
+  .vt-range label { display:block; font-size:13px; margin:8px 0 2px; }
+  .vt-range input[type=range] { width:100%; }
+  .vt-times { font-size:14px; font-variant-numeric:tabular-nums; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"동영상 자르기 - ThisIsMyVideo","url":"https://greykodiak-goods.github.io/modutool/video/ko/video-trim/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"FFmpeg WebAssembly로 기기 안에서 동영상을 자르는 무료 웹 도구. 서버 업로드·워터마크 없음.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"영상이 정말 업로드되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 자릅니다. 아무것도 전송되지 않으므로 업로드 대기도 없습니다 — 500MB 영상도 즉시 처리가 시작됩니다."}},
+{"@type":"Question","name":"왜 이렇게 빠르고, 자르는 지점이 살짝 어긋날 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"기본적으로 재인코딩 없이 스트림을 그대로 복사하기 때문입니다(무손실·거의 즉시). 영상은 키프레임 단위로만 깔끔하게 잘리므로 실제 시작점이 슬라이더 위치보다 최대 몇 초 앞으로 당겨질 수 있습니다. 대부분의 용도에선 티가 나지 않고, 프레임 단위 정밀 컷은 전체 재인코딩이 필요한 영역입니다."}},
+{"@type":"Question","name":"화질이 나빠지거나 워터마크가 붙나요?","acceptedAnswer":{"@type":"Answer","text":"둘 다 아닙니다. 스트림 복사 방식이라 남긴 구간은 원본과 비트 단위로 동일합니다 — 해상도·비트레이트 그대로, 세대 손실 없음, 워터마크는 어떤 경우에도 없습니다."}},
+{"@type":"Question","name":"어떤 형식을 지원하나요?","acceptedAnswer":{"@type":"Answer","text":"MP4·WebM·MOV·MKV가 잘 동작합니다. 출력은 입력과 같은 컨테이너·코덱을 유지합니다. 일부 특수 코덱은 열리지 않을 수 있는데, 그 경우 망가진 파일을 만드는 대신 안내 메시지를 보여줍니다."}},
+{"@type":"Question","name":"파일 크기 제한이 있나요?","acceptedAnswer":{"@type":"Answer","text":"저희가 정한 제한은 없지만 처리 자체가 브라우저 메모리에서 이뤄지므로 기기 성능에 따라 실질 한계가 있습니다 — 데스크톱 대략 1~2GB, 휴대폰은 그보다 적습니다. 아주 큰 파일이 실패하는 것은 서버를 쓰지 않는 방식의 정직한 트레이드오프입니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/video/ko/">ThisIsMyVideo</a> › <a href="/modutool/video/ko/#video">영상 도구</a> › 동영상 자르기</nav>
+  <h1 class="page-title">동영상 자르기<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">영상에서 필요한 구간만 잘라냅니다 — 업로드 없음, 워터마크 없음, 재인코딩 화질 손실 없음. 브라우저에서 바로, 무료.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🎬</span>
+      <strong>동영상을 끌어다 놓거나 클릭해서 선택</strong><br>
+      MP4 · WebM · MOV · MKV · <span class="engine-note">최초 사용 시 온디바이스 엔진(~31MB) 1회 다운로드</span>
+    </div>
+    <div class="vt-stage" id="stage">
+      <video id="player" controls playsinline></video>
+      <div class="vt-range">
+        <label>시작: <span id="startLabel" class="vt-times">0:00.0</span></label>
+        <input type="range" id="startRange" min="0" max="100" step="0.1" value="0">
+        <label>끝: <span id="endLabel" class="vt-times">0:00.0</span></label>
+        <input type="range" id="endRange" min="0" max="100" step="0.1" value="100">
+        <p class="vt-times" id="clipLabel"></p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="trimBtn" disabled>잘라서 다운로드</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">영상 제거</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>영상을 위 영역에 끌어다 놓습니다. 최초 사용 시 온디바이스 엔진(~31MB)이 1회 다운로드되고 이후엔 캐시돼 바로 시작합니다.</li>
+      <li>미리보기를 재생하며 <b>시작</b>·<b>끝</b> 슬라이더를 맞춥니다. 슬라이더를 움직이면 미리보기가 그 지점으로 이동해 정확한 순간을 찾기 쉽습니다.</li>
+      <li><b>잘라서 다운로드</b>를 누르면 남긴 구간이 재인코딩 없이 복사되어 — 거의 즉시, 화질 손실 없이 — <b>파일명_trim</b>으로 원본 형식 그대로 저장됩니다.</li>
+    </ol>
+
+    <h2>업로드형 사이트보다 브라우저 트리머가 나은 이유</h2>
+    <p>"업로드 없음"이 가장 크게 체감되는 곳이 영상입니다: 500MB짜리 클립을 변환 사이트에 올리면 작업이 시작되기도 전에 몇 분을 기다려야 하고, 내 영상을 남의 서버에 맡겨야 합니다. 이 도구는 전문가용 엔진 FFmpeg를 WebAssembly로 컴파일해 <b>기기 안에서</b> 자릅니다: 처리는 즉시 시작되고, 사적인 영상은 사적으로 남으며, 워터마크도 인위적 용량 제한도 없습니다.</p>
+    <p>정직한 안내: 기본은 <b>스트림 복사</b>(재인코딩 없음)입니다. 무손실에 거의 즉시지만 컷이 키프레임에 맞춰지므로 실제 시작점이 선택 지점보다 최대 몇 초 앞설 수 있습니다. 녹화·강의·게임플레이 클리핑에는 딱 맞는 트레이드오프이고, 프레임 단위 편집은 전용 편집기의 영역입니다.</p>
+
+    <h2>이런 때 좋아요</h2>
+    <ul>
+      <li>긴 화면 녹화·강의에서 하이라이트만 잘라내기</li>
+      <li>폰 영상 앞뒤의 불필요한 구간 제거</li>
+      <li>메신저로 보낼 수 있게 클립 용량 줄이기</li>
+      <li>편집기 설치 없이 게임·회의 녹화 다듬기</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>영상이 정말 업로드되지 않나요?</summary><p>네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 자릅니다. 아무것도 전송되지 않으므로 업로드 대기도 없습니다 — 500MB 영상도 즉시 처리가 시작됩니다.</p></details>
+      <details><summary>왜 이렇게 빠르고, 자르는 지점이 살짝 어긋날 수 있나요?</summary><p>기본적으로 재인코딩 없이 스트림을 그대로 복사하기 때문입니다(무손실·거의 즉시). 영상은 키프레임 단위로만 깔끔하게 잘리므로 실제 시작점이 슬라이더 위치보다 최대 몇 초 앞으로 당겨질 수 있습니다. 대부분의 용도에선 티가 나지 않고, 프레임 단위 정밀 컷은 전체 재인코딩이 필요한 영역입니다.</p></details>
+      <details><summary>화질이 나빠지거나 워터마크가 붙나요?</summary><p>둘 다 아닙니다. 스트림 복사 방식이라 남긴 구간은 원본과 비트 단위로 동일합니다 — 해상도·비트레이트 그대로, 세대 손실 없음, 워터마크는 어떤 경우에도 없습니다.</p></details>
+      <details><summary>어떤 형식을 지원하나요?</summary><p>MP4·WebM·MOV·MKV가 잘 동작합니다. 출력은 입력과 같은 컨테이너·코덱을 유지합니다. 일부 특수 코덱은 열리지 않을 수 있는데, 그 경우 망가진 파일을 만드는 대신 안내 메시지를 보여줍니다.</p></details>
+      <details><summary>파일 크기 제한이 있나요?</summary><p>저희가 정한 제한은 없지만 처리 자체가 브라우저 메모리에서 이뤄지므로 기기 성능에 따라 실질 한계가 있습니다 — 데스크톱 대략 1~2GB, 휴대폰은 그보다 적습니다. 아주 큰 파일이 실패하는 것은 서버를 쓰지 않는 방식의 정직한 트레이드오프입니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/video/ko/image-compress/"><span class="emoji">🗜️</span><span><b>이미지 압축</b><span>공유용 사진 용량 줄이기</span></span></a>
+      <a class="tool-tile" href="/modutool/video/ko/img-to-pdf/"><span class="emoji">📄</span><span><b>이미지 → PDF</b><span>사진을 PDF로 묶기</span></span></a>
+      <a class="tool-tile" href="/modutool/video/ko/qr-generator/"><span class="emoji">🔳</span><span><b>QR코드 생성</b><span>링크 공유를 간편하게</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/video/assets/vendor/ffmpeg/ffmpeg.js"></script>
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var stage = document.getElementById('stage');
+  var player = document.getElementById('player');
+  var startRange = document.getElementById('startRange');
+  var endRange = document.getElementById('endRange');
+  var startLabel = document.getElementById('startLabel');
+  var endLabel = document.getElementById('endLabel');
+  var clipLabel = document.getElementById('clipLabel');
+  var trimBtn = document.getElementById('trimBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var file = null, dur = 0, ext = 'mp4', baseName = 'video', objUrl = null;
+  var ffmpeg = null, ffLoading = null;
+
+  function loadFF() {
+    if (ffmpeg) return Promise.resolve(ffmpeg);
+    if (ffLoading) return ffLoading;
+    ffLoading = (function () {
+      mdtlResult(result, '⏳ 온디바이스 엔진 로딩 중(~31MB, 최초 1회)…');
+      var f = new FFmpegWASM.FFmpeg();
+      /* 공식 패턴: core는 blob URL로 로드(워커 내 동적 import 호환), 워커 스크립트는 동일출처 전체 URL */
+      var toBlobURL = function (url, type) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('engine fetch failed: ' + url);
+          return r.blob();
+        }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+      };
+      return Promise.all([
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.js', 'text/javascript'),
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.wasm', 'application/wasm')
+      ]).then(function (urls) {
+        return f.load({
+          coreURL: urls[0],
+          wasmURL: urls[1],
+          classWorkerURL: location.origin + '/modutool/video/assets/vendor/ffmpeg/814.ffmpeg.js'
+        });
+      }).then(function () {
+        ffmpeg = f;
+        result.className = 'result';
+        return f;
+      });
+    })();
+    ffLoading.catch(function () { ffLoading = null; });
+    return ffLoading;
+  }
+
+  function fmt(t) {
+    t = Math.max(0, t);
+    var m = Math.floor(t / 60), s = (t - m * 60).toFixed(1);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function updateLabels(seek) {
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    if (s >= e) { if (seek === 'start') { e = Math.min(dur, s + 0.1); endRange.value = e; } else { s = Math.max(0, e - 0.1); startRange.value = s; } }
+    startLabel.textContent = fmt(s);
+    endLabel.textContent = fmt(e);
+    clipLabel.textContent = '클립 길이: ' + fmt(e - s) + ' / ' + fmt(dur);
+    if (seek === 'start') player.currentTime = s;
+    if (seek === 'end') player.currentTime = e;
+    trimBtn.disabled = !(e - s > 0.2);
+  }
+  startRange.addEventListener('input', function () { updateLabels('start'); });
+  endRange.addEventListener('input', function () { updateLabels('end'); });
+
+  function resetAll() {
+    file = null; dur = 0;
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    player.removeAttribute('src'); player.load();
+    stage.className = 'vt-stage';
+    trimBtn.disabled = true; clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'video/*,.mp4,.webm,.mov,.mkv,.m4v',
+    multiple: false,
+    onFiles: function (fs) {
+      resetAll();
+      file = fs[0];
+      var m = /\.([a-z0-9]+)$/i.exec(file.name || '');
+      ext = m ? m[1].toLowerCase() : 'mp4';
+      if (ext === 'm4v') ext = 'mp4';
+      baseName = (file.name || 'video').replace(/\.[a-z0-9]+$/i, '') || 'video';
+      objUrl = URL.createObjectURL(file);
+      player.src = objUrl;
+      player.onloadedmetadata = function () {
+        dur = player.duration || 0;
+        if (!isFinite(dur) || dur <= 0) { mdtlResult(result, '❌ 영상을 읽지 못했습니다. 브라우저 미리보기가 지원하지 않는 코덱일 수 있습니다.', true); return; }
+        startRange.max = dur; endRange.max = dur;
+        startRange.value = 0; endRange.value = dur;
+        stage.className = 'vt-stage show';
+        clearBtn.style.display = '';
+        updateLabels();
+        loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : '엔진 로딩에 실패했습니다.'), true); });
+      };
+      player.onerror = function () { mdtlResult(result, '❌ 이 영상 형식은 브라우저에서 열 수 없습니다.', true); };
+    }
+  });
+
+  trimBtn.addEventListener('click', function () {
+    if (!file || trimBtn.disabled) return;
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    card.classList.add('busy');
+    mdtlResult(result, '⏳ 자르는 중(재인코딩 없음 — 거의 즉시)…');
+    var done = function () { card.classList.remove('busy'); };
+    loadFF().then(function (ff) {
+      return file.arrayBuffer().then(function (buf) {
+        var inName = 'in.' + ext, outName = 'out.' + ext;
+        return ff.writeFile(inName, new Uint8Array(buf))
+          .then(function () {
+            return ff.exec(['-ss', String(s), '-i', inName, '-t', String(e - s), '-c', 'copy', '-avoid_negative_ts', 'make_zero', outName]);
+          })
+          .then(function () { return ff.readFile(outName); })
+          .then(function (data) {
+            ff.deleteFile(inName).catch(function () {});
+            ff.deleteFile(outName).catch(function () {});
+            if (!data || !data.length) throw new Error('출력이 비어 있습니다 — 이 코덱은 스트림 복사 자르기를 지원하지 않을 수 있습니다.');
+            var blob = new Blob([data], { type: file.type || 'video/mp4' });
+            mdtlDownload(blob, baseName + '_trim.' + ext);
+            mdtlLogEvent('video-trim', 'success', null,
+              { size_bucket: mdtlSizeBucket(file.size), result_bucket: mdtlSizeBucket(blob.size), format: ext, n: Math.round(e - s) });
+            mdtlResult(result, '✅ <b>완료!</b> ' + fmt(e - s) + ' 클립이 다운로드되었습니다(' + mdtlFormatBytes(blob.size) + ') — 재인코딩 없음, 화질 손실 없음. 원본은 그대로입니다.' +
+              '<br>시작이 살짝 이르게 보이면 키프레임 스냅 때문입니다 — FAQ 참고.');
+          });
+      });
+    }).then(done, function (err) {
+      done();
+      mdtlResult(result, '❌ 자르기 실패: ' + (err && err.message ? err.message : '알 수 없는 오류') + '<br>아주 큰 파일은 브라우저 메모리를 넘을 수 있습니다 — 더 짧은 원본이나 데스크톱 브라우저로 시도해 보세요.', true);
+    });
+  });
+})();
+</script>
+</body>
+</html>
