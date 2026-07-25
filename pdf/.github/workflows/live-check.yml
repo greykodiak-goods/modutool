@@ -17,7 +17,7 @@ jobs:
         run: |
           BASE="${{ inputs.base_url }}"
           fail=0
-          for p in "/" "/ko/" "/pdf/" "/pdf/ko/" "/pdf/pdf-merge/" "/pdf/pdf-compress/" "/pdf/pdf-sign/" "/pdf/pricing/" "/pdf/login/" "/pdf/admin/" "/img/" "/img/ko/" "/img/image-compress/" "/img/image-redact/" "/img/image-exif/" "/calc/" "/calc/age-calculator/" "/calc/vat-calculator/" "/calc/interest-calculator/" "/calc/unit-converter/" "/calc/qr-generator/" "/calc/password-generator/" "/calc/text-diff/" "/sitemap.xml" "/robots.txt" "/pdf/sitemap.xml" "/pdf/assets/site.js" "/pdf/assets/vendor/pdf-lib.min.js" "/calc/assets/vendor/qrcode-generator.js" "/pdf-merge/" "/ko/image-compress/"; do
+          for p in "/" "/ko/" "/pdf/" "/pdf/ko/" "/pdf/pdf-merge/" "/pdf/pdf-compress/" "/pdf/pdf-sign/" "/pdf/pricing/" "/pdf/login/" "/pdf/admin/" "/img/" "/img/ko/" "/img/image-compress/" "/img/image-redact/" "/img/image-exif/" "/img/image-bg-remove/" "/img/image-object-remove/" "/img/ko/image-bg-remove/" "/img/assets/vendor/opencv.js" "/calc/" "/calc/age-calculator/" "/calc/vat-calculator/" "/calc/interest-calculator/" "/calc/unit-converter/" "/calc/qr-generator/" "/calc/password-generator/" "/calc/text-diff/" "/sitemap.xml" "/robots.txt" "/pdf/sitemap.xml" "/pdf/assets/site.js" "/pdf/assets/vendor/pdf-lib.min.js" "/calc/assets/vendor/qrcode-generator.js" "/pdf-merge/" "/ko/image-compress/"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
             echo "$code  $BASE$p"
             [ "$code" = "200" ] || fail=1

@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remove Objects from Photos — Free Eraser, No Upload | ThisIsMyIMG</title>
+<meta name="description" content="Free object remover that runs entirely in your browser — brush over people, text, wires or clutter and they are erased and filled in. No server upload, no sign-up, works on sensitive photos safely.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/img/image-object-remove/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/img/ko/image-object-remove/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/img/image-object-remove/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/img/image-object-remove/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Remove Objects from Photos — Free, On-Device">
+<meta property="og:description" content="Brush over unwanted objects and they disappear. 100% in-browser — photos never leave your device.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/img/image-object-remove/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyIMG";window.MDTL_SITE_MARK="I";</script>
+<script>window.MDTL_BASE='/modutool/img';</script>
+<link rel="stylesheet" href="/modutool/img/assets/site.css">
+<script src="/modutool/img/assets/site.js"></script>
+<script src="/modutool/img/assets/ads-config.js" defer></script>
+<script src="/modutool/img/assets/auth-config.js" defer></script>
+<script src="/modutool/img/assets/auth.js" defer></script>
+<style>
+  .or-stage { display:none; margin-top:14px; }
+  .or-stage.show { display:block; }
+  .or-wrap { position:relative; display:inline-block; max-width:100%; touch-action:none; }
+  .or-wrap canvas.base { max-width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
+  .or-wrap canvas.paint { position:absolute; left:0; top:0; width:100%; height:100%; cursor:crosshair; border-radius:10px; }
+  .or-hint { font-size:12.5px; color:var(--text-soft); margin:8px 0 0; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Remove Objects - ThisIsMyIMG","url":"https://greykodiak-goods.github.io/modutool/img/image-object-remove/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that erases unwanted objects from photos using on-device inpainting (OpenCV). No server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Are my photos uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The tool downloads a computer-vision engine (OpenCV compiled to WebAssembly, about 13 MB, cached after the first use) and runs the erase-and-fill entirely in your browser. Your photo never leaves your device — which is exactly why it is safe for family photos and sensitive documents."}},
+{"@type":"Question","name":"How does the filling work, and how good is it?","acceptedAnswer":{"@type":"Answer","text":"It uses the classical TELEA inpainting algorithm: the brushed area is filled by smoothly propagating the surrounding pixels inward. It works very well for small and medium objects on relatively even backgrounds — power lines, text stamps, skin blemishes, passers-by on grass or sky. For large objects on complex backgrounds a server-side AI inpainter will look better; the trade-off here is complete privacy."}},
+{"@type":"Question","name":"Can I erase several things in one photo?","acceptedAnswer":{"@type":"Answer","text":"Yes. Brush and apply as many rounds as you like — each Erase pass works on the current result, so you can remove one object, then the next. Undo reverts the last pass, and Reset returns to the original photo at any time."}},
+{"@type":"Question","name":"Does the rest of the photo lose quality?","acceptedAnswer":{"@type":"Answer","text":"No. Only the brushed region is recomputed; every pixel outside your brush strokes stays exactly as it was. Very large photos are processed at a slightly reduced working resolution for speed, but only inside the erased area — the untouched parts keep their original pixels on export."}},
+{"@type":"Question","name":"What should I brush exactly?","acceptedAnswer":{"@type":"Answer","text":"Cover the whole object plus a small margin around it — shadows and outlines included. If a faint ghost remains, brush over the remnant and apply again; two light passes usually beat one heavy pass."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/img/">ThisIsMyIMG</a> › <a href="/modutool/img/#image">Image Tools</a> › Remove Objects</nav>
+  <h1 class="page-title">Remove Objects<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Brush over people, text, wires, or clutter — the area is erased and filled from its surroundings, entirely on your device. Free — no install, no sign-up.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🧽</span>
+      <strong>Drag &amp; drop an image here, or click to select</strong><br>
+      One image at a time (JPG · PNG · WEBP) · <span class="engine-note">first use downloads a ~13 MB on-device engine</span>
+    </div>
+    <div class="opts">
+      <label>Brush size
+        <select id="brushSel">
+          <option value="12">Small</option>
+          <option value="26" selected>Medium</option>
+          <option value="52">Large</option>
+        </select>
+      </label>
+    </div>
+    <div class="or-stage" id="stage">
+      <div class="or-wrap" id="wrap">
+        <canvas id="base" class="base"></canvas>
+        <canvas id="paint" class="paint"></canvas>
+      </div>
+      <p class="or-hint">Brush over what you want gone (red overlay), then press <b>Erase Selected</b>. Repeat for more objects.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="applyBtn" disabled>Erase Selected</button>
+      <button class="btn secondary" id="undoBtn" style="display:none">Undo Last</button>
+      <button class="btn secondary" id="resetBtn" style="display:none">Reset to Original</button>
+      <button class="btn" id="saveBtn" disabled>Download Result</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Remove Image</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drop your photo into the area above. On first use the on-device engine (~13 MB) downloads once, then it is cached by your browser.</li>
+      <li><b>Brush over the object</b> you want removed — cover it fully, shadows included. The red overlay shows what will be erased.</li>
+      <li>Press <b>Erase Selected</b>. The area is filled in from its surroundings. Brush and erase again for the next object; <b>Undo Last</b> reverts one pass.</li>
+      <li>Press <b>Download Result</b> — the edited copy downloads and your original file stays untouched.</li>
+    </ol>
+
+    <h2>On-device inpainting — private, and honest about limits</h2>
+    <p>Object removers usually upload your photo to a server where an AI model fills the gap. This tool runs the classical <b>TELEA inpainting</b> algorithm (OpenCV compiled to WebAssembly) <b>inside your browser</b>: the brushed region is reconstructed by propagating surrounding pixels inward, and nothing is ever transmitted.</p>
+    <p>Honest expectations: on even or softly textured backgrounds (sky, walls, grass, skin, paper) results are clean. Large objects on intricate backgrounds may leave smudges a server-side AI would avoid — brush the remnant and apply a second light pass. Only the brushed area is recomputed; every other pixel stays original.</p>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>Tourists and passers-by in travel photos</li>
+      <li>Power lines, poles, and trash on the street</li>
+      <li>Date stamps, watermark text, and logos on your own photos</li>
+      <li>Skin blemishes in portraits</li>
+      <li>Objects you could not move out of a product shot</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Are my photos uploaded to a server?</summary><p>No. The tool downloads a computer-vision engine (OpenCV compiled to WebAssembly, about 13 MB, cached after the first use) and runs the erase-and-fill entirely in your browser. Your photo never leaves your device — which is exactly why it is safe for family photos and sensitive documents.</p></details>
+      <details><summary>How does the filling work, and how good is it?</summary><p>It uses the classical TELEA inpainting algorithm: the brushed area is filled by smoothly propagating the surrounding pixels inward. It works very well for small and medium objects on relatively even backgrounds — power lines, text stamps, skin blemishes, passers-by on grass or sky. For large objects on complex backgrounds a server-side AI inpainter will look better; the trade-off here is complete privacy.</p></details>
+      <details><summary>Can I erase several things in one photo?</summary><p>Yes. Brush and apply as many rounds as you like — each Erase pass works on the current result, so you can remove one object, then the next. Undo reverts the last pass, and Reset returns to the original photo at any time.</p></details>
+      <details><summary>Does the rest of the photo lose quality?</summary><p>No. Only the brushed region is recomputed; every pixel outside your brush strokes stays exactly as it was. Very large photos are processed at a slightly reduced working resolution for speed, but only inside the erased area — the untouched parts keep their original pixels on export.</p></details>
+      <details><summary>What should I brush exactly?</summary><p>Cover the whole object plus a small margin around it — shadows and outlines included. If a faint ghost remains, brush over the remnant and apply again; two light passes usually beat one heavy pass.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/img/image-bg-remove/"><span class="emoji">🪄</span><span><b>Remove Background</b><span>Transparent PNG in seconds</span></span></a>
+      <a class="tool-tile" href="/modutool/img/image-redact/"><span class="emoji">🫥</span><span><b>Blur &amp; Redact</b><span>Hide account numbers &amp; faces</span></span></a>
+      <a class="tool-tile" href="/modutool/img/image-compress/"><span class="emoji">🗜️</span><span><b>Compress Image</b><span>Keep resolution, shrink file size</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var brushSel = document.getElementById('brushSel');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('wrap');
+  var base = document.getElementById('base');
+  var bctx = base.getContext('2d');
+  var paint = document.getElementById('paint');
+  var xctx = paint.getContext('2d');
+  var applyBtn = document.getElementById('applyBtn');
+  var undoBtn = document.getElementById('undoBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var srcW = 0, srcH = 0, srcName = 'image', srcFmt = { mime: 'image/png', ext: 'png' }, srcSize = 0;
+  var current = null;       // 풀해상도 현재 상태 canvas
+  var prev = null;          // 1단계 undo
+  var original = null;      // 리셋용
+  var applied = 0;
+  var cvMod = null, cvLoading = null;
+
+  function loadCV() {
+    if (cvMod) return Promise.resolve(cvMod);
+    if (cvLoading) return cvLoading;
+    cvLoading = new Promise(function (resolve, reject) {
+      mdtlResult(result, '⏳ Loading the on-device engine (~13 MB, first time only)…');
+      var s = document.createElement('script');
+      s.src = '/modutool/img/assets/vendor/opencv.js';
+      s.onload = function () {
+        Promise.resolve(window.cv && window.cv.ready ? window.cv.ready : window.cv).then(function (m) {
+          cvMod = (m && typeof m.inpaint === 'function') ? m : window.cv;
+          result.className = 'result';
+          resolve(cvMod);
+        }, reject);
+      };
+      s.onerror = function () { reject(new Error('Could not load the engine. Please check your connection and reload.')); };
+      document.body.appendChild(s);
+    });
+    return cvLoading;
+  }
+
+  function chooseFormat(file) {
+    var t = (file.type || '').toLowerCase();
+    if (t === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) return { mime: 'image/jpeg', ext: 'jpg' };
+    return { mime: 'image/png', ext: 'png' };
+  }
+
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Could not read this image. Your browser may not support the format (e.g., HEIC).')); };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else { fallback(); }
+    });
+  }
+
+  function cloneCanvas(c) {
+    var n = document.createElement('canvas');
+    n.width = c.width; n.height = c.height;
+    n.getContext('2d').drawImage(c, 0, 0);
+    return n;
+  }
+
+  function renderBase() {
+    bctx.clearRect(0, 0, base.width, base.height);
+    bctx.drawImage(current, 0, 0, base.width, base.height);
+  }
+
+  function hasStrokes() {
+    var d = xctx.getImageData(0, 0, paint.width, paint.height).data;
+    for (var i = 3; i < d.length; i += 4) if (d[i] > 0) return true;
+    return false;
+  }
+
+  function setImage(img, file) {
+    srcW = img.width || img.naturalWidth;
+    srcH = img.height || img.naturalHeight;
+    srcName = (file.name || 'image').replace(/\.[a-z0-9]+$/i, '') || 'image';
+    srcFmt = chooseFormat(file);
+    srcSize = file.size || 0;
+    original = document.createElement('canvas');
+    original.width = srcW; original.height = srcH;
+    original.getContext('2d').drawImage(img, 0, 0, srcW, srcH);
+    current = cloneCanvas(original);
+    prev = null; applied = 0;
+    var pscale = Math.min(1, 900 / srcW);
+    base.width = Math.max(1, Math.round(srcW * pscale));
+    base.height = Math.max(1, Math.round(srcH * pscale));
+    paint.width = base.width; paint.height = base.height;
+    xctx.clearRect(0, 0, paint.width, paint.height);
+    stage.className = 'or-stage show';
+    clearBtn.style.display = '';
+    resetBtn.style.display = 'none';
+    undoBtn.style.display = 'none';
+    applyBtn.disabled = true;
+    saveBtn.disabled = true;
+    result.className = 'result';
+    renderBase();
+  }
+
+  function resetAll() {
+    current = null; prev = null; original = null; applied = 0;
+    stage.className = 'or-stage';
+    applyBtn.disabled = true; saveBtn.disabled = true;
+    undoBtn.style.display = 'none'; resetBtn.style.display = 'none'; clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'image/*,.jpg,.jpeg,.png,.webp',
+    multiple: false,
+    onFiles: function (fs) {
+      loadImage(fs[0]).then(function (img) {
+        setImage(img, fs[0]);
+        loadCV().catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+      }).catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+    }
+  });
+
+  /* 브러시 (red overlay) */
+  var painting = false, lastP = null;
+  function localPoint(e) {
+    var r = paint.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * (paint.width / r.width), y: (e.clientY - r.top) * (paint.height / r.height) };
+  }
+  function stroke(a, b) {
+    xctx.strokeStyle = 'rgba(239,68,68,.6)';
+    xctx.fillStyle = 'rgba(239,68,68,.6)';
+    var w = parseFloat(brushSel.value) || 26;
+    xctx.lineWidth = w; xctx.lineCap = 'round'; xctx.lineJoin = 'round';
+    if (!b) { xctx.beginPath(); xctx.arc(a.x, a.y, w / 2, 0, Math.PI * 2); xctx.fill(); return; }
+    xctx.beginPath(); xctx.moveTo(a.x, a.y); xctx.lineTo(b.x, b.y); xctx.stroke();
+  }
+  paint.addEventListener('pointerdown', function (e) {
+    if (!current) return;
+    e.preventDefault();
+    paint.setPointerCapture(e.pointerId);
+    painting = true; lastP = localPoint(e); stroke(lastP, null);
+    applyBtn.disabled = false;
+  });
+  paint.addEventListener('pointermove', function (e) {
+    if (!painting) return;
+    var p = localPoint(e); stroke(lastP, p); lastP = p;
+  });
+  paint.addEventListener('pointerup', function () { painting = false; });
+  paint.addEventListener('pointercancel', function () { painting = false; });
+
+  /* 인페인팅 실행 — 처리 해상도 캡 1600px, 마스크 영역만 풀해상도에 합성 */
+  applyBtn.addEventListener('click', function () {
+    if (!current || !hasStrokes()) { mdtlResult(result, 'Brush over an object first.', true); return; }
+    card.classList.add('busy');
+    mdtlResult(result, '⏳ Erasing and filling in…');
+    loadCV().then(function (cv) {
+      return new Promise(function (r) { setTimeout(r, 30); }).then(function () {
+        var cap = 1600;
+        var pscale = Math.min(1, cap / Math.max(srcW, srcH));
+        var pw = Math.max(1, Math.round(srcW * pscale)), ph = Math.max(1, Math.round(srcH * pscale));
+        // 처리용 축소 이미지 + 마스크
+        var imgC = document.createElement('canvas'); imgC.width = pw; imgC.height = ph;
+        imgC.getContext('2d').drawImage(current, 0, 0, pw, ph);
+        var maskC = document.createElement('canvas'); maskC.width = pw; maskC.height = ph;
+        var mctx2 = maskC.getContext('2d');
+        mctx2.drawImage(paint, 0, 0, pw, ph);
+        var srcMat = cv.matFromImageData(imgC.getContext('2d').getImageData(0, 0, pw, ph));
+        var rgb = new cv.Mat();
+        cv.cvtColor(srcMat, rgb, cv.COLOR_RGBA2RGB);
+        var md = mctx2.getImageData(0, 0, pw, ph);
+        var mask = new cv.Mat(ph, pw, cv.CV_8UC1);
+        for (var i = 0; i < pw * ph; i++) mask.data[i] = md.data[i * 4 + 3] > 10 ? 255 : 0;
+        var dst = new cv.Mat();
+        cv.inpaint(rgb, mask, dst, 5, cv.INPAINT_TELEA);
+        // RGB → RGBA → canvas
+        var rgba = new cv.Mat();
+        cv.cvtColor(dst, rgba, cv.COLOR_RGB2RGBA);
+        var outC = document.createElement('canvas'); outC.width = pw; outC.height = ph;
+        outC.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(rgba.data), pw, ph), 0, 0);
+        srcMat.delete(); rgb.delete(); mask.delete(); dst.delete(); rgba.delete();
+        // 마스크 영역만 풀해상도 current에 합성 (마스크 살짝 블러로 경계 자연스럽게)
+        prev = cloneCanvas(current);
+        var patch = document.createElement('canvas'); patch.width = srcW; patch.height = srcH;
+        var pc = patch.getContext('2d');
+        pc.drawImage(outC, 0, 0, srcW, srcH);
+        pc.globalCompositeOperation = 'destination-in';
+        pc.filter = 'blur(2px)';
+        pc.drawImage(paint, 0, 0, srcW, srcH);
+        pc.filter = 'none';
+        current.getContext('2d').drawImage(patch, 0, 0);
+        xctx.clearRect(0, 0, paint.width, paint.height);
+        applied++;
+        renderBase();
+        card.classList.remove('busy');
+        applyBtn.disabled = true;
+        saveBtn.disabled = false;
+        undoBtn.style.display = '';
+        resetBtn.style.display = '';
+        mdtlResult(result, '✅ Erased. Brush the next object, or download the result. A faint remnant? Brush over it and erase once more.');
+      });
+    }).catch(function (e) {
+      card.classList.remove('busy');
+      mdtlResult(result, '❌ Processing failed: ' + (e && e.message ? e.message : 'unknown error'), true);
+    });
+  });
+
+  undoBtn.addEventListener('click', function () {
+    if (!prev) return;
+    current = prev; prev = null; applied = Math.max(0, applied - 1);
+    renderBase();
+    undoBtn.style.display = 'none';
+    saveBtn.disabled = applied === 0;
+  });
+  resetBtn.addEventListener('click', function () {
+    if (!original) return;
+    current = cloneCanvas(original); prev = null; applied = 0;
+    xctx.clearRect(0, 0, paint.width, paint.height);
+    renderBase();
+    undoBtn.style.display = 'none'; resetBtn.style.display = 'none';
+    applyBtn.disabled = true; saveBtn.disabled = true;
+    result.className = 'result';
+  });
+
+  saveBtn.addEventListener('click', function () {
+    if (!current || !applied) return;
+    current.toBlob(function (blob) {
+      if (!blob) { mdtlResult(result, '❌ Could not create the image. It may be too large for this device.', true); return; }
+      mdtlDownload(blob, srcName + '_cleaned.' + srcFmt.ext);
+      mdtlLogEvent('image-object-remove', 'success', null,
+        { width: srcW, height: srcH, count: applied, format: srcFmt.ext, size_bucket: mdtlSizeBucket(srcSize) });
+      mdtlResult(result, '✅ <b>Done!</b> ' + applied + ' erase pass' + (applied > 1 ? 'es' : '') + ' applied — the image has been downloaded. Your original file is untouched.');
+    }, srcFmt.mime, 0.92);
+  });
+})();
+</script>
+</body>
+</html>

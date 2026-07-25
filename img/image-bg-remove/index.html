@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remove Background from Image — Free, On-Device, No Upload | ThisIsMyIMG</title>
+<meta name="description" content="Free background remover that runs entirely in your browser — no server upload, no sign-up. Drag a box around your subject, fine-tune with keep/erase brushes, and download a transparent PNG or a solid-color background.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/img/image-bg-remove/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/img/ko/image-bg-remove/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/img/image-bg-remove/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/img/image-bg-remove/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Remove Background — Free, On-Device, No Upload">
+<meta property="og:description" content="Background removal that never uploads your photo. Drag, refine, download transparent PNG.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/img/image-bg-remove/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyIMG";window.MDTL_SITE_MARK="I";</script>
+<script>window.MDTL_BASE='/modutool/img';</script>
+<link rel="stylesheet" href="/modutool/img/assets/site.css">
+<script src="/modutool/img/assets/site.js"></script>
+<script src="/modutool/img/assets/ads-config.js" defer></script>
+<script src="/modutool/img/assets/auth-config.js" defer></script>
+<script src="/modutool/img/assets/auth.js" defer></script>
+<style>
+  .bg-stage { display:none; margin-top:14px; }
+  .bg-stage.show { display:block; }
+  .bg-wrap { position:relative; display:inline-block; max-width:100%; touch-action:none;
+    background:repeating-conic-gradient(#d9dde5 0% 25%, #f3f5f9 0% 50%) 0 0/16px 16px; border-radius:10px; }
+  .bg-wrap canvas { max-width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); cursor:crosshair; }
+  .drag-box { position:absolute; border:2px dashed var(--accent); background:rgba(37,99,235,.12); pointer-events:none; display:none; }
+  .bg-hint { font-size:12.5px; color:var(--text-soft); margin:8px 0 0; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Remove Background - ThisIsMyIMG","url":"https://greykodiak-goods.github.io/modutool/img/image-bg-remove/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that removes an image background on your device using computer vision (GrabCut). No server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is my photo really never uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"Correct. This tool bundles a computer-vision engine (OpenCV compiled to WebAssembly) that runs inside your browser, so the whole separation happens on your device. The engine file itself is downloaded once from this site, but your photo never leaves your computer or phone."}},
+{"@type":"Question","name":"How good are the results compared to AI background removers?","acceptedAnswer":{"@type":"Answer","text":"This tool uses the classical GrabCut algorithm rather than a neural network. On product photos, logos, and subjects that stand out from the background it produces clean results, especially after a little brushing. On busy backgrounds or wispy hair it is less precise than server-based AI tools — the trade-off is that your image stays completely private. Use the keep/erase brushes to fix edges."}},
+{"@type":"Question","name":"Why do I need to drag a box first?","acceptedAnswer":{"@type":"Answer","text":"The box tells the algorithm roughly where your subject is: everything clearly outside is treated as definite background, and the algorithm then iteratively separates subject from background inside. A slightly generous box that fully contains the subject works best."}},
+{"@type":"Question","name":"What formats can I download?","acceptedAnswer":{"@type":"Answer","text":"Transparent PNG is the default — ideal for putting the subject on any new design. You can also choose a white or custom solid color background, which is handy for marketplace product photos and ID-style pictures; solid-background copies can also be saved as JPG."}},
+{"@type":"Question","name":"Why is the first load slow?","acceptedAnswer":{"@type":"Answer","text":"The on-device vision engine is about 13 MB and is fetched the first time you use the tool, then cached by your browser. That download is the price of never sending your photos to a server — after the first visit it starts much faster."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/img/">ThisIsMyIMG</a> › <a href="/modutool/img/#image">Image Tools</a> › Remove Background</nav>
+  <h1 class="page-title">Remove Background<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Drag a box around your subject and the background disappears — processed entirely on your device. Fine-tune with keep/erase brushes, then download a transparent PNG. Free — no install, no sign-up.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🪄</span>
+      <strong>Drag &amp; drop an image here, or click to select</strong><br>
+      One image at a time (JPG · PNG · WEBP) · <span class="engine-note">first use downloads a ~13 MB on-device engine</span>
+    </div>
+    <div class="opts">
+      <label>Tool
+        <select id="modeSel">
+          <option value="rect" selected>1) Box around subject</option>
+          <option value="keep">2) Brush: keep (restore)</option>
+          <option value="erase">2) Brush: erase (remove)</option>
+        </select>
+      </label>
+      <label>Brush size
+        <select id="brushSel">
+          <option value="10">Small</option>
+          <option value="22" selected>Medium</option>
+          <option value="44">Large</option>
+        </select>
+      </label>
+      <label>Edge softness
+        <select id="featherSel">
+          <option value="0">None</option>
+          <option value="2" selected>Soft</option>
+          <option value="5">Softer</option>
+        </select>
+      </label>
+      <label>New background
+        <select id="bgSel">
+          <option value="transparent" selected>Transparent (PNG)</option>
+          <option value="#ffffff">White</option>
+          <option value="#0000ff">Blue</option>
+          <option value="#ff0000">Red</option>
+        </select>
+      </label>
+    </div>
+    <div class="bg-stage" id="stage">
+      <div class="bg-wrap" id="wrap">
+        <canvas id="preview"></canvas>
+        <div class="drag-box" id="dragBox"></div>
+      </div>
+      <p class="bg-hint" id="hint">Drag a box that fully contains your subject — the background is removed automatically. Then switch to the keep/erase brushes to fix edges.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="saveBtn" disabled>Download Result</button>
+      <button class="btn secondary" id="rerunBtn" style="display:none">Re-run Auto Cutout</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Remove Image</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drop your image into the area above. On first use the on-device engine (~13 MB) downloads once, then it is cached.</li>
+      <li><b>Drag a box around the subject.</b> Make the box slightly generous — everything fully outside is treated as background. The cutout runs automatically.</li>
+      <li>Check the checkerboard preview. Switch to the <b>keep brush</b> to restore parts that were wrongly removed, or the <b>erase brush</b> to clean up leftover background.</li>
+      <li>Pick <b>edge softness</b> and a <b>new background</b> (transparent PNG, white, or a color), then click <b>Download Result</b>.</li>
+    </ol>
+
+    <h2>Private by design — and honest about the trade-off</h2>
+    <p>Most background removers upload your photo to a server, run an AI model there, and send the result back. This tool ships the vision engine to <b>your browser</b> instead (OpenCV compiled to WebAssembly) and runs the classical <b>GrabCut</b> algorithm on your device. Your photo never leaves your computer.</p>
+    <p>The honest trade-off: on complex scenes or fine hair, a server-side neural network will beat GrabCut. On product shots, logos, documents, and clearly separated subjects, results are clean — and the keep/erase brushes close most of the gap. If your image is sensitive (people, IDs, unreleased products), on-device is the safer choice.</p>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>Marketplace product photos — clean white background in seconds</li>
+      <li>Profile pictures and avatars with a transparent or solid backdrop</li>
+      <li>Logos and scanned drawings — lift them off paper backgrounds</li>
+      <li>Presentation and thumbnail assets without a design tool</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Is my photo really never uploaded anywhere?</summary><p>Correct. This tool bundles a computer-vision engine (OpenCV compiled to WebAssembly) that runs inside your browser, so the whole separation happens on your device. The engine file itself is downloaded once from this site, but your photo never leaves your computer or phone.</p></details>
+      <details><summary>How good are the results compared to AI background removers?</summary><p>This tool uses the classical GrabCut algorithm rather than a neural network. On product photos, logos, and subjects that stand out from the background it produces clean results, especially after a little brushing. On busy backgrounds or wispy hair it is less precise than server-based AI tools — the trade-off is that your image stays completely private. Use the keep/erase brushes to fix edges.</p></details>
+      <details><summary>Why do I need to drag a box first?</summary><p>The box tells the algorithm roughly where your subject is: everything clearly outside is treated as definite background, and the algorithm then iteratively separates subject from background inside. A slightly generous box that fully contains the subject works best.</p></details>
+      <details><summary>What formats can I download?</summary><p>Transparent PNG is the default — ideal for putting the subject on any new design. You can also choose a white or custom solid color background, which is handy for marketplace product photos and ID-style pictures; solid-background copies can also be saved as JPG.</p></details>
+      <details><summary>Why is the first load slow?</summary><p>The on-device vision engine is about 13 MB and is fetched the first time you use the tool, then cached by your browser. That download is the price of never sending your photos to a server — after the first visit it starts much faster.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/img/image-object-remove/"><span class="emoji">🧽</span><span><b>Remove Objects</b><span>Brush away people &amp; clutter</span></span></a>
+      <a class="tool-tile" href="/modutool/img/image-crop/"><span class="emoji">✂️</span><span><b>Crop Image</b><span>Cut out exactly the part you want</span></span></a>
+      <a class="tool-tile" href="/modutool/img/image-compress/"><span class="emoji">🗜️</span><span><b>Compress Image</b><span>Keep resolution, shrink file size</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var modeSel = document.getElementById('modeSel');
+  var brushSel = document.getElementById('brushSel');
+  var featherSel = document.getElementById('featherSel');
+  var bgSel = document.getElementById('bgSel');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('wrap');
+  var preview = document.getElementById('preview');
+  var pctx = preview.getContext('2d');
+  var dragBox = document.getElementById('dragBox');
+  var saveBtn = document.getElementById('saveBtn');
+  var rerunBtn = document.getElementById('rerunBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+  var hint = document.getElementById('hint');
+
+  var srcImage = null, srcW = 0, srcH = 0, srcName = 'image', srcSize = 0;
+  var workCanvas = null, workW = 0, workH = 0;   // 처리 해상도(최대 1200px) 원본
+  var maskCanvas = null;                          // 알파 마스크(working res, red=alpha)
+  var lastRect = null;                            // {x,y,w,h} working coords
+  var cvMod = null, cvLoading = null;
+
+  /* opencv.js 지연 로드 — 13MB라 이미지 선택 후에만 */
+  function loadCV() {
+    if (cvMod) return Promise.resolve(cvMod);
+    if (cvLoading) return cvLoading;
+    cvLoading = new Promise(function (resolve, reject) {
+      mdtlResult(result, '⏳ Loading the on-device engine (~13 MB, first time only)…');
+      var s = document.createElement('script');
+      s.src = '/modutool/img/assets/vendor/opencv.js';
+      s.onload = function () {
+        Promise.resolve(window.cv && window.cv.ready ? window.cv.ready : window.cv).then(function (m) {
+          cvMod = (m && typeof m.grabCut === 'function') ? m : window.cv;
+          result.className = 'result';
+          resolve(cvMod);
+        }, reject);
+      };
+      s.onerror = function () { reject(new Error('Could not load the engine. Please check your connection and reload.')); };
+      document.body.appendChild(s);
+    });
+    return cvLoading;
+  }
+
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('Could not read this image. Your browser may not support the format (e.g., HEIC).')); };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else { fallback(); }
+    });
+  }
+
+  function setImage(img, file) {
+    srcImage = img;
+    srcW = img.width || img.naturalWidth;
+    srcH = img.height || img.naturalHeight;
+    srcName = (file.name || 'image').replace(/\.[a-z0-9]+$/i, '') || 'image';
+    srcSize = file.size || 0;
+    var wscale = Math.min(1, 1200 / Math.max(srcW, srcH));
+    workW = Math.max(1, Math.round(srcW * wscale));
+    workH = Math.max(1, Math.round(srcH * wscale));
+    workCanvas = document.createElement('canvas');
+    workCanvas.width = workW; workCanvas.height = workH;
+    workCanvas.getContext('2d').drawImage(img, 0, 0, workW, workH);
+    maskCanvas = document.createElement('canvas');
+    maskCanvas.width = workW; maskCanvas.height = workH;
+    var mc = maskCanvas.getContext('2d');
+    mc.fillStyle = '#fff'; mc.fillRect(0, 0, workW, workH);  // 시작 = 전체 유지
+    lastRect = null;
+    var pscale = Math.min(1, 900 / workW);
+    preview.width = Math.max(1, Math.round(workW * pscale));
+    preview.height = Math.max(1, Math.round(workH * pscale));
+    stage.className = 'bg-stage show';
+    clearBtn.style.display = '';
+    rerunBtn.style.display = 'none';
+    saveBtn.disabled = true;
+    modeSel.value = 'rect';
+    result.className = 'result';
+    render();
+  }
+
+  function render() {
+    if (!workCanvas) return;
+    // 미리보기 = 원본 × 마스크(feather)
+    var f = parseFloat(featherSel.value) || 0;
+    var tmp = document.createElement('canvas');
+    tmp.width = preview.width; tmp.height = preview.height;
+    var t = tmp.getContext('2d');
+    t.drawImage(workCanvas, 0, 0, preview.width, preview.height);
+    t.globalCompositeOperation = 'destination-in';
+    if (f) t.filter = 'blur(' + f + 'px)';
+    t.drawImage(maskCanvas, 0, 0, preview.width, preview.height);
+    t.filter = 'none';
+    pctx.clearRect(0, 0, preview.width, preview.height);
+    var bg = bgSel.value;
+    if (bg !== 'transparent') { pctx.fillStyle = bg; pctx.fillRect(0, 0, preview.width, preview.height); }
+    pctx.drawImage(tmp, 0, 0);
+  }
+  featherSel.addEventListener('change', render);
+  bgSel.addEventListener('change', render);
+
+  function resetAll() {
+    srcImage = null; workCanvas = null; maskCanvas = null; lastRect = null;
+    stage.className = 'bg-stage';
+    saveBtn.disabled = true;
+    rerunBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'image/*,.jpg,.jpeg,.png,.webp',
+    multiple: false,
+    onFiles: function (fs) {
+      loadImage(fs[0]).then(function (img) {
+        setImage(img, fs[0]);
+        loadCV().catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+      }).catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+    }
+  });
+
+  /* GrabCut 실행 (rect: working 좌표) */
+  function runGrabCut(rect) {
+    return loadCV().then(function (cv) {
+      card.classList.add('busy');
+      mdtlResult(result, '⏳ Separating subject from background…');
+      return new Promise(function (resolve) { setTimeout(resolve, 30); }).then(function () {
+        var srcData = workCanvas.getContext('2d').getImageData(0, 0, workW, workH);
+        var srcMat = cv.matFromImageData(srcData);
+        var rgb = new cv.Mat();
+        cv.cvtColor(srcMat, rgb, cv.COLOR_RGBA2RGB);
+        var mask = new cv.Mat.zeros(workH, workW, cv.CV_8UC1);
+        var bgd = new cv.Mat(); var fgd = new cv.Mat();
+        var r = new cv.Rect(
+          Math.max(1, Math.round(rect.x)), Math.max(1, Math.round(rect.y)),
+          Math.min(workW - 2, Math.round(rect.w)), Math.min(workH - 2, Math.round(rect.h)));
+        cv.grabCut(rgb, mask, r, bgd, fgd, 3, cv.GC_INIT_WITH_RECT);
+        // GC_FGD(1)·GC_PR_FGD(3) → 유지
+        var mc = maskCanvas.getContext('2d');
+        var out = mc.createImageData(workW, workH);
+        for (var i = 0; i < mask.data.length; i++) {
+          var keep = (mask.data[i] === cv.GC_FGD || mask.data[i] === cv.GC_PR_FGD) ? 255 : 0;
+          out.data[i * 4] = 255; out.data[i * 4 + 1] = 255; out.data[i * 4 + 2] = 255;
+          out.data[i * 4 + 3] = keep;
+        }
+        mc.clearRect(0, 0, workW, workH);
+        mc.putImageData(out, 0, 0);
+        srcMat.delete(); rgb.delete(); mask.delete(); bgd.delete(); fgd.delete();
+        card.classList.remove('busy');
+        saveBtn.disabled = false;
+        rerunBtn.style.display = '';
+        modeSel.value = 'keep';
+        mdtlResult(result, '✅ Auto cutout done. Fix edges with the <b>keep / erase brushes</b> if needed, then download.');
+        render();
+      });
+    }).catch(function (e) {
+      card.classList.remove('busy');
+      mdtlResult(result, '❌ Processing failed: ' + (e && e.message ? e.message : 'unknown error'), true);
+    });
+  }
+  rerunBtn.addEventListener('click', function () { if (lastRect) runGrabCut(lastRect); });
+
+  /* 포인터: rect 드래그 / 브러시 */
+  var dragging = false, sx = 0, sy = 0, painting = false;
+  function localPoint(e) {
+    var r = preview.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(e.clientX - r.left, r.width)),
+      y: Math.max(0, Math.min(e.clientY - r.top, r.height)),
+      dw: r.width, dh: r.height
+    };
+  }
+  function paintAt(p) {
+    var scale = workW / p.dw;
+    var mc = maskCanvas.getContext('2d');
+    var rad = (parseFloat(brushSel.value) || 22) * scale / 2;
+    mc.globalCompositeOperation = modeSel.value === 'keep' ? 'source-over' : 'destination-out';
+    mc.fillStyle = '#fff';
+    mc.beginPath();
+    mc.arc(p.x * scale, p.y * scale, rad, 0, Math.PI * 2);
+    mc.fill();
+    mc.globalCompositeOperation = 'source-over';
+    render();
+  }
+  wrap.addEventListener('pointerdown', function (e) {
+    if (!workCanvas) return;
+    e.preventDefault();
+    wrap.setPointerCapture(e.pointerId);
+    var p = localPoint(e);
+    if (modeSel.value === 'rect') {
+      dragging = true; sx = p.x; sy = p.y;
+      dragBox.style.display = 'block';
+      dragBox.style.left = sx + 'px'; dragBox.style.top = sy + 'px';
+      dragBox.style.width = '0px'; dragBox.style.height = '0px';
+    } else {
+      painting = true; paintAt(p);
+    }
+  });
+  wrap.addEventListener('pointermove', function (e) {
+    var p = localPoint(e);
+    if (dragging) {
+      dragBox.style.left = Math.min(sx, p.x) + 'px';
+      dragBox.style.top = Math.min(sy, p.y) + 'px';
+      dragBox.style.width = Math.abs(p.x - sx) + 'px';
+      dragBox.style.height = Math.abs(p.y - sy) + 'px';
+    } else if (painting) { paintAt(p); }
+  });
+  function endPointer(e) {
+    if (painting) { painting = false; return; }
+    if (!dragging) return;
+    dragging = false;
+    dragBox.style.display = 'none';
+    var p = localPoint(e);
+    var scale = workW / p.dw;
+    var x = Math.min(sx, p.x) * scale, y = Math.min(sy, p.y) * scale;
+    var w = Math.abs(p.x - sx) * scale, h = Math.abs(p.y - sy) * scale;
+    if (w < 20 || h < 20) { mdtlResult(result, 'Draw a bigger box that fully contains the subject.', true); return; }
+    lastRect = { x: x, y: y, w: w, h: h };
+    runGrabCut(lastRect);
+  }
+  wrap.addEventListener('pointerup', endPointer);
+  wrap.addEventListener('pointercancel', function () { dragging = false; painting = false; dragBox.style.display = 'none'; });
+
+  /* 내보내기: 풀해상도 합성 */
+  saveBtn.addEventListener('click', function () {
+    if (!srcImage || !maskCanvas) return;
+    try {
+      var f = (parseFloat(featherSel.value) || 0) * (srcW / workW);
+      var subj = document.createElement('canvas');
+      subj.width = srcW; subj.height = srcH;
+      var sctx = subj.getContext('2d');
+      sctx.drawImage(srcImage, 0, 0, srcW, srcH);
+      sctx.globalCompositeOperation = 'destination-in';
+      if (f) sctx.filter = 'blur(' + f + 'px)';
+      sctx.drawImage(maskCanvas, 0, 0, srcW, srcH);
+      sctx.filter = 'none';
+      var out = document.createElement('canvas');
+      out.width = srcW; out.height = srcH;
+      var octx = out.getContext('2d');
+      var bg = bgSel.value;
+      var isTransparent = bg === 'transparent';
+      if (!isTransparent) { octx.fillStyle = bg; octx.fillRect(0, 0, srcW, srcH); }
+      octx.drawImage(subj, 0, 0);
+      out.toBlob(function (blob) {
+        if (!blob) { mdtlResult(result, '❌ Could not create the image. It may be too large for this device.', true); return; }
+        mdtlDownload(blob, srcName + '_no-bg.png');
+        mdtlLogEvent('image-bg-remove', 'success', null,
+          { width: srcW, height: srcH, format: 'png', size_bucket: mdtlSizeBucket(srcSize) });
+        mdtlResult(result, '✅ <b>Done!</b> Your image has been downloaded' + (isTransparent ? ' with a transparent background.' : ' with the new background.') + ' The original file is untouched.');
+      }, 'image/png');
+    } catch (e) {
+      mdtlResult(result, '❌ An error occurred while saving. Please reload the image and try again.', true);
+    }
+  });
+})();
+</script>
+</body>
+</html>
