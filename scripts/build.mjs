@@ -27,7 +27,7 @@ const SITE_KEY = process.env.SITE || '';
 let site = null, siteSlugs = null;
 const CAT_SLUGS = {
   pdf: ['pdf-merge','pdf-split','pdf-extract','pdf-organize','pdf-rotate','pdf-compress','pdf-watermark','pdf-page-numbers','pdf-sign','pdf-to-jpg','img-to-pdf'],
-  image: ['image-compress','image-resize','image-crop','image-convert','image-rotate','image-watermark','img-to-pdf','image-redact','image-exif','image-split','image-color-picker'],
+  image: ['image-compress','image-resize','image-crop','image-convert','image-rotate','image-watermark','img-to-pdf','image-redact','image-exif','image-split','image-color-picker','image-bg-remove','image-object-remove'],
   calc: ['age-calculator','percent-calculator','char-count','dday-calculator','trig-calculator','pyeong-calculator','vat-calculator','interest-calculator','unit-converter'],
   util: ['qr-generator','password-generator','text-diff'],
 };
@@ -53,6 +53,8 @@ function copyFiltered(srcDir, dstDir, inKo) {
       mkdirSync(dp, { recursive: true });
       copyFiltered(sp, dp, inKo || name === 'ko');
     } else {
+      // opencv.js(13MB)는 이미지 도구 전용 — SITE 빌드에서 img 외 사이트엔 미포함
+      if (name === 'opencv.js' && SITE_KEY && SITE_KEY !== 'img') continue;
       cpSync(sp, dp);
     }
   }

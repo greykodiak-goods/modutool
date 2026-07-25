@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이미지 배경 제거 — 무료, 온디바이스, 업로드 없음 | ThisIsMyPDF</title>
+<meta name="description" content="서버 업로드·가입 없이 브라우저 안에서만 동작하는 무료 배경 제거 도구. 피사체 주위로 박스를 드래그하고 유지/지우기 브러시로 다듬은 뒤 투명 PNG나 단색 배경으로 저장하세요.">
+<link rel="canonical" href="__ORIGIN__/ko/image-bg-remove/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/image-bg-remove/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/image-bg-remove/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/image-bg-remove/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="배경 제거 — 무료, 온디바이스, 서버 업로드 없음">
+<meta property="og:description" content="사진을 업로드하지 않는 배경 제거. 드래그하고, 다듬고, 투명 PNG로 다운로드하세요.">
+<meta property="og:url" content="__ORIGIN__/ko/image-bg-remove/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .bg-stage { display:none; margin-top:14px; }
+  .bg-stage.show { display:block; }
+  .bg-wrap { position:relative; display:inline-block; max-width:100%; touch-action:none;
+    background:repeating-conic-gradient(#d9dde5 0% 25%, #f3f5f9 0% 50%) 0 0/16px 16px; border-radius:10px; }
+  .bg-wrap canvas { max-width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); cursor:crosshair; }
+  .drag-box { position:absolute; border:2px dashed var(--accent); background:rgba(37,99,235,.12); pointer-events:none; display:none; }
+  .bg-hint { font-size:12.5px; color:var(--text-soft); margin:8px 0 0; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"배경 제거 - ThisIsMyPDF","url":"__ORIGIN__/ko/image-bg-remove/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"이미지 배경을 컴퓨터 비전(그랩컷)으로 내 기기에서 제거하는 무료 웹 도구. 서버 업로드가 없습니다.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"사진이 정말 어디에도 업로드되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 이 도구는 컴퓨터 비전 엔진(OpenCV를 WebAssembly로 컴파일)을 브라우저 안에서 실행하므로 배경 분리 전체가 내 기기에서 이뤄집니다. 엔진 파일 자체는 이 사이트에서 한 번 내려받지만, 사진은 컴퓨터나 휴대폰을 떠나지 않습니다."}},
+{"@type":"Question","name":"AI 배경 제거 서비스와 비교하면 결과가 어떤가요?","acceptedAnswer":{"@type":"Answer","text":"이 도구는 신경망이 아니라 고전적인 그랩컷(GrabCut) 알고리즘을 사용합니다. 상품 사진·로고처럼 피사체가 배경과 뚜렷이 구분되는 이미지에서는 깔끔한 결과가 나오고, 브러시로 조금만 다듬으면 더 좋아집니다. 복잡한 배경이나 흩날리는 머리카락에서는 서버 기반 AI보다 정밀도가 떨어집니다 — 그 대신 이미지는 완전히 비공개로 유지됩니다. 가장자리는 유지/지우기 브러시로 보정하세요."}},
+{"@type":"Question","name":"왜 먼저 박스를 드래그해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"박스는 피사체가 대략 어디에 있는지 알고리즘에 알려줍니다. 박스 완전히 바깥은 확실한 배경으로 처리되고, 알고리즘이 박스 안에서 피사체와 배경을 반복적으로 분리해 갑니다. 피사체를 온전히 담는 약간 넉넉한 박스가 가장 잘 작동합니다."}},
+{"@type":"Question","name":"어떤 형식으로 저장할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"기본은 투명 PNG로, 피사체를 어떤 디자인 위에든 얹기 좋습니다. 흰색이나 원하는 단색 배경도 선택할 수 있어 오픈마켓 상품 사진이나 증명사진풍 이미지에 편리하고, 단색 배경본은 JPG로도 저장할 수 있습니다."}},
+{"@type":"Question","name":"처음 로딩이 왜 느린가요?","acceptedAnswer":{"@type":"Answer","text":"온디바이스 비전 엔진이 약 13 MB라 처음 사용할 때 한 번 내려받고, 이후에는 브라우저가 캐시합니다. 사진을 서버로 보내지 않는 대가가 이 다운로드입니다 — 첫 방문 이후에는 훨씬 빨리 시작됩니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/ko/">ThisIsMyPDF</a> › <a href="/ko/#image">이미지 도구</a> › 배경 제거</nav>
+  <h1 class="page-title">배경 제거<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">피사체 주위로 박스를 드래그하면 배경이 사라집니다 — 전 과정이 내 기기에서 처리됩니다. 유지/지우기 브러시로 다듬은 뒤 투명 PNG로 저장하세요. 무료 — 설치·가입 없음.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🪄</span>
+      <strong>이미지를 끌어다 놓거나 클릭해서 선택</strong><br>
+      한 번에 한 장 (JPG · PNG · WEBP) · <span class="engine-note">첫 사용 시 온디바이스 엔진(~13 MB)을 한 번 내려받습니다</span>
+    </div>
+    <div class="opts">
+      <label>도구
+        <select id="modeSel">
+          <option value="rect" selected>1) 피사체 박스 그리기</option>
+          <option value="keep">2) 브러시: 유지(복원)</option>
+          <option value="erase">2) 브러시: 지우기(제거)</option>
+        </select>
+      </label>
+      <label>브러시 크기
+        <select id="brushSel">
+          <option value="10">작게</option>
+          <option value="22" selected>보통</option>
+          <option value="44">크게</option>
+        </select>
+      </label>
+      <label>가장자리 부드러움
+        <select id="featherSel">
+          <option value="0">없음</option>
+          <option value="2" selected>부드럽게</option>
+          <option value="5">더 부드럽게</option>
+        </select>
+      </label>
+      <label>새 배경
+        <select id="bgSel">
+          <option value="transparent" selected>투명 (PNG)</option>
+          <option value="#ffffff">흰색</option>
+          <option value="#0000ff">파랑</option>
+          <option value="#ff0000">빨강</option>
+        </select>
+      </label>
+    </div>
+    <div class="bg-stage" id="stage">
+      <div class="bg-wrap" id="wrap">
+        <canvas id="preview"></canvas>
+        <div class="drag-box" id="dragBox"></div>
+      </div>
+      <p class="bg-hint" id="hint">피사체가 온전히 들어가도록 박스를 드래그하세요 — 배경이 자동으로 제거됩니다. 그다음 유지/지우기 브러시로 가장자리를 다듬으세요.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="saveBtn" disabled>결과 다운로드</button>
+      <button class="btn secondary" id="rerunBtn" style="display:none">자동 누끼 다시 실행</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">이미지 제거</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>이미지를 위 영역에 끌어다 놓습니다. 첫 사용 시 온디바이스 엔진(~13 MB)을 한 번 내려받고, 이후에는 캐시됩니다.</li>
+      <li><b>피사체 주위로 박스를 드래그</b>합니다. 완전히 바깥에 있는 부분은 배경으로 처리되므로 박스는 약간 넉넉하게 그리세요. 누끼는 자동으로 실행됩니다.</li>
+      <li>체크무늬 미리보기를 확인합니다. 잘못 지워진 부분은 <b>유지 브러시</b>로 되살리고, 남아 있는 배경은 <b>지우기 브러시</b>로 정리하세요.</li>
+      <li><b>가장자리 부드러움</b>과 <b>새 배경</b>(투명 PNG·흰색·단색)을 고른 뒤 <b>결과 다운로드</b>를 누르세요.</li>
+    </ol>
+
+    <h2>설계부터 프라이빗 — 한계도 솔직하게</h2>
+    <p>대부분의 배경 제거 서비스는 사진을 서버에 업로드해 AI 모델을 돌리고 결과를 돌려보냅니다. 이 도구는 반대로 비전 엔진(OpenCV를 WebAssembly로 컴파일)을 <b>내 브라우저로</b> 가져와, 고전적인 <b>그랩컷(GrabCut)</b> 알고리즘을 기기에서 직접 실행합니다. 사진은 컴퓨터를 떠나지 않습니다.</p>
+    <p>솔직한 트레이드오프: 복잡한 장면이나 가는 머리카락에서는 서버의 신경망이 그랩컷보다 낫습니다. 상품 사진·로고·문서처럼 피사체가 뚜렷이 구분되는 이미지에서는 결과가 깔끔하고, 유지/지우기 브러시로 격차 대부분을 메울 수 있습니다. 인물·신분증·미공개 제품처럼 민감한 이미지라면 온디바이스가 더 안전한 선택입니다.</p>
+
+    <h2>이런 때 좋아요</h2>
+    <ul>
+      <li>오픈마켓 상품 사진 — 몇 초 만에 깔끔한 흰 배경</li>
+      <li>투명·단색 배경의 프로필 사진과 아바타</li>
+      <li>로고·스캔한 그림 — 종이 배경에서 깔끔하게 분리</li>
+      <li>디자인 툴 없이 만드는 발표자료·썸네일 소재</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>사진이 정말 어디에도 업로드되지 않나요?</summary><p>네. 이 도구는 컴퓨터 비전 엔진(OpenCV를 WebAssembly로 컴파일)을 브라우저 안에서 실행하므로 배경 분리 전체가 내 기기에서 이뤄집니다. 엔진 파일 자체는 이 사이트에서 한 번 내려받지만, 사진은 컴퓨터나 휴대폰을 떠나지 않습니다.</p></details>
+      <details><summary>AI 배경 제거 서비스와 비교하면 결과가 어떤가요?</summary><p>이 도구는 신경망이 아니라 고전적인 그랩컷(GrabCut) 알고리즘을 사용합니다. 상품 사진·로고처럼 피사체가 배경과 뚜렷이 구분되는 이미지에서는 깔끔한 결과가 나오고, 브러시로 조금만 다듬으면 더 좋아집니다. 복잡한 배경이나 흩날리는 머리카락에서는 서버 기반 AI보다 정밀도가 떨어집니다 — 그 대신 이미지는 완전히 비공개로 유지됩니다. 가장자리는 유지/지우기 브러시로 보정하세요.</p></details>
+      <details><summary>왜 먼저 박스를 드래그해야 하나요?</summary><p>박스는 피사체가 대략 어디에 있는지 알고리즘에 알려줍니다. 박스 완전히 바깥은 확실한 배경으로 처리되고, 알고리즘이 박스 안에서 피사체와 배경을 반복적으로 분리해 갑니다. 피사체를 온전히 담는 약간 넉넉한 박스가 가장 잘 작동합니다.</p></details>
+      <details><summary>어떤 형식으로 저장할 수 있나요?</summary><p>기본은 투명 PNG로, 피사체를 어떤 디자인 위에든 얹기 좋습니다. 흰색이나 원하는 단색 배경도 선택할 수 있어 오픈마켓 상품 사진이나 증명사진풍 이미지에 편리하고, 단색 배경본은 JPG로도 저장할 수 있습니다.</p></details>
+      <details><summary>처음 로딩이 왜 느린가요?</summary><p>온디바이스 비전 엔진이 약 13 MB라 처음 사용할 때 한 번 내려받고, 이후에는 브라우저가 캐시합니다. 사진을 서버로 보내지 않는 대가가 이 다운로드입니다 — 첫 방문 이후에는 훨씬 빨리 시작됩니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/ko/image-object-remove/"><span class="emoji">🧽</span><span><b>물체 지우개</b><span>행인·잡동사니 브러시로 지우기</span></span></a>
+      <a class="tool-tile" href="/ko/image-crop/"><span class="emoji">✂️</span><span><b>이미지 자르기</b><span>원하는 부분만 잘라내기</span></span></a>
+      <a class="tool-tile" href="/ko/image-compress/"><span class="emoji">🗜️</span><span><b>이미지 압축</b><span>해상도 유지, 용량만 줄이기</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var modeSel = document.getElementById('modeSel');
+  var brushSel = document.getElementById('brushSel');
+  var featherSel = document.getElementById('featherSel');
+  var bgSel = document.getElementById('bgSel');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('wrap');
+  var preview = document.getElementById('preview');
+  var pctx = preview.getContext('2d');
+  var dragBox = document.getElementById('dragBox');
+  var saveBtn = document.getElementById('saveBtn');
+  var rerunBtn = document.getElementById('rerunBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+  var hint = document.getElementById('hint');
+
+  var srcImage = null, srcW = 0, srcH = 0, srcName = 'image', srcSize = 0;
+  var workCanvas = null, workW = 0, workH = 0;   // 처리 해상도(최대 1200px) 원본
+  var maskCanvas = null;                          // 알파 마스크(working res, red=alpha)
+  var lastRect = null;                            // {x,y,w,h} working coords
+  var cvMod = null, cvLoading = null;
+
+  /* opencv.js 지연 로드 — 13MB라 이미지 선택 후에만 */
+  function loadCV() {
+    if (cvMod) return Promise.resolve(cvMod);
+    if (cvLoading) return cvLoading;
+    cvLoading = new Promise(function (resolve, reject) {
+      mdtlResult(result, '⏳ 온디바이스 엔진을 불러오는 중입니다 (~13 MB, 처음 한 번만)…');
+      var s = document.createElement('script');
+      s.src = '/assets/vendor/opencv.js';
+      s.onload = function () {
+        Promise.resolve(window.cv && window.cv.ready ? window.cv.ready : window.cv).then(function (m) {
+          cvMod = (m && typeof m.grabCut === 'function') ? m : window.cv;
+          result.className = 'result';
+          resolve(cvMod);
+        }, reject);
+      };
+      s.onerror = function () { reject(new Error('엔진을 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침해 주세요.')); };
+      document.body.appendChild(s);
+    });
+    return cvLoading;
+  }
+
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('이미지를 읽지 못했습니다. 브라우저가 지원하지 않는 형식(HEIC 등)일 수 있습니다.')); };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else { fallback(); }
+    });
+  }
+
+  function setImage(img, file) {
+    srcImage = img;
+    srcW = img.width || img.naturalWidth;
+    srcH = img.height || img.naturalHeight;
+    srcName = (file.name || 'image').replace(/\.[a-z0-9]+$/i, '') || 'image';
+    srcSize = file.size || 0;
+    var wscale = Math.min(1, 1200 / Math.max(srcW, srcH));
+    workW = Math.max(1, Math.round(srcW * wscale));
+    workH = Math.max(1, Math.round(srcH * wscale));
+    workCanvas = document.createElement('canvas');
+    workCanvas.width = workW; workCanvas.height = workH;
+    workCanvas.getContext('2d').drawImage(img, 0, 0, workW, workH);
+    maskCanvas = document.createElement('canvas');
+    maskCanvas.width = workW; maskCanvas.height = workH;
+    var mc = maskCanvas.getContext('2d');
+    mc.fillStyle = '#fff'; mc.fillRect(0, 0, workW, workH);  // 시작 = 전체 유지
+    lastRect = null;
+    var pscale = Math.min(1, 900 / workW);
+    preview.width = Math.max(1, Math.round(workW * pscale));
+    preview.height = Math.max(1, Math.round(workH * pscale));
+    stage.className = 'bg-stage show';
+    clearBtn.style.display = '';
+    rerunBtn.style.display = 'none';
+    saveBtn.disabled = true;
+    modeSel.value = 'rect';
+    result.className = 'result';
+    render();
+  }
+
+  function render() {
+    if (!workCanvas) return;
+    // 미리보기 = 원본 × 마스크(feather)
+    var f = parseFloat(featherSel.value) || 0;
+    var tmp = document.createElement('canvas');
+    tmp.width = preview.width; tmp.height = preview.height;
+    var t = tmp.getContext('2d');
+    t.drawImage(workCanvas, 0, 0, preview.width, preview.height);
+    t.globalCompositeOperation = 'destination-in';
+    if (f) t.filter = 'blur(' + f + 'px)';
+    t.drawImage(maskCanvas, 0, 0, preview.width, preview.height);
+    t.filter = 'none';
+    pctx.clearRect(0, 0, preview.width, preview.height);
+    var bg = bgSel.value;
+    if (bg !== 'transparent') { pctx.fillStyle = bg; pctx.fillRect(0, 0, preview.width, preview.height); }
+    pctx.drawImage(tmp, 0, 0);
+  }
+  featherSel.addEventListener('change', render);
+  bgSel.addEventListener('change', render);
+
+  function resetAll() {
+    srcImage = null; workCanvas = null; maskCanvas = null; lastRect = null;
+    stage.className = 'bg-stage';
+    saveBtn.disabled = true;
+    rerunBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'image/*,.jpg,.jpeg,.png,.webp',
+    multiple: false,
+    onFiles: function (fs) {
+      loadImage(fs[0]).then(function (img) {
+        setImage(img, fs[0]);
+        loadCV().catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+      }).catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+    }
+  });
+
+  /* GrabCut 실행 (rect: working 좌표) */
+  function runGrabCut(rect) {
+    return loadCV().then(function (cv) {
+      card.classList.add('busy');
+      mdtlResult(result, '⏳ 피사체와 배경을 분리하는 중…');
+      return new Promise(function (resolve) { setTimeout(resolve, 30); }).then(function () {
+        var srcData = workCanvas.getContext('2d').getImageData(0, 0, workW, workH);
+        var srcMat = cv.matFromImageData(srcData);
+        var rgb = new cv.Mat();
+        cv.cvtColor(srcMat, rgb, cv.COLOR_RGBA2RGB);
+        var mask = new cv.Mat.zeros(workH, workW, cv.CV_8UC1);
+        var bgd = new cv.Mat(); var fgd = new cv.Mat();
+        var r = new cv.Rect(
+          Math.max(1, Math.round(rect.x)), Math.max(1, Math.round(rect.y)),
+          Math.min(workW - 2, Math.round(rect.w)), Math.min(workH - 2, Math.round(rect.h)));
+        cv.grabCut(rgb, mask, r, bgd, fgd, 3, cv.GC_INIT_WITH_RECT);
+        // GC_FGD(1)·GC_PR_FGD(3) → 유지
+        var mc = maskCanvas.getContext('2d');
+        var out = mc.createImageData(workW, workH);
+        for (var i = 0; i < mask.data.length; i++) {
+          var keep = (mask.data[i] === cv.GC_FGD || mask.data[i] === cv.GC_PR_FGD) ? 255 : 0;
+          out.data[i * 4] = 255; out.data[i * 4 + 1] = 255; out.data[i * 4 + 2] = 255;
+          out.data[i * 4 + 3] = keep;
+        }
+        mc.clearRect(0, 0, workW, workH);
+        mc.putImageData(out, 0, 0);
+        srcMat.delete(); rgb.delete(); mask.delete(); bgd.delete(); fgd.delete();
+        card.classList.remove('busy');
+        saveBtn.disabled = false;
+        rerunBtn.style.display = '';
+        modeSel.value = 'keep';
+        mdtlResult(result, '✅ 자동 누끼 완료. 필요하면 <b>유지 / 지우기 브러시</b>로 가장자리를 다듬은 뒤 다운로드하세요.');
+        render();
+      });
+    }).catch(function (e) {
+      card.classList.remove('busy');
+      mdtlResult(result, '❌ 처리에 실패했습니다: ' + (e && e.message ? e.message : '알 수 없는 오류'), true);
+    });
+  }
+  rerunBtn.addEventListener('click', function () { if (lastRect) runGrabCut(lastRect); });
+
+  /* 포인터: rect 드래그 / 브러시 */
+  var dragging = false, sx = 0, sy = 0, painting = false;
+  function localPoint(e) {
+    var r = preview.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(e.clientX - r.left, r.width)),
+      y: Math.max(0, Math.min(e.clientY - r.top, r.height)),
+      dw: r.width, dh: r.height
+    };
+  }
+  function paintAt(p) {
+    var scale = workW / p.dw;
+    var mc = maskCanvas.getContext('2d');
+    var rad = (parseFloat(brushSel.value) || 22) * scale / 2;
+    mc.globalCompositeOperation = modeSel.value === 'keep' ? 'source-over' : 'destination-out';
+    mc.fillStyle = '#fff';
+    mc.beginPath();
+    mc.arc(p.x * scale, p.y * scale, rad, 0, Math.PI * 2);
+    mc.fill();
+    mc.globalCompositeOperation = 'source-over';
+    render();
+  }
+  wrap.addEventListener('pointerdown', function (e) {
+    if (!workCanvas) return;
+    e.preventDefault();
+    wrap.setPointerCapture(e.pointerId);
+    var p = localPoint(e);
+    if (modeSel.value === 'rect') {
+      dragging = true; sx = p.x; sy = p.y;
+      dragBox.style.display = 'block';
+      dragBox.style.left = sx + 'px'; dragBox.style.top = sy + 'px';
+      dragBox.style.width = '0px'; dragBox.style.height = '0px';
+    } else {
+      painting = true; paintAt(p);
+    }
+  });
+  wrap.addEventListener('pointermove', function (e) {
+    var p = localPoint(e);
+    if (dragging) {
+      dragBox.style.left = Math.min(sx, p.x) + 'px';
+      dragBox.style.top = Math.min(sy, p.y) + 'px';
+      dragBox.style.width = Math.abs(p.x - sx) + 'px';
+      dragBox.style.height = Math.abs(p.y - sy) + 'px';
+    } else if (painting) { paintAt(p); }
+  });
+  function endPointer(e) {
+    if (painting) { painting = false; return; }
+    if (!dragging) return;
+    dragging = false;
+    dragBox.style.display = 'none';
+    var p = localPoint(e);
+    var scale = workW / p.dw;
+    var x = Math.min(sx, p.x) * scale, y = Math.min(sy, p.y) * scale;
+    var w = Math.abs(p.x - sx) * scale, h = Math.abs(p.y - sy) * scale;
+    if (w < 20 || h < 20) { mdtlResult(result, '피사체가 온전히 들어가도록 박스를 더 크게 그려 주세요.', true); return; }
+    lastRect = { x: x, y: y, w: w, h: h };
+    runGrabCut(lastRect);
+  }
+  wrap.addEventListener('pointerup', endPointer);
+  wrap.addEventListener('pointercancel', function () { dragging = false; painting = false; dragBox.style.display = 'none'; });
+
+  /* 내보내기: 풀해상도 합성 */
+  saveBtn.addEventListener('click', function () {
+    if (!srcImage || !maskCanvas) return;
+    try {
+      var f = (parseFloat(featherSel.value) || 0) * (srcW / workW);
+      var subj = document.createElement('canvas');
+      subj.width = srcW; subj.height = srcH;
+      var sctx = subj.getContext('2d');
+      sctx.drawImage(srcImage, 0, 0, srcW, srcH);
+      sctx.globalCompositeOperation = 'destination-in';
+      if (f) sctx.filter = 'blur(' + f + 'px)';
+      sctx.drawImage(maskCanvas, 0, 0, srcW, srcH);
+      sctx.filter = 'none';
+      var out = document.createElement('canvas');
+      out.width = srcW; out.height = srcH;
+      var octx = out.getContext('2d');
+      var bg = bgSel.value;
+      var isTransparent = bg === 'transparent';
+      if (!isTransparent) { octx.fillStyle = bg; octx.fillRect(0, 0, srcW, srcH); }
+      octx.drawImage(subj, 0, 0);
+      out.toBlob(function (blob) {
+        if (!blob) { mdtlResult(result, '❌ 이미지를 만들지 못했습니다. 이 기기에서 처리하기에 이미지가 너무 클 수 있습니다.', true); return; }
+        mdtlDownload(blob, srcName + '_no-bg.png');
+        mdtlLogEvent('image-bg-remove', 'success', null,
+          { width: srcW, height: srcH, format: 'png', size_bucket: mdtlSizeBucket(srcSize) });
+        mdtlResult(result, '✅ <b>완료!</b> ' + (isTransparent ? '투명 배경' : '새 배경') + '이 적용된 이미지가 다운로드되었습니다. 원본 파일은 그대로입니다.');
+      }, 'image/png');
+    } catch (e) {
+      mdtlResult(result, '❌ 저장 중 오류가 발생했습니다. 이미지를 다시 올려 시도해 주세요.', true);
+    }
+  });
+})();
+</script>
+</body>
+</html>

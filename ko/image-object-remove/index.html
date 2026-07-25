@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사진 물체 지우기 — 무료 지우개, 업로드 없음 | ThisIsMyPDF</title>
+<meta name="description" content="사람·글자·전선·잡동사니 위를 브러시로 칠하면 지워지고 주변으로 자연스럽게 채워지는 무료 물체 지우개. 전 과정이 브라우저 안에서 처리되고 서버 업로드가 없어 민감한 사진도 안전합니다.">
+<link rel="canonical" href="__ORIGIN__/ko/image-object-remove/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/image-object-remove/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/image-object-remove/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/image-object-remove/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="사진 물체 지우기 — 무료, 온디바이스">
+<meta property="og:description" content="지우고 싶은 것 위를 브러시로 칠하면 사라집니다. 100% 브라우저 처리 — 사진은 기기를 떠나지 않습니다.">
+<meta property="og:url" content="__ORIGIN__/ko/image-object-remove/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .or-stage { display:none; margin-top:14px; }
+  .or-stage.show { display:block; }
+  .or-wrap { position:relative; display:inline-block; max-width:100%; touch-action:none; }
+  .or-wrap canvas.base { max-width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
+  .or-wrap canvas.paint { position:absolute; left:0; top:0; width:100%; height:100%; cursor:crosshair; border-radius:10px; }
+  .or-hint { font-size:12.5px; color:var(--text-soft); margin:8px 0 0; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"물체 지우개 - ThisIsMyPDF","url":"__ORIGIN__/ko/image-object-remove/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"사진 속 불필요한 물체를 온디바이스 인페인팅(OpenCV)으로 지우는 무료 웹 도구. 서버 업로드가 없습니다.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"사진이 서버로 업로드되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 컴퓨터 비전 엔진(OpenCV를 WebAssembly로 컴파일, 약 13 MB, 첫 사용 후 캐시)을 내려받아 지우기·채우기를 전부 브라우저 안에서 실행합니다. 사진은 기기를 떠나지 않습니다 — 그래서 가족사진이나 민감한 문서에도 안심하고 쓸 수 있습니다."}},
+{"@type":"Question","name":"채우기는 어떻게 동작하고, 품질은 어느 정도인가요?","acceptedAnswer":{"@type":"Answer","text":"고전적인 TELEA 인페인팅 알고리즘을 사용합니다. 브러시로 칠한 영역을 주변 픽셀이 안쪽으로 부드럽게 번지듯 채우는 방식입니다. 전선·글자 도장·피부 잡티·잔디나 하늘 위의 행인처럼 비교적 고른 배경 위의 중소형 물체에는 아주 잘 작동합니다. 복잡한 배경 위의 큰 물체는 서버 기반 AI 인페인터가 더 자연스럽습니다 — 그 대신 여기서는 완전한 프라이버시를 얻습니다."}},
+{"@type":"Question","name":"한 사진에서 여러 개를 지울 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 원하는 만큼 칠하고 지우기를 반복하세요 — 각 지우기 패스는 현재 결과 위에서 동작하므로 물체를 하나씩 차례로 지울 수 있습니다. 마지막 취소는 직전 패스를 되돌리고, 원본으로 되돌리기는 언제든 원본 사진으로 복귀합니다."}},
+{"@type":"Question","name":"사진의 나머지 부분 화질이 떨어지나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 브러시로 칠한 영역만 다시 계산되고, 그 밖의 픽셀은 전부 원래 그대로 유지됩니다. 아주 큰 사진은 속도를 위해 약간 낮춘 작업 해상도로 처리하지만 이는 지워지는 영역 안에서만 적용되며, 손대지 않은 부분은 저장 시 원본 픽셀을 그대로 유지합니다."}},
+{"@type":"Question","name":"정확히 어디까지 칠해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"물체 전체를 그림자·윤곽선까지 포함해 살짝 여유를 두고 덮으세요. 흐릿한 잔상이 남으면 그 부분을 다시 칠하고 한 번 더 지우세요 — 진하게 한 번보다 가볍게 두 번이 대개 더 낫습니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/ko/">ThisIsMyPDF</a> › <a href="/ko/#image">이미지 도구</a> › 물체 지우개</nav>
+  <h1 class="page-title">물체 지우개<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">사람·글자·전선·잡동사니 위를 브러시로 칠하면 지워지고 주변으로 자연스럽게 채워집니다 — 전 과정이 내 기기에서 처리됩니다. 무료 — 설치·가입 없음.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🧽</span>
+      <strong>이미지를 끌어다 놓거나 클릭해서 선택</strong><br>
+      한 번에 한 장 (JPG · PNG · WEBP) · <span class="engine-note">첫 사용 시 온디바이스 엔진(~13 MB)을 한 번 내려받습니다</span>
+    </div>
+    <div class="opts">
+      <label>브러시 크기
+        <select id="brushSel">
+          <option value="12">작게</option>
+          <option value="26" selected>보통</option>
+          <option value="52">크게</option>
+        </select>
+      </label>
+    </div>
+    <div class="or-stage" id="stage">
+      <div class="or-wrap" id="wrap">
+        <canvas id="base" class="base"></canvas>
+        <canvas id="paint" class="paint"></canvas>
+      </div>
+      <p class="or-hint">지우고 싶은 부분을 브러시로 칠한 뒤(빨간 표시) <b>선택 영역 지우기</b>를 누르세요. 다른 물체도 반복하면 됩니다.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="applyBtn" disabled>선택 영역 지우기</button>
+      <button class="btn secondary" id="undoBtn" style="display:none">마지막 취소</button>
+      <button class="btn secondary" id="resetBtn" style="display:none">원본으로 되돌리기</button>
+      <button class="btn" id="saveBtn" disabled>결과 다운로드</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">이미지 제거</button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>사진을 위 영역에 끌어다 놓습니다. 첫 사용 시 온디바이스 엔진(~13 MB)을 한 번 내려받고, 이후에는 브라우저가 캐시합니다.</li>
+      <li>지우고 싶은 <b>물체 위를 브러시로 칠합니다</b> — 그림자까지 빠짐없이 덮으세요. 빨간 표시가 지워질 영역입니다.</li>
+      <li><b>선택 영역 지우기</b>를 누르면 그 영역이 주변으로 채워집니다. 다음 물체를 다시 칠하고 지우면 되고, <b>마지막 취소</b>는 한 단계를 되돌립니다.</li>
+      <li><b>결과 다운로드</b>를 누르면 편집본이 저장되고 원본 파일은 그대로 남습니다.</li>
+    </ol>
+
+    <h2>온디바이스 인페인팅 — 프라이빗하게, 한계는 솔직하게</h2>
+    <p>물체 지우개 서비스는 보통 사진을 서버로 올려 AI 모델이 빈자리를 채웁니다. 이 도구는 고전적인 <b>TELEA 인페인팅</b> 알고리즘(OpenCV를 WebAssembly로 컴파일)을 <b>브라우저 안에서</b> 실행합니다. 칠한 영역은 주변 픽셀을 안쪽으로 번지게 해 복원되며, 그 과정에서 아무것도 전송되지 않습니다.</p>
+    <p>솔직한 기대치: 하늘·벽·잔디·피부·종이처럼 고르거나 부드러운 질감의 배경에서는 결과가 깔끔합니다. 복잡한 배경 위의 큰 물체는 서버 AI라면 피했을 얼룩이 남을 수 있습니다 — 잔상을 다시 칠해 가볍게 한 번 더 지우세요. 다시 계산되는 것은 칠한 영역뿐이고, 나머지 픽셀은 전부 원본 그대로입니다.</p>
+
+    <h2>이런 때 좋아요</h2>
+    <ul>
+      <li>여행 사진 속 관광객·행인</li>
+      <li>거리의 전선·전봇대·쓰레기</li>
+      <li>내 사진 위의 날짜 도장·워터마크 글자·로고</li>
+      <li>인물 사진의 피부 잡티</li>
+      <li>제품 사진에서 치우지 못한 물건</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>사진이 서버로 업로드되나요?</summary><p>아니요. 컴퓨터 비전 엔진(OpenCV를 WebAssembly로 컴파일, 약 13 MB, 첫 사용 후 캐시)을 내려받아 지우기·채우기를 전부 브라우저 안에서 실행합니다. 사진은 기기를 떠나지 않습니다 — 그래서 가족사진이나 민감한 문서에도 안심하고 쓸 수 있습니다.</p></details>
+      <details><summary>채우기는 어떻게 동작하고, 품질은 어느 정도인가요?</summary><p>고전적인 TELEA 인페인팅 알고리즘을 사용합니다. 브러시로 칠한 영역을 주변 픽셀이 안쪽으로 부드럽게 번지듯 채우는 방식입니다. 전선·글자 도장·피부 잡티·잔디나 하늘 위의 행인처럼 비교적 고른 배경 위의 중소형 물체에는 아주 잘 작동합니다. 복잡한 배경 위의 큰 물체는 서버 기반 AI 인페인터가 더 자연스럽습니다 — 그 대신 여기서는 완전한 프라이버시를 얻습니다.</p></details>
+      <details><summary>한 사진에서 여러 개를 지울 수 있나요?</summary><p>네. 원하는 만큼 칠하고 지우기를 반복하세요 — 각 지우기 패스는 현재 결과 위에서 동작하므로 물체를 하나씩 차례로 지울 수 있습니다. 마지막 취소는 직전 패스를 되돌리고, 원본으로 되돌리기는 언제든 원본 사진으로 복귀합니다.</p></details>
+      <details><summary>사진의 나머지 부분 화질이 떨어지나요?</summary><p>아니요. 브러시로 칠한 영역만 다시 계산되고, 그 밖의 픽셀은 전부 원래 그대로 유지됩니다. 아주 큰 사진은 속도를 위해 약간 낮춘 작업 해상도로 처리하지만 이는 지워지는 영역 안에서만 적용되며, 손대지 않은 부분은 저장 시 원본 픽셀을 그대로 유지합니다.</p></details>
+      <details><summary>정확히 어디까지 칠해야 하나요?</summary><p>물체 전체를 그림자·윤곽선까지 포함해 살짝 여유를 두고 덮으세요. 흐릿한 잔상이 남으면 그 부분을 다시 칠하고 한 번 더 지우세요 — 진하게 한 번보다 가볍게 두 번이 대개 더 낫습니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/ko/image-bg-remove/"><span class="emoji">🪄</span><span><b>배경 제거</b><span>몇 초 만에 투명 PNG</span></span></a>
+      <a class="tool-tile" href="/ko/image-redact/"><span class="emoji">🫥</span><span><b>이미지 블라인드</b><span>계좌번호·얼굴 모자이크</span></span></a>
+      <a class="tool-tile" href="/ko/image-compress/"><span class="emoji">🗜️</span><span><b>이미지 압축</b><span>해상도 유지, 용량만 줄이기</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var brushSel = document.getElementById('brushSel');
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('wrap');
+  var base = document.getElementById('base');
+  var bctx = base.getContext('2d');
+  var paint = document.getElementById('paint');
+  var xctx = paint.getContext('2d');
+  var applyBtn = document.getElementById('applyBtn');
+  var undoBtn = document.getElementById('undoBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var saveBtn = document.getElementById('saveBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var srcW = 0, srcH = 0, srcName = 'image', srcFmt = { mime: 'image/png', ext: 'png' }, srcSize = 0;
+  var current = null;       // 풀해상도 현재 상태 canvas
+  var prev = null;          // 1단계 undo
+  var original = null;      // 리셋용
+  var applied = 0;
+  var cvMod = null, cvLoading = null;
+
+  function loadCV() {
+    if (cvMod) return Promise.resolve(cvMod);
+    if (cvLoading) return cvLoading;
+    cvLoading = new Promise(function (resolve, reject) {
+      mdtlResult(result, '⏳ 온디바이스 엔진을 불러오는 중입니다 (~13 MB, 처음 한 번만)…');
+      var s = document.createElement('script');
+      s.src = '/assets/vendor/opencv.js';
+      s.onload = function () {
+        Promise.resolve(window.cv && window.cv.ready ? window.cv.ready : window.cv).then(function (m) {
+          cvMod = (m && typeof m.inpaint === 'function') ? m : window.cv;
+          result.className = 'result';
+          resolve(cvMod);
+        }, reject);
+      };
+      s.onerror = function () { reject(new Error('엔진을 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침해 주세요.')); };
+      document.body.appendChild(s);
+    });
+    return cvLoading;
+  }
+
+  function chooseFormat(file) {
+    var t = (file.type || '').toLowerCase();
+    if (t === 'image/jpeg' || /\.jpe?g$/i.test(file.name)) return { mime: 'image/jpeg', ext: 'jpg' };
+    return { mime: 'image/png', ext: 'png' };
+  }
+
+  function loadImage(file) {
+    return new Promise(function (resolve, reject) {
+      function fallback() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('이미지를 읽지 못했습니다. 브라우저가 지원하지 않는 형식(HEIC 등)일 수 있습니다.')); };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' })
+          .catch(function () { return createImageBitmap(file); })
+          .then(resolve, fallback);
+      } else { fallback(); }
+    });
+  }
+
+  function cloneCanvas(c) {
+    var n = document.createElement('canvas');
+    n.width = c.width; n.height = c.height;
+    n.getContext('2d').drawImage(c, 0, 0);
+    return n;
+  }
+
+  function renderBase() {
+    bctx.clearRect(0, 0, base.width, base.height);
+    bctx.drawImage(current, 0, 0, base.width, base.height);
+  }
+
+  function hasStrokes() {
+    var d = xctx.getImageData(0, 0, paint.width, paint.height).data;
+    for (var i = 3; i < d.length; i += 4) if (d[i] > 0) return true;
+    return false;
+  }
+
+  function setImage(img, file) {
+    srcW = img.width || img.naturalWidth;
+    srcH = img.height || img.naturalHeight;
+    srcName = (file.name || 'image').replace(/\.[a-z0-9]+$/i, '') || 'image';
+    srcFmt = chooseFormat(file);
+    srcSize = file.size || 0;
+    original = document.createElement('canvas');
+    original.width = srcW; original.height = srcH;
+    original.getContext('2d').drawImage(img, 0, 0, srcW, srcH);
+    current = cloneCanvas(original);
+    prev = null; applied = 0;
+    var pscale = Math.min(1, 900 / srcW);
+    base.width = Math.max(1, Math.round(srcW * pscale));
+    base.height = Math.max(1, Math.round(srcH * pscale));
+    paint.width = base.width; paint.height = base.height;
+    xctx.clearRect(0, 0, paint.width, paint.height);
+    stage.className = 'or-stage show';
+    clearBtn.style.display = '';
+    resetBtn.style.display = 'none';
+    undoBtn.style.display = 'none';
+    applyBtn.disabled = true;
+    saveBtn.disabled = true;
+    result.className = 'result';
+    renderBase();
+  }
+
+  function resetAll() {
+    current = null; prev = null; original = null; applied = 0;
+    stage.className = 'or-stage';
+    applyBtn.disabled = true; saveBtn.disabled = true;
+    undoBtn.style.display = 'none'; resetBtn.style.display = 'none'; clearBtn.style.display = 'none';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'image/*,.jpg,.jpeg,.png,.webp',
+    multiple: false,
+    onFiles: function (fs) {
+      loadImage(fs[0]).then(function (img) {
+        setImage(img, fs[0]);
+        loadCV().catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+      }).catch(function (e) { mdtlResult(result, '❌ ' + e.message, true); });
+    }
+  });
+
+  /* 브러시 (red overlay) */
+  var painting = false, lastP = null;
+  function localPoint(e) {
+    var r = paint.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * (paint.width / r.width), y: (e.clientY - r.top) * (paint.height / r.height) };
+  }
+  function stroke(a, b) {
+    xctx.strokeStyle = 'rgba(239,68,68,.6)';
+    xctx.fillStyle = 'rgba(239,68,68,.6)';
+    var w = parseFloat(brushSel.value) || 26;
+    xctx.lineWidth = w; xctx.lineCap = 'round'; xctx.lineJoin = 'round';
+    if (!b) { xctx.beginPath(); xctx.arc(a.x, a.y, w / 2, 0, Math.PI * 2); xctx.fill(); return; }
+    xctx.beginPath(); xctx.moveTo(a.x, a.y); xctx.lineTo(b.x, b.y); xctx.stroke();
+  }
+  paint.addEventListener('pointerdown', function (e) {
+    if (!current) return;
+    e.preventDefault();
+    paint.setPointerCapture(e.pointerId);
+    painting = true; lastP = localPoint(e); stroke(lastP, null);
+    applyBtn.disabled = false;
+  });
+  paint.addEventListener('pointermove', function (e) {
+    if (!painting) return;
+    var p = localPoint(e); stroke(lastP, p); lastP = p;
+  });
+  paint.addEventListener('pointerup', function () { painting = false; });
+  paint.addEventListener('pointercancel', function () { painting = false; });
+
+  /* 인페인팅 실행 — 처리 해상도 캡 1600px, 마스크 영역만 풀해상도에 합성 */
+  applyBtn.addEventListener('click', function () {
+    if (!current || !hasStrokes()) { mdtlResult(result, '먼저 지울 물체를 브러시로 칠해 주세요.', true); return; }
+    card.classList.add('busy');
+    mdtlResult(result, '⏳ 지우고 주변으로 채우는 중…');
+    loadCV().then(function (cv) {
+      return new Promise(function (r) { setTimeout(r, 30); }).then(function () {
+        var cap = 1600;
+        var pscale = Math.min(1, cap / Math.max(srcW, srcH));
+        var pw = Math.max(1, Math.round(srcW * pscale)), ph = Math.max(1, Math.round(srcH * pscale));
+        // 처리용 축소 이미지 + 마스크
+        var imgC = document.createElement('canvas'); imgC.width = pw; imgC.height = ph;
+        imgC.getContext('2d').drawImage(current, 0, 0, pw, ph);
+        var maskC = document.createElement('canvas'); maskC.width = pw; maskC.height = ph;
+        var mctx2 = maskC.getContext('2d');
+        mctx2.drawImage(paint, 0, 0, pw, ph);
+        var srcMat = cv.matFromImageData(imgC.getContext('2d').getImageData(0, 0, pw, ph));
+        var rgb = new cv.Mat();
+        cv.cvtColor(srcMat, rgb, cv.COLOR_RGBA2RGB);
+        var md = mctx2.getImageData(0, 0, pw, ph);
+        var mask = new cv.Mat(ph, pw, cv.CV_8UC1);
+        for (var i = 0; i < pw * ph; i++) mask.data[i] = md.data[i * 4 + 3] > 10 ? 255 : 0;
+        var dst = new cv.Mat();
+        cv.inpaint(rgb, mask, dst, 5, cv.INPAINT_TELEA);
+        // RGB → RGBA → canvas
+        var rgba = new cv.Mat();
+        cv.cvtColor(dst, rgba, cv.COLOR_RGB2RGBA);
+        var outC = document.createElement('canvas'); outC.width = pw; outC.height = ph;
+        outC.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(rgba.data), pw, ph), 0, 0);
+        srcMat.delete(); rgb.delete(); mask.delete(); dst.delete(); rgba.delete();
+        // 마스크 영역만 풀해상도 current에 합성 (마스크 살짝 블러로 경계 자연스럽게)
+        prev = cloneCanvas(current);
+        var patch = document.createElement('canvas'); patch.width = srcW; patch.height = srcH;
+        var pc = patch.getContext('2d');
+        pc.drawImage(outC, 0, 0, srcW, srcH);
+        pc.globalCompositeOperation = 'destination-in';
+        pc.filter = 'blur(2px)';
+        pc.drawImage(paint, 0, 0, srcW, srcH);
+        pc.filter = 'none';
+        current.getContext('2d').drawImage(patch, 0, 0);
+        xctx.clearRect(0, 0, paint.width, paint.height);
+        applied++;
+        renderBase();
+        card.classList.remove('busy');
+        applyBtn.disabled = true;
+        saveBtn.disabled = false;
+        undoBtn.style.display = '';
+        resetBtn.style.display = '';
+        mdtlResult(result, '✅ 지웠습니다. 다음 물체를 칠하거나 결과를 다운로드하세요. 흐릿한 잔상이 남았나요? 그 위를 다시 칠하고 한 번 더 지우세요.');
+      });
+    }).catch(function (e) {
+      card.classList.remove('busy');
+      mdtlResult(result, '❌ 처리에 실패했습니다: ' + (e && e.message ? e.message : '알 수 없는 오류'), true);
+    });
+  });
+
+  undoBtn.addEventListener('click', function () {
+    if (!prev) return;
+    current = prev; prev = null; applied = Math.max(0, applied - 1);
+    renderBase();
+    undoBtn.style.display = 'none';
+    saveBtn.disabled = applied === 0;
+  });
+  resetBtn.addEventListener('click', function () {
+    if (!original) return;
+    current = cloneCanvas(original); prev = null; applied = 0;
+    xctx.clearRect(0, 0, paint.width, paint.height);
+    renderBase();
+    undoBtn.style.display = 'none'; resetBtn.style.display = 'none';
+    applyBtn.disabled = true; saveBtn.disabled = true;
+    result.className = 'result';
+  });
+
+  saveBtn.addEventListener('click', function () {
+    if (!current || !applied) return;
+    current.toBlob(function (blob) {
+      if (!blob) { mdtlResult(result, '❌ 이미지를 만들지 못했습니다. 이 기기에서 처리하기에 이미지가 너무 클 수 있습니다.', true); return; }
+      mdtlDownload(blob, srcName + '_cleaned.' + srcFmt.ext);
+      mdtlLogEvent('image-object-remove', 'success', null,
+        { width: srcW, height: srcH, count: applied, format: srcFmt.ext, size_bucket: mdtlSizeBucket(srcSize) });
+      mdtlResult(result, '✅ <b>완료!</b> 지우기 ' + applied + '회를 적용한 이미지가 다운로드되었습니다. 원본 파일은 그대로입니다.');
+    }, srcFmt.mime, 0.92);
+  });
+})();
+</script>
+</body>
+</html>
