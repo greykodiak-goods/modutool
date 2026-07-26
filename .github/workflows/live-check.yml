@@ -44,6 +44,45 @@ jobs:
           echo "--- admin noindex + not in sitemap ---"
           curl -sL "$BASE/pdf/admin/" | grep -q "noindex" && echo "admin: noindex OK" || { echo "admin: noindex MISSING"; fail=1; }
           curl -sL "$BASE/pdf/sitemap.xml" | grep -q "/admin/" && { echo "admin leaked into sitemap"; fail=1; } || echo "admin absent from sitemap OK"
+          # ── 색인 회귀 점검 ──
+          # 도구를 늘리는 것보다 106개 페이지가 실제로 색인되는 게 지금 더 가치 크다.
+          # 색인을 깨뜨리는 전형적 사고 3가지를 매 배포마다 막는다.
+          echo "--- sitemap index가 참조하는 sitemap이 전부 살아있는지 ---"
+          maps=$(curl -sL "$BASE/sitemap.xml" | grep -oE "<loc>[^<]+</loc>" | sed -E "s|</?loc>||g")
+          [ -n "$maps" ] || { echo "sitemap index 비어있음"; fail=1; }
+          for m in $maps; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -L "$m")
+            echo "  $code  $m"; [ "$code" = "200" ] || fail=1
+          done
+          echo "--- 포털이 sitemap에 포함됐는지 (대표 랜딩이 빠지면 색인이 늦다) ---"
+          curl -sL "$BASE/sitemap-portal.xml" | grep -q "<loc>$BASE/</loc>" \
+            && echo "포털 sitemap OK" || { echo "포털이 sitemap에 없음"; fail=1; }
+          echo "--- sitemap에 실린 URL이 전부 200인지 (죽은 URL은 신뢰도를 깎는다) ---"
+          # 브랜드별로 앞 6개씩만 표본 검사 (전수는 106회라 잡이 길어진다 — 표본임을 명시)
+          for s in pdf img calc video; do
+            for u in $(curl -sL "$BASE/$s/sitemap.xml" | grep -oE "<loc>[^<]+</loc>" | sed -E "s|</?loc>||g" | head -6); do
+              code=$(curl -s -o /dev/null -w "%{http_code}" -L "$u")
+              [ "$code" = "200" ] || { echo "  DEAD $code $u"; fail=1; }
+            done
+          done
+          echo "sitemap URL 표본(브랜드당 6개) 점검 완료"
+          echo "--- canonical 자기참조 + hreflang 상호참조 ---"
+          for p in "/pdf/pdf-merge/" "/img/image-compress/" "/calc/age-calculator/" "/video/video-trim/"; do
+            html=$(curl -sL "$BASE$p")
+            echo "$html" | grep -q "<link rel=\"canonical\" href=\"$BASE$p\"" \
+              && echo "  canonical OK $p" || { echo "  canonical 불일치 $p"; fail=1; }
+            echo "$html" | grep -q 'hreflang="ko"' && echo "$html" | grep -q 'hreflang="en"' \
+              || { echo "  hreflang 누락 $p"; fail=1; }
+          done
+          echo "--- 색인돼야 할 도구 페이지에 noindex가 잘못 붙지 않았는지 ---"
+          for p in "/pdf/pdf-merge/" "/img/image-redact/" "/video/video-to-gif/"; do
+            curl -sL "$BASE$p" | grep -q "noindex" && { echo "  $p 에 noindex!"; fail=1; } || echo "  $p 색인가능 OK"
+          done
+          echo "--- 내부 CI 파일이 사이트로 새지 않았는지 ---"
+          for p in "/pdf/.github/workflows/live-check.yml" "/pdf/.gitignore" "/img/.github/workflows/convex-deploy.yml"; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
+            [ "$code" = "404" ] && echo "  차단 OK $p" || { echo "  유출! $code $p"; fail=1; }
+          done
           echo "--- 회원 페이지가 Convex 단일 백엔드를 쓰는지 (Supabase 잔재 없음) ---"
           curl -sL "$BASE/pdf/login/" | grep -q "vendor/convex.js" && echo "login: convex 클라이언트 OK" || { echo "login: convex 클라이언트 MISSING"; fail=1; }
           for p in "/pdf/login/" "/pdf/signup/" "/pdf/account/" "/pdf/admin/" "/pdf/ko/login/"; do
