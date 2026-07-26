@@ -10,9 +10,17 @@
    · API(수집 엔드포인트·인증)는 절대 캐시하지 않는다 — 오프라인이면 그냥 실패시키고 도구는 계속 쓰게 둔다. */
 'use strict';
 
-var BUILD = '107035e5d428';
+var BUILD = '4ec98d722eaa';
 var BASE = new URL('./', self.location).pathname;      // 예: /modutool/pdf/
-var CACHE = 'mdtl-' + BUILD;
+
+/* ⚠️ CacheStorage는 스코프가 아니라 "오리진" 단위로 공유된다.
+   지금은 /pdf /img /calc /video 4개 브랜드가 한 오리진에 얹혀 있어서,
+   캐시 이름을 'mdtl-<빌드ID>'로만 두면 /pdf의 activate가 /img의 캐시를 지운다
+   (빌드ID가 사이트마다 다르므로 전부 "옛 캐시"로 보인다).
+   → 캐시 이름에 스코프 경로를 넣고, 삭제도 같은 스코프 접두 안에서만 한다. */
+var SCOPE = BASE.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '') || 'root';
+var PREFIX = 'mdtl-' + SCOPE + '-';
+var CACHE = PREFIX + BUILD;
 
 /* 첫 설치 때 미리 받아둘 최소 셸(가볍게 유지 — 무거운 건 런타임 캐시로) */
 var PRECACHE = [
@@ -41,7 +49,7 @@ self.addEventListener('activate', function (e) {
   e.waitUntil(
     caches.keys().then(function (keys) {
       return Promise.all(keys.map(function (k) {
-        if (k.indexOf('mdtl-') === 0 && k !== CACHE) return caches.delete(k);
+        if (k.indexOf(PREFIX) === 0 && k !== CACHE) return caches.delete(k);   // 같은 스코프의 옛 빌드만
       }));
     }).then(function () { return self.clients.claim(); })
   );

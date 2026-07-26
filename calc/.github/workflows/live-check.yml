@@ -44,24 +44,39 @@ jobs:
           echo "--- admin noindex + not in sitemap ---"
           curl -sL "$BASE/pdf/admin/" | grep -q "noindex" && echo "admin: noindex OK" || { echo "admin: noindex MISSING"; fail=1; }
           curl -sL "$BASE/pdf/sitemap.xml" | grep -q "/admin/" && { echo "admin leaked into sitemap"; fail=1; } || echo "admin absent from sitemap OK"
+          # 회원(로그인) 백엔드. 무료 플랜 2프로젝트 제한 때문에 프로젝트가 INACTIVE면 DNS부터 실패(000)한다.
+          # curl 실패가 `bash -e`로 스텝 전체를 죽여 뒤 검사를 못 돌게 하던 문제가 있어 `|| true`로 격리하고
+          # 상태만 fail에 반영한다(마스킹 아님 — 200이 아니면 잡은 실패).
           echo "--- supabase auth reachable (회원 백엔드) ---"
-          curl -s -o /dev/null -w "auth health: %{http_code}\n" "https://gysvtgnpacqjpdijbcaw.supabase.co/auth/v1/health" -H "apikey: sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT"
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 \
+            "https://gysvtgnpacqjpdijbcaw.supabase.co/auth/v1/health" \
+            -H "apikey: sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT" || echo 000)
+          echo "auth health: $code"
+          [ "$code" = "200" ] || { echo "::error::로그인 백엔드 응답 없음($code) — Supabase 프로젝트가 INACTIVE일 가능성"; fail=1; }
           exit $fail
-      - name: Telemetry backend E2E (anon INSERT allowed, SELECT denied, dashboard gated)
+      - name: Telemetry backend E2E (Convex — 쓰기 허용, 읽기 함수 없음, CORS 화이트리스트)
         run: |
-          SB="https://gysvtgnpacqjpdijbcaw.supabase.co"
-          KEY="sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT"
+          # 2026-07-26 Convex 컷오버 이후 수집처는 Supabase가 아니라 Convex HTTP action이다.
+          CX="https://superb-echidna-510.convex.site"
+          ORIGIN="https://greykodiak-goods.github.io"
           fail=0
-          echo "--- anon INSERT (expect 201) ---"
-          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SB/rest/v1/tool_events" \
-            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" -H "Prefer: return=minimal" \
-            --data '{"tool":"live-check","outcome":"error","reason":"ci_e2e","lang":"en","site":"pdf","ua":"ci/runner","meta":{"seed":true}}')
-          echo "insert: $code"; [ "$code" = "201" ] || fail=1
-          echo "--- anon SELECT (expect empty [] — RLS blocks read) ---"
-          body=$(curl -s "$SB/rest/v1/tool_events?select=tool&limit=1" -H "apikey: $KEY" -H "Authorization: Bearer $KEY")
-          echo "select body: $body"; [ "$body" = "[]" ] || { echo "RLS read not blocked!"; fail=1; }
-          echo "--- anon dashboard RPC (expect NOT 200 — admin gated) ---"
-          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SB/rest/v1/rpc/mdtl_tool_dashboard" \
-            -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" --data '{"days":30}')
-          echo "rpc: $code"; [ "$code" = "200" ] && { echo "dashboard NOT gated!"; fail=1; } || echo "dashboard gated OK"
+          echo "--- CORS preflight (expect 204 + 허용 오리진 반사) ---"
+          hdr=$(curl -s -D - -o /dev/null -X OPTIONS "$CX/log-event" -H "Origin: $ORIGIN" \
+            -H "Access-Control-Request-Method: POST" --max-time 15 || true)
+          echo "$hdr" | grep -qi "access-control-allow-origin: $ORIGIN" \
+            && echo "CORS allow-origin OK" || { echo "CORS 반사 실패"; echo "$hdr" | head -5; fail=1; }
+          echo "--- 이벤트 수집 POST (expect 201) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$CX/log-event" \
+            -H "Origin: $ORIGIN" -H "Content-Type: application/json" --max-time 15 \
+            --data '{"tool":"live-check","outcome":"error","reason":"ci_e2e","lang":"en","site":"pdf","ua":"ci/runner","meta":{"seed":true}}' || echo 000)
+          echo "log-event: $code"; [ "$code" = "201" ] || fail=1
+          echo "--- 잘못된 본문은 거절 (expect 400) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$CX/log-event" \
+            -H "Origin: $ORIGIN" -H "Content-Type: application/json" --max-time 15 --data 'not-json' || echo 000)
+          echo "bad body: $code"; [ "$code" = "400" ] || { echo "잘못된 본문을 거절하지 않음"; fail=1; }
+          echo "--- 읽기 경로 부재 확인 (GET·미정의 경로는 200이면 안 됨) ---"
+          for p in "/log-event" "/events" "/dashboard"; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$CX$p" || echo 000)
+            echo "GET $p: $code"; [ "$code" = "200" ] && { echo "읽기 경로 노출!"; fail=1; } || true
+          done
           exit $fail
