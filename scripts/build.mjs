@@ -10,6 +10,7 @@
 import { cpSync, readdirSync, readFileSync, writeFileSync, statSync, rmSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const origin = (process.argv[2] || process.env.DEPLOY_ORIGIN || process.env.CF_PAGES_URL || '').replace(/\/$/, '');
@@ -71,6 +72,37 @@ copyFiltered(root, out, false);
 const base = (process.env.BASE_PATH || '').replace(/\/$/, '');
 if (base && !base.startsWith('/')) { console.error('BASE_PATH는 /로 시작해야 합니다'); process.exit(1); }
 
+/* ── PWA(오프라인) 자산 ──
+   전 도구가 클라이언트 처리라, 서비스워커만 붙으면 인터넷 없이도 동작한다(업로드형 경쟁 사이트는 원리상 불가).
+   빌드ID는 셸 자산 내용 해시 — 내용이 안 바뀌면 같은 ID라 캐시가 유지되고, 바뀌면 새 캐시로 갈아탄다. */
+const brandName = site ? site.brand : 'ThisIsMy Tools';
+const brandMark = site ? site.mark : 'T';
+const brandDesc = site ? site.tagline : 'Free in-browser tools — your files never leave your device';
+const shellSrc = ['assets/site.js', 'assets/site.css', 'sw.js']
+  .map((f) => { try { return readFileSync(join(out, f), 'utf8'); } catch { return ''; } }).join('\n');
+const buildId = process.env.BUILD_ID ||
+  createHash('sha256').update(shellSrc + '|' + base + '|' + origin).digest('hex').slice(0, 12);
+
+try {
+  writeFileSync(join(out, 'sw.js'), readFileSync(join(out, 'sw.js'), 'utf8').replaceAll('__BUILD_ID__', buildId));
+} catch { /* sw.js가 없는 빌드(포털 등)는 건너뜀 */ }
+
+const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">` +
+  `<rect width="100" height="100" rx="22" fill="#2563eb"/>` +
+  `<text x="50" y="68" font-size="52" text-anchor="middle" fill="#fff" font-family="sans-serif" font-weight="bold">${brandMark}</text></svg>\n`;
+writeFileSync(join(out, 'icon.svg'), iconSvg);
+writeFileSync(join(out, 'manifest.webmanifest'), JSON.stringify({
+  name: brandName,
+  short_name: brandName,
+  description: brandDesc,
+  start_url: (base || '') + '/',
+  scope: (base || '') + '/',
+  display: 'standalone',
+  background_color: '#f7f8fa',
+  theme_color: '#2563eb',
+  icons: [{ src: (base || '') + '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }],
+}, null, 2) + '\n');
+
 const pages = [];
 function walk(dir) {
   for (const name of readdirSync(dir)) {
@@ -95,6 +127,9 @@ function walk(dir) {
       html = html.replaceAll("'/assets/", `'${base}/assets/`);
       html = html.replace('<link rel="stylesheet"', `<script>window.MDTL_BASE='${base}';</script>\n<link rel="stylesheet"`);
     }
+    /* PWA 매니페스트 링크 — base 치환 뒤에 넣어 이중 접두를 피한다 */
+    html = html.replace('<link rel="stylesheet"',
+      `<link rel="manifest" href="${base}/manifest.webmanifest">\n<link rel="stylesheet"`);
     /* NOINDEX=1: 서브패스 브랜드 사이트(한 오리진 안 /img /calc)용 — 루트 허브와 툴 페이지가
        중복되므로 도메인 분리 전까지 검색 색인은 루트가 전담하고 서브사이트는 noindex. */
     if (process.env.NOINDEX && !/name="robots"/.test(html)) {
