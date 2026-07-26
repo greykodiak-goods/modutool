@@ -47,6 +47,12 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 function copyFiltered(srcDir, dstDir, inKo) {
   for (const name of readdirSync(srcDir)) {
+    /* 점으로 시작하는 항목은 전부 제외. SKIP은 이름을 하나씩 나열하는 방식이라
+       새 점파일이 생길 때마다 조용히 새어나간다 — 실제로 .github/workflows/*.yml 과
+       .gitignore 가 공개 사이트로 배포되고 있었다(2026-07-26 발견).
+       시크릿 "값"은 워크플로에 없지만(secrets.X 참조뿐) 내부 CI 구성이 노출될 이유가 없다.
+       이름 나열이 아니라 규칙으로 막는다. (.nojekyll은 배포 스크립트가 따로 만든다) */
+    if (name.startsWith('.')) continue;
     if (!inKo && SKIP.has(name)) continue;
     const sp = join(srcDir, name), dp = join(dstDir, name);
     if (statSync(sp).isDirectory()) {

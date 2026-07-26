@@ -10,7 +10,7 @@ on:
       expect_project:
         description: "이 레포가 봐야 할 Doppler 프로젝트 이름 (토큰이 다른 곳을 가리키면 경고)"
         required: false
-        default: "thisismy"
+        default: "modutool"
 
 jobs:
   check:
@@ -39,7 +39,7 @@ jobs:
           PRJ=$(doppler secrets get DOPPLER_PROJECT --plain 2>/dev/null || echo "(확인불가)")
           CFG=$(doppler secrets get DOPPLER_CONFIG --plain 2>/dev/null || echo "(확인불가)")
           echo "project=$PRJ  config=$CFG"
-          EXPECT="${EXPECT_PROJECT:-thisismy}"
+          EXPECT="${EXPECT_PROJECT:-modutool}"
           if [ "$PRJ" != "$EXPECT" ] && [ "$PRJ" != "(확인불가)" ]; then
             echo "::warning::이 레포(modutool)는 Doppler 프로젝트 '$EXPECT'를 기대합니다. 현재 토큰은 '$PRJ' 를 가리킵니다 — 레포 Secret의 DOPPLER_TOKEN이 다른 앱 토큰인지 확인하세요. (기대값이 틀렸다면 workflow_dispatch 입력 expect_project로 바꿔 실행)"
           fi
@@ -72,6 +72,23 @@ jobs:
           for k in $OPTIONAL; do
             if echo " $KEYS " | grep -q " $k "; then echo "OK      $k"; else echo "-       $k (미등록)"; fi
           done
+          echo "===== 끝 ====="
+
+          # 2-b) 이 앱이 쓰지 않는 키 — 최소권한 점검.
+          #      프로젝트를 복제해서 만들면 다른 앱 시크릿이 그대로 딸려온다(2026-07-26 실사례).
+          #      이 토큰으로 읽을 수 있는 것 = 유출 시 노출 범위이므로, 안 쓰는 키는 지우는 게 맞다.
+          #      DOPPLER_* 는 Doppler가 자동 주입하는 메타값이라 제외.
+          echo "===== 이 앱이 쓰지 않는 키 (정리 대상) ====="
+          KNOWN="$REQUIRED $OPTIONAL DOPPLER_PROJECT DOPPLER_CONFIG DOPPLER_ENVIRONMENT"
+          EXTRA=""
+          for k in $KEYS; do
+            echo " $KNOWN " | grep -q " $k " || { echo "불필요  $k"; EXTRA="$EXTRA $k"; }
+          done
+          if [ -n "$EXTRA" ]; then
+            echo "::warning::이 앱이 안 쓰는 키가$(echo "$EXTRA" | wc -w)개 있습니다 —$EXTRA. 다른 앱 프로젝트를 복제하셨다면 지우세요(이 토큰이 유출되면 전부 노출됩니다)."
+          else
+            echo "(없음 — 깔끔)"
+          fi
           echo "===== 끝 ====="
 
           # 3) 실제 주입 확인(값 미출력, 길이만)
