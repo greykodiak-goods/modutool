@@ -3,6 +3,7 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { auth } from "./auth";
 
 // 배포 오리진 화이트리스트 (커스텀 도메인 확정 시 여기에 추가)
 const ALLOWED_ORIGINS = new Set([
@@ -25,6 +26,10 @@ function corsHeaders(origin: string | null): Record<string, string> {
 }
 
 const http = httpRouter();
+
+/* Convex Auth의 OAuth 라우트(/api/auth/signin/*, /api/auth/callback/*).
+   구글 인가코드 교환이 여기서 서버측으로 일어난다 — 클라이언트 시크릿은 브라우저에 나가지 않는다. */
+auth.addHttpRoutes(http);
 
 http.route({
   path: "/log-event",

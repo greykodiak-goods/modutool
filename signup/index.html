@@ -28,7 +28,7 @@
       <p style="font-size:12px;color:var(--text-soft);margin:2px 0 6px">By continuing with Google you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>.</p>
       <div class="auth-or">or</div>
       <label class="field"><span>Email</span><input type="email" id="email" required autocomplete="email"></label>
-      <label class="field"><span>Password (8+ characters)</span><input type="password" id="password" required minlength="8" autocomplete="new-password"></label>
+      <label class="field"><span>Password (8+ characters, letters and numbers)</span><input type="password" id="password" required minlength="8" autocomplete="new-password"></label>
       <label style="font-size:13.5px;color:var(--text-soft);display:flex;gap:8px;align-items:flex-start">
         <input type="checkbox" id="agree" required style="margin-top:3px">
         <span>I agree to the <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy Policy</a>.</span>
@@ -40,33 +40,53 @@
   </div>
 </main>
 <footer id="site-footer" class="site-footer"></footer>
-<script src="/assets/vendor/supabase.js"></script>
+<script src="/assets/vendor/convex.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  var sb = window.mdtlAuthClient && window.mdtlAuthClient();
-  if (!sb) { document.getElementById('notReady').style.display = ''; return; }
-  var form = document.getElementById('signupForm');
-  form.style.display = '';
-  var gbtn = document.getElementById('googleBtn');
-  if (gbtn) gbtn.addEventListener('click', async function () {
-    msg.className = 'result';
-    var r = await window.mdtlSignInWithGoogle();
-    if (r && r.error) { mdtlResult(msg, '❌ ' + (r.error.message === 'auth-not-ready' ? 'Sign-in is not ready yet.' : r.error.message), true); }
-  });
+document.addEventListener('DOMContentLoaded', async function () {
   var msg = document.getElementById('msg');
-  if (window.mdtlLoggedIn()) { location.href = (window.MDTL_BASE||'') + '/account/'; return; }
+  var form = document.getElementById('signupForm');
+  if (!(window.mdtlAuthClient && window.mdtlAuthClient())) {
+    document.getElementById('notReady').style.display = '';
+    return;
+  }
+  var acct = (window.MDTL_BASE || '') + '/account/';
+
+  if (await window.mdtlHandleOAuthReturn()) { location.href = acct; return; }
+  if (window.mdtlLoggedIn()) { location.href = acct; return; }
+
+  form.style.display = '';
+  document.getElementById('googleBtn').addEventListener('click', function () {
+    msg.className = 'result';
+    window.mdtlSignInWithGoogle('/signup/').catch(function () {
+      mdtlResult(msg, '❌ Google sign-in is not available yet.', true);
+    });
+  });
+
+  var PW_MSG = {
+    short: 'Password must be at least 8 characters.',
+    long: 'Password must be 128 characters or fewer.',
+    simple: 'Password must contain both letters and numbers.'
+  };
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     msg.className = 'result';
-    var r = await sb.auth.signUp({
-      email: document.getElementById('email').value.trim(),
-      password: document.getElementById('password').value,
-      options: { emailRedirectTo: location.origin + (window.MDTL_BASE||'') + '/account/' },
-    });
-    if (r.error) { mdtlResult(msg, '❌ ' + r.error.message, true); return; }
-    if (r.data && r.data.session) { await window.mdtlRefreshPlan(); location.href = (window.MDTL_BASE||'') + '/account/'; return; }
-    mdtlResult(msg, '✅ Confirmation email sent — click the link to finish signing up.');
+    var pw = document.getElementById('password').value;
+    var problem = window.mdtlPasswordProblem(pw);
+    if (problem) { mdtlResult(msg, '❌ ' + PW_MSG[problem], true); return; }
+
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    try {
+      await window.mdtlSignInWithPassword(document.getElementById('email').value, pw, 'signUp');
+      await window.mdtlCall('mutation', 'account:ensureProfile');
+      await window.mdtlRefreshPlan();
+      location.href = acct;
+    } catch (err) {
+      // 이미 가입된 이메일인지 여부는 서버가 알려주지 않는다(계정 열거 방지).
+      mdtlResult(msg, '❌ Could not create the account. If you already signed up, <a href="/login/">log in</a> instead.', true);
+      btn.disabled = false;
+    }
   });
 });
 </script>

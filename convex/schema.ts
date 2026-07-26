@@ -3,8 +3,14 @@
 // _creationTime(내장)이 created_at을 대체한다.
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server";
 
 export default defineSchema({
+  /* Convex Auth가 관리하는 표(users / authAccounts / authSessions / authRefreshTokens /
+     authVerificationCodes / authVerifiers / authRateLimits). 직접 정의하지 않고 라이브러리
+     스키마를 그대로 펼친다 — 비밀번호 해시·세션·리프레시토큰 구조를 우리가 설계하지 않는다. */
+  ...authTables,
+
   // 익명 결과 텔레메트리 — 클라이언트는 HTTP action으로 INSERT만 가능(조회 불가),
   // 개인정보·파일명·입력값은 절대 저장하지 않는다(화이트리스트는 mutation에서 강제).
   toolEvents: defineTable({
@@ -49,11 +55,15 @@ export default defineSchema({
     email: v.string(),
   }).index("by_email", ["email"]),
 
-  // 회원 플랜 (auth 사용자 1:1) — 쓰기는 서버 함수만, 클라이언트 자가승급 차단
+  /* 회원 플랜 (auth users와 1:1) — 쓰기는 서버 함수만. 클라이언트가 스스로 premium으로
+     올리지 못하도록 public mutation을 두지 않는다(결제 연동 시 서버 검증 후 internal로 승급).
+     userId는 authTables의 users 문서를 가리킨다. */
   profiles: defineTable({
+    userId: v.id("users"),
     email: v.string(),
     plan: v.union(v.literal("free"), v.literal("premium")),
     planExpiresAt: v.optional(v.number()), // ms epoch
-    authUserId: v.optional(v.string()),    // Convex Auth 연동 후 채움
-  }).index("by_email", ["email"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_email", ["email"]),
 });

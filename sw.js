@@ -32,7 +32,6 @@ var PRECACHE = [
 /* 캐시하면 안 되는 곳: 수집·인증 API */
 function isApi(url) {
   return /(^|\.)convex\.(site|cloud)$/.test(url.hostname) ||
-         /supabase\.co$/.test(url.hostname) ||
          /googlesyndication|doubleclick|daumcdn/.test(url.hostname);
 }
 

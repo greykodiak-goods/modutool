@@ -29,47 +29,52 @@
       <label class="field"><span>Email</span><input type="email" id="email" required autocomplete="email"></label>
       <label class="field"><span>Password</span><input type="password" id="password" required autocomplete="current-password"></label>
       <button class="btn block" type="submit">Log in</button>
-      <button class="btn secondary block" type="button" id="magicBtn">Email me a login link instead</button>
       <div class="result" id="msg"></div>
       <p style="font-size:13.5px;color:var(--text-soft);margin:4px 0 0">No account? <a href="/signup/">Sign up</a></p>
     </form>
   </div>
 </main>
 <footer id="site-footer" class="site-footer"></footer>
-<script src="/assets/vendor/supabase.js"></script>
+<script src="/assets/vendor/convex.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  var sb = window.mdtlAuthClient && window.mdtlAuthClient();
-  if (!sb) { document.getElementById('notReady').style.display = ''; return; }
-  var form = document.getElementById('loginForm');
-  form.style.display = '';
-  var gbtn = document.getElementById('googleBtn');
-  if (gbtn) gbtn.addEventListener('click', async function () {
-    msg.className = 'result';
-    var r = await window.mdtlSignInWithGoogle();
-    if (r && r.error) { mdtlResult(msg, '❌ ' + (r.error.message === 'auth-not-ready' ? 'Sign-in is not ready yet.' : r.error.message), true); }
-  });
+document.addEventListener('DOMContentLoaded', async function () {
   var msg = document.getElementById('msg');
-  if (window.mdtlLoggedIn()) { location.href = (window.MDTL_BASE||'') + '/account/'; return; }
+  var form = document.getElementById('loginForm');
+  if (!(window.mdtlAuthClient && window.mdtlAuthClient())) {
+    document.getElementById('notReady').style.display = '';
+    return;
+  }
+  var acct = (window.MDTL_BASE || '') + '/account/';
+
+  // 구글 로그인 복귀(?code=)를 먼저 처리한다 — 성공하면 바로 계정 페이지로.
+  if (await window.mdtlHandleOAuthReturn()) { location.href = acct; return; }
+  if (window.mdtlLoggedIn()) { location.href = acct; return; }
+
+  form.style.display = '';
+  document.getElementById('googleBtn').addEventListener('click', function () {
+    msg.className = 'result';
+    window.mdtlSignInWithGoogle('/login/').catch(function () {
+      mdtlResult(msg, '❌ Google sign-in is not available yet.', true);
+    });
+  });
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     msg.className = 'result';
-    var r = await sb.auth.signInWithPassword({
-      email: document.getElementById('email').value.trim(),
-      password: document.getElementById('password').value,
-    });
-    if (r.error) { mdtlResult(msg, '❌ ' + (r.error.message === 'Invalid login credentials' ? 'Incorrect email or password.' : r.error.message), true); return; }
-    await window.mdtlRefreshPlan();
-    location.href = (window.MDTL_BASE||'') + '/account/';
-  });
-
-  document.getElementById('magicBtn').addEventListener('click', async function () {
-    var email = document.getElementById('email').value.trim();
-    if (!email) { mdtlResult(msg, 'Enter your email first.', true); return; }
-    var r = await sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.origin + (window.MDTL_BASE||'') + '/account/' } });
-    if (r.error) { mdtlResult(msg, '❌ ' + r.error.message, true); return; }
-    mdtlResult(msg, '✅ Login link sent — check your inbox.');
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    try {
+      await window.mdtlSignInWithPassword(
+        document.getElementById('email').value,
+        document.getElementById('password').value,
+        'signIn');
+      await window.mdtlRefreshPlan();
+      location.href = acct;
+    } catch (err) {
+      // 서버는 "계정 없음"과 "비밀번호 틀림"을 구분해 알려주지 않는다(계정 존재 여부 노출 방지).
+      mdtlResult(msg, '❌ Incorrect email or password.', true);
+      btn.disabled = false;
+    }
   });
 });
 </script>

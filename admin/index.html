@@ -62,10 +62,10 @@
 </main>
 <footer id="site-footer" class="site-footer"></footer>
 
-<script src="/assets/vendor/supabase.js"></script>
+<script src="/assets/vendor/convex.js"></script>
 <script>
 (function () {
-  var days = 30, sb = null;
+  var days = 30;
   var loading = document.getElementById('loading');
   var denied = document.getElementById('denied');
   var dash = document.getElementById('dash');
@@ -84,17 +84,21 @@
   async function load() {
     loading.style.display = ''; denied.style.display = 'none'; dash.style.display = 'none';
     loading.textContent = '불러오는 중…';
-    var r = await sb.rpc('mdtl_tool_dashboard', { days: days });
-    if (r.error) {
+    var d;
+    try {
+      d = await window.mdtlCall('query', 'dashboard:dashboard', { days: days });
+    } catch (e) {
       loading.style.display = 'none';
       denied.style.display = '';
-      var msg = /not authorized|42501|permission/i.test(r.error.message || '')
-        ? '이 계정은 관리자로 등록되어 있지 않습니다. 관리자 이메일로 로그인하거나, DB의 <code>admin_users</code>에 이메일을 추가하세요.'
-        : ('통계를 불러오지 못했습니다: ' + esc(r.error.message || 'unknown'));
-      denied.innerHTML = '<div class="result show error" style="margin:0">🔒 ' + msg + '</div>';
+      // Convex는 운영에서 서버 예외 메시지를 감추므로 문구로 원인을 특정하지 않는다.
+      // 이 쿼리가 실패하는 사유는 사실상 "관리자 아님" 하나뿐이다(로그인 여부는 앞에서 확인).
+      denied.innerHTML = '<div class="result show error" style="margin:0">🔒 ' +
+        '이 계정은 관리자로 등록되어 있지 않습니다. 관리자 이메일로 로그인하거나, ' +
+        'Convex의 <code>adminUsers</code>에 이메일을 추가하세요' +
+        '(<code>npx convex run admin:seedAdmin \'{"email":"..."}\'</code>).</div>';
       return;
     }
-    render(r.data || {});
+    render(d || {});
   }
 
   function render(d) {
@@ -243,11 +247,12 @@
   }
 
   document.addEventListener('DOMContentLoaded', async function () {
-    sb = window.mdtlAuthClient && window.mdtlAuthClient();
-    if (!sb) { loading.textContent = '인증 모듈을 불러오지 못했습니다.'; return; }
-    var s = await sb.auth.getSession();
-    var user = s && s.data && s.data.session && s.data.session.user;
-    if (!user) { location.href = (window.MDTL_BASE || '') + '/ko/login/'; return; }
+    if (!(window.mdtlAuthClient && window.mdtlAuthClient())) {
+      loading.textContent = '인증 모듈을 불러오지 못했습니다.';
+      return;
+    }
+    await window.mdtlHandleOAuthReturn();
+    if (!window.mdtlLoggedIn()) { location.href = (window.MDTL_BASE || '') + '/ko/login/'; return; }
     load();
   });
 })();

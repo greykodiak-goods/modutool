@@ -3,7 +3,12 @@
   "private": true,
   "description": "ThisIsMy Tools — static in-browser tools. package.json exists only for the Convex backend scaffold (convex/).",
   "devDependencies": {
+    "@types/node": "^26.1.1",
     "convex": "^1.17.0",
     "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@auth/core": "^0.41.1",
+    "@convex-dev/auth": "^0.0.94"
   }
 }
