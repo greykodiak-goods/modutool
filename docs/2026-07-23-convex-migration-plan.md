@@ -1,7 +1,16 @@
 # Convex 이관 준비 (2026-07-23, 대표 지시)
 
 > 대상: modutool(ThisIsMy Tools)의 백엔드 Supabase 프로젝트 `gysvtgnpacqjpdijbcaw` (thisismy-tools).
-> 상태: **이관 준비 완료** — 스키마·함수 스캐폴드가 `convex/`에 커밋됨. 실제 프로비저닝은 Convex 계정 필요(아래 "대표가 하는 것").
+> 상태: **이관 완료 (2026-07-26).** 텔레메트리·인증 모두 Convex로 넘어갔고 이 앱에서 Supabase는 제거됐다.
+> 아래 계획 본문은 당시 설계 기록으로 남긴다 — 실제 결과와 다른 부분은 이 박스를 우선할 것.
+>
+> 최종 결과 요약:
+> - 텔레메트리: `toolEvents` + `dailyStats` 롤업, HTTP action `/log-event` (2026-07-26 컷오버)
+> - 인증: `@convex-dev/auth` (Password + Google). 실사용자 0명이라 데이터 이식 없이 새로 시작.
+> - 프론트 벤더: `assets/vendor/convex.js` 18KB (ConvexHttpClient). supabase.js 207KB 삭제.
+> - 서명키(JWT_PRIVATE_KEY/JWKS)·SITE_URL은 `convex-deploy.yml`이 최초 1회 자동 생성·설정.
+> - 남은 것: dev 배포 → prod 배포 키 교체, 구글 OAuth 자격증명(AUTH_GOOGLE_ID/SECRET) 등록.
+> - 자세한 배경·재발 방지: `docs/2026-07-26-namespace-plan.md` 7절
 
 ## 현행 Supabase 자산 → Convex 매핑
 
