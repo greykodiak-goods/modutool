@@ -27,6 +27,23 @@ export default defineSchema({
     .index("by_tool", ["tool"])
     .index("by_outcome", ["outcome"]),
 
+  /* 일별 집계 롤업 — NoSQL의 GROUP BY 약점 대응.
+     문서DB에는 집계 엔진이 없어 대시보드가 원본을 전부 스캔해야 하는데,
+     Convex는 쿼리 1회당 읽기 상한(문서 수·바이트)이 있어 로그가 쌓이면 스캔이 깨진다.
+     그래서 "쓸 때 미리 세어두는" 방식으로 뒤집는다: logEvent가 (일자×도구×결과) 카운터를 증분.
+     대시보드는 원본 대신 이 표를 읽으므로 로그가 몇백만 건이 돼도 읽는 문서 수가 일정하다.
+     ⚠️ 트래픽이 매우 커지면 한 문서에 쓰기가 몰려 낙관적 동시성 재시도가 늘 수 있다 →
+        그때는 key에 샤드 접미사를 붙여 분산할 것(예: `${ymd}|${tool}|${outcome}|s3`). */
+  dailyStats: defineTable({
+    key: v.string(),        // `${ymd}|${tool}|${outcome}` — 조회·증분용 단일 키
+    ymd: v.string(),        // YYYY-MM-DD (UTC)
+    tool: v.string(),
+    outcome: v.string(),
+    count: v.number(),
+  })
+    .index("by_key", ["key"])
+    .index("by_ymd", ["ymd"]),
+
   // 백오피스 접근 화이트리스트 (dashboard 쿼리가 참조)
   adminUsers: defineTable({
     email: v.string(),

@@ -37,6 +37,21 @@ export const logEvent = internalMutation({
       }
     }
     if (JSON.stringify(clean).length > 2000) throw new Error("meta too large");
+
+    /* 일별 롤업 증분 — 대시보드가 원본 로그를 스캔하지 않도록 쓰기 시점에 미리 집계.
+       (SQL의 GROUP BY를 대체하는 문서DB 표준 패턴) */
+    const ymd = new Date().toISOString().slice(0, 10);
+    const key = `${ymd}|${tool}|${outcome}`;
+    const existing = await ctx.db
+      .query("dailyStats")
+      .withIndex("by_key", (q) => q.eq("key", key))
+      .unique();
+    if (existing) {
+      await ctx.db.patch(existing._id, { count: existing.count + 1 });
+    } else {
+      await ctx.db.insert("dailyStats", { key, ymd, tool, outcome, count: 1 });
+    }
+
     await ctx.db.insert("toolEvents", {
       tool,
       outcome: outcome as "success" | "no_result" | "error" | "unsupported" | "cancelled" | "view",
