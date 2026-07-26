@@ -5,7 +5,12 @@ name: Doppler Check (연동 검증)
 # 필요: GitHub Secret DOPPLER_TOKEN (read-only 서비스 토큰)
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      expect_project:
+        description: "이 레포가 봐야 할 Doppler 프로젝트 이름 (토큰이 다른 곳을 가리키면 경고)"
+        required: false
+        default: "thisismy"
 
 jobs:
   check:
@@ -17,6 +22,7 @@ jobs:
       - name: Fetch & verify (값 미출력)
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          EXPECT_PROJECT: ${{ inputs.expect_project }}
         run: |
           if [ -z "$DOPPLER_TOKEN" ]; then
             echo "::error::DOPPLER_TOKEN 미설정 — 이 레포(modutool) Settings → Secrets and variables → Actions 에 등록 필요"
@@ -33,8 +39,9 @@ jobs:
           PRJ=$(doppler secrets get DOPPLER_PROJECT --plain 2>/dev/null || echo "(확인불가)")
           CFG=$(doppler secrets get DOPPLER_CONFIG --plain 2>/dev/null || echo "(확인불가)")
           echo "project=$PRJ  config=$CFG"
-          if [ "$PRJ" != "thisismy" ] && [ "$PRJ" != "(확인불가)" ]; then
-            echo "::warning::이 레포(modutool)는 Doppler 프로젝트 'thisismy'를 기대합니다. 현재 토큰은 '$PRJ' 를 가리킵니다 — 레포에 다른 앱의 토큰이 들어갔는지 확인하세요."
+          EXPECT="${EXPECT_PROJECT:-thisismy}"
+          if [ "$PRJ" != "$EXPECT" ] && [ "$PRJ" != "(확인불가)" ]; then
+            echo "::warning::이 레포(modutool)는 Doppler 프로젝트 '$EXPECT'를 기대합니다. 현재 토큰은 '$PRJ' 를 가리킵니다 — 레포 Secret의 DOPPLER_TOKEN이 다른 앱 토큰인지 확인하세요. (기대값이 틀렸다면 workflow_dispatch 입력 expect_project로 바꿔 실행)"
           fi
           echo "===== 끝 ====="
 
