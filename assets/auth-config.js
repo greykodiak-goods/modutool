@@ -6,7 +6,9 @@ window.MDTL_AUTH = {
   anonKey: 'sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT'
 };
 
-/* Convex 이관 스위치 — 프로비저닝 후 deployment의 .convex.site URL을 넣으면
-   텔레메트리가 즉시 Convex로 전환된다(사이트 재배포만, 페이지 수정 없음).
-   예: window.MDTL_CONVEX = { url: 'https://something-123.convex.site' }; */
-window.MDTL_CONVEX = null;
+/* Convex 이관 — 텔레메트리 수집처. 이 URL이 설정되면 site.js가 Supabase 대신
+   Convex HTTP action(/log-event)으로 보낸다. deployment URL은 공개돼도 안전(쓰기 전용 엔드포인트,
+   서버가 화이트리스트·크기 검증, 조회 함수 자체가 없음).
+   ⚠️ 현재 dev 배포(superb-echidna-510). 트래픽이 붙기 전에 prod 배포 키로 교체할 것 —
+      dev 배포는 로컬에서 `convex dev`를 돌리면 함수가 덮어써질 수 있다. */
+window.MDTL_CONVEX = { url: 'https://superb-echidna-510.convex.site' };
