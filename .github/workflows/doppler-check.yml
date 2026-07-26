@@ -37,7 +37,9 @@ jobs:
           # 광고 유닛은 브랜드(pdf/img/calc/video)마다 따로 발급되므로 접미사로 나눈다.
           # SITE 빌드 변수와 이름이 맞아 떨어져 ADFIT_UNIT_TOP_${SITE^^} 한 줄로 뽑힌다.
           # 상세: docs/2026-07-26-namespace-plan.md 4절
-          OPTIONAL="GOOGLE_OAUTH_CLIENT_ID GOOGLE_OAUTH_CLIENT_SECRET ADSENSE_CLIENT_ID"
+          # 구글 OAuth는 @auth/core가 읽는 이름을 그대로 쓴다(AUTH_<PROVIDER>_ID/_SECRET).
+          # 예전 GOOGLE_OAUTH_CLIENT_ID 이름으로 넣으면 아무도 읽지 않는다 — 2026-07-26 이관 시 교정.
+          OPTIONAL="AUTH_GOOGLE_ID AUTH_GOOGLE_SECRET ADSENSE_CLIENT_ID"
           for s in PDF IMG CALC VIDEO; do OPTIONAL="$OPTIONAL ADFIT_UNIT_TOP_$s ADFIT_UNIT_BOTTOM_$s"; done
           echo "===== 필수 키 대조 ====="
           MISSING=""

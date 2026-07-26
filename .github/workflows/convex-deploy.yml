@@ -88,6 +88,36 @@ jobs:
         env:
           SITE_URL_INPUT: ${{ inputs.site_url }}
 
+      # 구글 OAuth 자격증명 — 인증 코드는 Convex 위에서 돌므로 러너 env가 아니라
+      # "Convex 배포 환경변수"에 있어야 한다. @auth/core가 읽는 이름이 정해져 있다:
+      #   AUTH_<PROVIDER>_ID / AUTH_<PROVIDER>_SECRET  → 구글은 AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET
+      # Doppler에는 그 이름 그대로 넣어두면 여기서 배포로 밀어넣는다.
+      # 미등록이면 조용히 건너뛴다 — 구글 버튼만 비활성이고 이메일 로그인은 정상 동작한다.
+      - name: Push Google OAuth creds to Convex (있을 때만)
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          GID_FALLBACK: ${{ secrets.AUTH_GOOGLE_ID }}
+          GSECRET_FALLBACK: ${{ secrets.AUTH_GOOGLE_SECRET }}
+        run: |
+          fetch_key() {  # Doppler 우선 → GitHub Secret 폴백
+            local v=""
+            if [ -n "$DOPPLER_TOKEN" ] && command -v doppler >/dev/null 2>&1; then
+              v=$(doppler secrets get "$1" --plain 2>/dev/null || true)
+            fi
+            [ -z "$v" ] && v="$2"
+            printf '%s' "$v"
+          }
+          GID=$(fetch_key AUTH_GOOGLE_ID "$GID_FALLBACK")
+          GSECRET=$(fetch_key AUTH_GOOGLE_SECRET "$GSECRET_FALLBACK")
+          if [ -n "$GID" ] && [ -n "$GSECRET" ]; then
+            echo "::add-mask::$GSECRET"
+            npx convex env set AUTH_GOOGLE_ID -- "$GID"
+            npx convex env set AUTH_GOOGLE_SECRET -- "$GSECRET"
+            echo "구글 OAuth 자격증명 반영 완료"
+          else
+            echo "AUTH_GOOGLE_ID/SECRET 미등록 — 구글 로그인 비활성(이메일 로그인은 정상)"
+          fi
+
       - name: Deploy schema + functions
         run: npx convex deploy --yes
       - name: Seed admin email
