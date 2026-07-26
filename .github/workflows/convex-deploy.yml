@@ -120,3 +120,75 @@ jobs:
           code=$(curl -s -o /dev/null -w "%{http_code}" "$SITE/.well-known/jwks.json")
           echo "jwks.json: $code"; [ "$code" = "200" ] || fail=1
           exit $fail
+
+      # 실제 로그인이 되는지 라이브 배포에 대고 확인한다(모의가 아니라 진짜 계정 생성 → 삭제).
+      # 컨테이너에서 convex.dev로 못 나가므로 이 검증은 러너에서만 가능하다.
+      - name: E2E — 회원가입/로그인/삭제 왕복
+        if: always()
+        run: |
+          NAME=$(echo "$CONVEX_DEPLOY_KEY" | sed -E 's/^[a-z]+:([^|]+)\|.*/\1/')
+          API="https://$NAME.convex.cloud"
+          EMAIL="ci-${{ github.run_id }}@e2e.invalid"
+          PASS="CiTest12345"
+          fail=0
+          call() {  # call <endpoint> <json-body> [bearer]
+            if [ -n "$3" ]; then
+              curl -s -X POST "$API/api/$1" -H "Content-Type: application/json" -H "Authorization: Bearer $3" --max-time 20 --data "$2"
+            else
+              curl -s -X POST "$API/api/$1" -H "Content-Type: application/json" --max-time 20 --data "$2"
+            fi
+          }
+
+          echo "--- 1) 회원가입 (expect tokens) ---"
+          R=$(call action "{\"path\":\"auth:signIn\",\"format\":\"convex_encoded_json\",\"args\":[{\"provider\":\"password\",\"params\":{\"email\":\"$EMAIL\",\"password\":\"$PASS\",\"flow\":\"signUp\"}}]}")
+          TOKEN=$(echo "$R" | jq -r '.value.tokens.token // empty')
+          echo "status=$(echo "$R" | jq -r .status) token=$([ -n "$TOKEN" ] && echo yes || echo no)"
+          [ -n "$TOKEN" ] || { echo "::error::회원가입 실패: $(echo "$R" | head -c 200)"; exit 1; }
+          echo "::add-mask::$TOKEN"
+
+          echo "--- 2) 짧은 비밀번호는 서버가 거절 (expect error) ---"
+          R=$(call action "{\"path\":\"auth:signIn\",\"format\":\"convex_encoded_json\",\"args\":[{\"provider\":\"password\",\"params\":{\"email\":\"weak-$EMAIL\",\"password\":\"abc\",\"flow\":\"signUp\"}}]}")
+          [ "$(echo "$R" | jq -r .status)" = "error" ] && echo "약한 비밀번호 거절 OK" || { echo "::error::약한 비밀번호가 통과함"; fail=1; }
+
+          echo "--- 3) 본인 정보 조회 (인증 필요) ---"
+          R=$(call query "{\"path\":\"account:me\",\"format\":\"convex_encoded_json\",\"args\":[{}]}" "$TOKEN")
+          GOT=$(echo "$R" | jq -r '.value.email // empty')
+          [ "$GOT" = "$EMAIL" ] && echo "account:me OK ($GOT)" || { echo "::error::account:me 불일치: $(echo "$R" | head -c 200)"; fail=1; }
+          [ "$(echo "$R" | jq -r '.value.plan')" = "free" ] && echo "기본 플랜 free OK" || { echo "::error::기본 플랜이 free가 아님"; fail=1; }
+
+          echo "--- 4) 토큰 없이 같은 쿼리 → null (남의 데이터 안 보임) ---"
+          R=$(call query "{\"path\":\"account:me\",\"format\":\"convex_encoded_json\",\"args\":[{}]}")
+          [ "$(echo "$R" | jq -r '.value')" = "null" ] && echo "미인증 조회 null OK" || { echo "::error::미인증인데 값이 나옴: $(echo "$R" | head -c 200)"; fail=1; }
+
+          echo "--- 5) 틀린 비밀번호로 로그인 (expect error) ---"
+          R=$(call action "{\"path\":\"auth:signIn\",\"format\":\"convex_encoded_json\",\"args\":[{\"provider\":\"password\",\"params\":{\"email\":\"$EMAIL\",\"password\":\"WrongPass9999\",\"flow\":\"signIn\"}}]}")
+          [ "$(echo "$R" | jq -r .status)" = "error" ] && echo "오답 거절 OK" || { echo "::error::틀린 비밀번호가 통과함!"; fail=1; }
+
+          echo "--- 6) 올바른 비밀번호로 재로그인 (expect tokens) ---"
+          R=$(call action "{\"path\":\"auth:signIn\",\"format\":\"convex_encoded_json\",\"args\":[{\"provider\":\"password\",\"params\":{\"email\":\"$EMAIL\",\"password\":\"$PASS\",\"flow\":\"signIn\"}}]}")
+          T2=$(echo "$R" | jq -r '.value.tokens.token // empty')
+          RT2=$(echo "$R" | jq -r '.value.tokens.refreshToken // empty')
+          [ -n "$T2" ] && echo "재로그인 OK" || { echo "::error::재로그인 실패: $(echo "$R" | head -c 200)"; fail=1; }
+          [ -n "$T2" ] && echo "::add-mask::$T2"
+          [ -n "$RT2" ] && echo "::add-mask::$RT2"
+
+          echo "--- 7) 리프레시 토큰 교환 (세션 유지 경로) ---"
+          if [ -n "$RT2" ]; then
+            R=$(call action "{\"path\":\"auth:signIn\",\"format\":\"convex_encoded_json\",\"args\":[{\"refreshToken\":\"$RT2\"}]}")
+            T3=$(echo "$R" | jq -r '.value.tokens.token // empty')
+            [ -n "$T3" ] && { echo "토큰 갱신 OK"; echo "::add-mask::$T3"; TOKEN="$T3"; } || { echo "::error::토큰 갱신 실패: $(echo "$R" | head -c 200)"; fail=1; }
+          fi
+
+          echo "--- 8) 이메일 불일치 삭제는 거부 ---"
+          R=$(call mutation "{\"path\":\"account:deleteAccount\",\"format\":\"convex_encoded_json\",\"args\":[{\"confirmEmail\":\"other@e2e.invalid\"}]}" "$TOKEN")
+          [ "$(echo "$R" | jq -r .status)" = "error" ] && echo "불일치 삭제 거부 OK" || { echo "::error::이메일이 달라도 삭제됨!"; fail=1; }
+
+          echo "--- 9) 정리: 테스트 계정 영구 삭제 ---"
+          R=$(call mutation "{\"path\":\"account:deleteAccount\",\"format\":\"convex_encoded_json\",\"args\":[{\"confirmEmail\":\"$EMAIL\"}]}" "$TOKEN")
+          [ "$(echo "$R" | jq -r '.value.ok')" = "true" ] && echo "테스트 계정 삭제 OK" || { echo "::error::테스트 계정이 남았습니다($EMAIL) — 수동 정리 필요: $(echo "$R" | head -c 200)"; fail=1; }
+
+          echo "--- 10) 삭제 후 같은 비밀번호로 로그인 불가 ---"
+          R=$(call action "{\"path\":\"auth:signIn\",\"format\":\"convex_encoded_json\",\"args\":[{\"provider\":\"password\",\"params\":{\"email\":\"$EMAIL\",\"password\":\"$PASS\",\"flow\":\"signIn\"}}]}")
+          [ "$(echo "$R" | jq -r .status)" = "error" ] && echo "삭제된 계정 로그인 차단 OK" || { echo "::error::삭제됐는데 로그인됨!"; fail=1; }
+
+          exit $fail
