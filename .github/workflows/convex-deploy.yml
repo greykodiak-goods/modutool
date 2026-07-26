@@ -144,6 +144,24 @@ jobs:
             -H "Origin: https://greykodiak-goods.github.io" -H "Access-Control-Request-Method: POST")
           echo "$hdr" | head -8
           echo "$hdr" | grep -qi "access-control-allow-origin" || fail=1
+          echo "--- 문의 접수 엔드포인트 ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SITE/contact" \
+            -H "Content-Type: application/json" -H "Origin: https://greykodiak-goods.github.io" \
+            --data '{"subject":"ci-e2e","body":"automated check from convex-deploy workflow","hp":""}')
+          echo "contact: $code"; [ "$code" = "201" ] || fail=1
+          echo "--- 허니팟이 채워지면 저장하지 않고 조용히 201 ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SITE/contact" \
+            -H "Content-Type: application/json" --data '{"subject":"bot","body":"bot","hp":"filled"}')
+          echo "honeypot: $code"; [ "$code" = "201" ] || fail=1
+          echo "--- 빈 내용은 거절 (expect 400) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SITE/contact" \
+            -H "Content-Type: application/json" --data '{"subject":"","body":""}')
+          echo "empty: $code"; [ "$code" = "400" ] || fail=1
+          echo "--- 문의 조회는 미인증이면 막혀야 한다 ---"
+          body=$(curl -s -X POST "${SITE/.convex.site/.convex.cloud}/api/query" \
+            -H "Content-Type: application/json" \
+            --data '{"path":"contact:list","format":"convex_encoded_json","args":[{}]}')
+          echo "$body" | grep -q '"status":"success"' && { echo "::error::미인증인데 문의함이 열림!"; fail=1; } || echo "문의함 게이트 OK"
           echo "--- Convex Auth 라우트 존재 (404가 아니어야 함) ---"
           code=$(curl -s -o /dev/null -w "%{http_code}" "$SITE/.well-known/openid-configuration")
           echo "openid-configuration: $code"; [ "$code" = "200" ] || fail=1

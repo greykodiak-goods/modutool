@@ -17,12 +17,12 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 /* 도구가 아닌 폴더 — 여기 추가할 일이 생기면 "정말 도구가 아닌지" 한 번 더 생각할 것 */
 const NOT_TOOL = new Set([
   'assets', 'convex', 'docs', 'node_modules', 'scripts', 'supabase', 'tests', 'portal', 'dist', 'ko',
-  'about', 'privacy', 'terms', 'pricing', 'login', 'signup', 'account', 'admin',
+  'about', 'privacy', 'terms', 'pricing', 'login', 'signup', 'account', 'admin', 'contact',
 ]);
 
 /* 결과물(다운로드·픽셀·계산값)을 실제로 확인하는 테스트들 */
 const FUNC_TESTS = [
-  'calc-func', 'pdf-func', 'image-func', 'video2-func',
+  'calc-func', 'pdf-func', 'image-func', 'video2-func', 'contact-func',
   'redact-func', 'cv-tools-func', 'video-trim-func', 'audio-tools-func',
   'smoke-pdf-merge', 'pwa-offline', 'umbrella-smoke',
 ];

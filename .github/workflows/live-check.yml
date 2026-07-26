@@ -83,6 +83,17 @@ jobs:
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
             [ "$code" = "404" ] && echo "  차단 OK $p" || { echo "  유출! $code $p"; fail=1; }
           done
+          echo "--- 연락 수단 (AdSense 정책 요건이자 사용자 약속) ---"
+          for p in "/pdf/contact/" "/pdf/ko/contact/" "/img/contact/" "/calc/contact/" "/video/contact/"; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p"); [ "$code" = "200" ] && echo "  $p OK" || { echo "  $p $code"; fail=1; }
+          done
+          curl -sL "$BASE/pdf/pdf-merge/assets/site.js" >/dev/null 2>&1 || true
+          curl -sL "$BASE/pdf/assets/site.js" | grep -q "'/contact/', 'Contact'" \
+            && echo "  푸터에 문의 링크 OK" || { echo "  푸터에 문의 링크 없음"; fail=1; }
+          curl -sL "$BASE/pdf/about/" | grep -q 'href="[^"]*/contact/"' \
+            && echo "  About → 문의 링크 OK" || { echo "  About이 존재하지 않는 연락처를 안내"; fail=1; }
+          curl -sL "$BASE/pdf/privacy/" | grep -qi "contact form" \
+            && echo "  개인정보처리방침에 문의 수집 고지 OK" || { echo "  문의 수집을 고지하지 않음"; fail=1; }
           echo "--- 회원 페이지가 Convex 단일 백엔드를 쓰는지 (Supabase 잔재 없음) ---"
           curl -sL "$BASE/pdf/login/" | grep -q "vendor/convex.js" && echo "login: convex 클라이언트 OK" || { echo "login: convex 클라이언트 MISSING"; fail=1; }
           for p in "/pdf/login/" "/pdf/signup/" "/pdf/account/" "/pdf/admin/" "/pdf/ko/login/"; do

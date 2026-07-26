@@ -50,6 +50,26 @@ export default defineSchema({
     .index("by_key", ["key"])
     .index("by_ymd", ["ymd"]),
 
+  /* 문의 메시지 — 사이트에 연락 수단이 필요해서 만든다(AdSense 정책 요건이기도 하고,
+     About 페이지가 "문의 이메일로 보내달라"고 하면서 정작 이메일이 없던 상태였다).
+     개인 이메일을 공개 페이지에 노출하면 스팸에 수확당하므로 폼 + 서버 저장 방식으로 간다.
+     ⚠️ 개인정보 최소수집: 답장이 필요한 사람만 이메일을 남긴다(선택). 내용·이메일 길이는 서버가 자른다. */
+  contactMessages: defineTable({
+    email: v.optional(v.string()),   // 답장 원할 때만
+    subject: v.string(),
+    body: v.string(),
+    lang: v.optional(v.string()),
+    site: v.optional(v.string()),    // 어느 브랜드에서 왔는지(pdf/img/calc/video)
+    handled: v.boolean(),            // 백오피스에서 처리 표시
+  }).index("by_handled", ["handled"]),
+
+  /* 스팸·폭주 방어용 분 단위 카운터. 공개 엔드포인트라 상한이 없으면 DB가 쓰레기로 찬다.
+     IP는 저장하지 않는다(개인정보) — 전체 분당 상한만 건다. */
+  contactRate: defineTable({
+    minute: v.string(),              // YYYY-MM-DDTHH:MM (UTC)
+    count: v.number(),
+  }).index("by_minute", ["minute"]),
+
   // 백오피스 접근 화이트리스트 (dashboard 쿼리가 참조)
   adminUsers: defineTable({
     email: v.string(),

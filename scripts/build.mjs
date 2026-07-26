@@ -33,7 +33,7 @@ const CAT_SLUGS = {
   util: ['qr-generator','password-generator','text-diff'],
   video: ['video-trim','video-to-mp3','video-to-gif','video-compress','audio-trim'],
 };
-const SUPPORT_SLUGS = ['about','privacy','terms','pricing','login','signup','account'];
+const SUPPORT_SLUGS = ['about','privacy','terms','pricing','login','signup','account','contact'];
 if (SITE_KEY) {
   const sites = JSON.parse(readFileSync(join(root, 'sites.json'), 'utf8'));
   site = sites[SITE_KEY];

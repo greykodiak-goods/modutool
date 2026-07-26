@@ -42,7 +42,7 @@ for (const [src, dst] of [['portal/index.html', 'index.html'], ['portal/ko/index
 /* 3) 구 루트 URL 리다이렉트 스텁 (site.js CAT_SLUGS와 동기 유지할 것) */
 const REDIRECTS = {
   pdf: ['pdf-merge','pdf-split','pdf-extract','pdf-organize','pdf-rotate','pdf-compress','pdf-watermark','pdf-page-numbers','pdf-sign','pdf-to-jpg','img-to-pdf',
-        'about','privacy','terms','pricing','login','signup','account','admin'],
+        'about','privacy','terms','pricing','login','signup','account','admin','contact'],
   img: ['image-compress','image-resize','image-crop','image-convert','image-rotate','image-watermark'],
   calc: ['age-calculator','percent-calculator','char-count','dday-calculator','trig-calculator','pyeong-calculator'],
 };

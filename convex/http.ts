@@ -31,6 +31,44 @@ const http = httpRouter();
    구글 인가코드 교환이 여기서 서버측으로 일어난다 — 클라이언트 시크릿은 브라우저에 나가지 않는다. */
 auth.addHttpRoutes(http);
 
+/* 문의 접수 — 공개 엔드포인트. 방어(길이·형식·분당 상한)는 전부 서버(contact:submit)에 있다.
+   허니팟(hp) 필드가 채워져 있으면 봇으로 보고 조용히 201을 돌려준다(봇에게 실패를 알리지 않는다). */
+http.route({
+  path: "/contact",
+  method: "OPTIONS",
+  handler: httpAction(async (_ctx, req) => new Response(null, { status: 204, headers: corsHeaders(req.headers.get("Origin")) })),
+});
+http.route({
+  path: "/contact",
+  method: "POST",
+  handler: httpAction(async (ctx, req) => {
+    const headers = corsHeaders(req.headers.get("Origin"));
+    let body: Record<string, unknown>;
+    try { body = await req.json(); } catch { return new Response("bad json", { status: 400, headers }); }
+
+    if (typeof body.hp === "string" && body.hp.trim() !== "") {
+      return new Response(null, { status: 201, headers });   // 허니팟 — 봇
+    }
+    const minute = new Date().toISOString().slice(0, 16);
+    try {
+      await ctx.runMutation(internal.contact.submit, {
+        email: body.email == null ? undefined : String(body.email),
+        subject: String(body.subject ?? ""),
+        body: String(body.body ?? ""),
+        lang: body.lang == null ? undefined : String(body.lang),
+        site: body.site == null ? undefined : String(body.site),
+        minute,
+      });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "";
+      // 상한 초과는 400이 아니라 429로 알려야 사용자가 "잠시 후 다시"를 안다.
+      if (msg.includes("rate_limited")) return new Response("too many", { status: 429, headers });
+      return new Response("rejected", { status: 400, headers });
+    }
+    return new Response(null, { status: 201, headers });
+  }),
+});
+
 http.route({
   path: "/log-event",
   method: "OPTIONS",
