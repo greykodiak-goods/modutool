@@ -16,7 +16,7 @@ Doppler 도입 + Convex(NoSQL) 전환 + 한 오리진에 브랜드 4개가 얹�
 | 4 | Convex | `dev:` 배포 키가 운영에 박혀 있음 | `prod:` 키로 교체, dev는 별도 키 | 대표 |
 | 5 | 서비스워커 캐시 | 4브랜드가 한 오리진 → 서로 캐시를 지움 | **수정 완료** (캐시명에 스코프 포함) | ✅ 완료 |
 | 6 | localStorage | 4브랜드가 한 오리진 → 키 공유 | 공유할 것/분리할 것 구분 (아래 5절) | 다음 작업 |
-| 7 | Supabase 프로젝트 | 무료 2개 한도로 `thisismy-tools`가 또 INACTIVE = **로그인 먹통** | Convex Auth로 이관해 Supabase 의존 제거 | 다음 작업 |
+| 7 | Supabase 프로젝트 | 무료 2개 한도로 `thisismy-tools`가 INACTIVE = **로그인 먹통** | **이관 완료** — Convex Auth로 옮기고 Supabase 제거 (7절) | ✅ 완료 |
 
 ---
 
@@ -41,8 +41,8 @@ Doppler
 
 | 키 | awning-ops | thisismy | 겹침 |
 |----|:---:|:---:|----|
-| `SUPABASE_URL` | ✅ wcztgn… | ✅ gysvtg… | ⚠️ **이름 같고 값 다름** |
-| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | ✅(예정) | ⚠️ **이름 같고 값 다름** |
+| `SUPABASE_URL` | ✅ wcztgn… | ~~gysvtg…~~ | ~~충돌~~ → **해소**(7절: thisismy에서 Supabase 제거) |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | ~~예정~~ | ~~충돌~~ → **해소** |
 | `ANTHROPIC_API_KEY` / `CONTENT_LLM_KEY` | ✅ | (공유해도 무방) | 회색 |
 | `COUPANG_PROXY_URL` / `COUPANG_PROXY_SECRET` | ✅ | — | 없음 |
 | `CRON_SECRET` | ✅ | — | 없음 |
@@ -54,9 +54,13 @@ Doppler
 | `GOOGLE_OAUTH_CLIENT_ID/SECRET` | — | ✅ | 없음 |
 | `ADSENSE_CLIENT_ID`, `ADFIT_UNIT_TOP/BOTTOM` | — | ✅ | 없음(단 4절 참조) |
 
-**결론: 진짜 충돌은 `SUPABASE_*` 2개뿐이다.** 프로젝트를 나누면 이 2개도 사라진다.
-지금처럼 한 프로젝트에 몰아넣는다면 `THISISMY_SUPABASE_URL` 식 접두가 불가피한데,
-그러면 코드가 `process.env.SUPABASE_URL`을 못 읽어 앱마다 매핑 코드를 따로 둬야 한다 — 손해다.
+**결론: 진짜 충돌은 `SUPABASE_*` 2개뿐이었고, 7절의 Convex Auth 이관으로 그 2개가 사라졌다.**
+즉 지금은 한 Doppler 프로젝트에 몰아둬도 실제로 부딪히는 키가 없다.
+
+그래도 앱당 프로젝트 분리를 권하는 이유는 **다음 충돌을 미리 막기 위해서**다. 두 앱 모두
+`ANTHROPIC_API_KEY`·`CRON_SECRET` 같은 일반명 키를 쓰게 될 가능성이 높고, 그때 접두사를 붙이면
+코드가 `process.env.SUPABASE_URL` 류의 표준 이름을 못 읽어 앱마다 매핑 코드를 따로 둬야 한다.
+프로젝트를 나누면 이름은 그대로 두고 격리만 얻는다. 급한 일은 아니다(당장 깨지는 건 없다).
 
 ### 대표가 할 일 (Doppler 웹)
 1. 프로젝트 `thisismy` 생성, 컨피그 `prd` / `dev`.
@@ -171,13 +175,29 @@ var CACHE  = PREFIX + BUILD;
 
 ---
 
-## 7. 지금 당장 걸려 있는 것 — 로그인 먹통
+## 7. 로그인 먹통 → Convex Auth 이관으로 해결 (같은 날 처리 완료)
 
-`thisismy-tools` Supabase 프로젝트가 **또 INACTIVE**다(무료 플랜 활성 2개 한도,
-현재 활성은 awning-ops와 realestate-auction). 그래서 라이브 체크의 auth health가 `000`이고
-**로그인·회원가입이 실제로 동작하지 않는다.**
+`thisismy-tools` Supabase 프로젝트가 무료 플랜 활성 2개 한도 때문에 **또 INACTIVE**로 떨어져
+(현재 활성은 awning-ops와 realestate-auction) 로그인·회원가입이 실제로 먹통이었다.
 
-일시 조치(다른 프로젝트 일시정지)는 지난번에도 했고 남의 작업을 멈추는 부작용이 있어 반복하지 않는다.
-근본 조치는 **Convex Auth로 이관해 modutool에서 Supabase를 걷어내는 것**이다.
-텔레메트리는 이미 Convex로 넘어갔으니 남은 건 로그인·프로필·관리자 게이트뿐이고,
-이관하면 Supabase 슬롯 하나가 통째로 비어 위 한도 문제도 같이 사라진다.
+일시 조치(다른 프로젝트 일시정지)는 지난번에도 했고 남의 작업을 멈추는 부작용이 있어 반복하지 않았다.
+대신 **Convex Auth(@convex-dev/auth)로 이관해 이 앱에서 Supabase를 통째로 걷어냈다.**
+Supabase 슬롯 하나가 비므로 한도 문제 자체가 사라진다.
+
+이건 네임스페이스 관점에서도 정리다 — 앱마다 백엔드가 하나씩 대응하게 되어
+1절의 `SUPABASE_URL` 충돌이 modutool 쪽에서는 아예 없어졌다(남은 건 ops 하나뿐).
+
+| 옛 Supabase | 현재 Convex |
+|---|---|
+| `auth.users` (GoTrue) | `@convex-dev/auth` — users/authAccounts/authSessions/… |
+| `profiles` (email 키) | `profiles` (userId → users 참조) |
+| `mdtl_tool_dashboard` RPC | `dashboard:dashboard` 쿼리 |
+| SDK 207KB | `assets/vendor/convex.js` 18KB |
+
+이관 시 배운 것(같은 함정 재발 방지):
+- `npx convex env get`은 **변수가 없어도 종료코드 0**이다. `if npx convex env get X; then`으로
+  존재를 판단하면 항상 "있음"이 되어 서명키를 만들지 않고 건너뛴다(→ jwks.json 500 = 로그인 불가).
+  출력 유무로 판단할 것.
+- Convex는 운영에서 **서버 예외 메시지를 감춘다**. 비밀번호 정책 같은 안내는 클라이언트에도
+  같은 규칙을 두어야 사용자가 이유를 안다(강제력은 서버, 안내는 클라이언트).
+- 서명키를 갈아끼우면 **발급된 세션이 전부 무효**가 된다 — 있으면 절대 덮어쓰지 않는다.
