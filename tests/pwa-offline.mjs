@@ -128,6 +128,27 @@ const apiCached = await page.evaluate(() =>
     .then((lists) => lists.flat().map((r) => r.url).filter((u) => /convex|supabase|doubleclick|googlesyndication|daumcdn/.test(u))));
 ok(apiCached.length === 0, `API·광고 응답 캐시 없음 (발견 ${apiCached.length}건)`);
 
+/* 6) 브랜드 간 캐시 격리 — CacheStorage는 오리진 단위로 공유되므로,
+      /img/ 의 서비스워커가 활성화될 때 /pdf/ 의 캐시를 지우면 안 된다.
+      (캐시 이름에 스코프를 안 넣으면 실제로 지워진다 — 회귀 방지용) */
+online = true;
+await page.goto(base + '/img/', { waitUntil: 'networkidle' });
+await page.evaluate(() => navigator.serviceWorker.ready);
+await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+const keys = await page.evaluate(() => caches.keys());
+ok(keys.some((k) => /^mdtl-modutool-pdf-/.test(k)), `/img/ 활성화 후에도 /pdf/ 캐시 생존 (${keys.join(', ')})`);
+ok(keys.some((k) => /^mdtl-modutool-img-/.test(k)), '/img/ 캐시 생성됨');
+
+online = false;
+try {
+  const r3 = await page.goto(base + '/pdf/pdf-merge/', { waitUntil: 'domcontentloaded' });
+  const stillWorks = await page.evaluate(() => typeof window.mdtlLogEvent);
+  ok(r3 && r3.status() === 200 && stillWorks === 'function', '다른 브랜드 방문 뒤에도 /pdf/ 오프라인 동작 유지');
+} catch (e) {
+  // 캐시 이름에 스코프가 없으면 /img/ 의 activate가 /pdf/ 캐시를 지워 여기서 연결 거부가 난다
+  ok(false, '다른 브랜드 방문 뒤에도 /pdf/ 오프라인 동작 유지 → ' + String(e).split('\n')[0]);
+}
+
 online = true;
 await ctx.close();
 await browser.close();
