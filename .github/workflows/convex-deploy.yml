@@ -58,10 +58,14 @@ jobs:
       # 키는 로그에 찍지 않는다(길이만 출력).
       - name: Ensure Convex Auth signing keys
         run: |
-          if npx convex env get JWT_PRIVATE_KEY >/dev/null 2>&1; then
-            echo "JWT_PRIVATE_KEY 이미 설정됨 — 건너뜀(재생성 시 기존 세션 전부 무효화)"
+          # ⚠️ `convex env get`은 값이 없어도 종료코드 0이라 if로 존재 여부를 판단하면 안 된다
+          #    (2026-07-26 실사고: 키가 없는데 "이미 설정됨"으로 건너뛰어 jwks.json이 500).
+          #    출력 유무로 판단하되, 값이 변수·로그에 남지 않도록 바이트 수만 센다.
+          has() { [ "$(npx convex env get "$1" 2>/dev/null | head -c 1 | wc -c)" -gt 0 ]; }
+          if has JWT_PRIVATE_KEY && has JWKS; then
+            echo "서명키 이미 설정됨 — 건너뜀(재생성 시 기존 세션 전부 무효화)"
           else
-            echo "서명키 생성 중…"
+            echo "서명키 생성 중… (개인키·JWKS 중 하나라도 없으면 쌍으로 다시 만든다)"
             # jose는 ESM 전용이라 --input-type=module 로 실행한다.
             # 개인키는 표준출력이 아니라 파일로만 흘려보낸다(로그 노출 방지).
             node --input-type=module -e '
