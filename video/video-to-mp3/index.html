@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video to MP3 — Free Audio Extractor, No Upload | ThisIsMyVideo</title>
+<meta name="description" content="Free video to MP3 converter that runs entirely in your browser — pull the audio out of MP4, WebM, MOV or MKV, or turn M4A and WAV into MP3. No upload, no watermark, no sign-up.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/video/video-to-mp3/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/video/ko/video-to-mp3/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/video/video-to-mp3/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/video/video-to-mp3/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Video to MP3 — Free, On-Device, No Upload">
+<meta property="og:description" content="Extract the audio track as MP3 right in your browser. Files never leave your device — no upload wait, no watermark.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/video/video-to-mp3/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyVideo";window.MDTL_SITE_MARK="V";</script>
+<script>window.MDTL_BASE='/modutool/video';</script>
+<link rel="stylesheet" href="/modutool/video/assets/site.css">
+<script src="/modutool/video/assets/site.js"></script>
+<script src="/modutool/video/assets/ads-config.js" defer></script>
+<script src="/modutool/video/assets/auth-config.js" defer></script>
+<script src="/modutool/video/assets/auth.js" defer></script>
+<style>
+  .am-probe { display:none; }
+  .am-note { font-size:13px; line-height:1.6; color:var(--text-soft); background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-top:16px; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Video to MP3 - ThisIsMyVideo","url":"https://greykodiak-goods.github.io/modutool/video/video-to-mp3/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that extracts the audio track of a video as an MP3 using FFmpeg compiled to WebAssembly. No server upload, no watermark.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is my video really never uploaded?","acceptedAnswer":{"@type":"Answer","text":"Correct. The tool downloads FFmpeg compiled to WebAssembly (about 31 MB, once, then cached) and extracts the audio inside the browser. Nothing is transmitted, so a lecture recording, a private meeting, or an unreleased interview never touches anyone else's server — and there is no upload wait before work starts."}},
+{"@type":"Question","name":"Why does this take longer than trimming a video?","acceptedAnswer":{"@type":"Answer","text":"Trimming can copy the existing stream, but MP3 has to be encoded from scratch, so every second of audio is actually processed. The time is roughly proportional to length: a few seconds for a short clip, a minute or two for a typical lecture, several minutes for a multi-hour recording on a phone. The progress bar shows the real position, so leave the tab open until it finishes. Memory is the other limit — processing happens in your browser, so very large sources top out around 1-2 GB on a desktop and less on phones."}},
+{"@type":"Question","name":"Which bitrate should I choose?","acceptedAnswer":{"@type":"Answer","text":"128 kbps is plenty for speech — lectures, meetings, interviews, voice memos — and keeps files small. 192 kbps is the sweet spot for music and podcasts with background scoring. 320 kbps is for archival copies where you would rather spend the disk space than lose detail. For pure speech, also tick Mono: it roughly halves the file with no audible loss."}},
+{"@type":"Question","name":"Can I convert audio files too, like M4A or WAV to MP3?","acceptedAnswer":{"@type":"Answer","text":"Yes. Audio files are accepted the same way as video, so M4A from a voice recorder, AAC, or a bulky WAV can be turned into a compact MP3 that plays on almost anything. When the input is already audio there is no video track to discard, so the conversion is usually quicker than a video of the same length."}},
+{"@type":"Question","name":"Is it OK to extract audio from any video?","acceptedAnswer":{"@type":"Answer","text":"Only use this on content you own or otherwise have the right to use — your own recordings, lectures you are permitted to keep, material you have a licence for, or public domain works. Ripping audio from someone else's film, show, or music video is a copyright matter in most countries. Because everything runs on your device, the tool cannot and does not check what you feed it, so that judgement is yours."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/video/">ThisIsMyVideo</a> › <a href="/modutool/video/#video">Video Tools</a> › Video to MP3</nav>
+  <h1 class="page-title">Video to MP3<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Pull the audio out of a video and save it as an MP3 — or convert M4A and WAV to MP3. No upload, no watermark, free, right in your browser.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🎧</span>
+      <strong>Drag &amp; drop a video or audio file here, or click to select</strong><br>
+      MP4 · WebM · MOV · MKV · M4A · AAC · WAV · <span class="engine-note">first use downloads a ~31 MB on-device engine</span>
+    </div>
+    <ul class="file-list" id="fileInfo"></ul>
+    <video id="probe" class="am-probe" preload="metadata" playsinline muted></video>
+    <div class="opts">
+      <label>Bitrate
+        <select id="brSel">
+          <option value="128k" selected>128 kbps — Standard (speech)</option>
+          <option value="192k">192 kbps — High (music)</option>
+          <option value="320k">320 kbps — Best (archival)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="monoChk"> Mono (smaller file)</label>
+    </div>
+    <div class="am-note">⚠️ Use this on recordings you own or have the right to use. Everything runs on your device, so the tool cannot check the source — respecting copyright is up to you.</div>
+    <div class="btn-row">
+      <button class="btn" id="convBtn" disabled>Extract MP3</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Remove File</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drop a video or audio file into the area above. Its name, size and length appear right away. On first use the on-device engine (~31 MB) downloads once and is cached — after that it starts instantly.</li>
+      <li>Pick a <b>bitrate</b>. 128 kbps is right for speech, 192 kbps for music, 320 kbps for an archival copy. Tick <b>Mono</b> for interviews and lectures to roughly halve the file size.</li>
+      <li>Click <b>Extract MP3</b>. The progress bar and the button both show the real percentage, and when encoding finishes the file downloads as <b>filename.mp3</b>.</li>
+    </ol>
+
+    <h2>Why pulling audio out of your own recordings is so useful</h2>
+    <p>Most of what people record is really audio wearing a video costume. A two-hour lecture capture, a webinar, a rehearsal video, a phone clip of a meeting — you rarely need the picture again, but you do want the sound on your phone, in a podcast app, or in a transcription tool. Stripping the video track turns a 900 MB recording into a file you can actually keep and carry around, and MP3 is the one audio format that plays everywhere without arguing.</p>
+    <p>Honest note: this is a <b>re-encode</b>, not a copy. Unlike trimming, every second of audio has to be decoded and encoded again, so the time scales with the length of the file — seconds for a short clip, minutes for a multi-hour recording, and slower on a phone than on a laptop. Memory is the other real limit: because nothing is sent to a server, the work happens in your browser's memory, so very large sources cap out around 1–2 GB on a desktop and lower on mobile. That is the trade we make in exchange for your files never leaving the device.</p>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>Turning a lecture or webinar recording into audio you can review while commuting</li>
+      <li>Getting a podcast-ready audio track out of a video interview you recorded</li>
+      <li>Keeping the audio of a meeting recording without storing gigabytes of video</li>
+      <li>Converting a voice memo (M4A) or a bulky WAV into a compact, universally playable MP3</li>
+      <li>Feeding a clean audio file into a transcription or note-taking app</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Is my video really never uploaded?</summary><p>Correct. The tool downloads FFmpeg compiled to WebAssembly (about 31 MB, once, then cached) and extracts the audio inside the browser. Nothing is transmitted, so a lecture recording, a private meeting, or an unreleased interview never touches anyone else's server — and there is no upload wait before work starts.</p></details>
+      <details><summary>Why does this take longer than trimming a video?</summary><p>Trimming can copy the existing stream, but MP3 has to be encoded from scratch, so every second of audio is actually processed. The time is roughly proportional to length: a few seconds for a short clip, a minute or two for a typical lecture, several minutes for a multi-hour recording on a phone. The progress bar shows the real position, so leave the tab open until it finishes. Memory is the other limit — processing happens in your browser, so very large sources top out around 1-2 GB on a desktop and less on phones.</p></details>
+      <details><summary>Which bitrate should I choose?</summary><p>128 kbps is plenty for speech — lectures, meetings, interviews, voice memos — and keeps files small. 192 kbps is the sweet spot for music and podcasts with background scoring. 320 kbps is for archival copies where you would rather spend the disk space than lose detail. For pure speech, also tick Mono: it roughly halves the file with no audible loss.</p></details>
+      <details><summary>Can I convert audio files too, like M4A or WAV to MP3?</summary><p>Yes. Audio files are accepted the same way as video, so M4A from a voice recorder, AAC, or a bulky WAV can be turned into a compact MP3 that plays on almost anything. When the input is already audio there is no video track to discard, so the conversion is usually quicker than a video of the same length.</p></details>
+      <details><summary>Is it OK to extract audio from any video?</summary><p>Only use this on content you own or otherwise have the right to use — your own recordings, lectures you are permitted to keep, material you have a licence for, or public domain works. Ripping audio from someone else's film, show, or music video is a copyright matter in most countries. Because everything runs on your device, the tool cannot and does not check what you feed it, so that judgement is yours.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/video/audio-trim/"><span class="emoji">✂️</span><span><b>Trim Audio</b><span>Cut a clip or make a ringtone</span></span></a>
+      <a class="tool-tile" href="/modutool/video/video-trim/"><span class="emoji">🎬</span><span><b>Trim Video</b><span>Cut the part you need</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/video/assets/vendor/ffmpeg/ffmpeg.js"></script>
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var fileInfo = document.getElementById('fileInfo');
+  var probe = document.getElementById('probe');
+  var brSel = document.getElementById('brSel');
+  var monoChk = document.getElementById('monoChk');
+  var convBtn = document.getElementById('convBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var BTN_LABEL = convBtn.textContent;
+  var file = null, dur = 0, ext = 'mp4', baseName = 'audio', objUrl = null;
+  var running = false, progHooked = false;
+  var ffmpeg = null, ffLoading = null;
+
+  function loadFF() {
+    if (ffmpeg) return Promise.resolve(ffmpeg);
+    if (ffLoading) return ffLoading;
+    ffLoading = (function () {
+      mdtlResult(result, '⏳ Loading the on-device engine (~31 MB, first time only)…');
+      var f = new FFmpegWASM.FFmpeg();
+      /* 공식 패턴: core는 blob URL로 로드(워커 내 동적 import 호환), 워커 스크립트는 동일출처 전체 URL */
+      var toBlobURL = function (url, type) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('engine fetch failed: ' + url);
+          return r.blob();
+        }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+      };
+      return Promise.all([
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.js', 'text/javascript'),
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.wasm', 'application/wasm')
+      ]).then(function (urls) {
+        return f.load({
+          coreURL: urls[0],
+          wasmURL: urls[1],
+          classWorkerURL: location.origin + '/modutool/video/assets/vendor/ffmpeg/814.ffmpeg.js'
+        });
+      }).then(function () {
+        ffmpeg = f;
+        result.className = 'result';
+        return f;
+      });
+    })();
+    ffLoading.catch(function () { ffLoading = null; });
+    return ffLoading;
+  }
+
+  /* 진행률: e.progress 는 0..1 비율. NaN·범위이탈 방어 후 진행바 + 버튼 라벨에 반영. */
+  function hookProgress(ff) {
+    if (progHooked) return;
+    progHooked = true;
+    ff.on('progress', function (e) {
+      if (!running) return;
+      var r = e && typeof e.progress === 'number' ? e.progress : 0;
+      if (!isFinite(r)) r = 0;
+      r = Math.min(1, Math.max(0, r));
+      var pct = Math.round(r * 100);
+      progBar.style.width = pct + '%';
+      convBtn.textContent = 'Converting… ' + pct + '%';
+    });
+  }
+
+  function fmt(t) {
+    t = Math.max(0, t);
+    var m = Math.floor(t / 60), s = (t - m * 60).toFixed(1);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function showInfo() {
+    fileInfo.innerHTML = '';
+    if (!file) return;
+    var li = document.createElement('li');
+    li.className = 'file-item';
+    var n = document.createElement('span');
+    n.className = 'name';
+    n.textContent = file.name || 'file';
+    var m = document.createElement('span');
+    m.className = 'meta';
+    m.textContent = mdtlFormatBytes(file.size) + (dur > 0 ? ' · ' + fmt(dur) : '');
+    li.appendChild(n);
+    li.appendChild(m);
+    fileInfo.appendChild(li);
+  }
+
+  function resetAll() {
+    file = null; dur = 0;
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    probe.removeAttribute('src'); probe.load();
+    fileInfo.innerHTML = '';
+    convBtn.disabled = true;
+    convBtn.textContent = BTN_LABEL;
+    clearBtn.style.display = 'none';
+    prog.className = 'progress';
+    progBar.style.width = '0%';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'video/*,audio/*,.mp4,.webm,.mov,.mkv,.m4a,.aac,.wav',
+    multiple: false,
+    onFiles: function (fs) {
+      resetAll();
+      file = fs[0];
+      var m = /\.([a-z0-9]+)$/i.exec(file.name || '');
+      ext = m ? m[1].toLowerCase() : 'mp4';
+      baseName = (file.name || 'audio').replace(/\.[a-z0-9]+$/i, '') || 'audio';
+      convBtn.disabled = false;
+      clearBtn.style.display = '';
+      showInfo();
+      objUrl = URL.createObjectURL(file);
+      probe.src = objUrl;
+      probe.onloadedmetadata = function () {
+        dur = probe.duration || 0;
+        if (!isFinite(dur) || dur <= 0) dur = 0;
+        showInfo();
+      };
+      probe.onerror = function () {
+        /* 브라우저가 미리보기를 못 열어도 FFmpeg가 처리할 수 있으므로 길이만 비운다. */
+        dur = 0;
+        showInfo();
+      };
+      loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'Engine load failed.'), true); });
+    }
+  });
+
+  convBtn.addEventListener('click', function () {
+    if (!file || convBtn.disabled) return;
+    var br = brSel.value;
+    var mono = monoChk.checked;
+    card.classList.add('busy');
+    running = true;
+    prog.className = 'progress show';
+    progBar.style.width = '0%';
+    convBtn.textContent = 'Converting… 0%';
+    mdtlResult(result, '⏳ Extracting audio and encoding MP3 — this is a real re-encode, so longer files take longer…');
+    var done = function () {
+      running = false;
+      card.classList.remove('busy');
+      prog.className = 'progress';
+      progBar.style.width = '0%';
+      convBtn.textContent = BTN_LABEL;
+    };
+    loadFF().then(function (ff) {
+      hookProgress(ff);
+      return file.arrayBuffer().then(function (buf) {
+        var inName = 'in.' + ext, outName = 'out.mp3';
+        var args = ['-i', inName, '-vn', '-c:a', 'libmp3lame', '-b:a', br];
+        if (mono) args = args.concat(['-ac', '1']);
+        args.push(outName);
+        return ff.writeFile(inName, new Uint8Array(buf))
+          .then(function () { return ff.exec(args); })
+          .then(function () { return ff.readFile(outName); })
+          .then(function (data) {
+            ff.deleteFile(inName).catch(function () {});
+            ff.deleteFile(outName).catch(function () {});
+            if (!data || !data.length) throw new Error('Empty output — no audio track was found in this file.');
+            progBar.style.width = '100%';
+            var blob = new Blob([data], { type: 'audio/mpeg' });
+            mdtlDownload(blob, baseName + '.mp3');
+            mdtlLogEvent('video-to-mp3', 'success', null,
+              { size_bucket: mdtlSizeBucket(file.size), result_bucket: mdtlSizeBucket(blob.size), format: 'mp3', quality: parseInt(br, 10) });
+            mdtlResult(result, '✅ <b>Done!</b> MP3 downloaded (' + mdtlFormatBytes(blob.size) + ' at ' + parseInt(br, 10) + ' kbps' + (mono ? ', mono' : '') + '). Your original file is untouched.' +
+              '<br>Need a shorter piece? Cut it with <a href="/modutool/video/audio-trim/">Trim Audio</a>.');
+          });
+      });
+    }).then(done, function (err) {
+      done();
+      mdtlResult(result, '❌ Conversion failed: ' + (err && err.message ? err.message : 'unknown error') + '<br>Very large files can exceed browser memory — try a shorter source or a desktop browser.', true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

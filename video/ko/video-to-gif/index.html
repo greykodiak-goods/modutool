@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>동영상 GIF 변환 — 무료·업로드 없음·워터마크 없음 | ThisIsMyVideo</title>
+<meta name="description" content="브라우저 안에서만 동작하는 무료 동영상 GIF 변환기 — 원하는 구간만 골라 가로폭·프레임·2패스 팔레트 품질로 GIF를 만듭니다. 업로드 없음, 워터마크 없음, 가입 없음.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/video/ko/video-to-gif/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/video/ko/video-to-gif/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/video/video-to-gif/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/video/video-to-gif/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="동영상 GIF 변환 — 무료, 온디바이스, 업로드 없음">
+<meta property="og:description" content="영상 구간을 골라 선명한 GIF로. 파일이 기기를 떠나지 않아 업로드 대기 0초, 워터마크 없음.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/video/ko/video-to-gif/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyVideo";window.MDTL_SITE_MARK="V";</script>
+<script>window.MDTL_BASE='/modutool/video';</script>
+<link rel="stylesheet" href="/modutool/video/assets/site.css">
+<script src="/modutool/video/assets/site.js"></script>
+<script src="/modutool/video/assets/ads-config.js" defer></script>
+<script src="/modutool/video/assets/auth-config.js" defer></script>
+<script src="/modutool/video/assets/auth.js" defer></script>
+<style>
+  .vt-stage { display:none; margin-top:14px; }
+  .vt-stage.show { display:block; }
+  .vt-stage video { max-width:100%; border-radius:10px; border:1px solid var(--line); background:#000; }
+  .vt-range { margin:12px 0 4px; }
+  .vt-range label { display:block; font-size:13px; margin:8px 0 2px; }
+  .vt-range input[type=range] { width:100%; }
+  .vt-times { font-size:14px; font-variant-numeric:tabular-nums; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .vt-warn { display:none; font-size:13px; margin:6px 0 0; color:#b45309; }
+  .card-note { font-size:13px; color:var(--text-soft); margin-top:14px; line-height:1.6; }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"동영상 GIF 변환 - ThisIsMyVideo","url":"https://greykodiak-goods.github.io/modutool/video/ko/video-to-gif/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"FFmpeg WebAssembly로 기기 안에서 영상 구간을 GIF로 변환하는 무료 웹 도구. 2패스 최적 팔레트 지원, 서버 업로드·워터마크 없음.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"영상이 정말 업로드되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 GIF를 만듭니다. 아무것도 전송되지 않으니 업로드 대기도 없습니다 — 500MB짜리 원본도 즉시 처리가 시작됩니다."}},
+{"@type":"Question","name":"GIF 용량이 왜 이렇게 큰가요? 어떻게 줄이나요?","acceptedAnswer":{"@type":"Answer","text":"GIF는 모든 프레임을 낱장 이미지로 저장하고 요즘 영상 코덱이 쓰는 압축 기법이 사실상 없습니다. 그래서 가로폭·프레임레이트·길이가 곱으로 용량에 반영됩니다. 640px, 15fps, 20초짜리면 30MB를 넘기기 십상입니다. 줄이는 순서는 길이(10초 이내가 가장 큰 효과), 그다음 가로폭을 480 또는 320px로, 마지막으로 프레임레이트를 12 또는 8fps로 낮추는 것입니다."}},
+{"@type":"Question","name":"2패스 팔레트는 정확히 무슨 일을 하나요?","acceptedAnswer":{"@type":"Answer","text":"GIF 한 프레임은 색을 256개까지만 담을 수 있습니다. 그냥 두면 범용 팔레트가 쓰여 그라데이션이 얼룩진 띠처럼 깨집니다. 1패스에서 지금 이 클립만 훑어 그 색감에 맞춘 팔레트를 만들고, 2패스에서 그 팔레트로 프레임을 다시 그립니다. 시간은 약 2배 걸리지만 결과 차이가 확연해서 기본값으로 두었습니다."}},
+{"@type":"Question","name":"GIF에 소리가 없는데 왜 그런가요?","acceptedAnswer":{"@type":"Answer","text":"GIF 규격 자체에 오디오 트랙이 없습니다. 이 도구의 한계가 아니라 파일 형식이 그렇습니다. 소리가 필요하면 영상 그대로 두세요 — 동영상 자르기로 구간만 잘라내거나, 동영상 용량 줄이기로 크기를 줄이면 됩니다."}},
+{"@type":"Question","name":"변환에 얼마나 걸리고, 용량 제한이 있나요?","acceptedAnswer":{"@type":"Answer","text":"변환은 모든 프레임을 다시 인코딩하는 작업이고 이 엔진은 단일 스레드로 돌기 때문에, 길거나 큰 클립은 몇 분이 걸릴 수 있습니다. 진행률 바와 버튼에 실제 퍼센트가 표시됩니다. 저희가 정한 용량 제한은 없지만 모든 처리가 브라우저 메모리에서 일어나므로 실질 한계는 데스크톱 대략 1~2GB, 휴대폰은 그보다 낮습니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/video/ko/">ThisIsMyVideo</a> › <a href="/modutool/video/ko/#video">영상 도구</a> › 동영상 GIF 변환</nav>
+  <h1 class="page-title">동영상 GIF 변환<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">영상에서 원하는 구간만 골라 팔레트를 최적화한 선명한 GIF로 만듭니다 — 업로드 없음, 워터마크 없음. 브라우저에서 바로, 무료.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🎞️</span>
+      <strong>동영상을 끌어다 놓거나 클릭해서 선택</strong><br>
+      MP4 · WebM · MOV · MKV · <span class="engine-note">최초 사용 시 온디바이스 엔진(~31MB) 1회 다운로드</span>
+    </div>
+    <div class="vt-stage" id="stage">
+      <video id="player" controls playsinline></video>
+      <div class="vt-range">
+        <label>시작: <span id="startLabel" class="vt-times">0:00.0</span></label>
+        <input type="range" id="startRange" min="0" max="100" step="0.1" value="0">
+        <label>끝: <span id="endLabel" class="vt-times">0:00.0</span></label>
+        <input type="range" id="endRange" min="0" max="100" step="0.1" value="100">
+        <p class="vt-times" id="clipLabel"></p>
+        <p class="vt-warn" id="warnLabel">⚠️ 15초가 넘습니다 — GIF는 길수록 용량이 급격히 불어납니다. 10초 이내를 권합니다.</p>
+      </div>
+    </div>
+    <div class="opts">
+      <label>가로폭
+        <select id="widthSel">
+          <option value="320">320 px</option>
+          <option value="480" selected>480 px</option>
+          <option value="640">640 px</option>
+        </select>
+      </label>
+      <label>프레임레이트
+        <select id="fpsSel">
+          <option value="8">8 fps</option>
+          <option value="12" selected>12 fps</option>
+          <option value="15">15 fps</option>
+        </select>
+      </label>
+      <label>품질
+        <select id="qualSel">
+          <option value="hq" selected>고품질 (2패스 팔레트)</option>
+          <option value="fast">빠르게 (단일 패스)</option>
+        </select>
+      </label>
+    </div>
+    <p class="card-note">세로 높이는 원본 비율에 맞춰 자동 계산됩니다. GIF에는 오디오 트랙이 없어 소리는 빠집니다.</p>
+    <div class="btn-row">
+      <button class="btn" id="gifBtn" disabled>GIF로 변환</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">영상 제거</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>영상을 위 영역에 끌어다 놓습니다. 최초 사용 시 온디바이스 엔진(~31MB)이 1회 다운로드되고 이후엔 캐시돼 바로 시작합니다.</li>
+      <li>미리보기를 재생하며 <b>시작</b>·<b>끝</b> 슬라이더를 맞춥니다. 슬라이더를 움직이면 미리보기도 그 지점으로 이동합니다. 끝 지점은 시작으로부터 6초 뒤로 기본 설정됩니다 — GIF는 짧을수록 좋기 때문입니다.</li>
+      <li><b>가로폭</b>(320 / 480 / 640px), <b>프레임레이트</b>(8 / 12 / 15fps), <b>품질</b>을 고릅니다. <b>고품질</b>은 1패스에서 전용 색 팔레트를 만들고, <b>빠르게</b>는 그 과정을 건너뛰어 절반쯤의 시간에 끝냅니다.</li>
+      <li><b>GIF로 변환</b>을 누릅니다. 진행률 바와 버튼에 실제 퍼센트가 표시되고, 완료되면 <b>파일명.gif</b>로 저장되며 결과 용량이 안내됩니다.</li>
+    </ol>
+
+    <h2>GIF 용량이 폭발하는 이유와 실제로 용량을 좌우하는 것</h2>
+    <p>GIF는 1987년에 만들어진 형식입니다. 모든 프레임을 낱장 이미지로 저장하고, 요즘 영상을 작게 만들어주는 기법들 — 움직임 예측, 프레임 간 압축 — 이 사실상 없으며, 프레임당 색은 256개로 못 박혀 있습니다. 그래서 GIF 용량은 대략 <b>가로 × 세로 × 프레임레이트 × 길이</b>에 비례하고, 이 네 가지가 서로 곱해집니다. 640px·15fps·20초 클립이 30MB를 우습게 넘겨 원본 MP4보다 커지는 일이 흔한 이유입니다.</p>
+    <p>따라서 이 페이지의 세 가지 설정이 전부입니다. <b>길이</b>가 가장 강력합니다 — 절반으로 줄이면 용량도 절반입니다. 다음이 <b>가로폭</b>인데, 640px에서 320px로 낮추면 픽셀 수가 4분의 1이 되므로 효과가 두 배로 붙습니다. <b>프레임레이트</b>는 가장 완만합니다 — 화면 녹화나 UI 시연은 12fps로 충분하고, 느린 패닝이나 말하는 장면은 8fps로도 볼 만합니다.</p>
+
+    <h2>팔레트 패스가 하는 일</h2>
+    <p>GIF 프레임은 색을 256개까지만 참조할 수 있으니, 그 <i>256개를 무엇으로 채울지</i> 누군가 정해야 합니다. 기본값은 범용 팔레트인데 결과가 나쁩니다 — 피부톤은 얼룩덜룩해지고, 그라데이션에는 눈에 띄는 줄무늬가 생기며, 어두운 장면은 디더링 노이즈로 가득 찹니다.</p>
+    <p><b>고품질(2패스 팔레트)</b> 모드가 이 문제를 해결합니다. 1패스에서 지금 이 클립을 처음부터 끝까지 훑어 실제로 등장하는 색에 맞춘 팔레트를 만들고, 2패스에서 그 팔레트로 모든 프레임을 다시 그립니다. 파란 UI가 대부분인 클립은 파란 계열 256단계를, 초록 들판이 대부분인 클립은 초록 계열 256단계를 갖게 되는 셈입니다. 처리 시간이 약 2배로 늘지만 그만한 값을 해서 기본값으로 두었습니다. <b>빠르게(단일 패스)</b>는 결과를 급히 확인만 하고 싶을 때 쓰세요.</p>
+
+    <h2>정직한 한계 안내</h2>
+    <ul>
+      <li><b>아무것도 업로드되지 않습니다.</b> FFmpeg를 WebAssembly로 컴파일해 이 페이지 안에서 돌리므로 영상이 서버에 닿지 않고, 업로드 대기도 없습니다.</li>
+      <li><b>아주 큰 파일은 브라우저 메모리에 걸립니다.</b> 저희가 정한 상한은 없지만 파일 전체를 브라우저 메모리에 올려 처리합니다 — 데스크톱 대략 1~2GB, 휴대폰은 그보다 훨씬 낮습니다. 그 이상은 이상한 결과물을 내는 대신 실패로 알려드립니다.</li>
+      <li><b>변환은 CPU를 많이 씁니다.</b> 모든 프레임을 디코딩하고 다시 인코딩하는데 여기선 단일 스레드로 동작하므로, 길거나 큰 클립에 몇 분이 걸리는 건 정상입니다.</li>
+      <li><b>최초 1회 ~31MB 엔진을 내려받고</b> 이후에는 브라우저가 캐시합니다.</li>
+      <li><b>GIF에는 소리가 없습니다.</b> 소리가 필요하면 영상 형식을 유지하세요.</li>
+    </ul>
+
+    <h2>이런 때 좋아요</h2>
+    <ul>
+      <li>카카오톡·슬랙·디스코드에 올릴 짧은 반응짤과 반복 재생 클립</li>
+      <li>README·풀리퀘스트·버그 리포트처럼 영상이 인라인 재생되지 않는 곳에 UI 동작 보여주기</li>
+      <li>소리 없이 자동 재생되는 시연이 필요한 문서·도움말 페이지</li>
+      <li>이미지는 되고 영상은 안 되는 커뮤니티·블로그 게시글</li>
+    </ul>
+    <p>GIF가 답이 아닌 경우도 분명합니다: 길거나, 소리가 있거나, 전체 화면이거나, 화질이 중요한 영상입니다. 이럴 땐 MP4가 더 작으면서 더 예쁩니다 — 필요한 구간만 <a href="/modutool/video/ko/video-trim/">잘라내거나</a>, 용량 제한에 맞게 <a href="/modutool/video/ko/video-compress/">압축</a>하세요.</p>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>영상이 정말 업로드되지 않나요?</summary><p>네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 GIF를 만듭니다. 아무것도 전송되지 않으니 업로드 대기도 없습니다 — 500MB짜리 원본도 즉시 처리가 시작됩니다.</p></details>
+      <details><summary>GIF 용량이 왜 이렇게 큰가요? 어떻게 줄이나요?</summary><p>GIF는 모든 프레임을 낱장 이미지로 저장하고 요즘 영상 코덱이 쓰는 압축 기법이 사실상 없습니다. 그래서 가로폭·프레임레이트·길이가 곱으로 용량에 반영됩니다. 640px, 15fps, 20초짜리면 30MB를 넘기기 십상입니다. 줄이는 순서는 길이(10초 이내가 가장 큰 효과), 그다음 가로폭을 480 또는 320px로, 마지막으로 프레임레이트를 12 또는 8fps로 낮추는 것입니다.</p></details>
+      <details><summary>2패스 팔레트는 정확히 무슨 일을 하나요?</summary><p>GIF 한 프레임은 색을 256개까지만 담을 수 있습니다. 그냥 두면 범용 팔레트가 쓰여 그라데이션이 얼룩진 띠처럼 깨집니다. 1패스에서 지금 이 클립만 훑어 그 색감에 맞춘 팔레트를 만들고, 2패스에서 그 팔레트로 프레임을 다시 그립니다. 시간은 약 2배 걸리지만 결과 차이가 확연해서 기본값으로 두었습니다.</p></details>
+      <details><summary>GIF에 소리가 없는데 왜 그런가요?</summary><p>GIF 규격 자체에 오디오 트랙이 없습니다. 이 도구의 한계가 아니라 파일 형식이 그렇습니다. 소리가 필요하면 영상 그대로 두세요 — 동영상 자르기로 구간만 잘라내거나, 동영상 용량 줄이기로 크기를 줄이면 됩니다.</p></details>
+      <details><summary>변환에 얼마나 걸리고, 용량 제한이 있나요?</summary><p>변환은 모든 프레임을 다시 인코딩하는 작업이고 이 엔진은 단일 스레드로 돌기 때문에, 길거나 큰 클립은 몇 분이 걸릴 수 있습니다. 진행률 바와 버튼에 실제 퍼센트가 표시됩니다. 저희가 정한 용량 제한은 없지만 모든 처리가 브라우저 메모리에서 일어나므로 실질 한계는 데스크톱 대략 1~2GB, 휴대폰은 그보다 낮습니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/video/ko/video-trim/"><span class="emoji">🎬</span><span><b>동영상 자르기</b><span>화질 손실 없이 구간 컷</span></span></a>
+      <a class="tool-tile" href="/modutool/video/ko/video-compress/"><span class="emoji">🗜️</span><span><b>동영상 용량 줄이기</b><span>용량 제한에 맞게 압축</span></span></a>
+      <a class="tool-tile" href="/modutool/video/ko/image-compress/"><span class="emoji">🖼️</span><span><b>이미지 압축</b><span>JPG·PNG 용량 줄이기</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/video/assets/vendor/ffmpeg/ffmpeg.js"></script>
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var stage = document.getElementById('stage');
+  var player = document.getElementById('player');
+  var startRange = document.getElementById('startRange');
+  var endRange = document.getElementById('endRange');
+  var startLabel = document.getElementById('startLabel');
+  var endLabel = document.getElementById('endLabel');
+  var clipLabel = document.getElementById('clipLabel');
+  var warnLabel = document.getElementById('warnLabel');
+  var widthSel = document.getElementById('widthSel');
+  var fpsSel = document.getElementById('fpsSel');
+  var qualSel = document.getElementById('qualSel');
+  var gifBtn = document.getElementById('gifBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var BTN_IDLE = 'GIF로 변환';
+  var LONG_CLIP_SEC = 15;
+  var DEFAULT_SPAN = 6;
+
+  var file = null, dur = 0, ext = 'mp4', baseName = 'video', objUrl = null;
+  var ffmpeg = null, ffLoading = null;
+  var running = false, progBase = 0, progSpan = 1;
+
+  /* 진행률 바 구동부. FFmpeg의 e.progress는 "현재 실행" 기준 0..1이고,
+     고품질 모드는 실행이 두 번(palettegen → paletteuse)이라 2패스가 시작될 때
+     비율이 0으로 리셋된다. 그래서 각 패스를 progBase/progSpan으로 바의 서로 다른
+     구간에 매핑해 표시한다(원시값을 그대로 쓰면 진행률이 뒤로 튄다). */
+  function setProgress(ratio) {
+    if (typeof ratio !== 'number' || !isFinite(ratio)) ratio = 0;
+    if (ratio < 0) ratio = 0;
+    if (ratio > 1) ratio = 1;
+    var pct = Math.round((progBase + ratio * progSpan) * 100);
+    if (!isFinite(pct) || pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    progBar.style.width = pct + '%';
+    gifBtn.textContent = '변환 중… ' + pct + '%';
+  }
+
+  function loadFF() {
+    if (ffmpeg) return Promise.resolve(ffmpeg);
+    if (ffLoading) return ffLoading;
+    ffLoading = (function () {
+      mdtlResult(result, '⏳ 온디바이스 엔진 로딩 중(~31MB, 최초 1회)…');
+      var f = new FFmpegWASM.FFmpeg();
+      /* 공식 패턴: core는 blob URL로 로드(워커 내 동적 import 호환), 워커 스크립트는 동일출처 전체 URL */
+      var toBlobURL = function (url, type) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('engine fetch failed: ' + url);
+          return r.blob();
+        }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+      };
+      return Promise.all([
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.js', 'text/javascript'),
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.wasm', 'application/wasm')
+      ]).then(function (urls) {
+        return f.load({
+          coreURL: urls[0],
+          wasmURL: urls[1],
+          classWorkerURL: location.origin + '/modutool/video/assets/vendor/ffmpeg/814.ffmpeg.js'
+        });
+      }).then(function () {
+        f.on('progress', function (e) {
+          if (!running) return;
+          setProgress(e && typeof e.progress === 'number' ? e.progress : 0);
+        });
+        ffmpeg = f;
+        result.className = 'result';
+        return f;
+      });
+    })();
+    ffLoading.catch(function () { ffLoading = null; });
+    return ffLoading;
+  }
+
+  function fmt(t) {
+    t = Math.max(0, t);
+    var m = Math.floor(t / 60), s = (t - m * 60).toFixed(1);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function updateLabels(seek) {
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    if (s >= e) { if (seek === 'start') { e = Math.min(dur, s + 0.1); endRange.value = e; } else { s = Math.max(0, e - 0.1); startRange.value = s; } }
+    startLabel.textContent = fmt(s);
+    endLabel.textContent = fmt(e);
+    clipLabel.textContent = 'GIF 길이: ' + fmt(e - s) + ' / ' + fmt(dur);
+    warnLabel.style.display = (e - s) > LONG_CLIP_SEC ? 'block' : 'none';
+    if (seek === 'start') player.currentTime = s;
+    if (seek === 'end') player.currentTime = e;
+    gifBtn.disabled = !(e - s > 0.2);
+  }
+  startRange.addEventListener('input', function () { updateLabels('start'); });
+  endRange.addEventListener('input', function () { updateLabels('end'); });
+
+  function resetAll() {
+    file = null; dur = 0;
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    player.removeAttribute('src'); player.load();
+    stage.className = 'vt-stage';
+    warnLabel.style.display = 'none';
+    gifBtn.disabled = true; gifBtn.textContent = BTN_IDLE;
+    clearBtn.style.display = 'none';
+    prog.className = 'progress'; progBar.style.width = '0%';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'video/*,.mp4,.webm,.mov,.mkv',
+    multiple: false,
+    onFiles: function (fs) {
+      if (running) return;
+      resetAll();
+      file = fs[0];
+      var m = /\.([a-z0-9]+)$/i.exec(file.name || '');
+      ext = m ? m[1].toLowerCase() : 'mp4';
+      baseName = (file.name || 'video').replace(/\.[a-z0-9]+$/i, '') || 'video';
+      objUrl = URL.createObjectURL(file);
+      player.src = objUrl;
+      player.onloadedmetadata = function () {
+        dur = player.duration || 0;
+        if (!isFinite(dur) || dur <= 0) { mdtlResult(result, '❌ 영상을 읽지 못했습니다. 브라우저 미리보기가 지원하지 않는 코덱이라 구간 슬라이더에 쓸 재생 길이를 알 수 없습니다.', true); return; }
+        startRange.max = dur; endRange.max = dur;
+        startRange.value = 0;
+        /* GIF는 짧아야 하므로 끝 지점 기본값을 영상 끝이 아니라 시작 + 6초로 둔다. */
+        endRange.value = Math.min(dur, DEFAULT_SPAN);
+        stage.className = 'vt-stage show';
+        clearBtn.style.display = '';
+        updateLabels();
+        loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : '엔진 로딩에 실패했습니다.'), true); });
+      };
+      player.onerror = function () { mdtlResult(result, '❌ 이 영상 형식은 브라우저에서 열 수 없습니다.', true); };
+    }
+  });
+
+  gifBtn.addEventListener('click', function () {
+    if (!file || gifBtn.disabled || running) return;
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    var span = e - s;
+    var width = widthSel.value, fps = fpsSel.value;
+    var twoPass = qualSel.value !== 'fast';
+
+    running = true;
+    card.classList.add('busy');
+    prog.className = 'progress show';
+    progBase = 0; progSpan = twoPass ? 0.3 : 1;
+    setProgress(0);
+    mdtlResult(result, '⏳ ' + (twoPass ? '최적 팔레트를 만든 뒤 GIF를 렌더링합니다' : 'GIF를 렌더링합니다') + '… 모든 프레임을 다시 인코딩하므로 긴 클립은 시간이 걸립니다.');
+
+    var done = function () {
+      running = false;
+      card.classList.remove('busy');
+      prog.className = 'progress';
+      progBar.style.width = '0%';
+      gifBtn.textContent = BTN_IDLE;
+    };
+
+    loadFF().then(function (ff) {
+      return file.arrayBuffer().then(function (buf) {
+        var inName = 'in.' + ext;
+        var vf = 'fps=' + fps + ',scale=' + width + ':-1:flags=lanczos';
+        var cleanup = function () {
+          ff.deleteFile(inName).catch(function () {});
+          ff.deleteFile('pal.png').catch(function () {});
+          ff.deleteFile('out.gif').catch(function () {});
+        };
+        return ff.writeFile(inName, new Uint8Array(buf))
+          .then(function () {
+            if (!twoPass) return null;
+            /* 1패스 — 선택 구간을 훑어 그 색감에 맞춘 256색 팔레트를 생성. */
+            return ff.exec(['-ss', String(s), '-t', String(span), '-i', inName, '-vf', vf + ',palettegen', '-y', 'pal.png']);
+          })
+          .then(function () {
+            if (!twoPass) {
+              return ff.exec(['-ss', String(s), '-t', String(span), '-i', inName, '-vf', vf, '-y', 'out.gif']);
+            }
+            /* 2패스 — 여기서 FFmpeg 진행률이 0부터 다시 시작하므로 바 구간을 재매핑. */
+            progBase = 0.3; progSpan = 0.7;
+            setProgress(0);
+            return ff.exec(['-ss', String(s), '-t', String(span), '-i', inName, '-i', 'pal.png', '-lavfi', vf + ' [x]; [x][1:v] paletteuse', '-y', 'out.gif']);
+          })
+          .then(function () { return ff.readFile('out.gif'); })
+          .then(function (data) {
+            cleanup();
+            if (!data || !data.length) throw new Error('출력이 비어 있습니다 — 선택한 구간을 디코딩하지 못했습니다.');
+            progBar.style.width = '100%';
+            var blob = new Blob([data], { type: 'image/gif' });
+            mdtlDownload(blob, baseName + '.gif');
+            mdtlLogEvent('video-to-gif', 'success', null,
+              { size_bucket: mdtlSizeBucket(file.size), result_bucket: mdtlSizeBucket(blob.size), format: 'gif', width: parseInt(width, 10), n: Math.round(span), quality: parseInt(fps, 10) });
+            mdtlResult(result, '✅ <b>완료!</b> ' + fmt(span) + ' 길이 GIF(' + width + 'px / ' + fps + 'fps)가 다운로드되었습니다 — <b>' + mdtlFormatBytes(blob.size) + '</b>.' +
+              '<br>너무 큰가요? 구간 길이를 먼저 줄이고, 그다음 가로폭, 마지막으로 프레임레이트를 낮춰 보세요.');
+          }, function (err) {
+            cleanup();
+            throw err;
+          });
+      });
+    }).then(done, function (err) {
+      done();
+      mdtlResult(result, '❌ GIF 변환 실패: ' + (err && err.message ? err.message : '알 수 없는 오류') + '<br>아주 큰 파일은 브라우저 메모리를 넘을 수 있습니다 — 더 짧은 구간, 더 작은 가로폭, 또는 데스크톱 브라우저로 시도해 보세요.', true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -2,10 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://greykodiak-goods.github.io/modutool/video/</loc></url>
   <url><loc>https://greykodiak-goods.github.io/modutool/video/about/</loc></url>
+  <url><loc>https://greykodiak-goods.github.io/modutool/video/audio-trim/</loc></url>
   <url><loc>https://greykodiak-goods.github.io/modutool/video/ko/</loc></url>
   <url><loc>https://greykodiak-goods.github.io/modutool/video/ko/about/</loc></url>
+  <url><loc>https://greykodiak-goods.github.io/modutool/video/ko/audio-trim/</loc></url>
   <url><loc>https://greykodiak-goods.github.io/modutool/video/ko/pricing/</loc></url>
+  <url><loc>https://greykodiak-goods.github.io/modutool/video/ko/video-compress/</loc></url>
+  <url><loc>https://greykodiak-goods.github.io/modutool/video/ko/video-to-gif/</loc></url>
+  <url><loc>https://greykodiak-goods.github.io/modutool/video/ko/video-to-mp3/</loc></url>
   <url><loc>https://greykodiak-goods.github.io/modutool/video/ko/video-trim/</loc></url>
   <url><loc>https://greykodiak-goods.github.io/modutool/video/pricing/</loc></url>
+  <url><loc>https://greykodiak-goods.github.io/modutool/video/video-compress/</loc></url>
+  <url><loc>https://greykodiak-goods.github.io/modutool/video/video-to-gif/</loc></url>
+  <url><loc>https://greykodiak-goods.github.io/modutool/video/video-to-mp3/</loc></url>
   <url><loc>https://greykodiak-goods.github.io/modutool/video/video-trim/</loc></url>
 </urlset>

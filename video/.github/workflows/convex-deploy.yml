@@ -20,27 +20,39 @@ jobs:
           node-version: 22
       - name: Install deps
         run: npm install --no-audit --no-fund
-      - name: Guard key exists (Secrets 우선, Variables 폴백)
+      # 시크릿 원본 = Doppler(awning-ops와 동일 패턴). 실패 시 GitHub Secret/Variable로 자동 폴백(무중단).
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+        continue-on-error: true
+
+      - name: Resolve CONVEX_DEPLOY_KEY (Doppler → GitHub 폴백)
         env:
-          KEY: ${{ secrets.CONVEX_DEPLOY_KEY != '' && secrets.CONVEX_DEPLOY_KEY || vars.CONVEX_DEPLOY_KEY }}
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          KEY_FALLBACK: ${{ secrets.CONVEX_DEPLOY_KEY != '' && secrets.CONVEX_DEPLOY_KEY || vars.CONVEX_DEPLOY_KEY }}
         run: |
+          KEY=""
+          if [ -n "$DOPPLER_TOKEN" ] && command -v doppler >/dev/null 2>&1; then
+            KEY=$(doppler secrets get CONVEX_DEPLOY_KEY --plain 2>/dev/null || true)
+            [ -n "$KEY" ] && echo "✅ 시크릿 출처: Doppler"
+          fi
           if [ -z "$KEY" ]; then
-            echo "::error::CONVEX_DEPLOY_KEY가 없습니다. 레포 Settings → Secrets and variables → Actions → 'Secrets' 탭 → New repository secret (이름 정확히 CONVEX_DEPLOY_KEY)"
+            KEY="$KEY_FALLBACK"
+            [ -n "$KEY" ] && echo "⚠️ 시크릿 출처: GitHub Secret(폴백) — Doppler 조회 실패/미설정"
+          fi
+          if [ -z "$KEY" ]; then
+            echo "::error::CONVEX_DEPLOY_KEY를 Doppler·GitHub 어디서도 가져오지 못했습니다. (Doppler에 CONVEX_DEPLOY_KEY 등록 + 이 레포에 DOPPLER_TOKEN 시크릿 등록을 권장)"
             exit 1
           fi
-          echo "key present (${#KEY} chars)"
+          # 후속 스텝에 안전하게 전달(로그 마스킹 + env 파일)
+          echo "::add-mask::$KEY"
+          echo "CONVEX_DEPLOY_KEY=$KEY" >> "$GITHUB_ENV"
+          echo "key resolved (${#KEY} chars)"
       - name: Deploy schema + functions
-        env:
-          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY != '' && secrets.CONVEX_DEPLOY_KEY || vars.CONVEX_DEPLOY_KEY }}
         run: npx convex deploy --yes
       - name: Seed admin email
         if: inputs.seed_admin_email != ''
-        env:
-          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY != '' && secrets.CONVEX_DEPLOY_KEY || vars.CONVEX_DEPLOY_KEY }}
         run: npx convex run admin:seedAdmin '{"email":"${{ inputs.seed_admin_email }}"}'
       - name: E2E — /log-event HTTP action
-        env:
-          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY != '' && secrets.CONVEX_DEPLOY_KEY || vars.CONVEX_DEPLOY_KEY }}
         run: |
           # deploy key 형식 dev:<name>|... 에서 deployment 이름 추출 → .convex.site URL
           NAME=$(echo "$CONVEX_DEPLOY_KEY" | sed -E 's/^[a-z]+:([^|]+)\|.*/\1/')

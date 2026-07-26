@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video to GIF — Free Converter, No Upload | ThisIsMyVideo</title>
+<meta name="description" content="Turn a video clip into a GIF entirely in your browser — pick the exact segment, width, frame rate and a 2-pass optimized palette. Nothing is uploaded, no watermark, no sign-up.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/video/video-to-gif/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/video/ko/video-to-gif/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/video/video-to-gif/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/video/video-to-gif/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Video to GIF — Free, On-Device, No Upload">
+<meta property="og:description" content="Make a sharp GIF from any video clip in your browser. Files never leave your device — no upload wait, no watermark.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/video/video-to-gif/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyVideo";window.MDTL_SITE_MARK="V";</script>
+<script>window.MDTL_BASE='/modutool/video';</script>
+<link rel="stylesheet" href="/modutool/video/assets/site.css">
+<script src="/modutool/video/assets/site.js"></script>
+<script src="/modutool/video/assets/ads-config.js" defer></script>
+<script src="/modutool/video/assets/auth-config.js" defer></script>
+<script src="/modutool/video/assets/auth.js" defer></script>
+<style>
+  .vt-stage { display:none; margin-top:14px; }
+  .vt-stage.show { display:block; }
+  .vt-stage video { max-width:100%; border-radius:10px; border:1px solid var(--line); background:#000; }
+  .vt-range { margin:12px 0 4px; }
+  .vt-range label { display:block; font-size:13px; margin:8px 0 2px; }
+  .vt-range input[type=range] { width:100%; }
+  .vt-times { font-size:14px; font-variant-numeric:tabular-nums; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .vt-warn { display:none; font-size:13px; margin:6px 0 0; color:#b45309; }
+  .card-note { font-size:13px; color:var(--text-soft); margin-top:14px; line-height:1.6; }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Video to GIF - ThisIsMyVideo","url":"https://greykodiak-goods.github.io/modutool/video/video-to-gif/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that converts a video segment into a GIF on your device using FFmpeg compiled to WebAssembly, with a 2-pass optimized palette. No server upload, no watermark.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is my video really never uploaded?","acceptedAnswer":{"@type":"Answer","text":"Correct. The tool downloads FFmpeg compiled to WebAssembly (about 31 MB, once, then cached) and builds the GIF inside the browser. Nothing is transmitted, so there is no upload wait either — a 500 MB source file starts processing immediately."}},
+{"@type":"Question","name":"Why is my GIF so huge, and how do I make it smaller?","acceptedAnswer":{"@type":"Answer","text":"GIF stores every frame as a separate image with none of the compression tricks modern video uses, so the size grows with width, frame rate and length all at once. A 640 px, 15 fps, 20-second clip can easily pass 30 MB. Cut the length first — staying under 10 seconds is the single biggest win — then drop the width to 480 or 320 px, then the frame rate to 12 or 8 fps."}},
+{"@type":"Question","name":"What does the two-pass palette actually do?","acceptedAnswer":{"@type":"Answer","text":"A GIF can only hold 256 colors. Left alone, the encoder falls back to a generic palette and gradients turn into blotchy banding. The first pass scans your exact clip and builds a palette optimized for its colors, and the second pass redraws the frames using that palette. It takes roughly twice as long and looks dramatically better, which is why it is the default."}},
+{"@type":"Question","name":"Why does my GIF have no sound?","acceptedAnswer":{"@type":"Answer","text":"The GIF format has no audio track at all — that is the file format, not a limitation of this tool. If you need sound, keep the clip as a video instead: trim it with our video trimmer, or shrink it with the video compressor."}},
+{"@type":"Question","name":"How long does conversion take, and is there a size limit?","acceptedAnswer":{"@type":"Answer","text":"Converting re-encodes every frame, and the engine runs single-threaded here, so a long or wide clip can take a few minutes — the progress bar and the button show the real percentage as it works. We impose no size limit, but everything happens in your browser's memory, so the practical ceiling is roughly 1–2 GB on a desktop and less on a phone."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/video/">ThisIsMyVideo</a> › <a href="/modutool/video/#video">Video Tools</a> › Video to GIF</nav>
+  <h1 class="page-title">Video to GIF<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Pick a segment of any video and turn it into a sharp, palette-optimized GIF — no upload, no watermark, free, right in your browser.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🎞️</span>
+      <strong>Drag &amp; drop a video here, or click to select</strong><br>
+      MP4 · WebM · MOV · MKV · <span class="engine-note">first use downloads a ~31 MB on-device engine</span>
+    </div>
+    <div class="vt-stage" id="stage">
+      <video id="player" controls playsinline></video>
+      <div class="vt-range">
+        <label>Start: <span id="startLabel" class="vt-times">0:00.0</span></label>
+        <input type="range" id="startRange" min="0" max="100" step="0.1" value="0">
+        <label>End: <span id="endLabel" class="vt-times">0:00.0</span></label>
+        <input type="range" id="endRange" min="0" max="100" step="0.1" value="100">
+        <p class="vt-times" id="clipLabel"></p>
+        <p class="vt-warn" id="warnLabel">⚠️ Longer than 15 seconds — GIFs balloon fast. Under 10 seconds is a much safer target.</p>
+      </div>
+    </div>
+    <div class="opts">
+      <label>Width
+        <select id="widthSel">
+          <option value="320">320 px</option>
+          <option value="480" selected>480 px</option>
+          <option value="640">640 px</option>
+        </select>
+      </label>
+      <label>Frame rate
+        <select id="fpsSel">
+          <option value="8">8 fps</option>
+          <option value="12" selected>12 fps</option>
+          <option value="15">15 fps</option>
+        </select>
+      </label>
+      <label>Quality
+        <select id="qualSel">
+          <option value="hq" selected>High (2-pass palette)</option>
+          <option value="fast">Fast (single pass)</option>
+        </select>
+      </label>
+    </div>
+    <p class="card-note">Height is calculated automatically to keep the aspect ratio. GIF has no audio track, so the sound is dropped.</p>
+    <div class="btn-row">
+      <button class="btn" id="gifBtn" disabled>Convert to GIF</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Remove Video</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drop your video into the area above. On first use the on-device engine (~31 MB) downloads once and is cached — after that it starts instantly.</li>
+      <li>Play the preview and set the <b>Start</b> and <b>End</b> sliders. The preview jumps to the slider position as you drag. The end defaults to 6 seconds after the start, because short GIFs are good GIFs.</li>
+      <li>Choose a <b>width</b> (320 / 480 / 640 px), a <b>frame rate</b> (8 / 12 / 15 fps) and a <b>quality</b> mode. <b>High</b> builds a custom color palette in a first pass; <b>Fast</b> skips it and finishes in about half the time.</li>
+      <li>Click <b>Convert to GIF</b>. The progress bar and the button show the real percentage, and the finished file downloads as <b>filename.gif</b> with its size shown in the result panel.</li>
+    </ol>
+
+    <h2>Why GIFs balloon in size — and what actually controls it</h2>
+    <p>GIF is a 1987 format. It stores every frame as a separate image and has none of the tricks that make modern video small: no motion prediction, no inter-frame compression worth the name, and a hard ceiling of 256 colors per frame. The practical consequence is that a GIF's size is roughly <b>width × height × frame rate × length</b>, and all four of those multiply together. A 640 px, 15 fps, 20-second clip routinely lands past 30 MB — bigger than the MP4 it came from.</p>
+    <p>So the three controls on this page are the whole game. <b>Length</b> is the biggest lever: halving the clip halves the file. <b>Width</b> is next, and it hits twice, since dropping 640 px to 320 px quarters the pixel count. <b>Frame rate</b> is the gentlest — 12 fps looks fine for screen recordings and UI demos, and 8 fps is usually enough for a slow pan or a static talking head.</p>
+
+    <h2>What the palette pass does</h2>
+    <p>Because a GIF frame can only reference 256 colors, something has to decide <i>which</i> 256. The default answer is a generic web-safe palette, and it looks bad: skin tones go blotchy, gradients turn into visible stripes, and dark scenes fill with dithering noise.</p>
+    <p>The <b>High (2-pass palette)</b> mode fixes that. The first pass runs through your exact clip and generates a palette tuned to the colors that are actually in it; the second pass redraws every frame against that palette. A clip that is mostly one blue UI, or mostly one green field, gets 256 shades of what it needs instead of 256 shades of everything. It costs roughly double the processing time and it is worth it — that is why it is the default. Pick <b>Fast (single pass)</b> only when you want a rough preview quickly.</p>
+
+    <h2>An honest note on limits</h2>
+    <ul>
+      <li><b>Nothing is uploaded.</b> FFmpeg is compiled to WebAssembly and runs inside this page, so your footage never touches a server and there is no upload wait.</li>
+      <li><b>Very large files hit browser memory.</b> We impose no cap, but the whole file is held in your browser's memory — roughly 1–2 GB on a desktop, considerably less on a phone. Beyond that the conversion fails rather than silently producing junk.</li>
+      <li><b>Converting is CPU-bound.</b> Every frame is decoded and re-encoded, single-threaded here, so a few minutes for a long or wide clip is normal, not a bug.</li>
+      <li><b>First use downloads the ~31 MB engine once</b>, then the browser caches it.</li>
+      <li><b>GIF has no audio.</b> If sound matters, keep the clip as a video.</li>
+    </ul>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>Reaction clips and short loops for chat apps like Slack, Discord and KakaoTalk</li>
+      <li>Showing a UI interaction inside a README, a pull request or a bug report, where video will not play inline</li>
+      <li>Documentation and help articles that need a silent, auto-playing demo</li>
+      <li>Forum and blog posts on platforms that accept images but not video</li>
+    </ul>
+    <p>Where GIF is the wrong answer: anything long, anything with sound, anything full-screen, and anything where quality matters. For those, an MP4 is smaller <i>and</i> better looking — <a href="/modutool/video/video-trim/">trim it</a> to the part you need, or <a href="/modutool/video/video-compress/">compress it</a> to fit a size limit.</p>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Is my video really never uploaded?</summary><p>Correct. The tool downloads FFmpeg compiled to WebAssembly (about 31 MB, once, then cached) and builds the GIF inside the browser. Nothing is transmitted, so there is no upload wait either — a 500 MB source file starts processing immediately.</p></details>
+      <details><summary>Why is my GIF so huge, and how do I make it smaller?</summary><p>GIF stores every frame as a separate image with none of the compression tricks modern video uses, so the size grows with width, frame rate and length all at once. A 640 px, 15 fps, 20-second clip can easily pass 30 MB. Cut the length first — staying under 10 seconds is the single biggest win — then drop the width to 480 or 320 px, then the frame rate to 12 or 8 fps.</p></details>
+      <details><summary>What does the two-pass palette actually do?</summary><p>A GIF can only hold 256 colors. Left alone, the encoder falls back to a generic palette and gradients turn into blotchy banding. The first pass scans your exact clip and builds a palette optimized for its colors, and the second pass redraws the frames using that palette. It takes roughly twice as long and looks dramatically better, which is why it is the default.</p></details>
+      <details><summary>Why does my GIF have no sound?</summary><p>The GIF format has no audio track at all — that is the file format, not a limitation of this tool. If you need sound, keep the clip as a video instead: trim it with our video trimmer, or shrink it with the video compressor.</p></details>
+      <details><summary>How long does conversion take, and is there a size limit?</summary><p>Converting re-encodes every frame, and the engine runs single-threaded here, so a long or wide clip can take a few minutes — the progress bar and the button show the real percentage as it works. We impose no size limit, but everything happens in your browser's memory, so the practical ceiling is roughly 1–2 GB on a desktop and less on a phone.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/video/video-trim/"><span class="emoji">🎬</span><span><b>Trim Video</b><span>Cut a clip without quality loss</span></span></a>
+      <a class="tool-tile" href="/modutool/video/video-compress/"><span class="emoji">🗜️</span><span><b>Compress Video</b><span>Shrink a video to fit limits</span></span></a>
+      <a class="tool-tile" href="/modutool/video/image-compress/"><span class="emoji">🖼️</span><span><b>Compress Image</b><span>Shrink JPG &amp; PNG files</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/video/assets/vendor/ffmpeg/ffmpeg.js"></script>
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var stage = document.getElementById('stage');
+  var player = document.getElementById('player');
+  var startRange = document.getElementById('startRange');
+  var endRange = document.getElementById('endRange');
+  var startLabel = document.getElementById('startLabel');
+  var endLabel = document.getElementById('endLabel');
+  var clipLabel = document.getElementById('clipLabel');
+  var warnLabel = document.getElementById('warnLabel');
+  var widthSel = document.getElementById('widthSel');
+  var fpsSel = document.getElementById('fpsSel');
+  var qualSel = document.getElementById('qualSel');
+  var gifBtn = document.getElementById('gifBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var BTN_IDLE = 'Convert to GIF';
+  var LONG_CLIP_SEC = 15;
+  var DEFAULT_SPAN = 6;
+
+  var file = null, dur = 0, ext = 'mp4', baseName = 'video', objUrl = null;
+  var ffmpeg = null, ffLoading = null;
+  var running = false, progBase = 0, progSpan = 1;
+
+  /* Progress bar driver. e.progress from FFmpeg is 0..1 for the CURRENT run, and
+     in High quality mode there are TWO runs (palettegen, then paletteuse) — the
+     ratio RESETS to 0 when the second pass starts. So each pass is mapped onto its
+     own slice of the bar via progBase/progSpan instead of being shown raw. */
+  function setProgress(ratio) {
+    if (typeof ratio !== 'number' || !isFinite(ratio)) ratio = 0;
+    if (ratio < 0) ratio = 0;
+    if (ratio > 1) ratio = 1;
+    var pct = Math.round((progBase + ratio * progSpan) * 100);
+    if (!isFinite(pct) || pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    progBar.style.width = pct + '%';
+    gifBtn.textContent = 'Converting… ' + pct + '%';
+  }
+
+  function loadFF() {
+    if (ffmpeg) return Promise.resolve(ffmpeg);
+    if (ffLoading) return ffLoading;
+    ffLoading = (function () {
+      mdtlResult(result, '⏳ Loading the on-device engine (~31 MB, first time only)…');
+      var f = new FFmpegWASM.FFmpeg();
+      /* 공식 패턴: core는 blob URL로 로드(워커 내 동적 import 호환), 워커 스크립트는 동일출처 전체 URL */
+      var toBlobURL = function (url, type) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('engine fetch failed: ' + url);
+          return r.blob();
+        }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+      };
+      return Promise.all([
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.js', 'text/javascript'),
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.wasm', 'application/wasm')
+      ]).then(function (urls) {
+        return f.load({
+          coreURL: urls[0],
+          wasmURL: urls[1],
+          classWorkerURL: location.origin + '/modutool/video/assets/vendor/ffmpeg/814.ffmpeg.js'
+        });
+      }).then(function () {
+        f.on('progress', function (e) {
+          if (!running) return;
+          setProgress(e && typeof e.progress === 'number' ? e.progress : 0);
+        });
+        ffmpeg = f;
+        result.className = 'result';
+        return f;
+      });
+    })();
+    ffLoading.catch(function () { ffLoading = null; });
+    return ffLoading;
+  }
+
+  function fmt(t) {
+    t = Math.max(0, t);
+    var m = Math.floor(t / 60), s = (t - m * 60).toFixed(1);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function updateLabels(seek) {
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    if (s >= e) { if (seek === 'start') { e = Math.min(dur, s + 0.1); endRange.value = e; } else { s = Math.max(0, e - 0.1); startRange.value = s; } }
+    startLabel.textContent = fmt(s);
+    endLabel.textContent = fmt(e);
+    clipLabel.textContent = 'GIF length: ' + fmt(e - s) + ' / ' + fmt(dur);
+    warnLabel.style.display = (e - s) > LONG_CLIP_SEC ? 'block' : 'none';
+    if (seek === 'start') player.currentTime = s;
+    if (seek === 'end') player.currentTime = e;
+    gifBtn.disabled = !(e - s > 0.2);
+  }
+  startRange.addEventListener('input', function () { updateLabels('start'); });
+  endRange.addEventListener('input', function () { updateLabels('end'); });
+
+  function resetAll() {
+    file = null; dur = 0;
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    player.removeAttribute('src'); player.load();
+    stage.className = 'vt-stage';
+    warnLabel.style.display = 'none';
+    gifBtn.disabled = true; gifBtn.textContent = BTN_IDLE;
+    clearBtn.style.display = 'none';
+    prog.className = 'progress'; progBar.style.width = '0%';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'video/*,.mp4,.webm,.mov,.mkv',
+    multiple: false,
+    onFiles: function (fs) {
+      if (running) return;
+      resetAll();
+      file = fs[0];
+      var m = /\.([a-z0-9]+)$/i.exec(file.name || '');
+      ext = m ? m[1].toLowerCase() : 'mp4';
+      baseName = (file.name || 'video').replace(/\.[a-z0-9]+$/i, '') || 'video';
+      objUrl = URL.createObjectURL(file);
+      player.src = objUrl;
+      player.onloadedmetadata = function () {
+        dur = player.duration || 0;
+        if (!isFinite(dur) || dur <= 0) { mdtlResult(result, '❌ Could not read this video. The codec may be unsupported by your browser preview, so the segment sliders have no duration to work with.', true); return; }
+        startRange.max = dur; endRange.max = dur;
+        startRange.value = 0;
+        /* GIFs should be short — default the end to 6 s in, not the end of the clip. */
+        endRange.value = Math.min(dur, DEFAULT_SPAN);
+        stage.className = 'vt-stage show';
+        clearBtn.style.display = '';
+        updateLabels();
+        loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'Engine load failed.'), true); });
+      };
+      player.onerror = function () { mdtlResult(result, '❌ This video format could not be opened in the browser.', true); };
+    }
+  });
+
+  gifBtn.addEventListener('click', function () {
+    if (!file || gifBtn.disabled || running) return;
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    var span = e - s;
+    var width = widthSel.value, fps = fpsSel.value;
+    var twoPass = qualSel.value !== 'fast';
+
+    running = true;
+    card.classList.add('busy');
+    prog.className = 'progress show';
+    progBase = 0; progSpan = twoPass ? 0.3 : 1;
+    setProgress(0);
+    mdtlResult(result, '⏳ ' + (twoPass ? 'Building an optimized palette, then rendering the GIF' : 'Rendering the GIF') + '… this re-encodes every frame, so long clips take a while.');
+
+    var done = function () {
+      running = false;
+      card.classList.remove('busy');
+      prog.className = 'progress';
+      progBar.style.width = '0%';
+      gifBtn.textContent = BTN_IDLE;
+    };
+
+    loadFF().then(function (ff) {
+      return file.arrayBuffer().then(function (buf) {
+        var inName = 'in.' + ext;
+        var vf = 'fps=' + fps + ',scale=' + width + ':-1:flags=lanczos';
+        var cleanup = function () {
+          ff.deleteFile(inName).catch(function () {});
+          ff.deleteFile('pal.png').catch(function () {});
+          ff.deleteFile('out.gif').catch(function () {});
+        };
+        return ff.writeFile(inName, new Uint8Array(buf))
+          .then(function () {
+            if (!twoPass) return null;
+            /* Pass 1 — scan the selected segment and build a 256-color palette tuned to it. */
+            return ff.exec(['-ss', String(s), '-t', String(span), '-i', inName, '-vf', vf + ',palettegen', '-y', 'pal.png']);
+          })
+          .then(function () {
+            if (!twoPass) {
+              return ff.exec(['-ss', String(s), '-t', String(span), '-i', inName, '-vf', vf, '-y', 'out.gif']);
+            }
+            /* Pass 2 — the FFmpeg progress ratio restarts at 0 here, so remap the bar. */
+            progBase = 0.3; progSpan = 0.7;
+            setProgress(0);
+            return ff.exec(['-ss', String(s), '-t', String(span), '-i', inName, '-i', 'pal.png', '-lavfi', vf + ' [x]; [x][1:v] paletteuse', '-y', 'out.gif']);
+          })
+          .then(function () { return ff.readFile('out.gif'); })
+          .then(function (data) {
+            cleanup();
+            if (!data || !data.length) throw new Error('Empty output — the selected segment could not be decoded.');
+            progBar.style.width = '100%';
+            var blob = new Blob([data], { type: 'image/gif' });
+            mdtlDownload(blob, baseName + '.gif');
+            mdtlLogEvent('video-to-gif', 'success', null,
+              { size_bucket: mdtlSizeBucket(file.size), result_bucket: mdtlSizeBucket(blob.size), format: 'gif', width: parseInt(width, 10), n: Math.round(span), quality: parseInt(fps, 10) });
+            mdtlResult(result, '✅ <b>Done!</b> A ' + fmt(span) + ' GIF at ' + width + ' px / ' + fps + ' fps downloaded — <b>' + mdtlFormatBytes(blob.size) + '</b>.' +
+              '<br>Too big? Shorten the segment first, then lower the width, then the frame rate.');
+          }, function (err) {
+            cleanup();
+            throw err;
+          });
+      });
+    }).then(done, function (err) {
+      done();
+      mdtlResult(result, '❌ GIF conversion failed: ' + (err && err.message ? err.message : 'unknown error') + '<br>Very large files can exceed browser memory — try a shorter segment, a smaller width, or a desktop browser.', true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

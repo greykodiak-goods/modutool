@@ -1,0 +1,59 @@
+name: Doppler Check (연동 검증)
+
+# awning-ops와 동일 패턴: Doppler에서 시크릿을 실제로 가져올 수 있는지 검증한다.
+# ⚠️ 값은 절대 출력하지 않는다 — "키 이름과 존재 여부(SET/MISSING)"만 표시.
+# 필요: GitHub Secret DOPPLER_TOKEN (read-only 서비스 토큰)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+
+      - name: Fetch & verify (값 미출력)
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: |
+          if [ -z "$DOPPLER_TOKEN" ]; then
+            echo "::error::DOPPLER_TOKEN 미설정 — 이 레포(modutool) Settings → Secrets and variables → Actions 에 등록 필요"
+            exit 1
+          fi
+
+          # 1) Doppler에 실제로 들어있는 키 이름을 그대로 출력(값 없이)
+          doppler secrets --only-names --json > /tmp/names.json 2>/tmp/err.txt || {
+            echo "::error::Doppler 조회 실패"; cat /tmp/err.txt; exit 1;
+          }
+          echo "===== DOPPLER 실제 키 이름 (정렬) ====="
+          node -e 'const j=require("/tmp/names.json"); Object.keys(j).sort().forEach(k=>console.log(k))'
+          echo "===== 끝 ====="
+
+          # 2) modutool이 요구하는 키와 대조
+          KEYS=$(node -e 'const j=require("/tmp/names.json"); console.log(Object.keys(j).join(" "))')
+          REQUIRED="CONVEX_DEPLOY_KEY"
+          OPTIONAL="GOOGLE_OAUTH_CLIENT_ID GOOGLE_OAUTH_CLIENT_SECRET ADSENSE_CLIENT_ID ADFIT_UNIT_TOP ADFIT_UNIT_BOTTOM"
+          echo "===== 필수 키 대조 ====="
+          MISSING=""
+          for k in $REQUIRED; do
+            if echo " $KEYS " | grep -q " $k "; then echo "OK      $k"; else echo "MISSING $k"; MISSING="$MISSING $k"; fi
+          done
+          echo "===== 선택 키(향후) ====="
+          for k in $OPTIONAL; do
+            if echo " $KEYS " | grep -q " $k "; then echo "OK      $k"; else echo "-       $k (미등록)"; fi
+          done
+          echo "===== 끝 ====="
+
+          # 3) 실제 주입 확인(값 미출력, 길이만)
+          echo "===== 주입 테스트 ====="
+          doppler run -- node -e '
+            for (const k of ["CONVEX_DEPLOY_KEY"]) {
+              const v = process.env[k];
+              console.log((v && v.length ? "INJECTED len=" + v.length : "EMPTY") + "  " + k);
+            }
+          ' || echo "doppler run 실패"
+          echo "===== 끝 ====="
+
+          if [ -n "$MISSING" ]; then echo "::error::누락:$MISSING"; exit 1; fi

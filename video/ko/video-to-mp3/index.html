@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>동영상 MP3 변환 — 음성 추출 무료·업로드 없음 | ThisIsMyVideo</title>
+<meta name="description" content="브라우저 안에서만 동작하는 무료 동영상 MP3 변환 — MP4·WebM·MOV·MKV에서 소리만 뽑아내고, M4A·WAV도 MP3로 바꿉니다. 업로드 없음, 워터마크 없음, 가입 없음.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/video/ko/video-to-mp3/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/video/ko/video-to-mp3/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/video/video-to-mp3/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/video/video-to-mp3/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="동영상 MP3 변환 — 무료, 온디바이스, 업로드 없음">
+<meta property="og:description" content="브라우저에서 바로 음성만 뽑아 MP3로 저장. 파일이 기기를 떠나지 않아 업로드 대기도 워터마크도 없습니다.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/video/ko/video-to-mp3/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyVideo";window.MDTL_SITE_MARK="V";</script>
+<script>window.MDTL_BASE='/modutool/video';</script>
+<link rel="stylesheet" href="/modutool/video/assets/site.css">
+<script src="/modutool/video/assets/site.js"></script>
+<script src="/modutool/video/assets/ads-config.js" defer></script>
+<script src="/modutool/video/assets/auth-config.js" defer></script>
+<script src="/modutool/video/assets/auth.js" defer></script>
+<style>
+  .am-probe { display:none; }
+  .am-note { font-size:13px; line-height:1.6; color:var(--text-soft); background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-top:16px; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"동영상 MP3 변환 - ThisIsMyVideo","url":"https://greykodiak-goods.github.io/modutool/video/ko/video-to-mp3/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"FFmpeg WebAssembly로 기기 안에서 동영상의 소리만 MP3로 추출하는 무료 웹 도구. 서버 업로드·워터마크 없음.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"영상이 정말 업로드되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 소리를 뽑아냅니다. 아무것도 전송되지 않으므로 강의 녹화·비공개 회의·미공개 인터뷰가 남의 서버에 닿을 일이 없고, 작업 전에 업로드를 기다릴 필요도 없습니다."}},
+{"@type":"Question","name":"동영상 자르기보다 왜 더 오래 걸리나요?","acceptedAnswer":{"@type":"Answer","text":"자르기는 기존 스트림을 그대로 복사할 수 있지만 MP3는 처음부터 새로 인코딩해야 해서 1초도 빠짐없이 실제로 연산합니다. 그래서 길이에 거의 비례합니다 — 짧은 클립은 몇 초, 보통 강의 한 편은 1~2분, 몇 시간짜리 녹화를 휴대폰에서 돌리면 수 분이 걸립니다. 진행바가 실제 진행 위치를 보여주니 끝날 때까지 탭을 열어 두세요. 또 하나의 한계는 메모리입니다 — 브라우저 안에서 처리하므로 아주 큰 원본은 데스크톱 기준 대략 1~2GB, 휴대폰은 그보다 낮은 선에서 막힙니다."}},
+{"@type":"Question","name":"비트레이트는 어떤 걸 고르면 되나요?","acceptedAnswer":{"@type":"Answer","text":"강의·회의·인터뷰·음성 메모 같은 말소리라면 128kbps로 충분하고 용량도 가볍습니다. 음악이나 배경음이 깔린 팟캐스트는 192kbps가 가장 무난합니다. 320kbps는 용량을 더 쓰더라도 디테일을 남겨두고 싶은 보관용입니다. 순수한 말소리라면 모노도 함께 체크하세요 — 체감 음질 손해 없이 용량이 대략 절반이 됩니다."}},
+{"@type":"Question","name":"M4A·WAV 같은 오디오 파일도 MP3로 바꿀 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"됩니다. 오디오 파일도 영상과 똑같이 넣으면 되므로 녹음기에서 나온 M4A, AAC, 용량 큰 WAV를 어디서나 재생되는 가벼운 MP3로 바꿀 수 있습니다. 입력이 이미 오디오면 버릴 영상 트랙이 없어서 같은 길이의 동영상보다 대체로 더 빨리 끝납니다."}},
+{"@type":"Question","name":"아무 영상에서나 음성을 추출해도 되나요?","acceptedAnswer":{"@type":"Answer","text":"직접 만들었거나 사용할 권리가 있는 콘텐츠에만 사용하세요 — 내가 찍은 녹화, 보관이 허용된 강의, 라이선스를 가진 자료, 퍼블릭 도메인 저작물 등입니다. 남의 영화·방송·뮤직비디오에서 음원을 뽑아내는 것은 대부분의 나라에서 저작권 문제가 됩니다. 모든 처리가 기기 안에서 일어나기 때문에 이 도구는 무엇을 넣었는지 확인하지 않으며 확인할 수도 없습니다. 그 판단은 이용자의 몫입니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/video/ko/">ThisIsMyVideo</a> › <a href="/modutool/video/ko/#video">영상 도구</a> › 동영상 MP3 변환</nav>
+  <h1 class="page-title">동영상 MP3 변환<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">영상에서 소리만 뽑아 MP3로 저장합니다 — M4A·WAV를 MP3로 바꾸는 것도 가능. 업로드 없음, 워터마크 없음, 브라우저에서 바로, 무료.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🎧</span>
+      <strong>동영상이나 오디오 파일을 끌어다 놓거나 클릭해서 선택</strong><br>
+      MP4 · WebM · MOV · MKV · M4A · AAC · WAV · <span class="engine-note">최초 사용 시 온디바이스 엔진(~31MB) 1회 다운로드</span>
+    </div>
+    <ul class="file-list" id="fileInfo"></ul>
+    <video id="probe" class="am-probe" preload="metadata" playsinline muted></video>
+    <div class="opts">
+      <label>비트레이트
+        <select id="brSel">
+          <option value="128k" selected>128 kbps — 기본 (말소리)</option>
+          <option value="192k">192 kbps — 고음질 (음악)</option>
+          <option value="320k">320 kbps — 최고음질 (보관용)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="monoChk"> 모노 (파일 더 작게)</label>
+    </div>
+    <div class="am-note">⚠️ 직접 만들었거나 사용할 권리가 있는 녹화물에만 사용하세요. 모든 처리가 기기 안에서 이뤄지므로 도구가 출처를 확인할 수 없습니다 — 저작권 준수는 이용자의 몫입니다.</div>
+    <div class="btn-row">
+      <button class="btn" id="convBtn" disabled>MP3로 추출</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">파일 제거</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>동영상이나 오디오 파일을 위 영역에 끌어다 놓습니다. 파일명·용량·길이가 바로 표시됩니다. 최초 사용 시 온디바이스 엔진(~31MB)이 1회 다운로드되고 이후엔 캐시돼 바로 시작합니다.</li>
+      <li><b>비트레이트</b>를 고릅니다. 말소리는 128kbps, 음악은 192kbps, 보관용은 320kbps가 적당합니다. 인터뷰·강의라면 <b>모노</b>를 체크해 용량을 대략 절반으로 줄이세요.</li>
+      <li><b>MP3로 추출</b>을 누릅니다. 진행바와 버튼에 실제 진행률이 표시되고, 인코딩이 끝나면 <b>파일명.mp3</b>로 자동 저장됩니다.</li>
+    </ol>
+
+    <h2>내 녹화물에서 소리만 뽑아내면 좋은 이유</h2>
+    <p>사람들이 남기는 기록은 사실 대부분 "영상 옷을 입은 소리"입니다. 두 시간짜리 강의 녹화, 웨비나, 합주 영상, 회의를 찍어둔 폰 영상 — 화면을 다시 볼 일은 드물지만 소리는 휴대폰이나 팟캐스트 앱, 받아쓰기 도구에서 계속 쓰게 됩니다. 영상 트랙만 걷어내면 900MB짜리 녹화가 들고 다닐 만한 파일이 되고, MP3는 어디에 넣어도 군말 없이 재생되는 거의 유일한 오디오 형식입니다.</p>
+    <p>정직한 안내: 이 작업은 복사가 아니라 <b>재인코딩</b>입니다. 자르기와 달리 모든 구간을 다시 디코딩·인코딩하므로 파일 길이에 비례해 시간이 듭니다 — 짧은 클립은 몇 초, 몇 시간짜리 녹화는 수 분, 노트북보다 휴대폰이 더 느립니다. 또 하나의 실제 한계는 메모리입니다. 서버로 아무것도 보내지 않는 대신 브라우저 메모리에서 처리하므로 아주 큰 원본은 데스크톱 대략 1~2GB, 모바일은 그보다 낮은 선에서 막힙니다. 파일이 기기를 떠나지 않는 대가로 감수하는 트레이드오프입니다.</p>
+
+    <h2>이런 때 좋아요</h2>
+    <ul>
+      <li>강의·웨비나 녹화를 이동 중에 들을 수 있는 오디오로 바꾸기</li>
+      <li>영상으로 찍은 인터뷰에서 팟캐스트용 음원만 뽑기</li>
+      <li>수 GB짜리 영상을 쌓아두지 않고 회의 녹음만 보관하기</li>
+      <li>음성 메모(M4A)나 용량 큰 WAV를 어디서나 재생되는 MP3로 변환</li>
+      <li>받아쓰기·노트 앱에 넣을 깔끔한 오디오 파일 만들기</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>영상이 정말 업로드되지 않나요?</summary><p>네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 소리를 뽑아냅니다. 아무것도 전송되지 않으므로 강의 녹화·비공개 회의·미공개 인터뷰가 남의 서버에 닿을 일이 없고, 작업 전에 업로드를 기다릴 필요도 없습니다.</p></details>
+      <details><summary>동영상 자르기보다 왜 더 오래 걸리나요?</summary><p>자르기는 기존 스트림을 그대로 복사할 수 있지만 MP3는 처음부터 새로 인코딩해야 해서 1초도 빠짐없이 실제로 연산합니다. 그래서 길이에 거의 비례합니다 — 짧은 클립은 몇 초, 보통 강의 한 편은 1~2분, 몇 시간짜리 녹화를 휴대폰에서 돌리면 수 분이 걸립니다. 진행바가 실제 진행 위치를 보여주니 끝날 때까지 탭을 열어 두세요. 또 하나의 한계는 메모리입니다 — 브라우저 안에서 처리하므로 아주 큰 원본은 데스크톱 기준 대략 1~2GB, 휴대폰은 그보다 낮은 선에서 막힙니다.</p></details>
+      <details><summary>비트레이트는 어떤 걸 고르면 되나요?</summary><p>강의·회의·인터뷰·음성 메모 같은 말소리라면 128kbps로 충분하고 용량도 가볍습니다. 음악이나 배경음이 깔린 팟캐스트는 192kbps가 가장 무난합니다. 320kbps는 용량을 더 쓰더라도 디테일을 남겨두고 싶은 보관용입니다. 순수한 말소리라면 모노도 함께 체크하세요 — 체감 음질 손해 없이 용량이 대략 절반이 됩니다.</p></details>
+      <details><summary>M4A·WAV 같은 오디오 파일도 MP3로 바꿀 수 있나요?</summary><p>됩니다. 오디오 파일도 영상과 똑같이 넣으면 되므로 녹음기에서 나온 M4A, AAC, 용량 큰 WAV를 어디서나 재생되는 가벼운 MP3로 바꿀 수 있습니다. 입력이 이미 오디오면 버릴 영상 트랙이 없어서 같은 길이의 동영상보다 대체로 더 빨리 끝납니다.</p></details>
+      <details><summary>아무 영상에서나 음성을 추출해도 되나요?</summary><p>직접 만들었거나 사용할 권리가 있는 콘텐츠에만 사용하세요 — 내가 찍은 녹화, 보관이 허용된 강의, 라이선스를 가진 자료, 퍼블릭 도메인 저작물 등입니다. 남의 영화·방송·뮤직비디오에서 음원을 뽑아내는 것은 대부분의 나라에서 저작권 문제가 됩니다. 모든 처리가 기기 안에서 일어나기 때문에 이 도구는 무엇을 넣었는지 확인하지 않으며 확인할 수도 없습니다. 그 판단은 이용자의 몫입니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/video/ko/audio-trim/"><span class="emoji">✂️</span><span><b>오디오 자르기</b><span>구간 자르기·벨소리 만들기</span></span></a>
+      <a class="tool-tile" href="/modutool/video/ko/video-trim/"><span class="emoji">🎬</span><span><b>동영상 자르기</b><span>필요한 구간만 잘라내기</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/video/assets/vendor/ffmpeg/ffmpeg.js"></script>
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var fileInfo = document.getElementById('fileInfo');
+  var probe = document.getElementById('probe');
+  var brSel = document.getElementById('brSel');
+  var monoChk = document.getElementById('monoChk');
+  var convBtn = document.getElementById('convBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var BTN_LABEL = convBtn.textContent;
+  var file = null, dur = 0, ext = 'mp4', baseName = 'audio', objUrl = null;
+  var running = false, progHooked = false;
+  var ffmpeg = null, ffLoading = null;
+
+  function loadFF() {
+    if (ffmpeg) return Promise.resolve(ffmpeg);
+    if (ffLoading) return ffLoading;
+    ffLoading = (function () {
+      mdtlResult(result, '⏳ 온디바이스 엔진 로딩 중(~31MB, 최초 1회)…');
+      var f = new FFmpegWASM.FFmpeg();
+      /* 공식 패턴: core는 blob URL로 로드(워커 내 동적 import 호환), 워커 스크립트는 동일출처 전체 URL */
+      var toBlobURL = function (url, type) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('engine fetch failed: ' + url);
+          return r.blob();
+        }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+      };
+      return Promise.all([
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.js', 'text/javascript'),
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.wasm', 'application/wasm')
+      ]).then(function (urls) {
+        return f.load({
+          coreURL: urls[0],
+          wasmURL: urls[1],
+          classWorkerURL: location.origin + '/modutool/video/assets/vendor/ffmpeg/814.ffmpeg.js'
+        });
+      }).then(function () {
+        ffmpeg = f;
+        result.className = 'result';
+        return f;
+      });
+    })();
+    ffLoading.catch(function () { ffLoading = null; });
+    return ffLoading;
+  }
+
+  /* 진행률: e.progress 는 0..1 비율. NaN·범위이탈 방어 후 진행바 + 버튼 라벨에 반영. */
+  function hookProgress(ff) {
+    if (progHooked) return;
+    progHooked = true;
+    ff.on('progress', function (e) {
+      if (!running) return;
+      var r = e && typeof e.progress === 'number' ? e.progress : 0;
+      if (!isFinite(r)) r = 0;
+      r = Math.min(1, Math.max(0, r));
+      var pct = Math.round(r * 100);
+      progBar.style.width = pct + '%';
+      convBtn.textContent = '변환 중… ' + pct + '%';
+    });
+  }
+
+  function fmt(t) {
+    t = Math.max(0, t);
+    var m = Math.floor(t / 60), s = (t - m * 60).toFixed(1);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function showInfo() {
+    fileInfo.innerHTML = '';
+    if (!file) return;
+    var li = document.createElement('li');
+    li.className = 'file-item';
+    var n = document.createElement('span');
+    n.className = 'name';
+    n.textContent = file.name || 'file';
+    var m = document.createElement('span');
+    m.className = 'meta';
+    m.textContent = mdtlFormatBytes(file.size) + (dur > 0 ? ' · ' + fmt(dur) : '');
+    li.appendChild(n);
+    li.appendChild(m);
+    fileInfo.appendChild(li);
+  }
+
+  function resetAll() {
+    file = null; dur = 0;
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    probe.removeAttribute('src'); probe.load();
+    fileInfo.innerHTML = '';
+    convBtn.disabled = true;
+    convBtn.textContent = BTN_LABEL;
+    clearBtn.style.display = 'none';
+    prog.className = 'progress';
+    progBar.style.width = '0%';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'video/*,audio/*,.mp4,.webm,.mov,.mkv,.m4a,.aac,.wav',
+    multiple: false,
+    onFiles: function (fs) {
+      resetAll();
+      file = fs[0];
+      var m = /\.([a-z0-9]+)$/i.exec(file.name || '');
+      ext = m ? m[1].toLowerCase() : 'mp4';
+      baseName = (file.name || 'audio').replace(/\.[a-z0-9]+$/i, '') || 'audio';
+      convBtn.disabled = false;
+      clearBtn.style.display = '';
+      showInfo();
+      objUrl = URL.createObjectURL(file);
+      probe.src = objUrl;
+      probe.onloadedmetadata = function () {
+        dur = probe.duration || 0;
+        if (!isFinite(dur) || dur <= 0) dur = 0;
+        showInfo();
+      };
+      probe.onerror = function () {
+        /* 브라우저가 미리보기를 못 열어도 FFmpeg가 처리할 수 있으므로 길이만 비운다. */
+        dur = 0;
+        showInfo();
+      };
+      loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : '엔진 로딩에 실패했습니다.'), true); });
+    }
+  });
+
+  convBtn.addEventListener('click', function () {
+    if (!file || convBtn.disabled) return;
+    var br = brSel.value;
+    var mono = monoChk.checked;
+    card.classList.add('busy');
+    running = true;
+    prog.className = 'progress show';
+    progBar.style.width = '0%';
+    convBtn.textContent = '변환 중… 0%';
+    mdtlResult(result, '⏳ 음성을 추출해 MP3로 인코딩하는 중 — 실제 재인코딩이라 파일이 길수록 오래 걸립니다…');
+    var done = function () {
+      running = false;
+      card.classList.remove('busy');
+      prog.className = 'progress';
+      progBar.style.width = '0%';
+      convBtn.textContent = BTN_LABEL;
+    };
+    loadFF().then(function (ff) {
+      hookProgress(ff);
+      return file.arrayBuffer().then(function (buf) {
+        var inName = 'in.' + ext, outName = 'out.mp3';
+        var args = ['-i', inName, '-vn', '-c:a', 'libmp3lame', '-b:a', br];
+        if (mono) args = args.concat(['-ac', '1']);
+        args.push(outName);
+        return ff.writeFile(inName, new Uint8Array(buf))
+          .then(function () { return ff.exec(args); })
+          .then(function () { return ff.readFile(outName); })
+          .then(function (data) {
+            ff.deleteFile(inName).catch(function () {});
+            ff.deleteFile(outName).catch(function () {});
+            if (!data || !data.length) throw new Error('출력이 비어 있습니다 — 이 파일에서 오디오 트랙을 찾지 못했습니다.');
+            progBar.style.width = '100%';
+            var blob = new Blob([data], { type: 'audio/mpeg' });
+            mdtlDownload(blob, baseName + '.mp3');
+            mdtlLogEvent('video-to-mp3', 'success', null,
+              { size_bucket: mdtlSizeBucket(file.size), result_bucket: mdtlSizeBucket(blob.size), format: 'mp3', quality: parseInt(br, 10) });
+            mdtlResult(result, '✅ <b>완료!</b> MP3가 다운로드되었습니다(' + mdtlFormatBytes(blob.size) + ', ' + parseInt(br, 10) + 'kbps' + (mono ? ', 모노' : '') + '). 원본은 그대로입니다.' +
+              '<br>일부 구간만 필요하면 <a href="/modutool/video/ko/audio-trim/">오디오 자르기</a>로 잘라보세요.');
+          });
+      });
+    }).then(done, function (err) {
+      done();
+      mdtlResult(result, '❌ 변환 실패: ' + (err && err.message ? err.message : '알 수 없는 오류') + '<br>아주 큰 파일은 브라우저 메모리를 넘을 수 있습니다 — 더 짧은 원본이나 데스크톱 브라우저로 시도해 보세요.', true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

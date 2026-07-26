@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>동영상 용량 줄이기 — 무료·업로드 없음·워터마크 없음 | ThisIsMyVideo</title>
+<meta name="description" content="브라우저 안에서만 동작하는 무료 동영상 압축 — MP4·WebM·MOV를 3단계로 줄여 메일·메신저 용량 제한에 맞춥니다. 업로드 없음, 워터마크 없음, 가입 없음.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/video/ko/video-compress/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/video/ko/video-compress/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/video/video-compress/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/video/video-compress/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="동영상 용량 줄이기 — 무료, 온디바이스, 업로드 없음">
+<meta property="og:description" content="메일·메신저 용량 제한에 맞게 영상을 압축. 파일이 기기를 떠나지 않아 업로드 대기 0초, 워터마크 없음.">
+<meta property="og:url" content="https://greykodiak-goods.github.io/modutool/video/ko/video-compress/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyVideo";window.MDTL_SITE_MARK="V";</script>
+<script>window.MDTL_BASE='/modutool/video';</script>
+<link rel="stylesheet" href="/modutool/video/assets/site.css">
+<script src="/modutool/video/assets/site.js"></script>
+<script src="/modutool/video/assets/ads-config.js" defer></script>
+<script src="/modutool/video/assets/auth-config.js" defer></script>
+<script src="/modutool/video/assets/auth.js" defer></script>
+<style>
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .card-note { font-size:13px; color:var(--text-soft); margin-top:14px; line-height:1.6; }
+  .busy { opacity:.6; pointer-events:none; }
+  #probe { display:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"동영상 용량 줄이기 - ThisIsMyVideo","url":"https://greykodiak-goods.github.io/modutool/video/ko/video-compress/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"FFmpeg WebAssembly로 기기 안에서 동영상 용량을 3단계로 줄이는 무료 웹 도구. 서버 업로드·워터마크 없음.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"영상이 정말 업로드되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 다시 인코딩합니다. 아무것도 전송되지 않으니 업로드 대기도 없습니다 — 500MB 파일도 즉시 처리가 시작됩니다."}},
+{"@type":"Question","name":"CRF가 뭔가요? 결과 용량을 왜 미리 약속하지 못하나요?","acceptedAnswer":{"@type":"Answer","text":"CRF는 용량 목표가 아니라 화질 목표입니다. 결과가 어느 정도로 보여야 하는지를 정해주면 인코더가 장면마다 그 화질을 맞추는 데 필요한 만큼 비트레이트를 씁니다. 정지 화면이 많은 화면 녹화는 CRF 28에서 90퍼센트까지 줄기도 하지만, 손으로 들고 찍어 흔들리는 영상은 같은 설정에서 절반 줄이기도 벅찹니다. 그래서 예상치를 약속하는 대신 압축 전후의 실제 용량을 그대로 보여드립니다."}},
+{"@type":"Question","name":"WebM이나 MOV를 넣었는데 왜 결과가 항상 MP4인가요?","acceptedAnswer":{"@type":"Answer","text":"H.264 영상과 AAC 128kbps 오디오를 MP4 컨테이너에 담아 내보냅니다. 이 조합이 휴대폰·브라우저·메신저·TV·편집 프로그램 어디서나 사실상 다 재생되기 때문입니다. 그래서 WebM·MOV를 넣어도 MP4로 돌아옵니다. faststart 옵션도 함께 적용해 파일을 다 받기 전에 재생을 시작할 수 있게 했습니다."}},
+{"@type":"Question","name":"메일이나 메신저 용량 제한에 맞추려면 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"먼저 권장 단계로 돌리고 결과 용량을 확인하세요. 그래도 크면 가로 854px로 낮추는 강하게 단계를 쓰면 됩니다. 그래도 넘친다면 길이를 먼저 줄이세요 — 길이는 어떤 화질 설정보다 용량에 직접적으로 영향을 주고, 저희 동영상 자르기는 재인코딩 없이 잘라내므로 화질도 시간도 손해가 없습니다."}},
+{"@type":"Question","name":"왜 몇 분씩 걸리나요? 용량 제한이 있나요?","acceptedAnswer":{"@type":"Answer","text":"압축은 모든 프레임을 디코딩했다가 다시 인코딩하는 작업이고 이 엔진은 단일 스레드로 돌기 때문에, 긴 영상은 재생 시간과 비슷하거나 그보다 더 걸린다고 보시면 됩니다. 진행률 바와 버튼에 실제 퍼센트가 표시됩니다. 저희가 정한 용량 제한은 없지만 모든 처리가 브라우저 메모리에서 일어나므로 실질 한계는 데스크톱 대략 1~2GB, 휴대폰은 그보다 낮습니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/modutool/video/ko/">ThisIsMyVideo</a> › <a href="/modutool/video/ko/#video">영상 도구</a> › 동영상 용량 줄이기</nav>
+  <h1 class="page-title">동영상 용량 줄이기<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">메일·메신저·업로드 용량 제한에 맞게 영상을 압축합니다 — 3단계, 압축 전후 실제 수치 표시, 파일은 기기 밖으로 나가지 않습니다.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🗜️</span>
+      <strong>동영상을 끌어다 놓거나 클릭해서 선택</strong><br>
+      MP4 · WebM · MOV · MKV · <span class="engine-note">최초 사용 시 온디바이스 엔진(~31MB) 1회 다운로드</span>
+    </div>
+    <video id="probe" preload="metadata" muted playsinline></video>
+    <ul class="file-list" id="fileInfo"></ul>
+    <div class="opts">
+      <label>압축 강도
+        <select id="level">
+          <option value="light">약하게 (CRF 23, 해상도 유지)</option>
+          <option value="recommended" selected>권장 (CRF 28, 최대 1280px)</option>
+          <option value="strong">강하게 (CRF 32, 최대 854px)</option>
+        </select>
+      </label>
+    </div>
+    <p class="card-note">⚠️ 이 도구는 영상을 <b>다시 인코딩</b>합니다. 즉 손실 압축이고 시간이 실제로 걸립니다 — 스트림을 무손실 복사하는 <a href="/modutool/video/ko/video-trim/">동영상 자르기</a>와는 다릅니다. 결과는 원본이 WebM·MOV여도 언제나 <b>MP4</b>(H.264 영상 + AAC 128kbps 오디오)입니다.</p>
+    <div class="btn-row">
+      <button class="btn" id="compBtn" disabled>영상 압축하기</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">영상 제거</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>영상을 위 영역에 끌어다 놓습니다. 파일명·용량·재생 시간·해상도가 바로 표시됩니다. 최초 사용 시 온디바이스 엔진(~31MB)이 1회 다운로드되고 이후엔 캐시됩니다.</li>
+      <li><b>압축 강도</b>를 고릅니다. <b>권장</b>은 휴대폰 영상·화면 녹화 대부분에 적당하고, <b>약하게</b>는 원본 해상도를 유지하며, <b>강하게</b>는 빡빡한 용량 제한용입니다.</li>
+      <li><b>영상 압축하기</b>를 누릅니다. 진행률 바와 버튼에 실제 퍼센트가 표시됩니다 — 모든 프레임을 다시 인코딩하므로 시간이 걸립니다.</li>
+      <li>결과 패널에서 <b>원본 용량 · 새 용량 · 절감률</b>을 확인하세요. 파일은 <b>파일명_compressed.mp4</b>로 저장됩니다. 부족하면 강도를 바꿔 다시 돌리면 됩니다.</li>
+    </ol>
+
+    <h2>CRF가 실제로 의미하는 것</h2>
+    <p>대부분의 압축 도구는 "목표 용량"을 묻습니다. 이 도구가 묻는 것은 목표 <i>화질</i>이고, 그게 바로 CRF(Constant Rate Factor)입니다. 숫자가 낮을수록 더 좋아 보이고 파일이 커지며, 높을수록 작아지고 뭉개집니다. 인코더는 그 화질을 맞추기 위해 장면마다 필요한 만큼 비트레이트를 씁니다 — 정지된 타이틀 화면은 거의 공짜지만, 손에 들고 나뭇잎 사이를 훑는 장면은 비쌉니다.</p>
+    <p>여기서 나오는 정직한 결론은, <b>화질 설정만 보고 결과 용량을 정확히 약속할 수 있는 사람은 없다</b>는 것입니다. 저희도 마찬가지입니다. 정지 화면이 많은 화면 녹화는 CRF 28에서 용량의 90%가 날아가기도 하지만, 흔들리고 노이즈 많은 손각대 영상은 같은 CRF에서 40%밖에 안 줄기도 합니다. 그래서 이 페이지는 예측치 대신 압축 전후 실제 수치를 보여주고, 강도를 바꿔 다시 돌려보는 것을 정상적인 사용 방식으로 여깁니다.</p>
+    <p>대략의 기준: <b>CRF 23</b>은 대부분의 영상에서 원본과 거의 구분되지 않고, <b>CRF 28</b>은 용량이 크게 줄면서도 휴대폰 화면에서는 차이를 알아채기 어려운 균형점이며, <b>CRF 32</b>는 눈에 띄게 부드러워지지만 보기에는 충분한 수준 — 화질보다 용량 제한 통과가 중요할 때 고르는 값입니다.</p>
+
+    <h2>휴대폰 영상은 왜 CRF보다 해상도 축소가 더 효과적인가</h2>
+    <p>요즘 휴대폰은 1080p나 4K로 찍지만, 그 영상은 대개 채팅 말풍선·메일 미리보기·메신저 안에서 재생됩니다. 심지어 찍은 그 폰 화면으로 보는 경우도 많죠. 비싸게 저장한 픽셀 대부분이 화면에 닿지도 못하는 셈입니다.</p>
+    <p>용량은 픽셀 수에 비례하므로 가로폭을 절반으로 줄이면 픽셀은 4분의 1이 되고, 이 절감은 CRF 효과와 곱해집니다. 4K를 가로 1280px로 낮추는 것만으로도 보통 CRF를 몇 단계 올리는 것보다 더 줄어듭니다. 그래서 <b>권장</b>은 가로 1280px, <b>강하게</b>는 854px로 상한을 두고, 나중에 보관·편집할 영상용인 <b>약하게</b>는 해상도를 건드리지 않습니다. 이미 상한보다 작은 영상은 절대 확대되지 않습니다 — 상한은 줄이기만 합니다.</p>
+
+    <h2>정직한 한계 안내</h2>
+    <ul>
+      <li><b>아무것도 업로드되지 않습니다.</b> FFmpeg를 WebAssembly로 컴파일해 이 페이지 안에서 돌리므로 영상이 서버에 닿지 않고, 업로드 대기도 없습니다.</li>
+      <li><b>손실 압축입니다.</b> 재인코딩은 디테일을 영구히 버리고, 이미 압축된 파일을 반복 압축하면 손상이 누적됩니다. 원본은 남겨 두세요.</li>
+      <li><b>줄어들지 않을 수도 있습니다.</b> 이미 작거나 잘 압축된 파일은 결과가 같거나 오히려 커질 수 있습니다. 그럴 땐 다운로드하지 않고 원본을 그대로 쓰시라고 안내합니다.</li>
+      <li><b>아주 큰 파일은 브라우저 메모리에 걸립니다.</b> 저희가 정한 상한은 없지만 파일 전체를 브라우저 메모리에 올려 처리합니다 — 데스크톱 대략 1~2GB, 휴대폰은 그보다 훨씬 낮습니다.</li>
+      <li><b>재인코딩은 CPU를 많이 씁니다.</b> 여기선 단일 스레드로 동작하므로 긴 영상에 몇 분이 걸리는 건 정상입니다.</li>
+      <li><b>오디오는 AAC 128kbps로 다시 인코딩됩니다.</b> 음성에는 충분하고, 공유용 클립의 음악에도 무난한 수준입니다.</li>
+    </ul>
+
+    <h2>이런 때 좋아요</h2>
+    <ul>
+      <li><b>메일 첨부 제한(보통 10~25MB)</b>을 넘긴 휴대폰 영상</li>
+      <li>무료 용량 상한이 낮은 <b>카카오톡·슬랙·디스코드</b>로 보낼 화면 녹화</li>
+      <li>클라우드 저장소나 업로드 폼에 맞춰야 하는 긴 4K 클립</li>
+      <li>WebM·MOV를 어디서나 재생되는 MP4로 바꾸는 작업을 한 번에 처리</li>
+    </ul>
+    <div class="tip">💡 <b>팁:</b> 먼저 <a href="/modutool/video/ko/video-trim/">동영상 자르기</a>로 실제 필요한 구간만 남기세요 — 무손실에 거의 즉시이고, 보통 어떤 압축 설정보다 많이 줄어듭니다. 짧은 무음 반복 클립이 목적이라면 <a href="/modutool/video/ko/video-to-gif/">동영상 GIF 변환</a>이 더 맞을 수도 있습니다.</div>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>영상이 정말 업로드되지 않나요?</summary><p>네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 다시 인코딩합니다. 아무것도 전송되지 않으니 업로드 대기도 없습니다 — 500MB 파일도 즉시 처리가 시작됩니다.</p></details>
+      <details><summary>CRF가 뭔가요? 결과 용량을 왜 미리 약속하지 못하나요?</summary><p>CRF는 용량 목표가 아니라 화질 목표입니다. 결과가 어느 정도로 보여야 하는지를 정해주면 인코더가 장면마다 그 화질을 맞추는 데 필요한 만큼 비트레이트를 씁니다. 정지 화면이 많은 화면 녹화는 CRF 28에서 90퍼센트까지 줄기도 하지만, 손으로 들고 찍어 흔들리는 영상은 같은 설정에서 절반 줄이기도 벅찹니다. 그래서 예상치를 약속하는 대신 압축 전후의 실제 용량을 그대로 보여드립니다.</p></details>
+      <details><summary>WebM이나 MOV를 넣었는데 왜 결과가 항상 MP4인가요?</summary><p>H.264 영상과 AAC 128kbps 오디오를 MP4 컨테이너에 담아 내보냅니다. 이 조합이 휴대폰·브라우저·메신저·TV·편집 프로그램 어디서나 사실상 다 재생되기 때문입니다. 그래서 WebM·MOV를 넣어도 MP4로 돌아옵니다. faststart 옵션도 함께 적용해 파일을 다 받기 전에 재생을 시작할 수 있게 했습니다.</p></details>
+      <details><summary>메일이나 메신저 용량 제한에 맞추려면 어떻게 하나요?</summary><p>먼저 권장 단계로 돌리고 결과 용량을 확인하세요. 그래도 크면 가로 854px로 낮추는 강하게 단계를 쓰면 됩니다. 그래도 넘친다면 길이를 먼저 줄이세요 — 길이는 어떤 화질 설정보다 용량에 직접적으로 영향을 주고, 저희 동영상 자르기는 재인코딩 없이 잘라내므로 화질도 시간도 손해가 없습니다.</p></details>
+      <details><summary>왜 몇 분씩 걸리나요? 용량 제한이 있나요?</summary><p>압축은 모든 프레임을 디코딩했다가 다시 인코딩하는 작업이고 이 엔진은 단일 스레드로 돌기 때문에, 긴 영상은 재생 시간과 비슷하거나 그보다 더 걸린다고 보시면 됩니다. 진행률 바와 버튼에 실제 퍼센트가 표시됩니다. 저희가 정한 용량 제한은 없지만 모든 처리가 브라우저 메모리에서 일어나므로 실질 한계는 데스크톱 대략 1~2GB, 휴대폰은 그보다 낮습니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/modutool/video/ko/video-trim/"><span class="emoji">🎬</span><span><b>동영상 자르기</b><span>화질 손실 없이 구간 컷</span></span></a>
+      <a class="tool-tile" href="/modutool/video/ko/video-to-gif/"><span class="emoji">🎞️</span><span><b>동영상 GIF 변환</b><span>클립을 GIF로</span></span></a>
+      <a class="tool-tile" href="/modutool/video/ko/image-compress/"><span class="emoji">🖼️</span><span><b>이미지 압축</b><span>JPG·PNG 용량 줄이기</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/modutool/video/assets/vendor/ffmpeg/ffmpeg.js"></script>
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var probe = document.getElementById('probe');
+  var infoEl = document.getElementById('fileInfo');
+  var levelSel = document.getElementById('level');
+  var compBtn = document.getElementById('compBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var BTN_IDLE = '영상 압축하기';
+
+  /* 강도 → CRF + 출력 가로폭 상한. maxW 0이면 해상도를 건드리지 않는다. */
+  var LEVELS = {
+    light:       { crf: 23, maxW: 0 },
+    recommended: { crf: 28, maxW: 1280 },
+    strong:      { crf: 32, maxW: 854 }
+  };
+
+  var file = null, dur = 0, ext = 'mp4', baseName = 'video', objUrl = null;
+  var ffmpeg = null, ffLoading = null, running = false;
+
+  /* 진행률 바 구동부. FFmpeg의 e.progress는 "현재 실행" 기준 0..1이고, 이 도구는
+     단일 패스라 그대로 바에 매핑한다. (참고: GIF 도구의 palettegen + paletteuse처럼
+     2패스 작업은 패스가 바뀔 때 비율이 0으로 리셋되므로 패스별 재매핑이 필요하다.
+     여기는 패스가 하나뿐이다.) */
+  function setProgress(ratio) {
+    if (typeof ratio !== 'number' || !isFinite(ratio)) ratio = 0;
+    if (ratio < 0) ratio = 0;
+    if (ratio > 1) ratio = 1;
+    var pct = Math.round(ratio * 100);
+    if (!isFinite(pct) || pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    progBar.style.width = pct + '%';
+    compBtn.textContent = '압축 중… ' + pct + '%';
+  }
+
+  function loadFF() {
+    if (ffmpeg) return Promise.resolve(ffmpeg);
+    if (ffLoading) return ffLoading;
+    ffLoading = (function () {
+      mdtlResult(result, '⏳ 온디바이스 엔진 로딩 중(~31MB, 최초 1회)…');
+      var f = new FFmpegWASM.FFmpeg();
+      /* 공식 패턴: core는 blob URL로 로드(워커 내 동적 import 호환), 워커 스크립트는 동일출처 전체 URL */
+      var toBlobURL = function (url, type) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('engine fetch failed: ' + url);
+          return r.blob();
+        }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+      };
+      return Promise.all([
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.js', 'text/javascript'),
+        toBlobURL(location.origin + '/modutool/video/assets/vendor/ffmpeg/ffmpeg-core.wasm', 'application/wasm')
+      ]).then(function (urls) {
+        return f.load({
+          coreURL: urls[0],
+          wasmURL: urls[1],
+          classWorkerURL: location.origin + '/modutool/video/assets/vendor/ffmpeg/814.ffmpeg.js'
+        });
+      }).then(function () {
+        f.on('progress', function (e) {
+          if (!running) return;
+          setProgress(e && typeof e.progress === 'number' ? e.progress : 0);
+        });
+        ffmpeg = f;
+        result.className = 'result';
+        return f;
+      });
+    })();
+    ffLoading.catch(function () { ffLoading = null; });
+    return ffLoading;
+  }
+
+  function fmtDur(t) {
+    if (!isFinite(t) || t <= 0) return null;
+    var m = Math.floor(t / 60), s = Math.round(t - m * 60);
+    if (s === 60) { m += 1; s = 0; }
+    return m + '분 ' + (s < 10 ? '0' : '') + s + '초';
+  }
+
+  function showInfo(name, meta) {
+    infoEl.innerHTML = '';
+    var li = document.createElement('li');
+    li.className = 'file-item';
+    li.innerHTML = '<span class="name"></span><span class="meta"></span>';
+    li.querySelector('.name').textContent = name;
+    li.querySelector('.meta').textContent = meta;
+    infoEl.appendChild(li);
+  }
+
+  function resetAll() {
+    file = null; dur = 0;
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    probe.removeAttribute('src'); probe.load();
+    infoEl.innerHTML = '';
+    compBtn.disabled = true; compBtn.textContent = BTN_IDLE;
+    clearBtn.style.display = 'none';
+    prog.className = 'progress'; progBar.style.width = '0%';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'video/*,.mp4,.webm,.mov,.mkv',
+    multiple: false,
+    onFiles: function (fs) {
+      if (running) return;
+      resetAll();
+      file = fs[0];
+      var m = /\.([a-z0-9]+)$/i.exec(file.name || '');
+      ext = m ? m[1].toLowerCase() : 'mp4';
+      baseName = (file.name || 'video').replace(/\.[a-z0-9]+$/i, '') || 'video';
+      showInfo(file.name || 'video', mdtlFormatBytes(file.size) + ' · 정보 읽는 중…');
+      compBtn.disabled = false;
+      clearBtn.style.display = '';
+
+      objUrl = URL.createObjectURL(file);
+      probe.src = objUrl;
+      probe.onloadedmetadata = function () {
+        dur = probe.duration || 0;
+        var parts = [mdtlFormatBytes(file.size)];
+        var d = fmtDur(dur);
+        if (d) parts.push(d);
+        if (probe.videoWidth && probe.videoHeight) parts.push(probe.videoWidth + '×' + probe.videoHeight);
+        showInfo(file.name || 'video', parts.join(' · '));
+        loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : '엔진 로딩에 실패했습니다.'), true); });
+      };
+      probe.onerror = function () {
+        /* MKV 등 일부 컨테이너는 브라우저 미리보기가 못 읽지만 엔진은 처리할 수 있는
+           경우가 많다 — 버튼은 그대로 열어두고 표시 정보만 줄인다. */
+        dur = 0;
+        showInfo(file.name || 'video', mdtlFormatBytes(file.size) + ' · 이 브라우저에서는 재생 시간을 읽을 수 없음');
+        loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : '엔진 로딩에 실패했습니다.'), true); });
+      };
+    }
+  });
+
+  compBtn.addEventListener('click', function () {
+    if (!file || compBtn.disabled || running) return;
+    var levelKey = LEVELS[levelSel.value] ? levelSel.value : 'recommended';
+    var lv = LEVELS[levelKey];
+    var origSize = file.size;
+
+    running = true;
+    card.classList.add('busy');
+    prog.className = 'progress show';
+    setProgress(0);
+    mdtlResult(result, '⏳ 영상을 다시 인코딩하는 중… 모든 프레임을 디코딩했다가 다시 인코딩하므로 긴 영상은 몇 분이 걸릴 수 있습니다.');
+
+    var done = function () {
+      running = false;
+      card.classList.remove('busy');
+      prog.className = 'progress';
+      progBar.style.width = '0%';
+      compBtn.textContent = BTN_IDLE;
+    };
+
+    loadFF().then(function (ff) {
+      return file.arrayBuffer().then(function (buf) {
+        var inName = 'in.' + ext;
+        var args = ['-i', inName, '-c:v', 'libx264', '-crf', String(lv.crf), '-preset', 'veryfast']
+          .concat(lv.maxW ? ['-vf', "scale='min(" + lv.maxW + ",iw)':-2"] : [])
+          .concat(['-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', 'out.mp4']);
+        var cleanup = function () {
+          ff.deleteFile(inName).catch(function () {});
+          ff.deleteFile('out.mp4').catch(function () {});
+        };
+        return ff.writeFile(inName, new Uint8Array(buf))
+          .then(function () { return ff.exec(args); })
+          .then(function () { return ff.readFile('out.mp4'); })
+          .then(function (data) {
+            cleanup();
+            if (!data || !data.length) throw new Error('출력이 비어 있습니다 — 이 파일을 디코딩하지 못했습니다.');
+            progBar.style.width = '100%';
+            var blob = new Blob([data], { type: 'video/mp4' });
+            if (blob.size >= origSize) {
+              /* 정직한 분기: 결과가 실제로 더 작지 않으면 다운로드하지 않는다. */
+              mdtlLogEvent('video-compress', 'no_result', 'result_not_smaller',
+                { size_bucket: mdtlSizeBucket(origSize), result_bucket: mdtlSizeBucket(blob.size), level: levelKey, format: 'mp4', n: Math.round(dur) });
+              mdtlResult(result,
+                'ℹ️ 압축 결과(' + mdtlFormatBytes(blob.size) + ')가 원본(' + mdtlFormatBytes(origSize) + ')보다 작지 않아 <b>다운로드하지 않았습니다.</b>' +
+                '<br>이 영상은 이미 효율적으로 인코딩돼 있습니다. <b>원본을 그대로 쓰세요.</b> ' +
+                (levelKey === 'strong'
+                  ? '이미 가장 강한 단계이므로, 대신 영상 길이를 줄여 보세요.'
+                  : '그래도 더 줄여야 한다면 더 강한 단계로 시도해 보세요.'));
+              return;
+            }
+            var pct = Math.round((1 - blob.size / origSize) * 100);
+            mdtlDownload(blob, baseName + '_compressed.mp4');
+            mdtlLogEvent('video-compress', 'success', null,
+              { size_bucket: mdtlSizeBucket(origSize), result_bucket: mdtlSizeBucket(blob.size), level: levelKey, saved_pct: pct, format: 'mp4', n: Math.round(dur) });
+            mdtlResult(result,
+              '✅ <b>완료!</b> ' + mdtlFormatBytes(origSize) + ' → ' + mdtlFormatBytes(blob.size) +
+              ' (<b>' + pct + '% 절감</b>) — MP4로 다운로드되었습니다.' +
+              '<br>아직도 큰가요? 더 강한 단계를 쓰거나, 먼저 영상을 짧게 잘라 보세요 — 길이가 어떤 화질 설정보다 큰 영향을 줍니다.');
+          }, function (err) {
+            cleanup();
+            throw err;
+          });
+      });
+    }).then(done, function (err) {
+      done();
+      mdtlResult(result, '❌ 압축 실패: ' + (err && err.message ? err.message : '알 수 없는 오류') + '<br>아주 큰 파일은 브라우저 메모리를 넘을 수 있습니다 — 더 짧은 원본이나 데스크톱 브라우저로 시도해 보세요.', true);
+    });
+  });
+})();
+</script>
+</body>
+</html>
