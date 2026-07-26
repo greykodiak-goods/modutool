@@ -10,7 +10,7 @@ Doppler 도입 + Convex(NoSQL) 전환 + 한 오리진에 브랜드 4개가 얹�
 
 | # | 층 | 지금 문제 | 조치 | 누가 |
 |---|-----|-----------|------|------|
-| 1 | Doppler | 한 프로젝트에 두 앱 키가 섞이면 `SUPABASE_URL`이 어느 앱 것인지 모름 | **앱당 Doppler 프로젝트 1개**로 분리 (`awning-ops`, `thisismy`) | 대표 |
+| 1 | Doppler | 한 프로젝트에 두 앱 키가 섞임 | 앱당 프로젝트 1개로 분리 — **대표가 분리 완료.** 단 modutool 레포 토큰이 아직 `dcops`를 가리킴(아래 1절) | 대표(토큰 교체) |
 | 2 | GitHub Secret | — (레포가 이미 네임스페이스) | 레포마다 `DOPPLER_TOKEN` 1개만. 이름은 양쪽 다 같아도 됨 | 대표 |
 | 3 | 광고 유닛 | `ADFIT_UNIT_TOP` 1칸인데 브랜드는 4개 | 브랜드 접미사(`_PDF/_IMG/_CALC/_VIDEO`) | 대표(발급 후) |
 | 4 | Convex | `dev:` 배포 키가 운영에 박혀 있음 | `prod:` 키로 교체, dev는 별도 키 | 대표 |
@@ -27,13 +27,37 @@ Doppler는 이미 `프로젝트 → 컨피그(환경) → 키` 3단이다. 이�
 
 ```
 Doppler
-├── awning-ops        (프로젝트)
-│   ├── prd           → SUPABASE_URL = wcztgneaqmwfeuonyjny…
+├── dcops             (프로젝트 — awning-ops용. 실제 이름이 'dcops'다, 레포 이름과 다름)
+│   ├── prd           → SUPABASE_URL, COUPANG_*, KAKAO_SMTP_*, NAVER_*, ANTHROPIC_API_KEY …
 │   └── stg
-└── thisismy          (프로젝트)
-    ├── prd           → SUPABASE_URL = gysvtgnpacqjpdijbcaw…   ← 같은 이름, 충돌 없음
+└── thisismy          (프로젝트 — modutool용)
+    ├── prd           → CONVEX_DEPLOY_KEY, AUTH_GOOGLE_*, 광고 유닛
     └── dev
 ```
+
+### 레포 ↔ 프로젝트 매칭은 어디서 하나 — **서비스 토큰이 곧 매칭이다**
+
+Doppler 서비스 토큰은 **발급 시점에 프로젝트 1개 + config 1개에 묶인다.** 그래서 워크플로에는
+프로젝트 이름이 어디에도 없다 — `--project`/`--config` 플래그도, `doppler.yaml`도 쓰지 않는다.
+
+```yaml
+env:
+  DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}   # ← 매칭 지점은 여기 하나뿐
+run: doppler secrets get CONVEX_DEPLOY_KEY --plain
+```
+
+즉 **레포별로 다른 토큰을 넣는 것이 곧 프로젝트 매칭**이다. 주의:
+- 반드시 **Service Token(`dp.st.`)** — 개인 토큰(`dp.pt.`)은 프로젝트에 안 묶여 조회가 실패한다.
+- 토큰을 잘못 넣어도 **조용히 지나간다**(키를 못 찾으면 GitHub Secret 폴백으로 흘러감).
+  그래서 `doppler-check.yml`이 맨 앞에서 `DOPPLER_PROJECT`/`DOPPLER_CONFIG`(Doppler가 자동
+  주입하는 비밀 아닌 메타값)를 찍고 기대 프로젝트와 다르면 경고한다.
+
+> ⚠️ **2026-07-26 실측 상태**: modutool 레포의 `DOPPLER_TOKEN`이 아직 `dcops/prd`를 가리킨다.
+> 배포가 돌아가는 건 `CONVEX_DEPLOY_KEY`가 우연히 `dcops`에도 들어있기 때문이고, 그 결과
+> modutool 워크플로가 ops 시크릿(`SUPABASE_SERVICE_ROLE_KEY`·`KAKAO_SMTP_PASS` 등)까지
+> 읽을 수 있다 — 분리 효과가 없는 상태.
+> 조치: ① 새 프로젝트 `prd`에 서비스 토큰 발급 → modutool 레포 `DOPPLER_TOKEN` 교체
+> ② `CONVEX_DEPLOY_KEY`를 새 프로젝트로 옮기고 `dcops`에서 삭제 ③ ops 레포 토큰은 그대로.
 
 ### 지금 실제로 겹치는 키
 
@@ -51,7 +75,7 @@ Doppler
 | `NAVER_CLIENT_ID/SECRET` | ✅ | — | 없음 |
 | `META_APP_ID/SECRET`, `THREADS_APP_SECRET` | ✅ | — | 없음 |
 | `CONVEX_DEPLOY_KEY` | — | ✅ | 없음 |
-| `GOOGLE_OAUTH_CLIENT_ID/SECRET` | — | ✅ | 없음 |
+| `AUTH_GOOGLE_ID/SECRET` | — | ✅ | 없음 |
 | `ADSENSE_CLIENT_ID`, `ADFIT_UNIT_TOP/BOTTOM` | — | ✅ | 없음(단 4절 참조) |
 
 **결론: 진짜 충돌은 `SUPABASE_*` 2개뿐이었고, 7절의 Convex Auth 이관으로 그 2개가 사라졌다.**
@@ -64,10 +88,13 @@ Doppler
 
 ### 대표가 할 일 (Doppler 웹)
 1. 프로젝트 `thisismy` 생성, 컨피그 `prd` / `dev`.
-2. `prd`에 넣을 키: `CONVEX_DEPLOY_KEY`(prod), `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`,
+2. `prd`에 넣을 키: `CONVEX_DEPLOY_KEY`(prod), `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`,
    `ADSENSE_CLIENT_ID`, 브랜드별 AdFit 유닛(4절).
+   ⚠️ 구글 자격증명 이름은 `GOOGLE_OAUTH_CLIENT_ID`가 아니라 **`AUTH_GOOGLE_ID`/`AUTH_GOOGLE_SECRET`**이다 —
+   @auth/core가 `AUTH_<PROVIDER>_ID`/`_SECRET`만 읽으므로 다른 이름으로 넣으면 아무도 안 읽는다.
+   convex-deploy 워크플로가 이 이름으로 Doppler에서 읽어 Convex 배포 환경변수로 밀어넣는다.
 3. `thisismy/prd` 읽기전용 서비스 토큰 발급 → **modutool 레포**의 GitHub Secret `DOPPLER_TOKEN`에 등록.
-4. ops 레포의 `DOPPLER_TOKEN`은 그대로 둔다(`awning-ops/prd` 토큰).
+4. ops 레포의 `DOPPLER_TOKEN`은 그대로 둔다(`dcops/prd` 토큰).
 
 ### 왜 토큰 이름은 양쪽 다 `DOPPLER_TOKEN`이어도 되나
 GitHub Secret은 **레포 단위로 이미 격리**돼 있다. `greykodiak-goods/awning-ops`의 `DOPPLER_TOKEN`과
