@@ -62,6 +62,7 @@
   <div id="loading" class="muted" style="margin:18px 0">불러오는 중…</div>
   <div id="denied" style="display:none" class="card"></div>
   <div id="dash" style="display:none"></div>
+  <div id="inbox" style="display:none"></div>
 </main>
 <footer id="site-footer" class="site-footer"></footer>
 
@@ -257,6 +258,61 @@
     await window.mdtlHandleOAuthReturn();
     if (!window.mdtlLoggedIn()) { location.href = (window.MDTL_BASE || '') + '/ko/login/'; return; }
     load();
+    loadInbox();
+  });
+
+  /* ── 문의함 ──
+     문의 폼을 만들어놓고 읽는 곳이 없으면 메시지가 쌓이기만 한다. 대시보드 아래에 붙인다.
+     미처리 건이 있으면 먼저 보이도록 정렬하고, 처리 표시를 여기서 바로 할 수 있게 한다. */
+  var inbox = document.getElementById('inbox');
+
+  function fmtWhen(ms) {
+    var d = new Date(ms);
+    return d.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+  }
+
+  async function loadInbox() {
+    var rows;
+    try {
+      rows = await window.mdtlCall('query', 'contact:list', {});
+    } catch (e) {
+      return;   // 관리자 아님 등 — 대시보드 쪽에서 이미 안내한다
+    }
+    inbox.style.display = '';
+    var unread = rows.filter(function (r) { return !r.handled; }).length;
+    var html = '<h2 style="margin-top:36px">문의함 ' +
+      (unread ? '<span style="color:var(--accent-text)">· 미처리 ' + unread + '건</span>' : '<span class="muted">· 미처리 없음</span>') +
+      '</h2>';
+    if (!rows.length) {
+      html += '<p class="muted">아직 받은 문의가 없습니다.</p>';
+      inbox.innerHTML = html;
+      return;
+    }
+    rows.sort(function (a, b) { return (a.handled - b.handled) || (b.at - a.at); });
+    rows.forEach(function (r) {
+      html += '<div class="card" style="margin-bottom:12px' + (r.handled ? ';opacity:.55' : '') + '">' +
+        '<div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap">' +
+        '<b>' + esc(r.subject) + '</b>' +
+        '<span class="muted">' + fmtWhen(r.at) + ' · ' + esc(r.lang || '?') + '/' + esc(r.site || '?') + '</span>' +
+        '</div>' +
+        '<p style="white-space:pre-wrap;margin:10px 0">' + esc(r.body) + '</p>' +
+        (r.email
+          ? '<p style="margin:0 0 10px"><a href="mailto:' + esc(r.email) + '">' + esc(r.email) + '</a></p>'
+          : '<p class="muted" style="margin:0 0 10px">회신 이메일 없음</p>') +
+        '<button class="btn secondary" data-id="' + r.id + '" data-h="' + (r.handled ? '0' : '1') + '">' +
+        (r.handled ? '미처리로 되돌리기' : '처리 완료로 표시') + '</button>' +
+        '</div>';
+    });
+    inbox.innerHTML = html;
+  }
+
+  inbox.addEventListener('click', async function (e) {
+    var b = e.target.closest('button[data-id]'); if (!b) return;
+    b.disabled = true;
+    try {
+      await window.mdtlCall('mutation', 'contact:setHandled', { id: b.dataset.id, handled: b.dataset.h === '1' });
+      await loadInbox();
+    } catch (err) { b.disabled = false; }
   });
 })();
 </script>

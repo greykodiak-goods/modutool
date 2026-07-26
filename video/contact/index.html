@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact us | ThisIsMyVideo</title>
+<meta name="description" content="Report a bug, suggest a tool, or ask a question. Messages go straight to the person who builds these tools — no ticket system, no account needed.">
+<link rel="canonical" href="https://greykodiak-goods.github.io/modutool/video/contact/">
+<link rel="alternate" hreflang="ko" href="https://greykodiak-goods.github.io/modutool/video/ko/contact/">
+<link rel="alternate" hreflang="en" href="https://greykodiak-goods.github.io/modutool/video/contact/">
+<link rel="alternate" hreflang="x-default" href="https://greykodiak-goods.github.io/modutool/video/contact/">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<script>window.MDTL_SITE_BRAND="ThisIsMyVideo";window.MDTL_SITE_MARK="V";</script>
+<script>window.MDTL_BASE='/modutool/video';</script>
+<link rel="manifest" href="/modutool/video/manifest.webmanifest">
+<link rel="stylesheet" href="/modutool/video/assets/site.css">
+<script src="/modutool/video/assets/site.js"></script>
+<script src="/modutool/video/assets/auth-config.js" defer></script>
+<script src="/modutool/video/assets/auth.js" defer></script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main style="max-width:640px">
+  <h1 class="page-title">Contact us</h1>
+  <p class="page-sub">Found a bug, want a tool that doesn't exist yet, or have a question about how something works? Write to us here. There's no ticket system and no account required — the message goes to the person who actually builds these tools.</p>
+
+  <div class="card">
+    <form id="contactForm" class="calc-grid">
+      <label class="field">
+        <span>What's this about?</span>
+        <input type="text" id="subject" required maxlength="120" autocomplete="off"
+               placeholder="e.g. Compress PDF gave me a bigger file">
+      </label>
+      <label class="field">
+        <span>Message</span>
+        <textarea id="body" required rows="8" maxlength="4000"
+                  placeholder="If you're reporting a problem, telling us the tool name and what you expected to happen is usually enough to fix it."></textarea>
+      </label>
+      <label class="field">
+        <span>Your email <span style="font-weight:400;color:var(--text-soft)">— optional, only if you want a reply</span></span>
+        <input type="email" id="email" maxlength="200" autocomplete="email" placeholder="you@example.com">
+      </label>
+
+      <!-- 봇 유인용 함정 필드. 사람에게는 보이지 않으므로 채워져 오면 자동 제출로 본다. -->
+      <div style="position:absolute;left:-9999px" aria-hidden="true">
+        <label>Leave this empty<input type="text" id="hp" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <button class="btn block" type="submit">Send message</button>
+      <div class="result" id="msg"></div>
+    </form>
+  </div>
+
+  <article class="guide">
+    <h2>Before you write</h2>
+    <p>A few things come up often enough that the answer might already be here.</p>
+
+    <h3>"The tool says my compressed file isn't smaller"</h3>
+    <p>That's the tool refusing to hand you a worse file. Some PDFs and images are already stored about as efficiently as they can be — usually files that were exported by good software in the first place. Rather than give you a bigger file with "compressed" in the name, the tool stops and tells you. It isn't broken.</p>
+
+    <h3>"Do my files really stay on my device?"</h3>
+    <p>Yes, and you can check it yourself: open your browser's developer tools, go to the Network tab, and run any tool. You'll see no upload. You can also disconnect from the internet entirely after the page has loaded — the tools keep working, because there's nothing to send. That's the whole design.</p>
+
+    <h3>"A big file made my browser slow or crash"</h3>
+    <p>Everything runs on your own machine, so your device's memory is the limit. Video tools are the heaviest — re-encoding decodes and re-encodes every frame. If a large file struggles, try a shorter clip, close other tabs, or use a desktop browser instead of a phone.</p>
+
+    <h3>"Can you add a tool for X?"</h3>
+    <p>Please ask. The one hard constraint is that it has to run entirely in the browser — if a job genuinely needs a server (sending email, looking things up in a database), it doesn't belong here. Everything else is fair game.</p>
+
+    <h2>What happens to your message</h2>
+    <p>Your subject line and message are stored so we can read and act on them. Your email address is <b>optional</b> — leave it blank and we simply have no way to write back, which is fine if you're just reporting something. We don't use anything you send here for advertising, and we don't pass it to anyone else. See the <a href="/modutool/video/privacy/">Privacy Policy</a> for how long it's kept and how to have it deleted.</p>
+  </article>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var form = document.getElementById('contactForm');
+  var msg = document.getElementById('msg');
+  var cfg = window.MDTL_CONVEX;
+
+  if (!(cfg && cfg.url)) {
+    mdtlResult(msg, 'The contact form is not available right now. Please try again later.', true);
+    return;
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    msg.className = 'result';
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      var res = await fetch(cfg.url.replace(/\/$/, '') + '/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: document.getElementById('subject').value,
+          body: document.getElementById('body').value,
+          email: document.getElementById('email').value,
+          hp: document.getElementById('hp').value,
+          lang: (document.documentElement.lang || 'en').slice(0, 2),
+          site: (window.MDTL_BASE || '').split('/').filter(Boolean).pop() || 'pdf'
+        })
+      });
+      if (res.status === 429) {
+        mdtlResult(msg, '⚠️ We are getting a lot of messages right now. Please try again in a minute.', true);
+      } else if (!res.ok) {
+        mdtlResult(msg, '❌ Could not send the message. Please check the fields and try again.', true);
+      } else {
+        form.reset();
+        mdtlResult(msg, '✅ Sent — thank you. If you left an email we will reply there.');
+      }
+    } catch (err) {
+      mdtlResult(msg, '❌ Could not reach the server. Please check your connection and try again.', true);
+    }
+    btn.disabled = false;
+    btn.textContent = 'Send message';
+  });
+});
+</script>
+</body>
+</html>
