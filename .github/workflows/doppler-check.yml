@@ -23,6 +23,21 @@ jobs:
             exit 1
           fi
 
+          # 0) 이 토큰이 "어느 프로젝트/config"를 가리키는지 먼저 밝힌다.
+          #    서비스 토큰은 프로젝트·config에 묶여 발급되므로 매칭은 전적으로 이 토큰이 한다
+          #    (--project/--config 플래그도, doppler.yaml도 쓰지 않는다).
+          #    레포에 다른 앱 토큰을 잘못 넣으면 "키가 없다"로만 보여서 원인을 못 찾는데,
+          #    이 줄이 있으면 한눈에 드러난다. DOPPLER_PROJECT/CONFIG는 Doppler가 넣어주는
+          #    비밀 아닌 메타값이라 출력해도 안전하다.
+          echo "===== 이 토큰이 가리키는 곳 ====="
+          PRJ=$(doppler secrets get DOPPLER_PROJECT --plain 2>/dev/null || echo "(확인불가)")
+          CFG=$(doppler secrets get DOPPLER_CONFIG --plain 2>/dev/null || echo "(확인불가)")
+          echo "project=$PRJ  config=$CFG"
+          if [ "$PRJ" != "thisismy" ] && [ "$PRJ" != "(확인불가)" ]; then
+            echo "::warning::이 레포(modutool)는 Doppler 프로젝트 'thisismy'를 기대합니다. 현재 토큰은 '$PRJ' 를 가리킵니다 — 레포에 다른 앱의 토큰이 들어갔는지 확인하세요."
+          fi
+          echo "===== 끝 ====="
+
           # 1) Doppler에 실제로 들어있는 키 이름을 그대로 출력(값 없이)
           doppler secrets --only-names --json > /tmp/names.json 2>/tmp/err.txt || {
             echo "::error::Doppler 조회 실패"; cat /tmp/err.txt; exit 1;
