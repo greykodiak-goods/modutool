@@ -63,10 +63,18 @@ for (const [site, slugs] of Object.entries(REDIRECTS)) {
   }
 }
 
-/* 4) 루트 sitemap index + robots + 404 */
+/* 4) 루트 sitemap index + robots + 404
+   포털(/ 와 /ko/)은 브랜드 sitemap 어디에도 안 들어간다(브랜드 빌드 산출물이 아니므로).
+   전 도구를 모아 보여주는 대표 랜딩인데 sitemap에서 빠져 있으면 색인이 늦다 →
+   포털 전용 sitemap을 따로 만들어 index에 함께 싣는다. */
+writeFileSync(join(dist, 'sitemap-portal.xml'),
+  '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  [`${origin}/`, `${origin}/ko/`].map((u) => `  <url><loc>${u}</loc></url>`).join('\n') +
+  '\n</urlset>\n');
 writeFileSync(join(dist, 'sitemap.xml'),
   '<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-  ['pdf', 'img', 'calc', 'video'].map((k) => `  <sitemap><loc>${origin}/${k}/sitemap.xml</loc></sitemap>`).join('\n') +
+  ['sitemap-portal.xml', ...['pdf', 'img', 'calc', 'video'].map((k) => `${k}/sitemap.xml`)]
+    .map((p) => `  <sitemap><loc>${origin}/${p}</loc></sitemap>`).join('\n') +
   '\n</sitemapindex>\n');
 writeFileSync(join(dist, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`);
 cpSync(join(dist, 'pdf', '404.html'), join(dist, '404.html'));
