@@ -211,7 +211,6 @@
      고객이 원하는 결과를 못 얻은 순간(오류·미달성)을 비식별 메타로만 집계한다 → 백오피스 /admin/ (관리자만).
      ⚠️ 파일명·파일바이트·사용자가 입력한 값은 절대 전송하지 않는다("파일은 브라우저를 떠나지 않는다"는 약속 유지).
      조회·수정 정책이 없어 클라이언트로는 로그를 읽을 수도 없다(INSERT 전용). */
-  function telAuth() { return window.MDTL_AUTH && window.MDTL_AUTH.url ? window.MDTL_AUTH : null; }
   function telLocal() {
     try { if (localStorage.getItem('mdtl-tel-force') === '1') return false; } catch (e) {}  // 로컬 검증용 강제 플래그
     var h = location.hostname;
@@ -293,9 +292,8 @@
      tool 생략 시 URL에서 유추. outcome: success|no_result|error|unsupported|cancelled */
   window.mdtlLogEvent = function (tool, outcome, reason, meta) {
     try {
-      var a = telAuth();
-      var hasConvex = !!(window.MDTL_CONVEX && window.MDTL_CONVEX.url);
-      if ((!a && !hasConvex) || telLocal() || telOptedOut()) return;
+      var cv = window.MDTL_CONVEX;
+      if (!(cv && cv.url) || telLocal() || telOptedOut()) return;
       var ALLOWED = { success: 1, no_result: 1, error: 1, unsupported: 1, cancelled: 1, view: 1 };
       outcome = ALLOWED[outcome] ? outcome : 'error';
       tool = String(tool || telToolSlug()).slice(0, 40);
@@ -310,31 +308,10 @@
         lang: telLang(), site: telCategory(tool), ua: telUa(),
         session_id: telSid(), meta: telCleanMeta(meta)
       };
-      /* 백엔드 스위치: MDTL_CONVEX.url 설정 시 Convex HTTP action, 아니면 Supabase REST.
-         (Convex 이관 컷오버 — auth-config.js에서 한 줄로 전환, 페이로드 형식 동일) */
-      var cv = window.MDTL_CONVEX;
-      if (cv && cv.url) {
-        fetch(cv.url.replace(/\/$/, '') + '/log-event', {
-          method: 'POST', keepalive: true,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(row)
-        }).catch(function () {});
-        return;
-      }
-      var bearer = a.anonKey;
-      try {
-        var ref = (a.url.match(/https:\/\/([a-z0-9]+)\./) || [])[1];
-        var tok = ref && JSON.parse(localStorage.getItem('sb-' + ref + '-auth-token') || 'null');
-        if (tok && tok.access_token) bearer = tok.access_token;
-      } catch (e) {}
-      fetch(a.url.replace(/\/$/, '') + '/rest/v1/tool_events', {
+      /* 수집처는 Convex HTTP action 단일 경로다 (2026-07-26 Supabase 완전 제거). */
+      fetch(cv.url.replace(/\/$/, '') + '/log-event', {
         method: 'POST', keepalive: true,
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': a.anonKey,
-          'Authorization': 'Bearer ' + bearer,
-          'Prefer': 'return=minimal'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(row)
       }).catch(function () {});
     } catch (e) { /* 텔레메트리는 절대 UI를 막지 않는다 */ }

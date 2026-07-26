@@ -34,7 +34,11 @@ jobs:
           # 2) modutool이 요구하는 키와 대조
           KEYS=$(node -e 'const j=require("/tmp/names.json"); console.log(Object.keys(j).join(" "))')
           REQUIRED="CONVEX_DEPLOY_KEY"
-          OPTIONAL="GOOGLE_OAUTH_CLIENT_ID GOOGLE_OAUTH_CLIENT_SECRET ADSENSE_CLIENT_ID ADFIT_UNIT_TOP ADFIT_UNIT_BOTTOM"
+          # 광고 유닛은 브랜드(pdf/img/calc/video)마다 따로 발급되므로 접미사로 나눈다.
+          # SITE 빌드 변수와 이름이 맞아 떨어져 ADFIT_UNIT_TOP_${SITE^^} 한 줄로 뽑힌다.
+          # 상세: docs/2026-07-26-namespace-plan.md 4절
+          OPTIONAL="GOOGLE_OAUTH_CLIENT_ID GOOGLE_OAUTH_CLIENT_SECRET ADSENSE_CLIENT_ID"
+          for s in PDF IMG CALC VIDEO; do OPTIONAL="$OPTIONAL ADFIT_UNIT_TOP_$s ADFIT_UNIT_BOTTOM_$s"; done
           echo "===== 필수 키 대조 ====="
           MISSING=""
           for k in $REQUIRED; do

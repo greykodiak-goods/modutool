@@ -31,7 +31,7 @@
       <p style="font-size:12px;color:var(--text-soft);margin:2px 0 6px">Google로 계속하면 <a href="/modutool/img/ko/terms/">이용약관</a>과 <a href="/modutool/img/ko/privacy/">개인정보처리방침</a>에 동의하는 것으로 간주됩니다.</p>
       <div class="auth-or">또는</div>
       <label class="field"><span>이메일</span><input type="email" id="email" required autocomplete="email"></label>
-      <label class="field"><span>비밀번호 (8자 이상)</span><input type="password" id="password" required minlength="8" autocomplete="new-password"></label>
+      <label class="field"><span>비밀번호 (8자 이상, 영문+숫자)</span><input type="password" id="password" required minlength="8" autocomplete="new-password"></label>
       <label style="font-size:13.5px;color:var(--text-soft);display:flex;gap:8px;align-items:flex-start">
         <input type="checkbox" id="agree" required style="margin-top:3px">
         <span><a href="/modutool/img/ko/terms/">이용약관</a>과 <a href="/modutool/img/ko/privacy/">개인정보처리방침</a>에 동의합니다.</span>
@@ -43,33 +43,53 @@
   </div>
 </main>
 <footer id="site-footer" class="site-footer"></footer>
-<script src="/modutool/img/assets/vendor/supabase.js"></script>
+<script src="/modutool/img/assets/vendor/convex.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  var sb = window.mdtlAuthClient && window.mdtlAuthClient();
-  if (!sb) { document.getElementById('notReady').style.display = ''; return; }
-  var form = document.getElementById('signupForm');
-  form.style.display = '';
-  var gbtn = document.getElementById('googleBtn');
-  if (gbtn) gbtn.addEventListener('click', async function () {
-    msg.className = 'result';
-    var r = await window.mdtlSignInWithGoogle();
-    if (r && r.error) { mdtlResult(msg, '❌ ' + (r.error.message === 'auth-not-ready' ? '회원 기능 준비 중입니다.' : r.error.message), true); }
-  });
+document.addEventListener('DOMContentLoaded', async function () {
   var msg = document.getElementById('msg');
-  if (window.mdtlLoggedIn()) { location.href = (window.MDTL_BASE||'') + '/ko/account/'; return; }
+  var form = document.getElementById('signupForm');
+  if (!(window.mdtlAuthClient && window.mdtlAuthClient())) {
+    document.getElementById('notReady').style.display = '';
+    return;
+  }
+  var acct = (window.MDTL_BASE || '') + '/ko/account/';
+
+  if (await window.mdtlHandleOAuthReturn()) { location.href = acct; return; }
+  if (window.mdtlLoggedIn()) { location.href = acct; return; }
+
+  form.style.display = '';
+  document.getElementById('googleBtn').addEventListener('click', function () {
+    msg.className = 'result';
+    window.mdtlSignInWithGoogle('/ko/signup/').catch(function () {
+      mdtlResult(msg, '\u274c 구글 가입은 아직 사용할 수 없습니다.', true);
+    });
+  });
+
+  var PW_MSG = {
+    short: '비밀번호는 8자 이상이어야 합니다.',
+    long: '비밀번호는 128자 이하여야 합니다.',
+    simple: '비밀번호에 영문과 숫자를 모두 포함해 주세요.'
+  };
 
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     msg.className = 'result';
-    var r = await sb.auth.signUp({
-      email: document.getElementById('email').value.trim(),
-      password: document.getElementById('password').value,
-      options: { emailRedirectTo: location.origin + (window.MDTL_BASE||'') + '/ko/account/' },
-    });
-    if (r.error) { mdtlResult(msg, '❌ ' + r.error.message, true); return; }
-    if (r.data && r.data.session) { await window.mdtlRefreshPlan(); location.href = (window.MDTL_BASE||'') + '/ko/account/'; return; }
-    mdtlResult(msg, '✅ 확인 메일을 보냈습니다. 메일의 링크를 눌러 가입을 완료해 주세요.');
+    var pw = document.getElementById('password').value;
+    var problem = window.mdtlPasswordProblem(pw);
+    if (problem) { mdtlResult(msg, '\u274c ' + PW_MSG[problem], true); return; }
+
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    try {
+      await window.mdtlSignInWithPassword(document.getElementById('email').value, pw, 'signUp');
+      await window.mdtlCall('mutation', 'account:ensureProfile');
+      await window.mdtlRefreshPlan();
+      location.href = acct;
+    } catch (err) {
+      // 이미 가입된 이메일인지는 알려주지 않는다(계정 열거 방지).
+      mdtlResult(msg, '\u274c 가입하지 못했습니다. 이미 가입하셨다면 <a href="/modutool/img/ko/login/">로그인</a>해 주세요.', true);
+      btn.disabled = false;
+    }
   });
 });
 </script>

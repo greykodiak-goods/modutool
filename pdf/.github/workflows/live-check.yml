@@ -50,11 +50,14 @@ jobs:
           echo "--- supabase auth reachable (회원 백엔드) ---"
           code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 \
             "https://gysvtgnpacqjpdijbcaw.supabase.co/auth/v1/health" \
-            -H "apikey: sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT" || echo 000)
+            -H "apikey: sb_publishable_pWcuYOmFtXdL6oL_68f4pg_-d__ocoT" || true)
+          code=${code:-000}
           echo "auth health: $code"
           [ "$code" = "200" ] || { echo "::error::로그인 백엔드 응답 없음($code) — Supabase 프로젝트가 INACTIVE일 가능성"; fail=1; }
           exit $fail
+      # 앞 스텝(로그인 백엔드)이 실패해도 수집 백엔드는 계속 점검한다 — 잡 결론은 그대로 실패로 남는다.
       - name: Telemetry backend E2E (Convex — 쓰기 허용, 읽기 함수 없음, CORS 화이트리스트)
+        if: always()
         run: |
           # 2026-07-26 Convex 컷오버 이후 수집처는 Supabase가 아니라 Convex HTTP action이다.
           CX="https://superb-echidna-510.convex.site"

@@ -35,37 +35,76 @@
         <button class="btn secondary" id="logoutAllBtn">모든 기기에서 로그아웃</button>
       </div>
       <p style="font-size:12.5px;color:var(--text-soft);margin:10px 0 0">이 기기에서는 로그인이 유지되며 세션이 자동 갱신됩니다. "모든 기기에서 로그아웃"은 어디서든 활성 세션을 전부 종료합니다.</p>
+      <details style="margin-top:22px;border-top:1px solid var(--line);padding-top:16px">
+        <summary style="cursor:pointer;font-size:14px;color:var(--text-soft)">회원 탈퇴(계정 삭제)</summary>
+        <p style="font-size:13.5px;margin:10px 0">계정과 플랜 정보가 영구 삭제되며 되돌릴 수 없습니다. 확인을 위해 계정 이메일을 그대로 입력해 주세요.</p>
+        <label class="field"><span>계정 이메일</span><input type="email" id="delEmail" autocomplete="off"></label>
+        <button class="btn secondary" id="delBtn" style="margin-top:10px;border-color:#dc2626;color:#dc2626">계정 영구 삭제</button>
+      </details>
     </div>
     <div class="result" id="msg"></div>
   </div>
 </main>
 <footer id="site-footer" class="site-footer"></footer>
-<script src="/modutool/calc/assets/vendor/supabase.js"></script>
+<script src="/modutool/calc/assets/vendor/convex.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function () {
   var loading = document.getElementById('loading');
-  var sb = window.mdtlAuthClient && window.mdtlAuthClient();
-  if (!sb) { loading.textContent = '회원 기능은 오픈 준비 중입니다.'; return; }
-  var info = await window.mdtlRefreshPlan();
-  if (!info) { location.href = (window.MDTL_BASE||'') + '/ko/login/'; return; }
+  var msg = document.getElementById('msg');
+  var BASE = window.MDTL_BASE || '';
+  if (!(window.mdtlAuthClient && window.mdtlAuthClient())) {
+    loading.textContent = '회원 기능은 오픈 준비 중입니다.';
+    return;
+  }
+
+  await window.mdtlHandleOAuthReturn();
+  if (!window.mdtlLoggedIn()) { location.href = BASE + '/ko/login/'; return; }
+
+  var info;
+  try {
+    await window.mdtlCall('mutation', 'account:ensureProfile');
+    info = await window.mdtlRefreshPlan();
+  } catch (e) { info = null; }
+  if (!info) { location.href = BASE + '/ko/login/'; return; }
+
   loading.style.display = 'none';
   document.getElementById('panel').style.display = '';
-  document.getElementById('emailLabel').textContent = info.user.email;
+  document.getElementById('emailLabel').textContent = info.email;
   var premium = window.mdtlIsPremium();
-  document.getElementById('planLabel').textContent = premium ? '프리미엄 ✓' : '무료';
+  document.getElementById('planLabel').textContent = premium ? '프리미엄 \u2713' : '무료';
   document.getElementById('planNote').textContent = premium
     ? '광고 없이 이용 중입니다. 감사합니다!'
     : '프리미엄 결제 오픈 시 이 이메일로 알려드립니다 (사전등록 할인 대상).';
   if (premium) document.getElementById('upBtn').style.display = 'none';
+
   document.getElementById('logoutBtn').addEventListener('click', async function () {
-    await sb.auth.signOut();
-    window.mdtlClearAuthCache();
-    location.href = (window.MDTL_BASE||'') + '/ko/';
+    await window.mdtlSignOut();
+    location.href = BASE + '/ko/';
   });
+
   document.getElementById('logoutAllBtn').addEventListener('click', async function () {
-    await sb.auth.signOut({ scope: 'global' });
-    window.mdtlClearAuthCache();
-    location.href = (window.MDTL_BASE||'') + '/ko/';
+    msg.className = 'result';
+    try { await window.mdtlCall('action', 'account:signOutEverywhere'); } catch (e) {}
+    await window.mdtlSignOut();   // 이 기기의 토큰도 지운다
+    location.href = BASE + '/ko/';
+  });
+
+  // 영구 삭제 — 되돌릴 수 없으므로 이메일 일치 + 확인 대화상자를 모두 통과해야 실행한다.
+  document.getElementById('delBtn').addEventListener('click', async function () {
+    msg.className = 'result';
+    var typed = document.getElementById('delEmail').value.trim().toLowerCase();
+    if (typed !== String(info.email).toLowerCase()) {
+      mdtlResult(msg, '\u274c 계정 이메일과 일치하지 않습니다.', true);
+      return;
+    }
+    if (!confirm('계정을 영구 삭제할까요? 되돌릴 수 없습니다.')) return;
+    try {
+      await window.mdtlCall('mutation', 'account:deleteAccount', { confirmEmail: typed });
+      await window.mdtlSignOut();
+      location.href = BASE + '/ko/';
+    } catch (e) {
+      mdtlResult(msg, '\u274c 계정을 삭제하지 못했습니다. 잠시 후 다시 시도해 주세요.', true);
+    }
   });
 });
 </script>

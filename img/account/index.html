@@ -35,37 +35,77 @@
         <button class="btn secondary" id="logoutAllBtn">Log out all devices</button>
       </div>
       <p style="font-size:12.5px;color:var(--text-soft);margin:10px 0 0">Your session stays signed in on this device and refreshes automatically. "Log out all devices" ends every active session everywhere.</p>
+      <details style="margin-top:22px;border-top:1px solid var(--line);padding-top:16px">
+        <summary style="cursor:pointer;font-size:14px;color:var(--text-soft)">Delete my account</summary>
+        <p style="font-size:13.5px;margin:10px 0">This permanently deletes your account and plan data. It cannot be undone. Type your email address to confirm.</p>
+        <label class="field"><span>Your email</span><input type="email" id="delEmail" autocomplete="off"></label>
+        <button class="btn secondary" id="delBtn" style="margin-top:10px;border-color:#dc2626;color:#dc2626">Permanently delete account</button>
+      </details>
     </div>
     <div class="result" id="msg"></div>
   </div>
 </main>
 <footer id="site-footer" class="site-footer"></footer>
-<script src="/modutool/img/assets/vendor/supabase.js"></script>
+<script src="/modutool/img/assets/vendor/convex.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function () {
   var loading = document.getElementById('loading');
-  var sb = window.mdtlAuthClient && window.mdtlAuthClient();
-  if (!sb) { loading.textContent = 'Accounts are launching soon.'; return; }
-  var info = await window.mdtlRefreshPlan();
-  if (!info) { location.href = (window.MDTL_BASE||'') + '/login/'; return; }
+  var msg = document.getElementById('msg');
+  var BASE = window.MDTL_BASE || '';
+  if (!(window.mdtlAuthClient && window.mdtlAuthClient())) {
+    loading.textContent = 'Accounts are launching soon.';
+    return;
+  }
+
+  // 구글 로그인 복귀는 여기로도 떨어진다(redirectTo 기본값).
+  await window.mdtlHandleOAuthReturn();
+  if (!window.mdtlLoggedIn()) { location.href = BASE + '/login/'; return; }
+
+  var info;
+  try {
+    await window.mdtlCall('mutation', 'account:ensureProfile');
+    info = await window.mdtlRefreshPlan();
+  } catch (e) { info = null; }
+  if (!info) { location.href = BASE + '/login/'; return; }
+
   loading.style.display = 'none';
   document.getElementById('panel').style.display = '';
-  document.getElementById('emailLabel').textContent = info.user.email;
+  document.getElementById('emailLabel').textContent = info.email;
   var premium = window.mdtlIsPremium();
-  document.getElementById('planLabel').textContent = premium ? 'Premium ✓' : 'Free';
+  document.getElementById('planLabel').textContent = premium ? 'Premium \u2713' : 'Free';
   document.getElementById('planNote').textContent = premium
     ? 'Enjoying ad-free. Thank you!'
     : 'We will email you when Premium payments launch (early-signup discount).';
   if (premium) document.getElementById('upBtn').style.display = 'none';
+
   document.getElementById('logoutBtn').addEventListener('click', async function () {
-    await sb.auth.signOut();
-    window.mdtlClearAuthCache();
-    location.href = (window.MDTL_BASE||'') + '/';
+    await window.mdtlSignOut();
+    location.href = BASE + '/';
   });
+
   document.getElementById('logoutAllBtn').addEventListener('click', async function () {
-    await sb.auth.signOut({ scope: 'global' });
-    window.mdtlClearAuthCache();
-    location.href = (window.MDTL_BASE||'') + '/';
+    msg.className = 'result';
+    try { await window.mdtlCall('action', 'account:signOutEverywhere'); } catch (e) {}
+    await window.mdtlSignOut();   // 이 기기의 토큰도 지운다
+    location.href = BASE + '/';
+  });
+
+  // 영구 삭제 — 되돌릴 수 없으므로 이메일 일치 + 확인 대화상자 두 단계를 모두 통과해야 실행한다.
+  document.getElementById('delBtn').addEventListener('click', async function () {
+    msg.className = 'result';
+    var typed = document.getElementById('delEmail').value.trim().toLowerCase();
+    if (typed !== String(info.email).toLowerCase()) {
+      mdtlResult(msg, '\u274c The email does not match your account.', true);
+      return;
+    }
+    if (!confirm('Permanently delete your account? This cannot be undone.')) return;
+    try {
+      await window.mdtlCall('mutation', 'account:deleteAccount', { confirmEmail: typed });
+      await window.mdtlSignOut();
+      location.href = BASE + '/';
+    } catch (e) {
+      mdtlResult(msg, '\u274c Could not delete the account. Please try again.', true);
+    }
   });
 });
 </script>
