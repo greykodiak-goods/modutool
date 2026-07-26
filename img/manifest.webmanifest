@@ -1,0 +1,18 @@
+{
+  "name": "ThisIsMyIMG",
+  "short_name": "ThisIsMyIMG",
+  "description": "Image tools that never upload your files",
+  "start_url": "/modutool/img/",
+  "scope": "/modutool/img/",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/modutool/img/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

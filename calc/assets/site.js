@@ -368,11 +368,63 @@
     } catch (e) {}
   }
 
+  /* ── 오프라인(PWA) ──
+     전 도구가 브라우저 안에서 돌기 때문에, 한 번 방문한 뒤에는 인터넷 없이도 그대로 쓸 수 있다.
+     (파일을 서버로 올려야 하는 경쟁 사이트는 원리상 못 하는 기능 — 기내·지하철·사내망 차단 환경에서 유효)
+     로컬(개발·테스트)에서는 등록하지 않는다 — 기존 테스트의 네트워크 가로채기와 충돌하므로.
+     localStorage['mdtl-sw-force']='1' 로 로컬에서도 강제 검증 가능. */
+  function swLocal() {
+    try { if (localStorage.getItem('mdtl-sw-force') === '1') return false; } catch (e) {}
+    var h = location.hostname;
+    return h === 'localhost' || h === '127.0.0.1' || h === '0.0.0.0' || h === '';
+  }
+  function swUpdateBanner(reg) {
+    var w = reg.waiting;
+    if (!w || document.getElementById('mdtl-sw-bar')) return;
+    var ko = pageLang() === 'ko';
+    var bar = document.createElement('div');
+    bar.id = 'mdtl-sw-bar';
+    bar.setAttribute('style',
+      'position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:70;display:flex;gap:12px;' +
+      'align-items:center;padding:10px 14px;border-radius:12px;background:var(--accent);color:#fff;' +
+      'font-size:14px;box-shadow:0 6px 20px rgb(0 0 0 / .25);');
+    var msg = document.createElement('span');
+    msg.textContent = ko ? '새 버전이 준비됐습니다.' : 'A new version is ready.';
+    var btn = document.createElement('button');
+    btn.textContent = ko ? '새로고침' : 'Reload';
+    btn.setAttribute('style', 'background:rgba(255,255,255,.2);border:0;color:#fff;border-radius:8px;' +
+      'padding:6px 12px;cursor:pointer;font-size:13px;font-weight:700;');
+    btn.addEventListener('click', function () { w.postMessage('skip-waiting'); });
+    bar.appendChild(msg); bar.appendChild(btn);
+    document.body.appendChild(bar);
+  }
+  window.mdtlInitSW = function () {
+    if (!('serviceWorker' in navigator) || swLocal()) return;
+    var reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (reloading) return;                 // 무한 새로고침 루프 방지
+      reloading = true;
+      location.reload();
+    });
+    navigator.serviceWorker.register(BASE + '/sw.js', { scope: BASE + '/' }).then(function (reg) {
+      if (reg.waiting && navigator.serviceWorker.controller) swUpdateBanner(reg);
+      reg.addEventListener('updatefound', function () {
+        var nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener('statechange', function () {
+          // controller가 있다 = 기존 SW가 이미 돌고 있다 = 최초 설치가 아니라 갱신
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) swUpdateBanner(reg);
+        });
+      });
+    }).catch(function () { /* 등록 실패해도 사이트는 그대로 동작 */ });
+  };
+
   document.addEventListener('DOMContentLoaded', function () {
     if (window.mdtlAutoShell !== false) window.mdtlShell();
     if (window.mdtlAuthHeader) window.mdtlAuthHeader();
     if (!(window.mdtlIsPremium && window.mdtlIsPremium())) window.mdtlInitAds();  // 프리미엄 = 광고 제거
     window.mdtlLangBanner();
     telPageview();
+    window.mdtlInitSW();
   });
 })();

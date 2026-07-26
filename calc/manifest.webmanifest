@@ -1,0 +1,18 @@
+{
+  "name": "ThisIsMyCalculator",
+  "short_name": "ThisIsMyCalculator",
+  "description": "Fast, free online calculators & utilities",
+  "start_url": "/modutool/calc/",
+  "scope": "/modutool/calc/",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/modutool/calc/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

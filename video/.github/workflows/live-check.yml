@@ -31,6 +31,14 @@ jobs:
           curl -sL "$BASE/pdf/pdf-merge/" | grep -o '<link rel="canonical" href="[^"]*"' || fail=1
           echo "--- old URL redirects to new brand path ---"
           curl -sL "$BASE/pdf-merge/" | grep -q "url=$BASE/pdf/pdf-merge/" && echo "redirect stub OK" || { echo "redirect stub BROKEN"; fail=1; }
+          echo "--- PWA(오프라인) 자산 ---"
+          for s in pdf img calc video; do
+            curl -sL "$BASE/$s/manifest.webmanifest" | grep -q '"start_url"' && echo "$s manifest OK" || { echo "$s manifest MISSING"; fail=1; }
+            curl -sL "$BASE/$s/sw.js" | grep -q "var BUILD = '" && echo "$s sw.js OK" || { echo "$s sw.js MISSING"; fail=1; }
+            curl -sL "$BASE/$s/sw.js" | grep -q "__BUILD_ID__" && { echo "$s sw.js 빌드ID 미치환"; fail=1; } || true
+            code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE/$s/icon.svg"); [ "$code" = "200" ] || { echo "$s icon.svg $code"; fail=1; }
+          done
+          curl -sL "$BASE/pdf/pdf-merge/" | grep -q 'rel="manifest"' && echo "manifest link OK" || { echo "manifest link MISSING"; fail=1; }
           echo "--- telemetry wired ---"
           curl -sL "$BASE/pdf/assets/site.js" | grep -q "mdtlLogEvent" && echo "site.js: mdtlLogEvent OK" || { echo "site.js: mdtlLogEvent MISSING"; fail=1; }
           echo "--- admin noindex + not in sitemap ---"
