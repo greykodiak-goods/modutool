@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오디오 자르기 — 벨소리 만들기 무료·업로드 없음 | ThisIsMyPDF</title>
+<meta name="description" content="브라우저 안에서만 동작하는 무료 오디오 자르기·벨소리 만들기 — MP3·M4A·WAV·OGG에서 원하는 구간만 잘라내고 페이드 인·아웃도 넣습니다. 업로드 없음, 워터마크 없음, 가입 없음.">
+<link rel="canonical" href="__ORIGIN__/ko/audio-trim/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/audio-trim/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/audio-trim/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/audio-trim/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="오디오 자르기 (벨소리 만들기) — 무료, 온디바이스, 업로드 없음">
+<meta property="og:description" content="브라우저에서 바로 오디오 구간 자르기. 파일이 기기를 떠나지 않아 업로드 대기도 워터마크도 없습니다.">
+<meta property="og:url" content="__ORIGIN__/ko/audio-trim/">
+<meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .at-stage { display:none; margin-top:14px; }
+  .at-stage.show { display:block; }
+  .at-stage audio { width:100%; }
+  .at-range { margin:12px 0 4px; }
+  .at-range label { display:block; font-size:13px; margin:8px 0 2px; }
+  .at-range input[type=range] { width:100%; }
+  .at-times { font-size:14px; font-variant-numeric:tabular-nums; }
+  .at-note { display:none; font-size:13px; line-height:1.6; color:var(--text-soft); background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-top:14px; }
+  .at-note.show { display:block; }
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .busy { opacity:.6; pointer-events:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"오디오 자르기 (벨소리 만들기) - ThisIsMyPDF","url":"__ORIGIN__/ko/audio-trim/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"description":"FFmpeg WebAssembly로 기기 안에서 오디오 구간을 잘라내고 페이드 인·아웃까지 넣는 무료 웹 도구. 서버 업로드·워터마크 없음.","inLanguage":"ko"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"오디오가 정말 업로드되지 않나요?","acceptedAnswer":{"@type":"Answer","text":"네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 자릅니다. 아무것도 전송되지 않으므로 음성 메모·인터뷰 녹음·상담 기록·미발표 트랙이 내 기기에만 남고, 자르기 전에 업로드를 기다릴 필요도 없습니다."}},
+{"@type":"Question","name":"아이폰 벨소리도 만들 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"부분적으로만 가능합니다. 솔직하게 말씀드리면 이 도구가 만들어 주는 건 MP3 또는 원본 형식 클립이고, iOS가 요구하는 .m4r 파일은 만들지 않습니다. 아이폰이라면 잘라낸 클립을 따로 m4r로 변환한 뒤 라이브러리를 통해 넣어야 합니다. 안드로이드는 간단합니다 — 20~30초 정도로 자른 MP3를 폰의 Ringtones 폴더에 넣고 소리 설정에서 고르면 끝입니다."}},
+{"@type":"Question","name":"원본 형식은 왜 즉시 끝나고 MP3는 시간이 걸리나요?","acceptedAnswer":{"@type":"Answer","text":"원본 형식은 스트림 복사 방식이라 선택 구간을 디코딩 없이 바이트 그대로 떠냅니다. 그래서 무손실이고 거의 즉시 끝납니다. MP3를 고르거나 페이드를 켜면 오디오를 다시 디코딩·인코딩해야 하므로 실제 연산이 들어가고 클립 길이에 비례해 시간이 걸립니다. 스트림 복사의 유일한 단서는 컷이 오디오 프레임 경계에 맞춰진다는 점입니다 — 시작점이 수십 밀리초 정도 밀릴 수 있습니다. 영상의 키프레임 스냅에 비하면 훨씬 작지만 샘플 단위로 정확하지는 않습니다."}},
+{"@type":"Question","name":"페이드 옵션은 뭘 하는 건가요? 왜 가끔 비활성화되나요?","acceptedAnswer":{"@type":"Answer","text":"페이드는 시작에 0.3초 페이드 인, 끝에 0.3초 페이드 아웃을 넣어 파형 중간에서 뚝 끊길 때 나는 딸깍 소리를 없애 줍니다. 들어갈 자리가 필요하기 때문에 선택 구간이 약 0.7초보다 길 때만 켜집니다. 또 페이드는 샘플 자체를 바꾸는 작업이라, 원본 형식을 골랐더라도 페이드를 켜면 항상 MP3로 재인코딩됩니다."}},
+{"@type":"Question","name":"파일 크기나 길이 제한이 있나요?","acceptedAnswer":{"@type":"Answer","text":"저희가 정한 제한은 없지만 모든 처리가 브라우저 메모리에서 이뤄지므로 기기 성능이 실질 한계가 됩니다 — 데스크톱 대략 1~2GB, 휴대폰은 그보다 적습니다. 오디오 파일은 보통 그보다 훨씬 작아서 아주 긴 무손실 녹음이 아니면 부딪힐 일이 드뭅니다. 최초 사용 시 약 31MB 엔진을 1회 내려받고, 이후엔 캐시돼 바로 시작합니다."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/ko/">ThisIsMyPDF</a> › <a href="/ko/#video">영상 도구</a> › 오디오 자르기</nav>
+  <h1 class="page-title">오디오 자르기<span class="privacy-badge">🔒 서버 업로드 없음</span></h1>
+  <p class="page-sub">오디오에서 원하는 구간만 정확히 잘라냅니다 — 벨소리, 팟캐스트 클립, 인터뷰 한 대목. 페이드 인·아웃도 선택 가능. 브라우저에서 바로, 무료.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">✂️</span>
+      <strong>오디오 파일을 끌어다 놓거나 클릭해서 선택</strong><br>
+      MP3 · M4A · AAC · WAV · OGG · 동영상도 가능 · <span class="engine-note">최초 사용 시 온디바이스 엔진(~31MB) 1회 다운로드</span>
+    </div>
+    <div class="at-stage" id="stage">
+      <audio id="player" controls preload="metadata"></audio>
+      <div class="at-range">
+        <label>시작: <span id="startLabel" class="at-times">0:00.0</span></label>
+        <input type="range" id="startRange" min="0" max="100" step="0.1" value="0">
+        <label>끝: <span id="endLabel" class="at-times">0:00.0</span></label>
+        <input type="range" id="endRange" min="0" max="100" step="0.1" value="100">
+        <p class="at-times" id="clipLabel"></p>
+      </div>
+    </div>
+    <div class="opts">
+      <label>출력
+        <select id="outSel">
+          <option value="same" selected>원본 형식 (빠름, 재인코딩 없음)</option>
+          <option value="mp3">MP3 (호환성 좋음)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="fadeChk"> 페이드 인·아웃 0.3초</label>
+    </div>
+    <div class="at-note" id="vnote">동영상 파일이라 오디오를 다시 인코딩해야 합니다 — 결과물은 MP3로 저장됩니다.</div>
+    <div class="btn-row">
+      <button class="btn" id="trimBtn" disabled>잘라서 다운로드</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">파일 제거</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>사용 방법</h2>
+    <ol>
+      <li>오디오 파일을 위 영역에 끌어다 놓습니다(동영상도 됩니다 — 소리만 뽑아냅니다). 최초 사용 시 온디바이스 엔진(~31MB)이 1회 다운로드되고 이후엔 캐시돼 바로 시작합니다.</li>
+      <li>미리듣기를 재생하며 <b>시작</b>·<b>끝</b> 슬라이더를 맞춥니다. 슬라이더를 움직이면 재생 위치가 따라가고 아래에 클립 길이가 표시돼 "정확히 30초" 같은 목표를 맞추기 쉽습니다.</li>
+      <li><b>출력</b>을 고릅니다. <b>원본 형식</b>은 재인코딩 없이 구간만 복사해 즉시·무손실로 끝나고, <b>MP3</b>는 192kbps로 다시 인코딩해 호환성을 최대로 높입니다. 시작·끝을 부드럽게 하려면 <b>페이드</b>를 체크하세요.</li>
+      <li><b>잘라서 다운로드</b>를 누르면 <b>파일명_trim</b>에 해당 확장자가 붙어 저장됩니다.</li>
+    </ol>
+
+    <h2>오디오 자르기를 브라우저에서 하면 좋은 이유</h2>
+    <p>노래나 녹음에서 30초를 잘라내는 건 클릭 두 번이면 될 일인데, 보통은 편집 프로그램을 설치하거나 파일을 낯선 사이트에 올려야 합니다. 이 도구는 대부분의 전문 오디오 작업 뒤에 있는 엔진 FFmpeg를 WebAssembly로 컴파일해 <b>기기 안에서</b> 자릅니다. 아무것도 전송되지 않는다는 점은 생각보다 중요합니다 — 음성 메모, 인터뷰 녹음, 고객 통화, 미발표 믹스는 애초에 남의 서버에 올려서는 안 되는 것들이니까요.</p>
+    <p>속도와 정밀도에 대한 정직한 안내: <b>원본 형식</b>은 스트림 복사라 무손실이고 거의 즉시 끝나지만, 컷이 오디오 프레임 경계에 맞춰져 시작점이 수십 밀리초 밀릴 수 있습니다. 영상의 키프레임 스냅보다는 훨씬 덜 티가 나지만 샘플 단위로 정확하지는 않습니다. MP3를 고르거나 페이드를 켜면 재인코딩이 일어나 클립 길이에 비례해 실제 시간이 듭니다. 또 모든 작업이 브라우저 메모리에서 일어나므로 아주 큰 원본은 데스크톱 대략 1~2GB, 휴대폰은 그보다 낮은 선에서 막힙니다.</p>
+
+    <h2>이런 때 좋아요</h2>
+    <ul>
+      <li>내가 가진 음원으로 20~30초짜리 벨소리·알람음 만들기</li>
+      <li>팟캐스트·인터뷰에서 공유할 만한 한 대목만 잘라내기</li>
+      <li>음성 메모 앞부분의 정적과 헛기침 잘라버리기</li>
+      <li>강의 녹음에서 필기에 붙일 짧은 구간만 떠오기</li>
+      <li>메신저나 업로드 용량 제한에 맞게 오디오 길이 줄이기</li>
+    </ul>
+
+    <h2>자주 묻는 질문</h2>
+    <div class="faq">
+      <details><summary>오디오가 정말 업로드되지 않나요?</summary><p>네. 전문가들이 쓰는 FFmpeg 엔진을 WebAssembly로 컴파일한 버전(약 31MB, 최초 1회 다운로드 후 캐시)을 받아 브라우저 안에서 자릅니다. 아무것도 전송되지 않으므로 음성 메모·인터뷰 녹음·상담 기록·미발표 트랙이 내 기기에만 남고, 자르기 전에 업로드를 기다릴 필요도 없습니다.</p></details>
+      <details><summary>아이폰 벨소리도 만들 수 있나요?</summary><p>부분적으로만 가능합니다. 솔직하게 말씀드리면 이 도구가 만들어 주는 건 MP3 또는 원본 형식 클립이고, iOS가 요구하는 .m4r 파일은 만들지 않습니다. 아이폰이라면 잘라낸 클립을 따로 m4r로 변환한 뒤 라이브러리를 통해 넣어야 합니다. 안드로이드는 간단합니다 — 20~30초 정도로 자른 MP3를 폰의 Ringtones 폴더에 넣고 소리 설정에서 고르면 끝입니다.</p></details>
+      <details><summary>원본 형식은 왜 즉시 끝나고 MP3는 시간이 걸리나요?</summary><p>원본 형식은 스트림 복사 방식이라 선택 구간을 디코딩 없이 바이트 그대로 떠냅니다. 그래서 무손실이고 거의 즉시 끝납니다. MP3를 고르거나 페이드를 켜면 오디오를 다시 디코딩·인코딩해야 하므로 실제 연산이 들어가고 클립 길이에 비례해 시간이 걸립니다. 스트림 복사의 유일한 단서는 컷이 오디오 프레임 경계에 맞춰진다는 점입니다 — 시작점이 수십 밀리초 정도 밀릴 수 있습니다. 영상의 키프레임 스냅에 비하면 훨씬 작지만 샘플 단위로 정확하지는 않습니다.</p></details>
+      <details><summary>페이드 옵션은 뭘 하는 건가요? 왜 가끔 비활성화되나요?</summary><p>페이드는 시작에 0.3초 페이드 인, 끝에 0.3초 페이드 아웃을 넣어 파형 중간에서 뚝 끊길 때 나는 딸깍 소리를 없애 줍니다. 들어갈 자리가 필요하기 때문에 선택 구간이 약 0.7초보다 길 때만 켜집니다. 또 페이드는 샘플 자체를 바꾸는 작업이라, 원본 형식을 골랐더라도 페이드를 켜면 항상 MP3로 재인코딩됩니다.</p></details>
+      <details><summary>파일 크기나 길이 제한이 있나요?</summary><p>저희가 정한 제한은 없지만 모든 처리가 브라우저 메모리에서 이뤄지므로 기기 성능이 실질 한계가 됩니다 — 데스크톱 대략 1~2GB, 휴대폰은 그보다 적습니다. 오디오 파일은 보통 그보다 훨씬 작아서 아주 긴 무손실 녹음이 아니면 부딪힐 일이 드뭅니다. 최초 사용 시 약 31MB 엔진을 1회 내려받고, 이후엔 캐시돼 바로 시작합니다.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>관련 도구</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/ko/video-to-mp3/"><span class="emoji">🎧</span><span><b>동영상 MP3 변환</b><span>영상에서 음성만 추출</span></span></a>
+      <a class="tool-tile" href="/ko/video-trim/"><span class="emoji">🎬</span><span><b>동영상 자르기</b><span>필요한 구간만 잘라내기</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/assets/vendor/ffmpeg/ffmpeg.js"></script>
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var stage = document.getElementById('stage');
+  var player = document.getElementById('player');
+  var startRange = document.getElementById('startRange');
+  var endRange = document.getElementById('endRange');
+  var startLabel = document.getElementById('startLabel');
+  var endLabel = document.getElementById('endLabel');
+  var clipLabel = document.getElementById('clipLabel');
+  var outSel = document.getElementById('outSel');
+  var sameOpt = outSel.options[0];
+  var fadeChk = document.getElementById('fadeChk');
+  var vnote = document.getElementById('vnote');
+  var trimBtn = document.getElementById('trimBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var BTN_LABEL = trimBtn.textContent;
+  var VIDEO_EXT = /^(mp4|webm|mov|mkv|m4v|avi)$/;
+  var file = null, dur = 0, ext = 'mp3', baseName = 'audio', objUrl = null, isVideo = false;
+  var running = false, progHooked = false;
+  var ffmpeg = null, ffLoading = null;
+
+  function loadFF() {
+    if (ffmpeg) return Promise.resolve(ffmpeg);
+    if (ffLoading) return ffLoading;
+    ffLoading = (function () {
+      mdtlResult(result, '⏳ 온디바이스 엔진 로딩 중(~31MB, 최초 1회)…');
+      var f = new FFmpegWASM.FFmpeg();
+      /* 공식 패턴: core는 blob URL로 로드(워커 내 동적 import 호환), 워커 스크립트는 동일출처 전체 URL */
+      var toBlobURL = function (url, type) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('engine fetch failed: ' + url);
+          return r.blob();
+        }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+      };
+      return Promise.all([
+        toBlobURL(location.origin + '/assets/vendor/ffmpeg/ffmpeg-core.js', 'text/javascript'),
+        toBlobURL(location.origin + '/assets/vendor/ffmpeg/ffmpeg-core.wasm', 'application/wasm')
+      ]).then(function (urls) {
+        return f.load({
+          coreURL: urls[0],
+          wasmURL: urls[1],
+          classWorkerURL: location.origin + '/assets/vendor/ffmpeg/814.ffmpeg.js'
+        });
+      }).then(function () {
+        ffmpeg = f;
+        result.className = 'result';
+        return f;
+      });
+    })();
+    ffLoading.catch(function () { ffLoading = null; });
+    return ffLoading;
+  }
+
+  /* 진행률: e.progress 는 0..1 비율. NaN·범위이탈 방어 후 진행바 + 버튼 라벨에 반영. */
+  function hookProgress(ff) {
+    if (progHooked) return;
+    progHooked = true;
+    ff.on('progress', function (e) {
+      if (!running) return;
+      var r = e && typeof e.progress === 'number' ? e.progress : 0;
+      if (!isFinite(r)) r = 0;
+      r = Math.min(1, Math.max(0, r));
+      var pct = Math.round(r * 100);
+      progBar.style.width = pct + '%';
+      trimBtn.textContent = '처리 중… ' + pct + '%';
+    });
+  }
+
+  function fmt(t) {
+    t = Math.max(0, t);
+    var m = Math.floor(t / 60), s = (t - m * 60).toFixed(1);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function updateLabels(seek) {
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    if (s >= e) { if (seek === 'start') { e = Math.min(dur, s + 0.1); endRange.value = e; } else { s = Math.max(0, e - 0.1); startRange.value = s; } }
+    startLabel.textContent = fmt(s);
+    endLabel.textContent = fmt(e);
+    clipLabel.textContent = '클립 길이: ' + fmt(e - s) + ' / ' + fmt(dur);
+    if (seek === 'start') player.currentTime = s;
+    if (seek === 'end') player.currentTime = e;
+    /* 페이드는 인·아웃 0.3초씩이 들어갈 여유(>0.7초)가 있을 때만 제공 */
+    fadeChk.disabled = !(e - s > 0.7);
+    if (fadeChk.disabled) fadeChk.checked = false;
+    trimBtn.disabled = !(e - s > 0.2);
+  }
+  startRange.addEventListener('input', function () { updateLabels('start'); });
+  endRange.addEventListener('input', function () { updateLabels('end'); });
+
+  function resetAll() {
+    file = null; dur = 0; isVideo = false;
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    player.removeAttribute('src'); player.load();
+    stage.className = 'at-stage';
+    vnote.className = 'at-note';
+    sameOpt.disabled = false;
+    trimBtn.disabled = true;
+    trimBtn.textContent = BTN_LABEL;
+    clearBtn.style.display = 'none';
+    prog.className = 'progress';
+    progBar.style.width = '0%';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'audio/*,video/*,.mp3,.m4a,.aac,.wav,.ogg,.mp4,.webm,.mov,.mkv',
+    multiple: false,
+    onFiles: function (fs) {
+      resetAll();
+      file = fs[0];
+      var m = /\.([a-z0-9]+)$/i.exec(file.name || '');
+      ext = m ? m[1].toLowerCase() : 'mp3';
+      baseName = (file.name || 'audio').replace(/\.[a-z0-9]+$/i, '') || 'audio';
+      isVideo = VIDEO_EXT.test(ext) || (file.type || '').indexOf('video/') === 0;
+      if (isVideo) {
+        /* 영상은 오디오만 뽑아내야 하므로 스트림 복사를 쓸 수 없다 */
+        outSel.value = 'mp3';
+        sameOpt.disabled = true;
+        vnote.className = 'at-note show';
+      }
+      objUrl = URL.createObjectURL(file);
+      player.src = objUrl;
+      player.onloadedmetadata = function () {
+        dur = player.duration || 0;
+        if (!isFinite(dur) || dur <= 0) { mdtlResult(result, '❌ 파일을 읽지 못했습니다. 브라우저 미리듣기가 지원하지 않는 코덱이라 슬라이더에 쓸 길이를 알 수 없습니다.', true); return; }
+        startRange.max = dur; endRange.max = dur;
+        startRange.value = 0; endRange.value = dur;
+        stage.className = 'at-stage show';
+        clearBtn.style.display = '';
+        updateLabels();
+        loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : '엔진 로딩에 실패했습니다.'), true); });
+      };
+      player.onerror = function () { mdtlResult(result, '❌ 이 오디오 형식은 브라우저에서 열 수 없습니다.', true); };
+    }
+  });
+
+  trimBtn.addEventListener('click', function () {
+    if (!file || trimBtn.disabled) return;
+    var s = parseFloat(startRange.value), e = parseFloat(endRange.value);
+    var d = e - s;
+    var useFade = fadeChk.checked && d > 0.7;
+    var reencode = isVideo || outSel.value === 'mp3' || useFade;
+    var outExt = reencode ? 'mp3' : ext;
+    card.classList.add('busy');
+    running = true;
+    prog.className = 'progress show';
+    progBar.style.width = '0%';
+    trimBtn.textContent = '처리 중… 0%';
+    mdtlResult(result, reencode
+      ? '⏳ 자르고 MP3로 인코딩하는 중 — 재인코딩이라 클립이 길수록 오래 걸립니다…'
+      : '⏳ 자르는 중(재인코딩 없음 — 거의 즉시)…');
+    var done = function () {
+      running = false;
+      card.classList.remove('busy');
+      prog.className = 'progress';
+      progBar.style.width = '0%';
+      trimBtn.textContent = BTN_LABEL;
+    };
+    loadFF().then(function (ff) {
+      hookProgress(ff);
+      return file.arrayBuffer().then(function (buf) {
+        var inName = 'in.' + ext, outName = 'out.' + outExt;
+        var args;
+        if (!reencode) {
+          args = ['-ss', String(s), '-i', inName, '-t', String(d), '-c', 'copy', outName];
+        } else {
+          args = ['-ss', String(s), '-i', inName, '-t', String(d), '-c:a', 'libmp3lame', '-b:a', '192k'];
+          if (isVideo) args.push('-vn');
+          if (useFade) args = args.concat(['-af', 'afade=t=in:st=0:d=0.3,afade=t=out:st=' + (d - 0.3) + ':d=0.3']);
+          args.push(outName);
+        }
+        return ff.writeFile(inName, new Uint8Array(buf))
+          .then(function () { return ff.exec(args); })
+          .then(function () { return ff.readFile(outName); })
+          .then(function (data) {
+            ff.deleteFile(inName).catch(function () {});
+            ff.deleteFile(outName).catch(function () {});
+            if (!data || !data.length) throw new Error('출력이 비어 있습니다 — 이 코덱은 스트림 복사 자르기를 지원하지 않을 수 있습니다. MP3 출력으로 시도해 보세요.');
+            progBar.style.width = '100%';
+            var blob = new Blob([data], { type: reencode ? 'audio/mpeg' : (file.type || 'application/octet-stream') });
+            mdtlDownload(blob, baseName + '_trim.' + outExt);
+            mdtlLogEvent('audio-trim', 'success', null,
+              { size_bucket: mdtlSizeBucket(file.size), result_bucket: mdtlSizeBucket(blob.size), format: outExt, n: Math.round(d) });
+            mdtlResult(result, '✅ <b>완료!</b> ' + fmt(d) + ' 클립이 다운로드되었습니다(' + mdtlFormatBytes(blob.size) + ')' +
+              (reencode ? ' — 192kbps MP3로 재인코딩' + (useFade ? ', 앞뒤 0.3초 페이드 적용' : '') + '.' : ' — 스트림 복사라 음질 손실 없음.') +
+              ' 원본은 그대로입니다.' +
+              (reencode ? '' : '<br>시작이 살짝 밀려 들리면 프레임 경계 때문입니다 — FAQ 참고.'));
+          });
+      });
+    }).then(done, function (err) {
+      done();
+      mdtlResult(result, '❌ 자르기 실패: ' + (err && err.message ? err.message : '알 수 없는 오류') + '<br>아주 큰 파일은 브라우저 메모리를 넘을 수 있습니다 — 더 짧은 원본이나 데스크톱 브라우저로 시도해 보세요.', true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compress Video — Reduce File Size Free, No Upload | ThisIsMyPDF</title>
+<meta name="description" content="Free video compressor that shrinks MP4, WebM and MOV files with three quality levels — fit email and chat size limits. Runs entirely in your browser, nothing is uploaded, no watermark, no sign-up.">
+<link rel="canonical" href="__ORIGIN__/video-compress/">
+<link rel="alternate" hreflang="ko" href="__ORIGIN__/ko/video-compress/">
+<link rel="alternate" hreflang="en" href="__ORIGIN__/video-compress/">
+<link rel="alternate" hreflang="x-default" href="__ORIGIN__/video-compress/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Compress Video — Free, On-Device, No Upload">
+<meta property="og:description" content="Shrink a video to fit an email or chat limit. Files never leave your device — no upload wait, no watermark.">
+<meta property="og:url" content="__ORIGIN__/video-compress/">
+<meta property="og:locale" content="en_US">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>T</text></svg>">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js"></script>
+<script src="/assets/ads-config.js" defer></script>
+<script src="/assets/auth-config.js" defer></script>
+<script src="/assets/auth.js" defer></script>
+<style>
+  .engine-note { font-size:12.5px; color:var(--text-soft); }
+  .card-note { font-size:13px; color:var(--text-soft); margin-top:14px; line-height:1.6; }
+  .busy { opacity:.6; pointer-events:none; }
+  #probe { display:none; }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Compress Video - ThisIsMyPDF","url":"__ORIGIN__/video-compress/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free web tool that reduces video file size with three selectable levels using FFmpeg compiled to WebAssembly. Processed in your browser with no server upload.","inLanguage":"en"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is my video really never uploaded?","acceptedAnswer":{"@type":"Answer","text":"Correct. The tool downloads FFmpeg compiled to WebAssembly (about 31 MB, once, then cached) and re-encodes the video inside the browser. Nothing is transmitted, so there is no upload wait either — a 500 MB file starts processing immediately."}},
+{"@type":"Question","name":"What is CRF, and why can you not promise an exact output size?","acceptedAnswer":{"@type":"Answer","text":"CRF is a quality target, not a size target. You tell the encoder how good the result has to look and it spends whatever bitrate that takes, scene by scene. A static screen recording at CRF 28 may shrink by 90 percent while shaky handheld footage at the same setting barely halves. That is why the tool shows you the real before and after sizes instead of promising a number up front."}},
+{"@type":"Question","name":"Why is the output always MP4, even for a WebM or MOV input?","acceptedAnswer":{"@type":"Answer","text":"We re-encode to H.264 video with AAC 128 kbps audio in an MP4 container, because that combination plays practically everywhere — phones, browsers, chat apps, TVs and editing software. So a WebM or MOV input comes back as an MP4. The faststart flag is also set, so the file can begin playing before it has fully downloaded."}},
+{"@type":"Question","name":"How do I get under an email or chat size limit?","acceptedAnswer":{"@type":"Answer","text":"Start with Recommended and look at the resulting size. Still too big? Try Strong, which also drops the resolution to 854 px wide. If it is still over the limit, shorten the clip first — length affects size more directly than any quality setting, and our trim tool cuts without re-encoding, so it costs nothing in quality or time."}},
+{"@type":"Question","name":"Why does it take minutes, and is there a size limit?","acceptedAnswer":{"@type":"Answer","text":"Compressing means decoding every frame and encoding it again, and the engine runs single-threaded here, so expect roughly real time or slower on long clips — the progress bar and the button show the real percentage as it works. We impose no size limit, but everything happens in your browser's memory, so the practical ceiling is roughly 1–2 GB on a desktop and less on a phone."}}
+]}
+</script>
+</head>
+<body>
+<header id="site-header" class="site-header"></header>
+<main>
+  <nav class="breadcrumb"><a href="/">ThisIsMyPDF</a> › <a href="/#video">Video Tools</a> › Compress Video</nav>
+  <h1 class="page-title">Compress Video<span class="privacy-badge">🔒 No Server Upload</span></h1>
+  <p class="page-sub">Shrink a video to fit an email, chat or upload limit — three levels, honest before-and-after numbers, and nothing ever leaves your device.</p>
+
+  <div class="card tool-card" id="card">
+    <div class="dropzone" id="dz">
+      <span class="big">🗜️</span>
+      <strong>Drag &amp; drop a video here, or click to select</strong><br>
+      MP4 · WebM · MOV · MKV · <span class="engine-note">first use downloads a ~31 MB on-device engine</span>
+    </div>
+    <video id="probe" preload="metadata" muted playsinline></video>
+    <ul class="file-list" id="fileInfo"></ul>
+    <div class="opts">
+      <label>Compression level
+        <select id="level">
+          <option value="light">Light (CRF 23, keep resolution)</option>
+          <option value="recommended" selected>Recommended (CRF 28, max 1280px)</option>
+          <option value="strong">Strong (CRF 32, max 854px)</option>
+        </select>
+      </label>
+    </div>
+    <p class="card-note">⚠️ This <b>re-encodes</b> the video, so it is lossy and takes real time — unlike our <a href="/video-trim/">trim tool</a>, which copies the stream losslessly. The output is always an <b>MP4</b> (H.264 video + AAC 128 kbps audio), even if you started with a WebM or MOV.</p>
+    <div class="btn-row">
+      <button class="btn" id="compBtn" disabled>Compress Video</button>
+      <button class="btn secondary" id="clearBtn" style="display:none">Remove Video</button>
+    </div>
+    <div class="progress" id="prog"><div></div></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="ad-slot" data-slot="top"></div>
+
+  <article class="guide">
+    <h2>How to Use</h2>
+    <ol>
+      <li>Drop your video into the area above. The file name, size, duration and resolution appear right away. On first use the on-device engine (~31 MB) downloads once and is cached.</li>
+      <li>Pick a <b>compression level</b>. <b>Recommended</b> suits most phone videos and screen recordings; <b>Light</b> keeps the original resolution; <b>Strong</b> is for tight upload limits.</li>
+      <li>Click <b>Compress Video</b>. The progress bar and the button show the real percentage — this re-encodes every frame, so it takes time.</li>
+      <li>Read the result panel: it shows the <b>original size, the new size and the percentage saved</b>. The file downloads as <b>filename_compressed.mp4</b>. Not enough? Switch levels and run it again.</li>
+    </ol>
+
+    <h2>What CRF actually means</h2>
+    <p>Most compressors ask you for a target size. This one asks for a target <i>quality</i>, which is what CRF (Constant Rate Factor) is: a number where lower means better looking and bigger, higher means smaller and softer. The encoder then spends whatever bitrate each scene needs to hit that quality — a still title card costs almost nothing, a handheld pan through leaves costs a lot.</p>
+    <p>The honest consequence is that <b>nobody can promise you an exact output size from a quality setting</b>, us included. A static screen recording at CRF 28 can lose 90% of its size; shaky, grainy handheld footage at the same CRF might only lose 40%. That is why this page shows you the real before and after numbers instead of a prediction, and why switching levels and re-running is a perfectly normal workflow.</p>
+    <p>Rough guide: <b>CRF 23</b> is visually near-transparent for most content, <b>CRF 28</b> is the sweet spot where the file is much smaller and almost nobody notices on a phone screen, and <b>CRF 32</b> is visibly softer but still perfectly watchable — the right choice when getting under a limit matters more than pixel purity.</p>
+
+    <h2>Why downscaling beats CRF alone for phone videos</h2>
+    <p>A modern phone records at 1080p or 4K, but the video is usually going to be watched in a chat bubble, an email preview or a messaging app — often on the same phone screen it was shot with. Those pixels are being paid for and never seen.</p>
+    <p>Because file size scales with the pixel count, halving the width quarters the pixels, and that cut compounds with whatever CRF is doing. Going from 4K to 1280 px wide typically saves more than any CRF change on its own. That is why the <b>Recommended</b> level caps the width at 1280 px and <b>Strong</b> caps it at 854 px, while <b>Light</b> leaves the resolution alone for footage you intend to keep or edit later. Videos already narrower than the cap are never upscaled — the cap only ever reduces.</p>
+
+    <h2>An honest note on limits</h2>
+    <ul>
+      <li><b>Nothing is uploaded.</b> FFmpeg is compiled to WebAssembly and runs inside this page, so your footage never touches a server and there is no upload wait.</li>
+      <li><b>This is lossy.</b> Re-encoding throws detail away permanently, and compressing an already-compressed file repeatedly compounds the damage. Keep your original.</li>
+      <li><b>It can fail to shrink.</b> A file that is already small or heavily compressed can come out the same size or bigger. When that happens the tool refuses to download it and tells you to keep the original.</li>
+      <li><b>Very large files hit browser memory.</b> We impose no cap, but the whole file is held in your browser's memory — roughly 1–2 GB on a desktop, considerably less on a phone.</li>
+      <li><b>Re-encoding is CPU-bound</b> and single-threaded here, so a few minutes for a long clip is normal, not a bug.</li>
+      <li><b>Audio is re-encoded to AAC at 128 kbps</b>, which is transparent for speech and fine for most music in a shared clip.</li>
+    </ul>
+
+    <h2>Great for</h2>
+    <ul>
+      <li>A phone video too big for <b>email attachment limits (usually 10-25 MB)</b></li>
+      <li>Screen recordings headed for <b>Slack, Discord or KakaoTalk</b>, where the free size caps are low</li>
+      <li>Long 4K clips that need to fit in cloud storage or a portal upload form</li>
+      <li>Converting a WebM or MOV into an MP4 that plays everywhere, in the same step</li>
+    </ul>
+    <div class="tip">💡 <b>Tip:</b> Cut the clip down to the part you actually need with <a href="/video-trim/">Trim Video</a> first — it is lossless and instant, and it usually saves more than any compression setting. For a short silent loop, <a href="/video-to-gif/">Video to GIF</a> may be what you actually want.</div>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq">
+      <details><summary>Is my video really never uploaded?</summary><p>Correct. The tool downloads FFmpeg compiled to WebAssembly (about 31 MB, once, then cached) and re-encodes the video inside the browser. Nothing is transmitted, so there is no upload wait either — a 500 MB file starts processing immediately.</p></details>
+      <details><summary>What is CRF, and why can you not promise an exact output size?</summary><p>CRF is a quality target, not a size target. You tell the encoder how good the result has to look and it spends whatever bitrate that takes, scene by scene. A static screen recording at CRF 28 may shrink by 90 percent while shaky handheld footage at the same setting barely halves. That is why the tool shows you the real before and after sizes instead of promising a number up front.</p></details>
+      <details><summary>Why is the output always MP4, even for a WebM or MOV input?</summary><p>We re-encode to H.264 video with AAC 128 kbps audio in an MP4 container, because that combination plays practically everywhere — phones, browsers, chat apps, TVs and editing software. So a WebM or MOV input comes back as an MP4. The faststart flag is also set, so the file can begin playing before it has fully downloaded.</p></details>
+      <details><summary>How do I get under an email or chat size limit?</summary><p>Start with Recommended and look at the resulting size. Still too big? Try Strong, which also drops the resolution to 854 px wide. If it is still over the limit, shorten the clip first — length affects size more directly than any quality setting, and our trim tool cuts without re-encoding, so it costs nothing in quality or time.</p></details>
+      <details><summary>Why does it take minutes, and is there a size limit?</summary><p>Compressing means decoding every frame and encoding it again, and the engine runs single-threaded here, so expect roughly real time or slower on long clips — the progress bar and the button show the real percentage as it works. We impose no size limit, but everything happens in your browser's memory, so the practical ceiling is roughly 1–2 GB on a desktop and less on a phone.</p></details>
+    </div>
+  </article>
+
+  <div class="related">
+    <h2>Related Tools</h2>
+    <div class="tool-grid">
+      <a class="tool-tile" href="/video-trim/"><span class="emoji">🎬</span><span><b>Trim Video</b><span>Cut a clip without quality loss</span></span></a>
+      <a class="tool-tile" href="/video-to-gif/"><span class="emoji">🎞️</span><span><b>Video to GIF</b><span>Turn a clip into a GIF</span></span></a>
+      <a class="tool-tile" href="/image-compress/"><span class="emoji">🖼️</span><span><b>Compress Image</b><span>Shrink JPG &amp; PNG files</span></span></a>
+    </div>
+  </div>
+
+  <div class="ad-slot" data-slot="bottom"></div>
+</main>
+<footer id="site-footer" class="site-footer"></footer>
+
+<script src="/assets/vendor/ffmpeg/ffmpeg.js"></script>
+<script>
+(function () {
+  'use strict';
+  var dz = document.getElementById('dz');
+  var probe = document.getElementById('probe');
+  var infoEl = document.getElementById('fileInfo');
+  var levelSel = document.getElementById('level');
+  var compBtn = document.getElementById('compBtn');
+  var clearBtn = document.getElementById('clearBtn');
+  var prog = document.getElementById('prog');
+  var progBar = prog.querySelector('div');
+  var result = document.getElementById('result');
+  var card = document.getElementById('card');
+
+  var BTN_IDLE = 'Compress Video';
+
+  /* Level → CRF + maximum output width. maxW 0 means "leave the resolution alone". */
+  var LEVELS = {
+    light:       { crf: 23, maxW: 0 },
+    recommended: { crf: 28, maxW: 1280 },
+    strong:      { crf: 32, maxW: 854 }
+  };
+
+  var file = null, dur = 0, ext = 'mp4', baseName = 'video', objUrl = null;
+  var ffmpeg = null, ffLoading = null, running = false;
+
+  /* Progress bar driver. e.progress from FFmpeg is 0..1 for the current run; this tool
+     uses a single pass so it maps straight onto the bar. (Note: a two-pass job — such as
+     palettegen + paletteuse in the GIF tool — resets the ratio to 0 on each pass, which
+     would need per-pass remapping. Here there is only one pass.) */
+  function setProgress(ratio) {
+    if (typeof ratio !== 'number' || !isFinite(ratio)) ratio = 0;
+    if (ratio < 0) ratio = 0;
+    if (ratio > 1) ratio = 1;
+    var pct = Math.round(ratio * 100);
+    if (!isFinite(pct) || pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    progBar.style.width = pct + '%';
+    compBtn.textContent = 'Compressing… ' + pct + '%';
+  }
+
+  function loadFF() {
+    if (ffmpeg) return Promise.resolve(ffmpeg);
+    if (ffLoading) return ffLoading;
+    ffLoading = (function () {
+      mdtlResult(result, '⏳ Loading the on-device engine (~31 MB, first time only)…');
+      var f = new FFmpegWASM.FFmpeg();
+      /* 공식 패턴: core는 blob URL로 로드(워커 내 동적 import 호환), 워커 스크립트는 동일출처 전체 URL */
+      var toBlobURL = function (url, type) {
+        return fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('engine fetch failed: ' + url);
+          return r.blob();
+        }).then(function (b) { return URL.createObjectURL(new Blob([b], { type: type })); });
+      };
+      return Promise.all([
+        toBlobURL(location.origin + '/assets/vendor/ffmpeg/ffmpeg-core.js', 'text/javascript'),
+        toBlobURL(location.origin + '/assets/vendor/ffmpeg/ffmpeg-core.wasm', 'application/wasm')
+      ]).then(function (urls) {
+        return f.load({
+          coreURL: urls[0],
+          wasmURL: urls[1],
+          classWorkerURL: location.origin + '/assets/vendor/ffmpeg/814.ffmpeg.js'
+        });
+      }).then(function () {
+        f.on('progress', function (e) {
+          if (!running) return;
+          setProgress(e && typeof e.progress === 'number' ? e.progress : 0);
+        });
+        ffmpeg = f;
+        result.className = 'result';
+        return f;
+      });
+    })();
+    ffLoading.catch(function () { ffLoading = null; });
+    return ffLoading;
+  }
+
+  function fmtDur(t) {
+    if (!isFinite(t) || t <= 0) return null;
+    var m = Math.floor(t / 60), s = Math.round(t - m * 60);
+    if (s === 60) { m += 1; s = 0; }
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function showInfo(name, meta) {
+    infoEl.innerHTML = '';
+    var li = document.createElement('li');
+    li.className = 'file-item';
+    li.innerHTML = '<span class="name"></span><span class="meta"></span>';
+    li.querySelector('.name').textContent = name;
+    li.querySelector('.meta').textContent = meta;
+    infoEl.appendChild(li);
+  }
+
+  function resetAll() {
+    file = null; dur = 0;
+    if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = null; }
+    probe.removeAttribute('src'); probe.load();
+    infoEl.innerHTML = '';
+    compBtn.disabled = true; compBtn.textContent = BTN_IDLE;
+    clearBtn.style.display = 'none';
+    prog.className = 'progress'; progBar.style.width = '0%';
+    result.className = 'result';
+  }
+  clearBtn.addEventListener('click', resetAll);
+
+  mdtlDropzone(dz, {
+    accept: 'video/*,.mp4,.webm,.mov,.mkv',
+    multiple: false,
+    onFiles: function (fs) {
+      if (running) return;
+      resetAll();
+      file = fs[0];
+      var m = /\.([a-z0-9]+)$/i.exec(file.name || '');
+      ext = m ? m[1].toLowerCase() : 'mp4';
+      baseName = (file.name || 'video').replace(/\.[a-z0-9]+$/i, '') || 'video';
+      showInfo(file.name || 'video', mdtlFormatBytes(file.size) + ' · reading details…');
+      compBtn.disabled = false;
+      clearBtn.style.display = '';
+
+      objUrl = URL.createObjectURL(file);
+      probe.src = objUrl;
+      probe.onloadedmetadata = function () {
+        dur = probe.duration || 0;
+        var parts = [mdtlFormatBytes(file.size)];
+        var d = fmtDur(dur);
+        if (d) parts.push(d);
+        if (probe.videoWidth && probe.videoHeight) parts.push(probe.videoWidth + '×' + probe.videoHeight);
+        showInfo(file.name || 'video', parts.join(' · '));
+        loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'Engine load failed.'), true); });
+      };
+      probe.onerror = function () {
+        /* The browser preview cannot read some containers (MKV, for example), but the
+           engine often still can — so keep the button enabled and just say less. */
+        dur = 0;
+        showInfo(file.name || 'video', mdtlFormatBytes(file.size) + ' · duration not readable in this browser');
+        loadFF().catch(function (e) { mdtlResult(result, '❌ ' + (e && e.message ? e.message : 'Engine load failed.'), true); });
+      };
+    }
+  });
+
+  compBtn.addEventListener('click', function () {
+    if (!file || compBtn.disabled || running) return;
+    var levelKey = LEVELS[levelSel.value] ? levelSel.value : 'recommended';
+    var lv = LEVELS[levelKey];
+    var origSize = file.size;
+
+    running = true;
+    card.classList.add('busy');
+    prog.className = 'progress show';
+    setProgress(0);
+    mdtlResult(result, '⏳ Re-encoding the video… every frame is decoded and encoded again, so this can take a few minutes on long clips.');
+
+    var done = function () {
+      running = false;
+      card.classList.remove('busy');
+      prog.className = 'progress';
+      progBar.style.width = '0%';
+      compBtn.textContent = BTN_IDLE;
+    };
+
+    loadFF().then(function (ff) {
+      return file.arrayBuffer().then(function (buf) {
+        var inName = 'in.' + ext;
+        var args = ['-i', inName, '-c:v', 'libx264', '-crf', String(lv.crf), '-preset', 'veryfast']
+          .concat(lv.maxW ? ['-vf', "scale='min(" + lv.maxW + ",iw)':-2"] : [])
+          .concat(['-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', 'out.mp4']);
+        var cleanup = function () {
+          ff.deleteFile(inName).catch(function () {});
+          ff.deleteFile('out.mp4').catch(function () {});
+        };
+        return ff.writeFile(inName, new Uint8Array(buf))
+          .then(function () { return ff.exec(args); })
+          .then(function () { return ff.readFile('out.mp4'); })
+          .then(function (data) {
+            cleanup();
+            if (!data || !data.length) throw new Error('Empty output — this file could not be decoded.');
+            progBar.style.width = '100%';
+            var blob = new Blob([data], { type: 'video/mp4' });
+            if (blob.size >= origSize) {
+              /* Honest branch: nothing is downloaded when the result is not actually smaller. */
+              mdtlLogEvent('video-compress', 'no_result', 'result_not_smaller',
+                { size_bucket: mdtlSizeBucket(origSize), result_bucket: mdtlSizeBucket(blob.size), level: levelKey, format: 'mp4', n: Math.round(dur) });
+              mdtlResult(result,
+                'ℹ️ The compressed result (' + mdtlFormatBytes(blob.size) + ') is not smaller than the original (' + mdtlFormatBytes(origSize) + '), so <b>nothing was downloaded.</b>' +
+                '<br>This video is already efficiently encoded. <b>Keep using your original.</b> ' +
+                (levelKey === 'strong'
+                  ? 'You are already on the strongest level, so trim the clip shorter instead.'
+                  : 'If you still need it smaller, try a stronger level.'));
+              return;
+            }
+            var pct = Math.round((1 - blob.size / origSize) * 100);
+            mdtlDownload(blob, baseName + '_compressed.mp4');
+            mdtlLogEvent('video-compress', 'success', null,
+              { size_bucket: mdtlSizeBucket(origSize), result_bucket: mdtlSizeBucket(blob.size), level: levelKey, saved_pct: pct, format: 'mp4', n: Math.round(dur) });
+            mdtlResult(result,
+              '✅ <b>Done!</b> ' + mdtlFormatBytes(origSize) + ' → ' + mdtlFormatBytes(blob.size) +
+              ' (<b>' + pct + '% saved</b>) — downloaded as an MP4.' +
+              '<br>Still too big? Try a stronger level, or trim the clip shorter first — length matters more than any quality setting.');
+          }, function (err) {
+            cleanup();
+            throw err;
+          });
+      });
+    }).then(done, function (err) {
+      done();
+      mdtlResult(result, '❌ Compression failed: ' + (err && err.message ? err.message : 'unknown error') + '<br>Very large files can exceed browser memory — try a shorter source or a desktop browser.', true);
+    });
+  });
+})();
+</script>
+</body>
+</html>
