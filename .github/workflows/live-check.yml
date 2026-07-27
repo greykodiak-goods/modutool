@@ -78,8 +78,11 @@ jobs:
           for p in "/pdf/pdf-merge/" "/img/image-redact/" "/video/video-to-gif/"; do
             curl -sL "$BASE$p" | grep -q "noindex" && { echo "  $p 에 noindex!"; fail=1; } || echo "  $p 색인가능 OK"
           done
-          echo "--- 내부 CI 파일이 사이트로 새지 않았는지 ---"
-          for p in "/pdf/.github/workflows/live-check.yml" "/pdf/.gitignore" "/img/.github/workflows/convex-deploy.yml"; do
+          echo "--- 내부 파일이 사이트로 새지 않았는지 ---"
+          # 두 번 새어봤다: .github/*(2026-07-26 오전), README.md·netlify.toml·sites.json(같은 날 오후).
+          # README.md에는 수익 모델과 내부 문서 경로가 적혀 있어 공개돼선 안 된다.
+          for p in "/pdf/.github/workflows/live-check.yml" "/pdf/.gitignore" "/img/.github/workflows/convex-deploy.yml" \
+                   "/pdf/README.md" "/pdf/netlify.toml" "/pdf/sites.json" "/pdf/package.json" "/README.md" "/sites.json"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
             [ "$code" = "404" ] && echo "  차단 OK $p" || { echo "  유출! $code $p"; fail=1; }
           done
