@@ -5,6 +5,7 @@ import { v } from "convex/values";
 import { getAuthUserId, invalidateSessions } from "@convex-dev/auth/server";
 import type { QueryCtx, MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
+import { adminStatus } from "./lib/adminAccess";
 
 async function currentUser(ctx: QueryCtx | MutationCtx) {
   const userId = await getAuthUserId(ctx);
@@ -24,15 +25,13 @@ export const me = query({
       .query("profiles")
       .withIndex("by_user", (q) => q.eq("userId", cur.userId))
       .unique();
-    const admin = email
-      ? await ctx.db.query("adminUsers").withIndex("by_email", (q) => q.eq("email", email.toLowerCase())).unique()
-      : null;
     return {
       email,
       name: (cur.user as { name?: string }).name ?? null,
       plan: profile?.plan ?? "free",
       planExpiresAt: profile?.planExpiresAt ?? null,
-      isAdmin: !!admin,
+      // 이메일 등재 + 검증된 인증수단 동시 요구 — 비밀번호 선점 가입 권한상승 차단(lib/adminGate.js)
+      isAdmin: await adminStatus(ctx),
       createdAt: cur.user._creationTime,
     };
   },

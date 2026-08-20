@@ -9,6 +9,7 @@ import type * as auth from "../auth.js";
 import type * as contact from "../contact.js";
 import type * as dashboard from "../dashboard.js";
 import type * as http from "../http.js";
+import type * as retention from "../retention.js";
 import type * as telemetry from "../telemetry.js";
 declare const fullApi: ApiFromModules<{
   account: typeof account;
@@ -17,6 +18,7 @@ declare const fullApi: ApiFromModules<{
   contact: typeof contact;
   dashboard: typeof dashboard;
   http: typeof http;
+  retention: typeof retention;
   telemetry: typeof telemetry;
 }>;
 export declare const api: FilterApi<typeof fullApi, FunctionReference<any, "public">>;

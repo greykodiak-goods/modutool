@@ -3,7 +3,7 @@
    공개 쓰기 엔드포인트라 방어를 서버에 둔다 — 클라이언트 검증은 안내용일 뿐 강제력이 없다. */
 import { internalMutation, query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { requireAdmin } from "./lib/adminAccess";
 
 const MAX_SUBJECT = 120;
 const MAX_BODY = 4000;
@@ -49,20 +49,7 @@ export const submit = internalMutation({
   },
 });
 
-/* 관리자 전용 조회. dashboard와 같은 게이트를 쓴다(이메일이 adminUsers에 있어야 함). */
-async function requireAdmin(ctx: { auth: any; db: any }) {
-  const userId = await getAuthUserId(ctx as never);
-  if (!userId) throw new Error("not authorized");
-  const user = await ctx.db.get(userId);
-  const email = (user as { email?: string } | null)?.email?.toLowerCase();
-  if (!email) throw new Error("not authorized");
-  const admin = await ctx.db
-    .query("adminUsers")
-    .withIndex("by_email", (q: any) => q.eq("email", email))
-    .unique();
-  if (!admin) throw new Error("not authorized");
-}
-
+/* 관리자 전용 조회 — 게이트는 lib/adminAccess.requireAdmin 공용(이메일 등재 + 검증된 인증수단). */
 export const list = query({
   args: { onlyUnhandled: v.optional(v.boolean()) },
   handler: async (ctx, { onlyUnhandled }) => {

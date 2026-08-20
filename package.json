@@ -1,10 +1,19 @@
 {
   "name": "modutool",
   "private": true,
-  "description": "ThisIsMy Tools — static in-browser tools. package.json exists only for the Convex backend scaffold (convex/).",
+  "description": "ThisIsMy Tools — static in-browser tools. package.json covers the Convex backend (convex/) and the test toolchain (tests/).",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:all": "node scripts/build-all.mjs",
+    "typecheck": "tsc --noEmit -p convex",
+    "test:unit": "node tests/admin-gate-unit.mjs && node tests/retention-unit.mjs",
+    "test:coverage": "node tests/coverage-audit.mjs"
+  },
   "devDependencies": {
     "@types/node": "^26.1.1",
     "convex": "^1.17.0",
+    "pdf-lib": "^1.17.1",
+    "playwright": "^1.49.0",
     "typescript": "^5.6.3"
   },
   "dependencies": {
