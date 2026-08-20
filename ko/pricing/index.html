@@ -58,7 +58,7 @@
       <div class="price">₩0</div>
       <div class="per">영원히</div>
       <ul>
-        <li>19개 도구 전부 사용</li>
+        <li>이 사이트의 모든 도구 사용</li>
         <li>파일 개수·용량·횟수 무제한</li>
         <li>100% 브라우저 처리 (서버 업로드 없음)</li>
         <li>워터마크 없음 · 가입 없이 사용 가능</li>
@@ -69,7 +69,7 @@
     <div class="card plan highlight">
       <span class="badge">사전등록 할인 예정</span>
       <h2>프리미엄</h2>
-      <div class="price">월 2,900원 <small>· 연 19,900원(43%↓)</small></div>
+      <div class="price">월 2,900원 <small>· 연 19,900원(43%↓) · 예정가</small></div>
       <div class="per">결제 오픈 준비 중 — 가입하면 오픈 알림 + 할인</div>
       <ul>
         <li>광고 완전 제거</li>
@@ -98,12 +98,16 @@
 <footer id="site-footer" class="site-footer"></footer>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  var cta = document.getElementById('premiumCta');
   if (window.mdtlLoggedIn && window.mdtlLoggedIn()) {
-    var cta = document.getElementById('premiumCta');
     cta.textContent = '가입 완료 — 오픈 시 이메일로 알려드립니다';
     cta.classList.add('secondary');
     cta.href = (window.MDTL_BASE||'') + '/ko/account/';
   }
+  /* 수요검증 계측 — 출시알림 CTA 클릭(구매의향 신호). fetch keepalive라 이동해도 전송된다. */
+  cta.addEventListener('click', function () {
+    if (window.mdtlLogEvent) window.mdtlLogEvent('waitlist-cta', 'success', null, {});
+  });
 });
 </script>
 </body>
