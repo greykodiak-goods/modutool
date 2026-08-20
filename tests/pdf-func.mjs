@@ -4,13 +4,13 @@
 
    픽스처는 브라우저 안에서 pdf-lib으로 만든다(엔진이 이미 페이지에 로드돼 있어 추가 의존성 0).
    검증도 pdf-lib으로 다시 로드해서 한다 — 바이트를 정규식으로 훑으면 압축 스트림에 가려 오판한다. */
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 import { createServer } from 'node:http';
 import { readFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const ROOT = new URL('../dist', import.meta.url).pathname;
+const ROOT = distDir();
 const PREFIX = '/modutool';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
 const server = createServer((req, res) => {
@@ -24,7 +24,7 @@ const server = createServer((req, res) => {
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}${PREFIX}/pdf`;
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 
 let fails = 0;
 function ok(c, m) { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; }

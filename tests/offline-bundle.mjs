@@ -4,8 +4,8 @@
    말로 하는 보안 주장은 값이 없다. 브라우저가 실제로 만든 요청 목록을 세서 증명한다.
    사용: OFFLINE=1 SITE=pdf node scripts/build.mjs https://tools.internal /tmp/offline-pdf
         node tests/offline-bundle.mjs /tmp/offline-pdf */
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 import { createServer } from 'node:http';
 import { readFileSync, statSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
@@ -27,7 +27,7 @@ const server = createServer((req, res) => {
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const origin = `http://127.0.0.1:${server.address().port}`;
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 
 let fails = 0;
 function ok(c, m) { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; }

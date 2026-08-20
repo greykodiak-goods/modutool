@@ -1,13 +1,13 @@
 /* 오프라인(PWA) 검증 — 한 번 방문 후 네트워크를 완전히 끊고도 도구가 동작하는지.
    서비스워커는 로컬에서 기본 비활성이라 localStorage['mdtl-sw-force']='1'로 강제한다.
    (127.0.0.1은 보안 컨텍스트로 취급돼 SW 등록 자체는 가능) */
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 import { createServer } from 'node:http';
 import { readFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const ROOT = new URL('../dist', import.meta.url).pathname;
+const ROOT = distDir();
 const PREFIX = '/modutool';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml' };
 let online = true, served = 0;
@@ -30,7 +30,7 @@ const server = createServer((req, res) => {
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}${PREFIX}`;
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 
 let fails = 0;
 function ok(c, m) { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; }

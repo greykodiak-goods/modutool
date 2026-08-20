@@ -2,13 +2,13 @@
    계산기는 조용히 틀려도 아무도 모르는 종류의 도구라(오류 메시지가 안 뜬다),
    여기서 막지 못하면 사용자가 잘못된 값을 그대로 가져간다.
    기대값은 코드를 읽고 만든 게 아니라 손으로 계산한 값을 박아둔다(구현을 그대로 베끼면 검증이 아니다). */
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 import { createServer } from 'node:http';
 import { readFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const ROOT = new URL('../dist', import.meta.url).pathname;
+const ROOT = distDir();
 const PREFIX = '/modutool';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
 const server = createServer((req, res) => {
@@ -22,7 +22,7 @@ const server = createServer((req, res) => {
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}${PREFIX}/calc`;
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 
 let fails = 0;
 function ok(c, m) { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; }

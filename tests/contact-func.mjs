@@ -3,13 +3,13 @@
    여기서 검증할 것은 "폼이 예쁘다"가 아니라 "메시지가 서버로 실제로 나간다"이다.
 
    Convex는 컨테이너에서 못 나가므로 /contact 엔드포인트를 가로채 요청 본문을 확인한다. */
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 import { createServer } from 'node:http';
 import { readFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const ROOT = new URL('../dist', import.meta.url).pathname;
+const ROOT = distDir();
 const PREFIX = '/modutool';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
 const server = createServer((req, res) => {
@@ -23,7 +23,7 @@ const server = createServer((req, res) => {
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}${PREFIX}`;
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 
 let fails = 0;
 function ok(c, m) { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; }

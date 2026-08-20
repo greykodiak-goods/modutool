@@ -3,10 +3,10 @@
 import { createServer } from 'node:http';
 import { readFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 
-const ROOT = new URL('../dist', import.meta.url).pathname;
+const ROOT = distDir();
 const PREFIX = '/modutool';   // 우산 빌드는 BASE_PATH=/modutool 기준
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
 
@@ -32,15 +32,17 @@ await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const port = server.address().port;
 const base = `http://127.0.0.1:${port}`;
 
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 const page = await browser.newPage();
 
 // 텔레메트리 POST를 가로채 페이로드 수집(실제 전송은 막음)
 const posted = [];
-await page.route('**/rest/v1/tool_events', (route) => {
+/* 수집 경로는 Convex HTTP action /log-event 단일 경로다(2026-07-26 Supabase 완전 제거 —
+   옛 rest/v1/tool_events를 가로채면 아무것도 안 잡혀 테스트가 무의미해진다). */
+await page.route('**/log-event', (route) => {
   const req = route.request();
   try { posted.push(JSON.parse(req.postData() || '{}')); } catch (e) { posted.push({ _raw: req.postData() }); }
-  route.fulfill({ status: 201, body: '' });
+  route.fulfill({ status: 200, body: '{"ok":true}' });
 });
 
 // 로컬에서도 텔레메트리 켜기(검증용 플래그)

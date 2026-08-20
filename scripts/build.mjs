@@ -204,7 +204,8 @@ function walk(dir) {
     if (site) {
       // 허브: 이 사이트 카테고리 섹션만 남김 (cat-title + 뒤따르는 tool-grid 쌍)
       if (name === 'index.html') {
-        html = html.replace(/[ \t]*<div class="cat-title"[^>]*id="([a-z]+)"[^>]*>[\s\S]*?<\/div>\s*<div class="tool-grid">[\s\S]*?<\/div>\n/g,
+        // \r?\n — 윈도 체크아웃(autocrlf)은 CRLF라 \n 고정이면 필터가 통째로 무력화된다(2026-08-21 실사고)
+        html = html.replace(/[ \t]*<div class="cat-title"[^>]*id="([a-z]+)"[^>]*>[\s\S]*?<\/div>\s*<div class="tool-grid">[\s\S]*?<\/div>\r?\n/g,
           (m, id) => site.categories.includes(id) ? m : '');
       }
       // 브랜드 치환 + site.js용 전역 주입

@@ -1,13 +1,13 @@
 /* 배경 제거 + 물체 제거 기능 검증 (실브라우저 + 실제 opencv.js 엔진).
    bg-remove: 파란 배경 + 빨간 사각형 → rect 드래그 → 출력 모서리 투명·중앙 불투명 확인.
    object-remove: 흰 배경 + 검은 사각형 → 브러시 → 인페인팅 후 해당 영역이 밝아졌는지 확인. */
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 import { createServer } from 'node:http';
 import { readFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const ROOT = new URL('..', import.meta.url).pathname;   // 소스 트리 서빙(/assets/vendor/opencv.js 로드)
+const ROOT = repoDir();   // 소스 트리 서빙(/assets/vendor/opencv.js 로드)
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
 const server = createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]);
@@ -18,7 +18,7 @@ const server = createServer((req, res) => {
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`;
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 
 const fails = [];
 function ok(c, m) { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails.push(m); }

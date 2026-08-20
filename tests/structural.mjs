@@ -1,12 +1,10 @@
 /* 전 페이지 구조 검증 — 구현 세부와 무관한 공통 계약 체크
-   사용: node tests/structural.mjs <baseURL> <playwright설치경로> */
-import { createRequire } from 'node:module';
-import { join } from 'node:path';
+   사용: node tests/structural.mjs <baseURL> [playwright설치경로 — 생략 시 _pw.mjs 탐색 순서] */
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
 
 const base = process.argv[2] || 'http://localhost:8931';
-const pwDir = process.argv[3];
-const require = createRequire(join(pwDir, 'package.json'));
-const { chromium } = require('playwright');
+if (process.argv[3]) process.env.PW_DIR = process.argv[3];
+const chromium = loadChromium();
 
 const TOOL_SLUGS = [
   'pdf-merge', 'pdf-split', 'pdf-organize', 'pdf-rotate', 'pdf-extract', 'pdf-compress', 'pdf-watermark', 'pdf-page-numbers', 'pdf-sign', 'pdf-to-jpg', 'img-to-pdf',
@@ -16,7 +14,7 @@ const TOOL_SLUGS = [
 ];
 const TOOL_PAGES = [...TOOL_SLUGS, 'ko', ...TOOL_SLUGS.map(s => 'ko/' + s)];
 
-const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 const page = await browser.newPage();
 let failures = [];
 

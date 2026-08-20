@@ -1,13 +1,13 @@
 /* video-trim 기능 검증 — 실브라우저에서 실제 ffmpeg.wasm 엔진으로:
    ① 페이지의 엔진이 테스트 영상(mp4, 2초, testsrc)을 직접 생성 ② 드롭존에 주입
    ③ 슬라이더로 1초 구간 설정 ④ 잘라서 다운로드 → 출력 크기·파일명 검증 */
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 import { createServer } from 'node:http';
 import { readFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const ROOT = new URL('../dist', import.meta.url).pathname;
+const ROOT = distDir();
 const PREFIX = '/modutool';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.wasm': 'application/wasm' };
 const server = createServer((req, res) => {
@@ -20,7 +20,7 @@ const server = createServer((req, res) => {
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}${PREFIX}`;
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 const page = await browser.newPage();
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e)));

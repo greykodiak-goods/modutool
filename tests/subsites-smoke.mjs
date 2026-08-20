@@ -1,12 +1,12 @@
 /* 경로형 멀티브랜드(/modutool, /modutool/img, /modutool/calc) 스모크:
    실제 서브패스 마운트로 서빙해 페이지 오류·브랜드·베이스경로를 검증. */
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 import { createServer } from 'node:http';
 import { readFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const ROOT = new URL('../dist', import.meta.url).pathname;
+const ROOT = distDir();
 const PREFIX = '/modutool';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
 const server = createServer((req, res) => {
@@ -20,11 +20,12 @@ const server = createServer((req, res) => {
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}${PREFIX}`;
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 
 const CASES = [
-  { url: '/', brand: 'ThisIsMyPDF' },
-  { url: '/pdf-merge/', brand: 'ThisIsMyPDF' },
+  // 우산 구조에서 루트는 포털(umbrella-smoke가 검증) — PDF 브랜드는 /pdf/ 아래다
+  { url: '/pdf/', brand: 'ThisIsMyPDF' },
+  { url: '/pdf/pdf-merge/', brand: 'ThisIsMyPDF' },
   { url: '/img/', brand: 'ThisIsMyIMG' },
   { url: '/img/image-compress/', brand: 'ThisIsMyIMG' },
   { url: '/img/ko/', brand: 'ThisIsMyIMG' },

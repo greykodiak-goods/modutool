@@ -1,12 +1,12 @@
 /* image-redact 기능 검증: 이미지 로드 → 드래그로 2개 영역(모자이크+검정) → 다운로드 →
    출력 픽셀이 영역 안에서만 바뀌었는지 확인. */
-import pw from '/opt/node22/lib/node_modules/playwright/index.js';
-const { chromium } = pw;
+import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
+const chromium = loadChromium();
 import { createServer } from 'node:http';
 import { readFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const ROOT = new URL('..', import.meta.url).pathname;   // 소스 트리 직접 서빙(원본 경로 __ORIGIN__은 페이지 로직과 무관)
+const ROOT = repoDir();   // 소스 트리 직접 서빙(원본 경로 __ORIGIN__은 페이지 로직과 무관)
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
 const server = createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]);
@@ -18,7 +18,7 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`;
 
-const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
+const browser = await chromium.launch(launchOptions());
 const page = await browser.newPage();
 const errs = [];
 page.on('pageerror', (e) => errs.push(String(e)));
