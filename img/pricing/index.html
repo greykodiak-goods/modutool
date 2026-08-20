@@ -61,7 +61,7 @@
       <div class="price">$0</div>
       <div class="per">forever</div>
       <ul>
-        <li>All 19 tools</li>
+        <li>Every tool on this site</li>
         <li>Unlimited files, sizes and runs</li>
         <li>100% in-browser processing (no uploads)</li>
         <li>No watermark · no account required</li>
@@ -72,7 +72,7 @@
     <div class="card plan highlight">
       <span class="badge">Launch discount planned</span>
       <h2>Premium</h2>
-      <div class="price">$2.9/mo <small>· $19.9/yr (43% off)</small></div>
+      <div class="price">$2.9/mo <small>· $19.9/yr (43% off) · planned price</small></div>
       <div class="per">Payments launching soon — sign up for the launch alert & discount</div>
       <ul>
         <li>No ads, ever</li>
@@ -101,12 +101,16 @@
 <footer id="site-footer" class="site-footer"></footer>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  var cta = document.getElementById('premiumCta');
   if (window.mdtlLoggedIn && window.mdtlLoggedIn()) {
-    var cta = document.getElementById('premiumCta');
     cta.textContent = 'Signed up — we\'ll email you at launch';
     cta.classList.add('secondary');
     cta.href = (window.MDTL_BASE||'') + '/account/';
   }
+  /* 수요검증 계측 — 출시알림 CTA 클릭(구매의향 신호). fetch keepalive라 이동해도 전송된다. */
+  cta.addEventListener('click', function () {
+    if (window.mdtlLogEvent) window.mdtlLogEvent('waitlist-cta', 'success', null, {});
+  });
 });
 </script>
 </body>
