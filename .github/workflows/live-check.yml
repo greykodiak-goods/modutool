@@ -1,4 +1,5 @@
 # 라이브 사이트 점검 — 개발 컨테이너는 외부망이 막혀 있어, 러너에서 실URL 응답을 검증한다.
+# 수동(dispatch) + 매일 자동(19:00 UTC = 04:00 KST) — 배포 후 스모크와 일일 상시 감시를 겸한다.
 name: Live site check
 on:
   workflow_dispatch:
@@ -7,6 +8,8 @@ on:
         description: "검사할 사이트 베이스 URL (끝 슬래시 없이)"
         required: true
         default: "https://greykodiak-goods.github.io/modutool"
+  schedule:
+    - cron: "0 19 * * *"
 
 jobs:
   check:
@@ -15,7 +18,7 @@ jobs:
     steps:
       - name: Check pages
         run: |
-          BASE="${{ inputs.base_url }}"
+          BASE="${{ inputs.base_url || 'https://greykodiak-goods.github.io/modutool' }}"  # schedule 실행엔 inputs가 없다
           fail=0
           for p in "/" "/ko/" "/pdf/" "/pdf/ko/" "/pdf/pdf-merge/" "/pdf/pdf-compress/" "/pdf/pdf-sign/" "/pdf/pricing/" "/pdf/login/" "/pdf/admin/" "/img/" "/img/ko/" "/img/image-compress/" "/img/image-redact/" "/img/image-exif/" "/img/image-bg-remove/" "/img/image-object-remove/" "/img/ko/image-bg-remove/" "/img/assets/vendor/opencv.js" "/video/" "/video/video-trim/" "/video/ko/video-trim/" "/video/video-to-mp3/" "/video/audio-trim/" "/video/video-to-gif/" "/video/video-compress/" "/video/ko/video-to-gif/" "/video/assets/vendor/ffmpeg/ffmpeg-core.wasm" "/calc/" "/calc/age-calculator/" "/calc/vat-calculator/" "/calc/interest-calculator/" "/calc/unit-converter/" "/calc/qr-generator/" "/calc/password-generator/" "/calc/text-diff/" "/sitemap.xml" "/robots.txt" "/pdf/sitemap.xml" "/pdf/assets/site.js" "/pdf/assets/vendor/pdf-lib.min.js" "/calc/assets/vendor/qrcode-generator.js" "/pdf-merge/" "/ko/image-compress/"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
