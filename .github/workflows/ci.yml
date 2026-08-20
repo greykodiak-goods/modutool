@@ -3,7 +3,7 @@
 name: CI
 on:
   push:
-    branches: [main, launch-p0]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -28,6 +28,8 @@ jobs:
         run: npm run typecheck
       - name: Functional-test coverage ratchet
         run: npm run test:coverage
+      - name: Product-contract ratchet
+        run: npm run test:contract
       - name: Security audit (prod deps, high+)
         run: npm audit --omit=dev --audit-level=high
 

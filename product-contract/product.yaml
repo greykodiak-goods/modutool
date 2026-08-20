@@ -1,0 +1,19 @@
+# ThisIsMy Tools — 제품 계약 (전체)
+id: thisismy-tools
+purpose: >
+  파일을 서버에 올리지 않고 브라우저 안에서 끝나는 생활 도구 모음.
+  경쟁 우위는 단 하나 — "네 파일은 우리에게 오지 않는다"를 코드·테스트·오프라인 번들로 증명하는 것.
+brands: [pdf, img, calc, video]        # sites.json과 동일 키
+kpi:
+  primary: job_succeeded_rate          # 작업 시작 대비 성공률 (대시보드 by_tool)
+  acquisition: landing_view            # 검색 유입 (outcome=view)
+  monetization_signal: waitlist-cta    # 프리미엄 구매의향 (수요검증 단계)
+out_of_scope:
+  - 서버측 파일 처리 (원리적으로 금지 — 신뢰 모델 붕괴)
+  - 파일명·파일내용·입력값의 수집·로그 (events.yaml 금지 필드)
+  - 결제 (수요검증 통과 전 — pricing은 예정가+출시알림만)
+invariants:
+  - 모든 도구 페이지는 외부 스크립트 0 (structural.mjs가 강제)
+  - OFFLINE 번들은 외부 요청 0건 (offline-bundle.mjs가 강제)
+  - 신규 도구는 결과물 검증 테스트 필수 (coverage-audit.mjs 래칫)
+  - 신규 도구는 product-contract/tools/<slug>.yaml 필수 (contract-audit.mjs 래칫)

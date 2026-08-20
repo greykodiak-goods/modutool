@@ -1,0 +1,24 @@
+# 분석 이벤트 계약 — convex/telemetry.ts 서버 화이트리스트와 CI가 동기 검사한다
+# (여기를 바꾸면 서버도 같이 바꿔야 하고, 서버만 바꾸면 CI가 잡는다)
+outcomes: [success, no_result, error, unsupported, cancelled, view]
+meta_whitelist:
+  - pages          # PDF 쪽수
+  - count          # 처리한 파일 수
+  - n
+  - size_bucket    # 대략적 용량 구간("5-10MB") — 정확한 바이트는 수집하지 않는다
+  - result_bucket
+  - level
+  - saved_pct      # 압축 절감률
+  - err_name
+  - width
+  - height
+  - format
+  - quality
+  - seed
+  - ref            # 유입 도메인만 (경로·쿼리 금지)
+forbidden:         # 절대 수집 금지 — 서버(telemetry.ts)가 화이트리스트 외 전부 폐기
+  - 파일명, 파일 내용, 사용자가 입력한 값 일체
+  - IP 주소 (contactRate도 IP를 저장하지 않는다)
+  - 이메일 등 식별자 (sessionId는 무작위 익명 id만)
+special_tools:     # 도구 폴더가 아닌 계측 전용 slug
+  - waitlist-cta   # pricing 출시알림 CTA 클릭 = 구매의향 신호 (outcome=success)

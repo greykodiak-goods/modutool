@@ -1,0 +1,39 @@
+# PDF 합치기 — 도구 계약 본보기 (실제 구현·테스트에서 역기입, 2026-08-21)
+id: pdf-merge
+purpose: 여러 PDF를 사용자가 정한 순서로 하나로 합쳐 브라우저 안에서 다운로드까지 끝낸다.
+routes: [/pdf-merge/, /ko/pdf-merge/]
+engine: pdf-lib (assets/vendor — 브라우저 내 처리, 서버 전송 없음)
+
+states:
+  idle: 드롭존(#dz)만 표시. 병합 버튼 비활성.
+  input_loading: 파일 선택 직후 카드 썸네일 렌더 중(.pdf-card .spin) — 비동기.
+  ready: 유효 PDF 2개 이상 → 병합 버튼 활성, 문구 "Merge N PDFs". 정렬 힌트 표시.
+  invalid_input: 1개 이하면 버튼 비활성 유지. 깨진/암호 PDF는 병합 시 건너뛰고 결과에 파일명 고지.
+  processing: 진행바(#prog) 진행. 버튼은 재클릭 방지.
+  success: merged.pdf 자동 다운로드 + "✅ Done! N files, M pages" 결과 문구.
+  error: ❌ 접두 + 안전한 오류 문구(mdtlResult isError) → 전역 자동 캡처가 error 이벤트 전송.
+
+components:
+  dropzone: { id: "#dz", accepts: "application/pdf 복수", click_또는_드래그: true }
+  file_card: { selector: ".pdf-card", contains: [".thumb 썸네일", ".order 순번", ".fn 파일명", ".rm 제거(aria-label)", ".mv ◀▶ 터치 폴백(aria-label, 데스크톱 숨김)"] }
+  reorder: 포인터 드래그(데스크톱·터치 공용) + ◀▶ 버튼. 결과는 표시된 순번 순서.
+  merge_button: { id: "#mergeBtn", enabled_when: "유효 PDF ≥ 2 && !processing" }
+  secondary: { add: "#addBtn", clear: "#clearBtn", visible_when: "파일 ≥ 1" }
+  result: { id: "#result", success_또는_error 문구 }
+
+errors:
+  encrypted_or_corrupted: 해당 파일만 건너뛰고 성공 결과에 "⚠️ Skipped:" 목록 표시(파일명은 사용자 화면에만 — 텔레메트리 금지).
+  all_invalid: 병합 불가 오류 문구 + 파일 제거·재시도 경로 유지.
+
+telemetry:
+  success: { tool: pdf-merge, meta: [count, pages, size_bucket] }
+  error: 전역 자동 캡처(mdtlResult) — 사유 코드 분류(invalid_file 등), 파일명 미포함.
+
+invariants:
+  - 출력 쪽수 = 입력 쪽수 합, 순서 = 화면 순번 순서
+  - 외부 요청 0 (파일은 브라우저를 떠나지 않는다)
+  - 텔레메트리에 파일명·내용 절대 미포함 (telemetry.spec.mjs가 강제)
+
+tests:
+  - tests/pdf-func.mjs         # 결과 PDF 재파싱 — 쪽수·구조 검증
+  - tests/smoke-pdf-merge.mjs  # 업로드→순서변경→병합→다운로드 E2E, 3쪽 검증
