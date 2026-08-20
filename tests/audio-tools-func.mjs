@@ -102,13 +102,19 @@ function isMp3(buf) {
     'gen.mp3', 'song.mp3', 'audio/mpeg');
   ok(made > 1000, `테스트 오디오 생성 (${made} bytes)`);
 
-  // 슬라이더로 0~1.5초 구간 설정
-  await page.waitForFunction(() => document.getElementById('startRange') && document.getElementById('endRange'), null, { timeout: 60000 });
+  // 슬라이더로 0~1.5초 구간 설정 — 반드시 메타데이터 로드(max=실제 길이로 갱신) 이후에.
+  // 페이지는 loadedmetadata에서 endRange.value를 전체 길이로 덮어쓰므로, 그 전에 설정하면
+  // 전체 구간 트림이 되어 출력==원본 크기로 간헐 실패한다(2026-08-21 CI 실사례).
+  await page.waitForFunction(() => {
+    const e = document.getElementById('endRange');
+    return e && parseFloat(e.max) > 2 && parseFloat(e.max) < 100; // 기본 max=100 → 4초 길이로 갱신 대기
+  }, null, { timeout: 60000 });
   await page.evaluate(() => {
     const s = document.getElementById('startRange'), e = document.getElementById('endRange');
     s.value = 0; s.dispatchEvent(new Event('input', { bubbles: true }));
     e.value = 1.5; e.dispatchEvent(new Event('input', { bubbles: true }));
   });
+  await page.waitForFunction(() => document.getElementById('endRange').value === '1.5', null, { timeout: 5000 });
   await page.waitForFunction(() => {
     const bs = Array.from(document.querySelectorAll('button.btn'));
     return bs.some((b) => !b.disabled && !/clear|제거|지우/i.test(b.textContent));
