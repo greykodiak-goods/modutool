@@ -1,0 +1,33 @@
+# pdf-organize — 도구 계약 (실구현·테스트 역기입, 2026-08-22 소급)
+id: pdf-organize
+purpose: 쪽 썸네일을 보며 삭제·재배열해 새 PDF로 저장한다.
+routes: [/pdf-organize/, /ko/pdf-organize/]
+engine: pdf.js(썸네일 렌더) + pdf-lib(저장)
+
+states:
+  idle: 드롭존(#dz)만 표시. 실행 버튼 비활성.
+  input_loading: 파일 파싱·미리보기 렌더 중(비동기).
+  ready: 유효 PDF 로드 → 실행 버튼 활성.
+  processing: 진행바(#prog) 진행, 재클릭 방지.
+  success: 결과 파일 자동 다운로드 + ✅ 결과 문구(#result).
+  error: ❌ 안전한 오류 문구(mdtlResult) → 전역 자동 캡처가 error 이벤트 전송.
+
+components:
+  dropzone: "#dz"
+  page_grid: { id: "#pgGrid", 썸네일 드래그 재배열·개별 삭제 }
+  reset: "#resetBtn"
+  save: { id: "#saveBtn", enabled_when: "쪽 1개 이상" }
+
+errors:
+  all_deleted: 남은 쪽 0이면 저장 불가(버튼 비활성).
+
+telemetry:
+  success: { tool: pdf-organize, outcome: success }
+
+invariants:
+  - 결과 쪽수·순서 = 그리드에 보이는 상태 그대로 (삭제 실반영을 테스트가 검증)
+  - 외부 요청 0 — 파일은 브라우저를 떠나지 않는다
+  - 텔레메트리에 파일명·내용 절대 미포함 (telemetry.spec.mjs)
+
+tests:
+  - tests/pdf-func.mjs  # 쪽 삭제 실반영 검증

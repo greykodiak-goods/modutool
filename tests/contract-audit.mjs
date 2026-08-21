@@ -25,8 +25,8 @@ const FROZEN = new Set([
   'image-bg-remove', 'image-color-picker', 'image-compress', 'image-convert', 'image-crop',
   'image-exif', 'image-object-remove', 'image-redact', 'image-resize', 'image-rotate',
   'image-split', 'image-watermark', 'img-to-pdf', 'interest-calculator', 'password-generator',
-  'pdf-compress', 'pdf-extract', 'pdf-organize', 'pdf-page-numbers', 'pdf-rotate', 'pdf-sign',
-  'pdf-split', 'pdf-to-jpg', 'pdf-watermark', 'percent-calculator', 'pyeong-calculator',
+  
+  'percent-calculator', 'pyeong-calculator',
   'qr-generator', 'text-diff', 'trig-calculator', 'unit-converter', 'vat-calculator',
   'video-compress', 'video-to-gif', 'video-to-mp3', 'video-trim',
 ]);

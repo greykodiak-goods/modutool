@@ -273,6 +273,25 @@ const A4 = [595, 842];
   await page.close();
 }
 
+/* ── pdf-split : 범위 추출 — 4쪽에서 2-3만 뽑아 한 파일로 ──
+   (2026-08-22 계약 소급 중 발견: split만 결과검증이 없었다 — 커버리지 래칫의 느슨판정 구멍) */
+{
+  const { page, errs } = await open('pdf-split');
+  const src = await makePdf(page, [A4, A4, A4, A4]);
+  await page.setInputFiles('#dz input[type=file]', [{ name: 'four.pdf', mimeType: 'application/pdf', buffer: buf(src) }]);
+  await page.waitForFunction(() => document.getElementById('rangeWrap').style.display !== 'none', null, { timeout: 20000 });
+  await page.fill('#rangeInput', '2-3');
+  await clickable(page, '#goBtn');
+  const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 25000 }), page.click('#goBtn')]);
+  ok(/_2-3\.pdf$/.test(dl.suggestedFilename()), `split: 파일명 범위 표기 (${dl.suggestedFilename()})`);
+  const stream = await dl.createReadStream();
+  const out = await new Promise((res, rej) => { const c = []; stream.on('data', (d) => c.push(d)); stream.on('end', () => res(Buffer.concat(c))); stream.on('error', rej); });
+  const r = await inspect(page, out);
+  ok(r.count === 2, `split: 4쪽 중 2-3 추출 → 2쪽 (실제 ${r.count})`);
+  ok(errs.length === 0, 'pdf-split JS 오류 없음' + (errs[0] ? ': ' + errs[0] : ''));
+  await page.close();
+}
+
 await fx.close();
 await browser.close();
 server.close();

@@ -1,0 +1,34 @@
+# pdf-to-jpg — 도구 계약 (실구현·테스트 역기입, 2026-08-22 소급)
+id: pdf-to-jpg
+purpose: PDF 각 쪽을 고품질 JPG 이미지로 변환한다.
+routes: [/pdf-to-jpg/, /ko/pdf-to-jpg/]
+engine: pdf.js (pdf-lib 미사용 페이지)
+
+states:
+  idle: 드롭존(#dz)만 표시. 실행 버튼 비활성.
+  input_loading: 파일 파싱·미리보기 렌더 중(비동기).
+  ready: 유효 PDF 로드 → 실행 버튼 활성.
+  processing: 진행바(#prog) 진행, 재클릭 방지.
+  success: 결과 파일 자동 다운로드 + ✅ 결과 문구(#result).
+  error: ❌ 안전한 오류 문구(mdtlResult) → 전역 자동 캡처가 error 이벤트 전송.
+
+components:
+  dropzone: "#dz"
+  quality: "#quality"
+  convert: "#convBtn"
+  thumbs: "#thumbs (쪽별 이미지 미리보기·다운로드)"
+  clear: "#clearBtn"
+
+errors:
+  encrypted_or_corrupted: 로드 실패 시 안전한 오류 문구.
+
+telemetry:
+  success: { tool: pdf-to-jpg, meta: [quality 등] }
+
+invariants:
+  - 쪽수만큼 이미지 생성(3쪽→3개 — 테스트 검증)
+  - 외부 요청 0 — 파일은 브라우저를 떠나지 않는다
+  - 텔레메트리에 파일명·내용 절대 미포함 (telemetry.spec.mjs)
+
+tests:
+  - tests/pdf-func.mjs  # 3쪽→이미지 3개

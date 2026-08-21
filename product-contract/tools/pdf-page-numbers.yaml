@@ -1,0 +1,35 @@
+# pdf-page-numbers — 도구 계약 (실구현·테스트 역기입, 2026-08-22 소급)
+id: pdf-page-numbers
+purpose: 쪽 번호를 지정 위치·형식으로 삽입한다.
+routes: [/pdf-page-numbers/, /ko/pdf-page-numbers/]
+engine: pdf-lib
+
+states:
+  idle: 드롭존(#dz)만 표시. 실행 버튼 비활성.
+  input_loading: 파일 파싱·미리보기 렌더 중(비동기).
+  ready: 유효 PDF 로드 → 실행 버튼 활성.
+  processing: 진행바(#prog) 진행, 재클릭 방지.
+  success: 결과 파일 자동 다운로드 + ✅ 결과 문구(#result).
+  error: ❌ 안전한 오류 문구(mdtlResult) → 전역 자동 캡처가 error 이벤트 전송.
+
+components:
+  format: "#fmtSel"
+  position: "#posSel"
+  size: "#sizeSel"
+  start: "#startInput"
+  skip_first: "#skipFirst (표지 제외)"
+  go: "#goBtn"
+
+errors:
+  invalid_start: 시작 번호 비정상 입력 방어.
+
+telemetry:
+  success: { tool: pdf-page-numbers, outcome: success }
+
+invariants:
+  - 번호를 넣어도 쪽수·쪽 크기가 변하면 안 된다(테스트 검증)
+  - 외부 요청 0 — 파일은 브라우저를 떠나지 않는다
+  - 텔레메트리에 파일명·내용 절대 미포함 (telemetry.spec.mjs)
+
+tests:
+  - tests/pdf-func.mjs  # 쪽수·크기 불변 검증

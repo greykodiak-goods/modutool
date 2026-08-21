@@ -1,0 +1,32 @@
+# pdf-extract — 도구 계약 (실구현·테스트 역기입, 2026-08-22 소급)
+id: pdf-extract
+purpose: 지정한 쪽 범위만 뽑아 새 PDF로 만든다.
+routes: [/pdf-extract/, /ko/pdf-extract/]
+engine: pdf-lib
+
+states:
+  idle: 드롭존(#dz)만 표시. 실행 버튼 비활성.
+  input_loading: 파일 파싱·미리보기 렌더 중(비동기).
+  ready: 유효 PDF 로드 → 실행 버튼 활성.
+  processing: 진행바(#prog) 진행, 재클릭 방지.
+  success: 결과 파일 자동 다운로드 + ✅ 결과 문구(#result).
+  error: ❌ 안전한 오류 문구(mdtlResult) → 전역 자동 캡처가 error 이벤트 전송.
+
+components:
+  dropzone: "#dz"
+  range_input: { id: "#rangeInput", format: "1-3,5" }
+  go: "#goBtn"
+
+errors:
+  invalid_range: 파싱 실패·범위 초과 시 오류 문구, 재입력 가능.
+
+telemetry:
+  success: { tool: pdf-extract, outcome: success }
+
+invariants:
+  - 결과 쪽수 = 요청 범위 쪽수 (5쪽에서 2-4 → 3쪽 — 테스트 검증)
+  - 외부 요청 0 — 파일은 브라우저를 떠나지 않는다
+  - 텔레메트리에 파일명·내용 절대 미포함 (telemetry.spec.mjs)
+
+tests:
+  - tests/pdf-func.mjs  # 5쪽→2-4 추출 3쪽
