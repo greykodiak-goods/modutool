@@ -11,6 +11,8 @@ const TOOL_SLUGS = [
   'image-compress', 'image-resize', 'image-crop', 'image-convert', 'image-rotate', 'image-watermark',
   'age-calculator', 'percent-calculator', 'char-count',
   'dday-calculator', 'trig-calculator', 'pyeong-calculator',
+  // video 브랜드 — 2026-08-22 커버리지 편입(그간 구조 계약 미검사였음)
+  'video-trim', 'video-to-mp3', 'video-to-gif', 'video-compress', 'audio-trim',
 ];
 const TOOL_PAGES = [...TOOL_SLUGS, 'ko', ...TOOL_SLUGS.map(s => 'ko/' + s)];
 

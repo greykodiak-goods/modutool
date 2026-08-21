@@ -70,6 +70,10 @@ jobs:
       - name: Accessibility smoke (axe-core, WCAG A/AA)
         run: node tests/a11y-smoke.mjs
 
+      # ── 모바일 게이트: 제품계약 "320px 잘림·가로스크롤 금지" ──
+      - name: Mobile 320px smoke
+        run: node tests/mobile-smoke.mjs
+
       # ── 증거팩: 전 게이트 통과 후에만 생성 — 대표 검수용(Actions 아티팩트로 다운로드) ──
       - name: Release evidence pack
         run: node tests/evidence-pack.mjs evidence

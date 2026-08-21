@@ -48,7 +48,7 @@
     if (header) {
       header.innerHTML =
         '<div class="inner">' +
-        '<a class="logo" href="' + BASE + L.home + '"><span class="mark">' + L.mark + '</span>' + L.site + '</a>' +
+        '<a class="logo" href="' + BASE + L.home + '"><span class="mark">' + L.mark + '</span><span class="brand">' + L.site + '</span></a>' +
         '<span class="header-spacer"></span>' +
         '<button class="icon-btn" onclick="mdtlToggleTheme()" aria-label="' + L.themeLabel + '" title="' + L.themeLabel + '">◐</button>' +
         '</div>';

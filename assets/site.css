@@ -62,7 +62,11 @@ a:hover { text-decoration: underline; }
   max-width: var(--maxw); margin: 0 auto; padding: 0 16px;
   display: flex; align-items: center; gap: 12px; height: 56px;
 }
-.logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 17px; color: var(--text); }
+.logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 17px; color: var(--text); min-width: 0; }
+/* 320px 대응: 브랜드명이 길어도(예: ThisIsMyCalculator) 로고가 줄어들며 말줄임 — 로그인·테마 버튼이 화면 밖으로 밀리지 않게 */
+.logo .brand { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.site-header .inner > * { flex-shrink: 0; }
+.site-header .inner > .logo { flex-shrink: 1; }
 .logo:hover { text-decoration: none; }
 .logo .mark {
   width: 26px; height: 26px; border-radius: 8px; background: var(--accent);
@@ -145,7 +149,9 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 16px 56px; }
 
 /* 옵션 폼 */
 .opts { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
-.opts label { font-size: 14px; color: var(--text-soft); display: flex; align-items: center; gap: 7px; }
+/* max-width 제약: 옵션 문구가 긴 select는 최소폭이 옵션 텍스트라 320px에서 몸통을 밀어낸다(모바일 스모크) */
+.opts label { font-size: 14px; color: var(--text-soft); display: flex; align-items: center; gap: 7px; max-width: 100%; min-width: 0; flex-wrap: wrap; }
+.opts select { max-width: 100%; min-width: 0; }
 .opts input[type=number], .opts input[type=text], .opts select, .field input, .field select {
   background: var(--surface); color: var(--text); border: 1px solid var(--line);
   border-radius: 10px; padding: 9px 12px; font-size: 15px; font-family: inherit;
