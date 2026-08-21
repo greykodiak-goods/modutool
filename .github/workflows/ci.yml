@@ -65,3 +65,12 @@ jobs:
                    pdf-func image-func calc-func audio-tools-func video-trim-func video2-func pwa-offline; do
             echo "── tests/$t.mjs"; node tests/$t.mjs
           done
+
+      # ── 증거팩: 전 게이트 통과 후에만 생성 — 대표 검수용(Actions 아티팩트로 다운로드) ──
+      - name: Release evidence pack
+        run: node tests/evidence-pack.mjs evidence
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-evidence
+          path: evidence/
+          retention-days: 30

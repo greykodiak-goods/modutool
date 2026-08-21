@@ -3,6 +3,7 @@
 # 것이 시작이고, 바꾸면 검사가 따라온다. (tripodfish app.charter.json의 modutool 소급 적용판, 2026-08-21)
 name: thisismy-tools
 track: self
+backend: convex   # 대표 결정 2026-08-22: 당분간 유지+prod 전환(출시 우선). Supabase 공유 인스턴스 통합은 tripodfish 편입 시점에 재검토
 crossCutting:
   i18n:
     enabled: true
