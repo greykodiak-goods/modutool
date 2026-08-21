@@ -261,7 +261,9 @@
   /* meta 화이트리스트 — 비식별 수치/열거값만 통과(파일명·경로·텍스트 원문 차단)
      ref = 리퍼러의 도메인만(경로·쿼리 제외 — 방문 분석용, 비식별) */
   var TEL_META_KEYS = ['pages', 'count', 'n', 'size_bucket', 'result_bucket', 'level',
-    'saved_pct', 'err_name', 'width', 'height', 'format', 'quality', 'ref'];
+    'saved_pct', 'err_name', 'width', 'height', 'format', 'quality', 'ref',
+    /* 유입 귀속(캠페인·콘텐츠→방문→작업성공 연결). 값은 40자 컷 — 개인 식별값 아님 */
+    'utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
   function telCleanMeta(meta) {
     var out = {};
     if (meta && typeof meta === 'object') {
@@ -334,14 +336,23 @@
      쿠키·핑거프린팅 없음. 리퍼러는 도메인만, 자기 사이트 내부 이동은 (internal)로 축약. */
   function telPageview() {
     try {
-      var ref = null;
+      var meta = {};
       if (document.referrer) {
         try {
           var host = new URL(document.referrer).hostname;
-          ref = host === location.hostname ? '(internal)' : host;
+          meta.ref = host === location.hostname ? '(internal)' : host;
         } catch (e) {}
       }
-      window.mdtlLogEvent(null, 'view', null, ref ? { ref: ref } : {});
+      /* 유입 귀속: utm_*만 수집(경로·검색어 전체는 수집하지 않음). 같은 sessionId의
+         이후 작업 이벤트와 서버에서 연결돼 "어느 캠페인이 실제 작업 성공을 만드나"가 나온다. */
+      try {
+        var qs = new URLSearchParams(location.search);
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
+          var v = qs.get(k);
+          if (v) meta[k] = v;
+        });
+      } catch (e) {}
+      window.mdtlLogEvent(null, 'view', null, meta);
     } catch (e) {}
   }
 
