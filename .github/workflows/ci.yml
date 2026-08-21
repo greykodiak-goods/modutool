@@ -66,6 +66,10 @@ jobs:
             echo "── tests/$t.mjs"; node tests/$t.mjs
           done
 
+      # ── 접근성 게이트: 헌장 a11y: wcag-aa — serious/critical 위반 0건 (axe-core) ──
+      - name: Accessibility smoke (axe-core, WCAG A/AA)
+        run: node tests/a11y-smoke.mjs
+
       # ── 증거팩: 전 게이트 통과 후에만 생성 — 대표 검수용(Actions 아티팩트로 다운로드) ──
       - name: Release evidence pack
         run: node tests/evidence-pack.mjs evidence
