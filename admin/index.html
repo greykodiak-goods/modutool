@@ -159,6 +159,20 @@
       html += '</tbody></table></div>';
     }
 
+    /* 유입 귀속: 같은 sessionId의 첫 utm 유입 기준으로 캠페인→방문→실제 작업까지 연결.
+       "어느 채널이 방문만 만들고, 어느 채널이 작업 성공을 만드나"의 답. */
+    var campaigns = d.top_campaigns || [];
+    if (campaigns.length) {
+      html += '<div class="sect">캠페인 성과 <small>utm 유입 → 같은 세션의 작업 성공까지 연결</small></div>';
+      html += '<div class="tblwrap"><table class="bo"><thead><tr>' +
+        '<th>캠페인 (source / medium / campaign)</th><th class="num">뷰</th><th class="num">세션</th><th class="num">작업</th><th class="num">성공</th></tr></thead><tbody>';
+      campaigns.forEach(function (c) {
+        html += '<tr><td><b>' + esc(c.campaign) + '</b></td><td class="num">' + n(c.views) + '</td>' +
+          '<td class="num">' + n(c.sessions) + '</td><td class="num">' + n(c.jobs) + '</td><td class="num">' + n(c.success) + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+
     // outcome chips
     var chips = ['error', 'no_result', 'unsupported', 'cancelled', 'success'];
     html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 2px">';
