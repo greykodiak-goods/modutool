@@ -9,7 +9,7 @@
    사용: node scripts/build-all.mjs https://오리진 [BASE_PATH=/modutool]
    (오리진에는 base 경로까지 포함: https://greykodiak-goods.github.io/modutool) */
 import { execFileSync } from 'node:child_process';
-import { cpSync, readFileSync, writeFileSync, rmSync, mkdirSync } from 'node:fs';
+import { cpSync, readFileSync, writeFileSync, rmSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -38,6 +38,9 @@ for (const [src, dst] of [['portal/index.html', 'index.html'], ['portal/ko/index
   mkdirSync(dirname(join(dist, dst)), { recursive: true });
   writeFileSync(join(dist, dst), html);
 }
+
+/* 2.5) Cloudflare Pages 헤더 — 정본 전환 대비(_headers). GitHub Pages·Netlify는 무시한다. */
+if (existsSync(join(root, '_headers'))) cpSync(join(root, '_headers'), join(dist, '_headers'));
 
 /* 3) 구 루트 URL 리다이렉트 스텁 (site.js CAT_SLUGS와 동기 유지할 것) */
 const REDIRECTS = {
