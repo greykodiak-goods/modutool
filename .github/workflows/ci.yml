@@ -30,6 +30,8 @@ jobs:
         run: npm run test:coverage
       - name: Product-contract ratchet
         run: npm run test:contract
+      - name: i18n coverage ratchet (charter locales)
+        run: npm run test:i18n
       - name: Security audit (prod deps, high+)
         run: npm audit --omit=dev --audit-level=high
 

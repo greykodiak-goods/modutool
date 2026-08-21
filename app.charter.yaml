@@ -1,0 +1,18 @@
+# ThisIsMy Tools 헌장 — "한 번 정한 요구가 세션이 바뀌어도 사라지지 않게" 하는 결정 기록.
+# 여기 선언된 요구는 CI가 실제와 대조한다(tests/i18n-audit.mjs 등). 요구를 바꾸려면 이 파일을 바꾸는
+# 것이 시작이고, 바꾸면 검사가 따라온다. (tripodfish app.charter.json의 modutool 소급 적용판, 2026-08-21)
+name: thisismy-tools
+track: self
+crossCutting:
+  i18n:
+    enabled: true
+    # 언어를 추가하면(예: ja) i18n-audit가 전 도구·지원 페이지의 해당 언어판을 CI에서 요구한다.
+    locales: [en, ko]
+    defaultLocale: en           # 루트 = 영어(글로벌 기본), 그 외 locale은 /<locale>/ 경로
+    exceptions: [admin]         # 백오피스 — 운영자 전용이라 단일 언어 허용
+  seo: true                     # sitemap·canonical·hreflang — structural.mjs가 검사
+  offline: true                 # 폐쇄망 번들 외부요청 0 — offline-bundle.mjs가 검사
+  a11y: wcag-aa
+  tests: true                   # 도구=결과물 검증(coverage-audit) + 신규 도구=계약(contract-audit)
+  privacy: no-pii-telemetry     # 파일명·내용·입력값 수집 금지 — telemetry.spec.mjs가 검사
+decidedAt: "2026-08-21"

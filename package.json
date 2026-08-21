@@ -8,7 +8,8 @@
     "typecheck": "tsc --noEmit -p convex",
     "test:unit": "node tests/admin-gate-unit.mjs && node tests/retention-unit.mjs",
     "test:coverage": "node tests/coverage-audit.mjs",
-    "test:contract": "node tests/contract-audit.mjs"
+    "test:contract": "node tests/contract-audit.mjs",
+    "test:i18n": "node tests/i18n-audit.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
