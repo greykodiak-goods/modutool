@@ -10,6 +10,7 @@
   --accent-soft: #eff4ff;
   --accent-text: #1d4ed8;
   --ok: #16a34a;
+  --ok-text: #15703b; /* 12.5px 배지 텍스트용 — 흰 배경 4.5:1 이상 (axe color-contrast) */
   --warn: #d97706;
   --danger: #dc2626;
   --radius: 14px;
@@ -26,13 +27,14 @@
   --accent: #4f83f7;
   --accent-soft: #1c2740;
   --accent-text: #8db0ff;
+  --ok-text: #4ade80;
   --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 6px 20px rgb(0 0 0 / .35);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0f1420; --surface: #171e2e; --surface-2: #1f2739; --text: #e8ecf4;
     --text-soft: #98a2b6; --line: #2a3348; --accent: #4f83f7; --accent-soft: #1c2740;
-    --accent-text: #8db0ff; --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 6px 20px rgb(0 0 0 / .35);
+    --accent-text: #8db0ff; --ok-text: #4ade80; --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 6px 20px rgb(0 0 0 / .35);
   }
 }
 
@@ -46,6 +48,8 @@ body {
 img { max-width: 100%; }
 a { color: var(--accent-text); text-decoration: none; }
 a:hover { text-decoration: underline; }
+/* 본문 속 링크는 밑줄 상시 — 색만으로 구분하면 WCAG 1.4.1 위반 (axe link-in-text-block) */
+.guide a:not(.btn), .faq a, .tip a, p a:not(.btn) { text-decoration: underline; text-underline-offset: 2px; }
 
 /* ── 헤더 ─────────────────────────────── */
 .site-header {
@@ -58,7 +62,11 @@ a:hover { text-decoration: underline; }
   max-width: var(--maxw); margin: 0 auto; padding: 0 16px;
   display: flex; align-items: center; gap: 12px; height: 56px;
 }
-.logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 17px; color: var(--text); }
+.logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 17px; color: var(--text); min-width: 0; }
+/* 320px 대응: 브랜드명이 길어도(예: ThisIsMyCalculator) 로고가 줄어들며 말줄임 — 로그인·테마 버튼이 화면 밖으로 밀리지 않게 */
+.logo .brand { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.site-header .inner > * { flex-shrink: 0; }
+.site-header .inner > .logo { flex-shrink: 1; }
 .logo:hover { text-decoration: none; }
 .logo .mark {
   width: 26px; height: 26px; border-radius: 8px; background: var(--accent);
@@ -80,7 +88,7 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 16px 56px; }
 .page-sub { color: var(--text-soft); margin: 0 0 20px; font-size: 15px; }
 .privacy-badge {
   display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600;
-  color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent);
+  color: var(--ok-text, var(--ok)); background: color-mix(in srgb, var(--ok) 10%, transparent);
   border: 1px solid color-mix(in srgb, var(--ok) 25%, transparent);
   padding: 3px 10px; border-radius: 99px; margin-left: 8px; vertical-align: 3px;
 }
@@ -141,7 +149,9 @@ main { max-width: var(--maxw); margin: 0 auto; padding: 24px 16px 56px; }
 
 /* 옵션 폼 */
 .opts { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
-.opts label { font-size: 14px; color: var(--text-soft); display: flex; align-items: center; gap: 7px; }
+/* max-width 제약: 옵션 문구가 긴 select는 최소폭이 옵션 텍스트라 320px에서 몸통을 밀어낸다(모바일 스모크) */
+.opts label { font-size: 14px; color: var(--text-soft); display: flex; align-items: center; gap: 7px; max-width: 100%; min-width: 0; flex-wrap: wrap; }
+.opts select { max-width: 100%; min-width: 0; }
 .opts input[type=number], .opts input[type=text], .opts select, .field input, .field select {
   background: var(--surface); color: var(--text); border: 1px solid var(--line);
   border-radius: 10px; padding: 9px 12px; font-size: 15px; font-family: inherit;

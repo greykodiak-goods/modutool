@@ -48,7 +48,7 @@
     if (header) {
       header.innerHTML =
         '<div class="inner">' +
-        '<a class="logo" href="' + BASE + L.home + '"><span class="mark">' + L.mark + '</span>' + L.site + '</a>' +
+        '<a class="logo" href="' + BASE + L.home + '"><span class="mark">' + L.mark + '</span><span class="brand">' + L.site + '</span></a>' +
         '<span class="header-spacer"></span>' +
         '<button class="icon-btn" onclick="mdtlToggleTheme()" aria-label="' + L.themeLabel + '" title="' + L.themeLabel + '">◐</button>' +
         '</div>';
@@ -83,9 +83,10 @@
     if (!alt) return;                               // 대체 언어 페이지가 없는 페이지
     var L = LANGS[cur];
     var bar = document.createElement('div');
+    /* 배너색은 테마 변수 대신 고정 — 다크 accent(#4f83f7) 위 흰 글자는 WCAG 4.5:1 미달 */
     bar.setAttribute('style',
       'position:sticky;bottom:0;left:0;right:0;z-index:60;display:flex;gap:12px;align-items:center;justify-content:center;' +
-      'padding:10px 14px;background:var(--accent);color:#fff;font-size:14px;');
+      'padding:10px 14px;background:#1d4ed8;color:#fff;font-size:14px;');
     var link = document.createElement('a');
     link.href = alt.getAttribute('href');
     link.textContent = L.suggest;
@@ -95,7 +96,7 @@
     });
     var stay = document.createElement('button');
     stay.textContent = L.stay;
-    stay.setAttribute('style', 'background:rgba(255,255,255,.18);border:0;color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px;');
+    stay.setAttribute('style', 'background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:13px;');
     stay.addEventListener('click', function () {
       try { localStorage.setItem('mdtl-lang', cur); } catch (e) {}
       bar.remove();
