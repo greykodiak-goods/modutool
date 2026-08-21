@@ -16,6 +16,10 @@ meta_whitelist:
   - quality
   - seed
   - ref            # 유입 도메인만 (경로·쿼리 금지)
+  - utm_source     # 유입 귀속 4종 — 캠페인·콘텐츠→방문→작업성공 연결 (view 이벤트에만 실림)
+  - utm_medium
+  - utm_campaign
+  - utm_content
 forbidden:         # 절대 수집 금지 — 서버(telemetry.ts)가 화이트리스트 외 전부 폐기
   - 파일명, 파일 내용, 사용자가 입력한 값 일체
   - IP 주소 (contactRate도 IP를 저장하지 않는다)

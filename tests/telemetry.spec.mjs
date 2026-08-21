@@ -65,6 +65,11 @@ await page.evaluate(() => {
 });
 
 await page.waitForTimeout(300);
+
+// 3) 유입 귀속(utm): 화이트리스트 4종만 남고, 그 외 쿼리(gclid·검색어 등)는 절대 안 실린다
+await page.goto(`${base}${PREFIX}/pdf/pdf-compress/?utm_source=yt&utm_campaign=pdftip&gclid=SHOULD_DROP&q=SECRET_QUERY`, { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(600);
+
 await browser.close();
 server.close();
 
@@ -87,6 +92,12 @@ check(blob.indexOf(SECRET) === -1, '민감 파일명 전체가 페이로드에 �
 check(blob.indexOf('어닝계약') === -1, '파일명 조각(한글)이 페이로드에 없음');
 check(blob.indexOf('MERGER_ACQUISITION') === -1, '파일명 조각(영문)이 페이로드에 없음');
 check(blob.indexOf('LEAK.pdf') === -1, 'meta로 넣은 파일명이 제거됨');
+
+const utmView = posted.find((e) => e.outcome === 'view' && e.meta && e.meta.utm_source);
+check(!!utmView, 'utm 붙은 방문이 view 이벤트로 수집됨');
+check(utmView && utmView.meta.utm_source === 'yt' && utmView.meta.utm_campaign === 'pdftip', 'utm_source·utm_campaign 유지됨');
+check(blob.indexOf('SHOULD_DROP') === -1, '비화이트리스트 쿼리(gclid)가 페이로드에 없음');
+check(blob.indexOf('SECRET_QUERY') === -1, '검색어 쿼리가 페이로드에 없음');
 
 console.log('\n' + (fails.length ? `❌ 실패 ${fails.length}건` : '✅ 전부 통과'));
 process.exit(fails.length ? 1 : 0);

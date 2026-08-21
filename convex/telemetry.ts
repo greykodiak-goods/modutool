@@ -9,6 +9,8 @@ const OUTCOMES = new Set(["success", "no_result", "error", "unsupported", "cance
 const META_KEYS = new Set([
   "pages", "count", "n", "size_bucket", "result_bucket", "level",
   "saved_pct", "err_name", "width", "height", "format", "quality", "seed", "ref",
+  // 유입 귀속(utm) — 캠페인·콘텐츠→방문→작업성공 연결. 값 40자 컷, 개인 식별값 아님
+  "utm_source", "utm_medium", "utm_campaign", "utm_content",
 ]);
 
 export const logEvent = internalMutation({
