@@ -1,0 +1,21 @@
+{
+  "name": "thisismypdf-mobile",
+  "private": true,
+  "description": "ThisIsMyPDF iOS/Android 래퍼(Capacitor). 웹 번들 = 루트의 OFFLINE=1 SITE=pdf 빌드(www/). 네이티브 빌드는 .github/workflows/mobile.yml(CI)에서 수행 — 로컬엔 Xcode/Android SDK 불필요.",
+  "scripts": {
+    "www": "node ../scripts/build-mobile.mjs",
+    "sync": "npm run www && npx cap sync",
+    "open:android": "npx cap open android",
+    "open:ios": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/filesystem": "^7.0.0",
+    "@capacitor/ios": "^7.0.0",
+    "@capacitor/share": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}

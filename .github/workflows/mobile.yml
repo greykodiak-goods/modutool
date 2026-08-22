@@ -1,0 +1,141 @@
+# 모바일 앱 빌드 — Android(AAB/APK) + iOS(컴파일 검증/서명 아카이브). 로컬엔 Xcode·Android SDK가 없어 CI가 빌드 머신이다.
+# 웹 번들 = scripts/build-mobile.mjs (OFFLINE=1 SITE=pdf: 회원·수집·광고 없음, 도구는 전부 기기 안에서 동작).
+#
+# 서명(대표 T0 — 시크릿 등록 후 자동 전환):
+#   Android: ANDROID_KEYSTORE_B64 / ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD
+#            없으면 → 미서명 release AAB + debug APK(기기 설치 테스트용)만 산출.
+#   iOS:     IOS_P12_B64 / IOS_P12_PASSWORD / IOS_PROVISION_B64 / APPLE_TEAM_ID
+#            없으면 → 서명 없이 빌드만 해서 "컴파일된다"를 검증(IPA 미산출).
+name: Mobile
+on:
+  push:
+    branches: [main]
+    paths: ['mobile/**', 'scripts/build-mobile.mjs', 'scripts/build.mjs', 'assets/**', 'pdf-*/**', 'img-to-pdf/**', 'ko/**', 'sw.js', '.github/workflows/mobile.yml']
+  workflow_dispatch:
+    inputs:
+      version_code:
+        description: "Android versionCode / iOS build number (정수, 매 제출마다 증가)"
+        required: false
+        default: ""
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - uses: android-actions/setup-android@v3
+      - name: Web bundle + icons
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          node scripts/build-mobile.mjs
+      - name: Capacitor sync
+        working-directory: mobile
+        run: npm ci --no-audit --no-fund && npx cap sync android
+      - name: Version code
+        if: inputs.version_code != ''
+        working-directory: mobile/android/app
+        run: sed -i "s/versionCode [0-9]*/versionCode ${{ inputs.version_code }}/" build.gradle
+      - name: Signing config (if secrets present)
+        if: env.KS != ''
+        env: { KS: "${{ secrets.ANDROID_KEYSTORE_B64 }}" }
+        working-directory: mobile/android
+        run: |
+          echo "$KS" | base64 -d > app/upload.keystore
+          cat >> app/build.gradle <<'EOF'
+          android {
+            signingConfigs { release {
+              storeFile file('upload.keystore')
+              storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+              keyAlias System.getenv('ANDROID_KEY_ALIAS')
+              keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+            } }
+            buildTypes { release { signingConfig signingConfigs.release } }
+          }
+          EOF
+      - name: Gradle build (AAB release + APK debug)
+        working-directory: mobile/android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon bundleRelease assembleDebug
+          ls -la app/build/outputs/bundle/release app/build/outputs/apk/debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: |
+            mobile/android/app/build/outputs/bundle/release/*.aab
+            mobile/android/app/build/outputs/apk/debug/*.apk
+            mobile/icons/*.png
+          retention-days: 30
+
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - name: Web bundle + icons
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install chromium
+          node scripts/build-mobile.mjs
+      - name: Capacitor sync (pod install)
+        working-directory: mobile
+        run: npm ci --no-audit --no-fund && npx cap sync ios
+      - name: Build number
+        if: inputs.version_code != ''
+        working-directory: mobile/ios/App
+        run: xcrun agvtool new-version -all ${{ inputs.version_code }}
+      - name: Import signing (if secrets present)
+        if: env.P12 != ''
+        env:
+          P12: ${{ secrets.IOS_P12_B64 }}
+          P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+          PROVISION: ${{ secrets.IOS_PROVISION_B64 }}
+        run: |
+          echo "$P12" | base64 -d > cert.p12
+          security create-keychain -p ci build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p ci build.keychain
+          security import cert.p12 -k build.keychain -P "$P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k ci build.keychain
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$PROVISION" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/app.mobileprovision
+      - name: Xcode build (unsigned compile check)
+        if: env.P12 == ''
+        env: { P12: "${{ secrets.IOS_P12_B64 }}" }
+        working-directory: mobile/ios/App
+        run: |
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build | tail -20
+      - name: Xcode archive + export IPA (signed)
+        if: env.P12 != ''
+        env:
+          P12: ${{ secrets.IOS_P12_B64 }}
+          TEAM: ${{ secrets.APPLE_TEAM_ID }}
+        working-directory: mobile/ios/App
+        run: |
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos \
+            -archivePath build/App.xcarchive DEVELOPMENT_TEAM="$TEAM" archive | tail -20
+          cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict><key>method</key><string>app-store-connect</string><key>teamID</key><string>$TEAM</string></dict></plist>
+          EOF
+          xcodebuild -exportArchive -archivePath build/App.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath build/ipa | tail -5
+      - uses: actions/upload-artifact@v4
+        if: env.P12 != ''
+        env: { P12: "${{ secrets.IOS_P12_B64 }}" }
+        with:
+          name: ios
+          path: mobile/ios/App/build/ipa/*.ipa
+          retention-days: 30

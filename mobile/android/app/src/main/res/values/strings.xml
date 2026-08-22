@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ThisIsMyPDF</string>
+    <string name="title_activity_main">ThisIsMyPDF</string>
+    <string name="package_name">com.thisismy.pdf</string>
+    <string name="custom_url_scheme">com.thisismy.pdf</string>
+</resources>

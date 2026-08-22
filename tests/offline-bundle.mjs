@@ -52,6 +52,9 @@ for (const p of ['/login/', '/signup/', '/account/', '/admin/', '/pricing/']) {
 }
 const footerDead = await page.locator('#site-footer a[href*="pricing"], #site-footer a[href*="contact"]').count();
 ok(footerDead === 0, '푸터에 죽은 링크 없음');
+// 헤더의 프리미엄/로그인 버튼은 auth.js가 주입 — 백엔드 없는 번들(앱 포함)에선 404로 가는 죽은 링크가 된다(2026-08-22 앱 스크린샷에서 발견)
+const headerDead = await page.locator('#site-header a[href*="pricing"], #site-header a[href*="login"], #site-header a[href*="account"]').count();
+ok(headerDead === 0, '헤더에 프리미엄/로그인 링크 없음');
 
 /* 2) 실제 작업 — PDF 2개 병합 */
 await page.goto(`${origin}/pdf-merge/`, { waitUntil: 'networkidle' });

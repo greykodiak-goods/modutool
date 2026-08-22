@@ -51,7 +51,7 @@ const OFFLINE = !!process.env.OFFLINE;
 
 const isToolDir = (name) => /-|calculator|count|compress|resize|convert|rotate|watermark|merge|split|extract|organize|sign|numbers|to-jpg|to-pdf/.test(name) && name !== 'assets';
 
-const SKIP = new Set(['dist', 'scripts', 'node_modules', 'tests', '.git', 'supabase', 'portal', 'docs', 'convex']);
+const SKIP = new Set(['dist', 'scripts', 'node_modules', 'tests', '.git', 'supabase', 'portal', 'docs', 'convex', 'mobile']);
 
 /* 레포 루트에 있는 "파일"은 이 목록에 있는 것만 배포한다 — 나머지는 전부 개발용이다.
    ⚠️ SKIP처럼 "빼는 것을 나열"하면 새 파일이 생길 때마다 조용히 새어나간다. 실제로 README.md

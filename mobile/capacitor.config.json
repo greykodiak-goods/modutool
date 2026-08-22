@@ -1,0 +1,8 @@
+{
+  "appId": "com.thisismy.pdf",
+  "appName": "ThisIsMyPDF",
+  "webDir": "www",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "automatic" }
+}

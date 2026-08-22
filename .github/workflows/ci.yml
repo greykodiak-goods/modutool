@@ -43,7 +43,7 @@ jobs:
           sleep 1
           node tests/structural.mjs http://127.0.0.1:8931
           node tests/smoke-pdf-merge.mjs http://127.0.0.1:8931
-          for t in admin-smoke pages-smoke cv-tools-func redact-func; do
+          for t in admin-smoke pages-smoke cv-tools-func redact-func native-bridge; do
             echo "── tests/$t.mjs"; node tests/$t.mjs
           done
           kill $SRV

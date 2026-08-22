@@ -2,3 +2,6 @@ dist/
 node_modules/
 .env
 .env.local
+mobile/www/
+mobile/icons/
+mobile/store/
