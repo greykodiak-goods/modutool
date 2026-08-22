@@ -13,7 +13,7 @@ Auth 는 1단계 이메일+비밀번호(Supabase Auth 기본), 구글 OAuth 는 
 | 2 | 텔레메트리 스왑 — site.js 수집을 tim_log_event 로, 실삽입·롤업 검증 | ✅ 완료 | 이 커밋 |
 | 3 | 문의 스왑 — contact 폼을 tim_submit_contact 로 (허니팟·레이트리밋 동등성) | ✅ 완료 | 이 커밋 |
 | 4 | Auth 스왑 — 로그인/가입/계정/삭제를 Supabase Auth 로 (구글 버튼은 플래그 숨김) | ✅ 완료 | 이 커밋 |
-| 5 | 백오피스 스왑 — tim_dashboard·문의 관리, admin 시드 | 대기 | |
+| 5 | 백오피스 스왑 — tim_dashboard·문의 관리, admin 시드 | ✅ 완료 | 이 커밋 |
 | 6 | CI 전 게이트 + 라이브 스모크 + 헌장 backend:supabase + Convex 동결 기록 + T0 갱신 | 대기 | |
 
 ## 사이클 로그
@@ -25,3 +25,5 @@ Auth 는 1단계 이메일+비밀번호(Supabase Auth 기본), 구글 OAuth 는 
 
 > **[T0 대기] Supabase Auth 이메일 확인 설정**: 공유 인스턴스 전체에 걸리는 Auth 설정이라 대표 결정 필요.
 > 선택지 ⓐ Confirm email OFF(가입 즉시 로그인, 지금 프런트도 자동 대응) ⓑ ON 유지 + 커스텀 SMTP 연결(기본 메일러는 시간당 수 통 제한이라 운영 불가). 현재 프런트는 어느 쪽이든 동작.
+
+- 15:4x [5] 백오피스 스왑 — RPC_MAP 은 [4]에서 선반영, 이번엔 admin 페이지 문구 2곳(Convex 시드 안내→tim_admin_users, 결정대기 라벨) 갱신 + **admin 시드: greykodiak1@gmail.com 등록**. 임시 관리자 계정으로 실측 8단계: dashboard 15키 전부 존재·집계 실값 일치(도구 2건 중 실패 1, 페이지뷰 1 분리집계), contact_list 키 8종 렌더 계약 일치, setHandled 왕복, anon 호출 forbidden 차단, 임시계정 자삭. 스모크·임시시드 전량 정리(admins 1행=대표만, 나머지 0행). Queue-Epoch: 1
