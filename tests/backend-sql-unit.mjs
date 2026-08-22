@@ -41,8 +41,13 @@ ok(/hp'\),''\) <> '' then return jsonb_build_object\('ok', true\)/.test(contact)
 ok(/v_count > 20 then return jsonb_build_object\('ok', false, 'code', 'rate_limited'\)/.test(contact), '분당 20건 상한 → rate_limited JSON');
 ok(/v_email := null/.test(contact), '형식 불량 이메일은 null 저장(거절 아님)');
 
-/* ── 권한 계약 ── */
-ok(/revoke all on all tables in schema public from anon, authenticated/.test(sql), '테이블 직접 접근 전면 차단');
+/* ── 권한 계약 ──
+   [기대값 변경 2026-08-22] 원래 '스키마 광역 revoke'를 불변식으로 단언했으나, 그 광역 revoke가
+   공유 인스턴스의 어닝하우스·딥마진 전 권한을 제거해 전면 장애를 냈다(05:52 UTC 실사고).
+   불변식의 본질은 "tim_ 테이블 직접 접근 차단"이므로 tim_ 명시 나열로 재표현하고,
+   위험 패턴(ON ALL ... IN SCHEMA)은 부재를 역으로 단언한다 — 재등장 시 CI가 막는다. */
+ok(/revoke all on table tim_profiles[\s\S]{0,200}?tim_admin_users from anon, authenticated/.test(sql), 'tim_ 테이블 직접 접근 차단(명시 나열)');
+ok(!/on\s+all\s+(tables|functions|sequences)\s+in\s+schema/i.test(sql), '스키마 광역 권한 변경 부재(공유 DB — 2026-08-22 사고 재발 방지)');
 ok(/grant execute on function tim_log_event\(jsonb\), tim_submit_contact\(jsonb\) to anon/.test(sql), 'anon 은 수집·문의 RPC 만');
 
 console.log(`✅ backend-sql-unit — ${n}개 단언 전부 통과`);
