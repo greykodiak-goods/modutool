@@ -295,8 +295,8 @@
      tool 생략 시 URL에서 유추. outcome: success|no_result|error|unsupported|cancelled */
   window.mdtlLogEvent = function (tool, outcome, reason, meta) {
     try {
-      var cv = window.MDTL_CONVEX;
-      if (!(cv && cv.url) || telLocal() || telOptedOut()) return;
+      var cv = window.MDTL_BACKEND;
+      if (!(cv && cv.url && cv.key) || telLocal() || telOptedOut()) return;
       var ALLOWED = { success: 1, no_result: 1, error: 1, unsupported: 1, cancelled: 1, view: 1 };
       outcome = ALLOWED[outcome] ? outcome : 'error';
       tool = String(tool || telToolSlug()).slice(0, 40);
@@ -311,11 +311,11 @@
         lang: telLang(), site: telCategory(tool), ua: telUa(),
         session_id: telSid(), meta: telCleanMeta(meta)
       };
-      /* 수집처는 Convex HTTP action 단일 경로다 (2026-07-26 Supabase 완전 제거). */
-      fetch(cv.url.replace(/\/$/, '') + '/log-event', {
+      /* 수집처는 Supabase RPC 단일 경로 (2026-08-22 재이관) — 서버가 화이트리스트·크기·롤업을 원자 처리. */
+      fetch(cv.url.replace(/\/$/, '') + '/rest/v1/rpc/tim_log_event', {
         method: 'POST', keepalive: true,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(row)
+        headers: { 'Content-Type': 'application/json', apikey: cv.key },
+        body: JSON.stringify({ p: row })
       }).catch(function () {});
     } catch (e) { /* 텔레메트리는 절대 UI를 막지 않는다 */ }
   };
