@@ -74,9 +74,9 @@
 document.addEventListener('DOMContentLoaded', function () {
   var form = document.getElementById('contactForm');
   var msg = document.getElementById('msg');
-  var cfg = window.MDTL_CONVEX;
+  var cfg = window.MDTL_BACKEND;
 
-  if (!(cfg && cfg.url)) {
+  if (!(cfg && cfg.url && cfg.key)) {
     mdtlResult(msg, 'The contact form is not available right now. Please try again later.', true);
     return;
   }
@@ -88,21 +88,24 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.disabled = true;
     btn.textContent = 'Sending…';
     try {
-      var res = await fetch(cfg.url.replace(/\/$/, '') + '/contact', {
+      /* 레이트리밋은 HTTP 429가 아니라 RPC 의 {ok:false, code:'rate_limited'} JSON 으로 온다. */
+      var res = await fetch(cfg.url.replace(/\/$/, '') + '/rest/v1/rpc/tim_submit_contact', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        headers: { 'Content-Type': 'application/json', apikey: cfg.key },
+        body: JSON.stringify({ p: {
           subject: document.getElementById('subject').value,
           body: document.getElementById('body').value,
           email: document.getElementById('email').value,
           hp: document.getElementById('hp').value,
           lang: (document.documentElement.lang || 'en').slice(0, 2),
           site: (window.MDTL_BASE || '').split('/').filter(Boolean).pop() || 'pdf'
-        })
+        } })
       });
-      if (res.status === 429) {
+      var out = null;
+      try { out = await res.json(); } catch (err2) { /* 비JSON = 아래 실패 분기 */ }
+      if (out && out.ok === false && out.code === 'rate_limited') {
         mdtlResult(msg, '⚠️ We are getting a lot of messages right now. Please try again in a minute.', true);
-      } else if (!res.ok) {
+      } else if (!res.ok || !(out && out.ok)) {
         mdtlResult(msg, '❌ Could not send the message. Please check the fields and try again.', true);
       } else {
         form.reset();
