@@ -1,0 +1,7 @@
+-- tim_ 백엔드 (Convex 이관, A′) — 적용본 기록. 원본 적용: Supabase MCP apply_migration
+-- 'tim_backend_from_convex' @ wcztgneaqmwfeuonyjny (2026-08-22). 상세 설계: docs/2026-08-22-supabase-migration-loop.md
+-- 구성: tim_profiles/tool_events/daily_stats/contact_messages/contact_rate/admin_users (전부 RLS on·정책 0)
+-- RPC: tim_log_event(익명 수집·화이트리스트·롤업 원자증분) / tim_submit_contact(허니팟·분당20)
+--      tim_me/ensure_profile/delete_account(계정) / tim_dashboard/contact_list/set_handled(관리자)
+--      tim_purge_expired + pg_cron 'tim-retention-daily' 18:30 UTC (보존: 365일 상한·handled+30일·rate 2일)
+-- 권한: 테이블 직접 접근 전면 차단, RPC 만 anon/authenticated 선별 grant.
