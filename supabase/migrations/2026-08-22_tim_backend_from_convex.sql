@@ -327,9 +327,19 @@ begin
   return jsonb_build_object('messages', n_msg, 'rate_rows', n_rate);
 end $function$;
 
--- ── 권한: 테이블 직접 접근 전면 차단, RPC 만 선별 grant ──
-revoke all on all tables in schema public from anon, authenticated;
-revoke execute on all functions in schema public from anon, authenticated;
+-- ── 권한: tim_ 객체만 직접 접근 차단, RPC 만 선별 grant ──
+-- ⚠️ 절대 금지: `... ON ALL TABLES/FUNCTIONS IN SCHEMA` 광역 권한 변경.
+--    이 DB는 어닝하우스·딥마진과 공유 인스턴스라, 원래 있던 광역 revoke 두 줄이
+--    타 서비스 전 테이블·RPC 권한을 제거해 전면 장애를 냈다(2026-08-22 05:52 UTC 실사고,
+--    복구: restore_public_grants_after_tim_revoke_incident). 권한 변경은 자기 네임스페이스
+--    객체에만 명시적으로 나열한다 — contracts/db/NAMING.md 크로스-네임스페이스 금지 원칙.
+revoke all on table tim_profiles, tim_tool_events, tim_daily_stats,
+  tim_contact_messages, tim_contact_rate, tim_admin_users from anon, authenticated;
+revoke execute on function
+  tim_is_admin(), tim_log_event(jsonb), tim_submit_contact(jsonb), tim_ensure_profile(),
+  tim_me(), tim_delete_account(text), tim_dashboard(integer),
+  tim_contact_list(boolean), tim_contact_set_handled(bigint, boolean), tim_purge_expired()
+  from public, anon, authenticated;
 grant execute on function tim_log_event(jsonb), tim_submit_contact(jsonb) to anon, authenticated;
 grant execute on function tim_is_admin(), tim_ensure_profile(), tim_me(), tim_delete_account(text),
   tim_dashboard(integer), tim_contact_list(boolean), tim_contact_set_handled(bigint, boolean)
