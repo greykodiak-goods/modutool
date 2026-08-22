@@ -14,7 +14,7 @@ const yaml = require('js-yaml');
 
 /* 도구가 아닌 폴더 — coverage-audit.mjs와 같은 기준을 유지할 것 */
 const NOT_TOOL = new Set([
-  'assets', 'convex', 'docs', 'node_modules', 'scripts', 'supabase', 'tests', 'portal', 'dist', 'ko',
+  'assets', 'convex', 'docs', 'node_modules', 'scripts', 'supabase', 'tests', 'portal', 'dist', 'ko', 'mobile',
   'about', 'privacy', 'terms', 'pricing', 'login', 'signup', 'account', 'admin', 'contact',
   'product-contract',
 ]);
