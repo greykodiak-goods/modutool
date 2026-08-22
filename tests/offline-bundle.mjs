@@ -96,7 +96,7 @@ ok(uniq.length === 0, `외부 요청 0건 (실제 ${uniq.length}건)${uniq.lengt
 
 /* 5) 번들 안에 수집·광고·백엔드 설정이 남아 있지 않은지 (코드 레벨 확인) */
 const authCfg = readFileSync(join(ROOT, 'assets/auth-config.js'), 'utf8');
-ok(!/MDTL_CONVEX|convex\.site|supabase/.test(authCfg), '수집·백엔드 설정 비어 있음');
+ok(!/MDTL_CONVEX|MDTL_BACKEND|convex\.site|supabase/.test(authCfg), '수집·백엔드 설정 비어 있음');
 const adsCfg = readFileSync(join(ROOT, 'assets/ads-config.js'), 'utf8');
 ok(!/MDTL_ADS\s*=/.test(adsCfg), '광고 설정 비어 있음');
 ok(!existsSync(join(ROOT, 'assets/vendor/convex.js')), 'Convex 클라이언트 미포함');

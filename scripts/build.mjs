@@ -101,7 +101,6 @@ if (OFFLINE) {
     '/* 자체호스팅 번들: 외부 백엔드 없음. 수집·회원 기능 비활성. */\n');
   writeFileSync(join(out, 'assets/ads-config.js'),
     '/* 자체호스팅 번들: 광고 없음. */\n');
-  rmSync(join(out, 'assets/vendor/convex.js'), { force: true });
 }
 
 /* 서브패스 배포(예: GitHub Pages …github.io/modutool) 지원.

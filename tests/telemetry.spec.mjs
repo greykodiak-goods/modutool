@@ -37,12 +37,13 @@ const page = await browser.newPage();
 
 // 텔레메트리 POST를 가로채 페이로드 수집(실제 전송은 막음)
 const posted = [];
-/* 수집 경로는 Convex HTTP action /log-event 단일 경로다(2026-07-26 Supabase 완전 제거 —
-   옛 rest/v1/tool_events를 가로채면 아무것도 안 잡혀 테스트가 무의미해진다). */
-await page.route('**/log-event', (route) => {
+/* 수집 경로는 Supabase RPC tim_log_event 단일 경로다(2026-08-22 재이관 —
+   옛 Convex /log-event를 가로채면 아무것도 안 잡혀 테스트가 무의미해진다).
+   페이로드는 {p: row}로 감싸져 온다 — row 만 꺼내 기존 검증을 그대로 적용한다. */
+await page.route('**/rest/v1/rpc/tim_log_event', (route) => {
   const req = route.request();
-  try { posted.push(JSON.parse(req.postData() || '{}')); } catch (e) { posted.push({ _raw: req.postData() }); }
-  route.fulfill({ status: 200, body: '{"ok":true}' });
+  try { posted.push(JSON.parse(req.postData() || '{}').p || {}); } catch (e) { posted.push({ _raw: req.postData() }); }
+  route.fulfill({ status: 204, body: '' });
 });
 
 // 로컬에서도 텔레메트리 켜기(검증용 플래그)

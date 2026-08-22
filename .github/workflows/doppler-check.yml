@@ -55,7 +55,7 @@ jobs:
 
           # 2) modutool이 요구하는 키와 대조
           KEYS=$(node -e 'const j=require("/tmp/names.json"); console.log(Object.keys(j).join(" "))')
-          REQUIRED="CONVEX_DEPLOY_KEY"
+          REQUIRED=""   # 2026-08-22 Supabase 재이관: 배포 필수 시크릿 없음(publishable key 는 공개값)
           # 광고 유닛은 브랜드(pdf/img/calc/video)마다 따로 발급되므로 접미사로 나눈다.
           # SITE 빌드 변수와 이름이 맞아 떨어져 ADFIT_UNIT_TOP_${SITE^^} 한 줄로 뽑힌다.
           # 상세: docs/2026-07-26-namespace-plan.md 4절
@@ -94,7 +94,7 @@ jobs:
           # 3) 실제 주입 확인(값 미출력, 길이만)
           echo "===== 주입 테스트 ====="
           doppler run -- node -e '
-            for (const k of ["CONVEX_DEPLOY_KEY"]) {
+            for (const k of []) {  // 재이관 후 필수 주입 키 없음
               const v = process.env[k];
               console.log((v && v.length ? "INJECTED len=" + v.length : "EMPTY") + "  " + k);
             }

@@ -24,8 +24,6 @@ jobs:
 
       - name: Unit tests
         run: npm run test:unit
-      - name: Typecheck (convex)
-        run: npm run typecheck
       - name: Functional-test coverage ratchet
         run: npm run test:coverage
       - name: Product-contract ratchet
@@ -61,7 +59,7 @@ jobs:
         run: BASE_PATH=/modutool node scripts/build-all.mjs https://greykodiak-goods.github.io/modutool
       - name: Functional suites (real output verification)
         run: |
-          for t in umbrella-smoke subsites-smoke telemetry.spec convex-switch auth-func contact-func \
+          for t in umbrella-smoke subsites-smoke telemetry.spec supabase-switch auth-func contact-func \
                    pdf-func image-func calc-func audio-tools-func video-trim-func video2-func pwa-offline; do
             echo "── tests/$t.mjs"; node tests/$t.mjs
           done

@@ -84,7 +84,7 @@ jobs:
           echo "--- 내부 파일이 사이트로 새지 않았는지 ---"
           # 두 번 새어봤다: .github/*(2026-07-26 오전), README.md·netlify.toml·sites.json(같은 날 오후).
           # README.md에는 수익 모델과 내부 문서 경로가 적혀 있어 공개돼선 안 된다.
-          for p in "/pdf/.github/workflows/live-check.yml" "/pdf/.gitignore" "/img/.github/workflows/convex-deploy.yml" \
+          for p in "/pdf/.github/workflows/live-check.yml" "/pdf/.gitignore" "/img/.github/workflows/ci.yml" \
                    "/pdf/README.md" "/pdf/netlify.toml" "/pdf/sites.json" "/pdf/package.json" "/README.md" "/sites.json"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
             [ "$code" = "404" ] && echo "  차단 OK $p" || { echo "  유출! $code $p"; fail=1; }
@@ -100,52 +100,49 @@ jobs:
             && echo "  About → 문의 링크 OK" || { echo "  About이 존재하지 않는 연락처를 안내"; fail=1; }
           curl -sL "$BASE/pdf/privacy/" | grep -qi "contact form" \
             && echo "  개인정보처리방침에 문의 수집 고지 OK" || { echo "  문의 수집을 고지하지 않음"; fail=1; }
-          echo "--- 회원 페이지가 Convex 단일 백엔드를 쓰는지 (Supabase 잔재 없음) ---"
-          curl -sL "$BASE/pdf/login/" | grep -q "vendor/convex.js" && echo "login: convex 클라이언트 OK" || { echo "login: convex 클라이언트 MISSING"; fail=1; }
+          echo "--- 회원 기능이 Supabase 단일 백엔드를 쓰는지 (2026-08-22 재이관, Convex 잔재 없음) ---"
+          cfg=$(curl -sL "$BASE/pdf/assets/auth-config.js")
+          echo "$cfg" | grep -q "MDTL_BACKEND" && echo "auth-config: MDTL_BACKEND OK" || { echo "auth-config: MDTL_BACKEND MISSING"; fail=1; }
+          echo "$cfg" | grep -q "supabase.co" && echo "auth-config: supabase URL OK" || { echo "auth-config: supabase URL MISSING"; fail=1; }
+          echo "$cfg" | grep -q "convex" && { echo "auth-config 에 convex 잔재"; fail=1; } || echo "auth-config convex 없음 OK"
           for p in "/pdf/login/" "/pdf/signup/" "/pdf/account/" "/pdf/admin/" "/pdf/ko/login/"; do
-            curl -sL "$BASE$p" | grep -q "supabase" && { echo "$p 에 supabase 잔재"; fail=1; } || echo "$p supabase 없음 OK"
+            curl -sL "$BASE$p" | grep -q "vendor/convex" && { echo "$p 에 convex 벤더 잔재"; fail=1; } || echo "$p convex 없음 OK"
           done
-          code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE/pdf/assets/vendor/convex.js"); [ "$code" = "200" ] || { echo "convex.js $code"; fail=1; }
+          code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE/pdf/assets/vendor/convex.js"); [ "$code" = "404" ] || { echo "convex.js 가 아직 배포됨($code)"; fail=1; }
           exit $fail
-      # 앞 스텝(로그인 백엔드)이 실패해도 수집 백엔드는 계속 점검한다 — 잡 결론은 그대로 실패로 남는다.
-      - name: Telemetry backend E2E (Convex — 쓰기 허용, 읽기 함수 없음, CORS 화이트리스트)
+      # 앞 스텝(정적 사이트)이 실패해도 수집 백엔드는 계속 점검한다 — 잡 결론은 그대로 실패로 남는다.
+      - name: Telemetry backend E2E (Supabase — 쓰기 RPC만 허용, 테이블 직접 읽기 차단)
         if: always()
         run: |
-          # 2026-07-26 Convex 컷오버 이후 수집처는 Supabase가 아니라 Convex HTTP action이다.
-          CX="https://superb-echidna-510.convex.site"
-          ORIGIN="https://greykodiak-goods.github.io"
+          # 2026-08-22 Supabase 재이관 이후 수집처는 rpc/tim_log_event 단일 경로다.
+          # KEY 는 publishable(프론트에 이미 공개된 값) — 비밀 아님.
+          SB="https://wcztgneaqmwfeuonyjny.supabase.co"
+          KEY=$(curl -sL "${{ inputs.base_url || 'https://greykodiak-goods.github.io/modutool' }}/pdf/assets/auth-config.js" | grep -oE "sb_publishable_[A-Za-z0-9_]+")
+          [ -n "$KEY" ] || { echo "::error::라이브 auth-config 에서 publishable key 를 못 읽음"; exit 1; }
           fail=0
-          echo "--- CORS preflight (expect 204 + 허용 오리진 반사) ---"
-          hdr=$(curl -s -D - -o /dev/null -X OPTIONS "$CX/log-event" -H "Origin: $ORIGIN" \
-            -H "Access-Control-Request-Method: POST" --max-time 15 || true)
-          echo "$hdr" | grep -qi "access-control-allow-origin: $ORIGIN" \
-            && echo "CORS allow-origin OK" || { echo "CORS 반사 실패"; echo "$hdr" | head -5; fail=1; }
-          echo "--- 이벤트 수집 POST (expect 201) ---"
-          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$CX/log-event" \
-            -H "Origin: $ORIGIN" -H "Content-Type: application/json" --max-time 15 \
-            --data '{"tool":"live-check","outcome":"error","reason":"ci_e2e","lang":"en","site":"pdf","ua":"ci/runner","meta":{"seed":true}}' || echo 000)
-          echo "log-event: $code"; [ "$code" = "201" ] || fail=1
-          echo "--- 잘못된 본문은 거절 (expect 400) ---"
-          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$CX/log-event" \
-            -H "Origin: $ORIGIN" -H "Content-Type: application/json" --max-time 15 --data 'not-json' || echo 000)
+          echo "--- 이벤트 수집 POST (expect 204) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SB/rest/v1/rpc/tim_log_event" \
+            -H "apikey: $KEY" -H "Content-Type: application/json" --max-time 15 \
+            --data '{"p":{"tool":"live-check","outcome":"error","reason":"ci_e2e","lang":"en","site":"pdf","ua":"ci/runner","meta":{"seed":true}}}' || echo 000)
+          echo "tim_log_event: $code"; [ "$code" = "204" ] || fail=1
+          echo "--- 잘못된 본문은 거절 (tool 없음 → 400) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$SB/rest/v1/rpc/tim_log_event" \
+            -H "apikey: $KEY" -H "Content-Type: application/json" --max-time 15 --data '{"p":{}}' || echo 000)
           echo "bad body: $code"; [ "$code" = "400" ] || { echo "잘못된 본문을 거절하지 않음"; fail=1; }
-          echo "--- 읽기 경로 부재 확인 (GET·미정의 경로는 200이면 안 됨) ---"
-          for p in "/log-event" "/events" "/dashboard"; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$CX$p" || echo 000)
-            echo "GET $p: $code"; [ "$code" = "200" ] && { echo "읽기 경로 노출!"; fail=1; } || true
-          done
-          echo "--- Convex Auth 살아있는지 (JWKS·discovery는 공개 엔드포인트) ---"
-          for p in "/.well-known/openid-configuration" "/.well-known/jwks.json"; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$CX$p" || echo 000)
-            echo "GET $p: $code"; [ "$code" = "200" ] || { echo "::error::로그인 백엔드(Convex Auth) 미배포/응답없음"; fail=1; }
-          done
+          echo "--- 테이블 직접 읽기 차단 (RLS·revoke — 행이 보이면 안 됨) ---"
+          body=$(curl -s --max-time 15 "$SB/rest/v1/tim_tool_events?select=tool&limit=1" -H "apikey: $KEY" || true)
+          echo "direct read: $(echo "$body" | head -c 100)"
+          echo "$body" | grep -q '"tool"' && { echo "::error::익명이 이벤트 테이블을 읽음!"; fail=1; } || echo "직접 읽기 차단 OK"
+          echo "--- Auth 살아있는지 (health 공개 엔드포인트) ---"
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$SB/auth/v1/health" -H "apikey: $KEY" || echo 000)
+          echo "auth health: $code"; [ "$code" = "200" ] || { echo "::error::로그인 백엔드(Supabase Auth) 응답없음"; fail=1; }
           echo "--- 미인증 상태로는 회원 데이터를 못 읽는지 ---"
-          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "${CX/.convex.site/.convex.cloud}/api/query" \
-            -H "Content-Type: application/json" --max-time 15 \
-            --data '{"path":"dashboard:dashboard","format":"convex_encoded_json","args":[{"days":30}]}' || echo 000)
-          body=$(curl -s -X POST "${CX/.convex.site/.convex.cloud}/api/query" \
-            -H "Content-Type: application/json" --max-time 15 \
-            --data '{"path":"dashboard:dashboard","format":"convex_encoded_json","args":[{"days":30}]}' || true)
-          echo "dashboard(미인증): HTTP $code / $(echo "$body" | head -c 120)"
-          echo "$body" | grep -q '"status":"success"' && { echo "::error::미인증인데 대시보드가 열림!"; fail=1; } || echo "대시보드 게이트 OK"
+          body=$(curl -s -X POST "$SB/rest/v1/rpc/tim_dashboard" \
+            -H "apikey: $KEY" -H "Content-Type: application/json" --max-time 15 --data '{"p_days":30}' || true)
+          echo "dashboard(미인증): $(echo "$body" | head -c 120)"
+          echo "$body" | grep -q '"generated_at"' && { echo "::error::미인증인데 대시보드가 열림!"; fail=1; } || echo "대시보드 게이트 OK"
+          echo "--- 미인증 문의함 차단 ---"
+          body=$(curl -s -X POST "$SB/rest/v1/rpc/tim_contact_list" \
+            -H "apikey: $KEY" -H "Content-Type: application/json" --max-time 15 --data '{}' || true)
+          echo "$body" | grep -q '"subject"' && { echo "::error::미인증인데 문의함이 열림!"; fail=1; } || echo "문의함 게이트 OK"
           exit $fail

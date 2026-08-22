@@ -2,7 +2,8 @@
    About 페이지가 "문의 이메일로 보내달라"고 하면서 사이트 어디에도 이메일이 없던 상태를 고친 것이라,
    여기서 검증할 것은 "폼이 예쁘다"가 아니라 "메시지가 서버로 실제로 나간다"이다.
 
-   Convex는 컨테이너에서 못 나가므로 /contact 엔드포인트를 가로채 요청 본문을 확인한다. */
+   Supabase는 컨테이너에서 못 나가므로 rpc/tim_submit_contact 를 가로채 요청 본문을 확인한다.
+   레이트리밋은 HTTP 429가 아니라 200 + {ok:false, code:'rate_limited'} JSON 계약이다. */
 import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
 const chromium = loadChromium();
 import { createServer } from 'node:http';
@@ -28,21 +29,28 @@ const browser = await chromium.launch(launchOptions());
 let fails = 0;
 function ok(c, m) { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; }
 
-/* /contact 를 가로채 본문을 기록. status로 서버 응답을 바꿔 실패 경로도 확인한다. */
-async function newCtx(status = 201) {
+/* rpc/tim_submit_contact 를 가로채 본문({p: row})의 row 를 기록.
+   mode: 'ok' | 'rate_limited'(200+JSON) | 'reject'(400) 로 응답을 바꿔 실패 경로도 확인한다. */
+async function newCtx(mode = 'ok') {
   const posts = [];
   const ctx = await browser.newContext();
-  await ctx.route('**/contact', async (route) => {
+  await ctx.route('**/rest/v1/rpc/tim_submit_contact', async (route) => {
     if (route.request().method() !== 'POST') return route.continue();
-    posts.push(JSON.parse(route.request().postData() || '{}'));
-    await route.fulfill({ status, contentType: 'text/plain', body: '' });
+    posts.push((JSON.parse(route.request().postData() || '{}').p) || {});
+    if (mode === 'rate_limited') {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":false,"code":"rate_limited"}' });
+    } else if (mode === 'reject') {
+      await route.fulfill({ status: 400, contentType: 'application/json', body: '{"message":"empty"}' });
+    } else {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+    }
   });
   return { ctx, posts };
 }
 
 /* ── 1) 정상 전송 ── */
 {
-  const { ctx, posts } = await newCtx(201);
+  const { ctx, posts } = await newCtx('ok');
   const page = await ctx.newPage();
   const errs = []; page.on('pageerror', (e) => errs.push(String(e)));
   await page.goto(`${base}/pdf/contact/`, { waitUntil: 'networkidle' });
@@ -70,7 +78,7 @@ async function newCtx(status = 201) {
 
 /* ── 2) 필수값이 비면 브라우저가 먼저 막는다(서버 왕복 없음) ── */
 {
-  const { ctx, posts } = await newCtx(201);
+  const { ctx, posts } = await newCtx('ok');
   const page = await ctx.newPage();
   await page.goto(`${base}/pdf/contact/`, { waitUntil: 'networkidle' });
   await page.click('#contactForm button[type=submit]');
@@ -80,23 +88,23 @@ async function newCtx(status = 201) {
   await ctx.close();
 }
 
-/* ── 3) 상한 초과(429)는 "잠시 후 다시"로 안내해야 한다 — 실패를 성공처럼 보이면 안 된다 ── */
+/* ── 3) 상한 초과({ok:false,code:'rate_limited'})는 "잠시 후 다시"로 안내해야 한다 — 성공처럼 보이면 안 된다 ── */
 {
-  const { ctx } = await newCtx(429);
+  const { ctx } = await newCtx('rate_limited');
   const page = await ctx.newPage();
   await page.goto(`${base}/pdf/contact/`, { waitUntil: 'networkidle' });
   await page.fill('#subject', 'x'); await page.fill('#body', 'y');
   await page.click('#contactForm button[type=submit]');
   await page.waitForSelector('#msg.show', { timeout: 8000 });
   const t = await page.locator('#msg').innerText();
-  ok(/minute|again/i.test(t), `429 → 재시도 안내 — "${t.trim().slice(0, 60)}"`);
-  ok(await page.locator('#msg').getAttribute('class').then((c) => c.includes('error')), '429는 오류 스타일로 표시');
+  ok(/minute|again/i.test(t), `rate_limited → 재시도 안내 — "${t.trim().slice(0, 60)}"`);
+  ok(await page.locator('#msg').getAttribute('class').then((c) => c.includes('error')), 'rate_limited는 오류 스타일로 표시');
   await ctx.close();
 }
 
 /* ── 4) 서버 거절(400)도 성공처럼 보이면 안 된다 ── */
 {
-  const { ctx } = await newCtx(400);
+  const { ctx } = await newCtx('reject');
   const page = await ctx.newPage();
   await page.goto(`${base}/pdf/contact/`, { waitUntil: 'networkidle' });
   await page.fill('#subject', 'x'); await page.fill('#body', 'y');
@@ -110,7 +118,7 @@ async function newCtx(status = 201) {
 
 /* ── 5) 한국어 페이지 ── */
 {
-  const { ctx, posts } = await newCtx(201);
+  const { ctx, posts } = await newCtx('ok');
   const page = await ctx.newPage();
   const errs = []; page.on('pageerror', (e) => errs.push(String(e)));
   await page.goto(`${base}/pdf/ko/contact/`, { waitUntil: 'networkidle' });

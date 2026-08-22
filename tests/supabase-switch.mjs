@@ -1,5 +1,5 @@
-/* Convex 백엔드 스위치 검증: MDTL_CONVEX.url 설정 시 텔레메트리가 /log-event로 가고
-   Supabase로는 아무것도 안 나가는지 + 페이로드 형식이 동일한지 확인. */
+/* Supabase 백엔드 스위치 검증(2026-08-22 재이관): 텔레메트리가 rpc/tim_log_event 로만 가고
+   구 Convex(.convex.site/.convex.cloud)로는 아무것도 안 나가는지 + 페이로드 계약({p: row}) 확인. */
 import { loadChromium, launchOptions, distDir, repoDir } from './_pw.mjs';
 const chromium = loadChromium();
 import { createServer } from 'node:http';
@@ -22,23 +22,18 @@ const base = `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch(launchOptions());
 const page = await browser.newPage();
 
-const convexPosts = [];
-let supabasePosts = 0;
+const rpcPosts = [];
+let convexHits = 0;
+let apikeySeen = false;
 await page.route('**/*', (route) => {
   const url = route.request().url();
-  if (url.includes('/log-event')) {
-    try { convexPosts.push(JSON.parse(route.request().postData() || '{}')); } catch (e) {}
-    route.fulfill({ status: 201, body: '' });
+  if (url.includes('/rest/v1/rpc/tim_log_event')) {
+    try { rpcPosts.push(JSON.parse(route.request().postData() || '{}')); } catch (e) {}
+    if (route.request().headers()['apikey']) apikeySeen = true;
+    route.fulfill({ status: 204, body: '' });
     return;
   }
-  if (url.includes('supabase.co')) { supabasePosts++; route.fulfill({ status: 201, body: '' }); return; }
-  // auth-config.js를 Convex 활성 버전으로 바꿔치기
-  if (url.endsWith('/assets/auth-config.js')) {
-    const orig = readFileSync(join(ROOT, 'pdf/assets/auth-config.js'), 'utf8');
-    route.fulfill({ status: 200, contentType: 'text/javascript',
-      body: orig.replace('window.MDTL_CONVEX = null;', "window.MDTL_CONVEX = { url: 'https://fake-deploy.convex.site' };") });
-    return;
-  }
+  if (url.includes('.convex.site') || url.includes('.convex.cloud')) { convexHits++; route.fulfill({ status: 404, body: '' }); return; }
   route.continue();
 });
 await page.addInitScript(() => { try { localStorage.setItem('mdtl-tel-force', '1'); } catch (e) {} });
@@ -50,11 +45,14 @@ await browser.close(); server.close();
 
 const fails = [];
 function ok(c, m) { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails.push(m); }
-ok(convexPosts.length >= 2, `Convex /log-event 수신 ${convexPosts.length}건 (pageview + no_result)`);
-ok(supabasePosts === 0, 'Supabase로는 0건 (완전 전환)');
-const nr = convexPosts.find((e) => e.outcome === 'no_result');
-ok(!!nr && nr.tool === 'pdf-compress' && nr.meta && nr.meta.pages === 3, '페이로드 형식 동일(tool/outcome/meta)');
-const pv = convexPosts.find((e) => e.outcome === 'view');
-ok(!!pv, 'pageview도 Convex로 전송');
+const rows = rpcPosts.map((b) => b.p).filter(Boolean);
+ok(rows.length >= 2, `rpc/tim_log_event 수신 ${rows.length}건 (pageview + no_result)`);
+ok(rpcPosts.every((b) => b && typeof b.p === 'object'), '페이로드가 {p: row} 계약을 지킴');
+ok(apikeySeen, 'apikey 헤더 동봉');
+ok(convexHits === 0, `구 Convex로는 0건 (실제 ${convexHits})`);
+const nr = rows.find((e) => e.outcome === 'no_result');
+ok(!!nr && nr.tool === 'pdf-compress' && nr.meta && nr.meta.pages === 3, '페이로드 형식 유지(tool/outcome/meta)');
+const pv = rows.find((e) => e.outcome === 'view');
+ok(!!pv, 'pageview도 Supabase로 전송');
 console.log('\n' + (fails.length ? `❌ ${fails.length} 실패` : '✅ 전부 통과'));
 process.exit(fails.length ? 1 : 0);

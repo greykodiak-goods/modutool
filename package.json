@@ -1,27 +1,19 @@
 {
   "name": "modutool",
   "private": true,
-  "description": "ThisIsMy Tools — static in-browser tools. package.json covers the Convex backend (convex/) and the test toolchain (tests/).",
+  "description": "ThisIsMy Tools — static in-browser tools. Backend is Supabase (schema/RPC in supabase/migrations/); package.json covers the test toolchain (tests/).",
   "scripts": {
     "build": "node scripts/build.mjs",
     "build:all": "node scripts/build-all.mjs",
-    "typecheck": "tsc --noEmit -p convex",
-    "test:unit": "node tests/admin-gate-unit.mjs && node tests/retention-unit.mjs",
+    "test:unit": "node tests/backend-sql-unit.mjs",
     "test:coverage": "node tests/coverage-audit.mjs",
     "test:contract": "node tests/contract-audit.mjs",
     "test:i18n": "node tests/i18n-audit.mjs"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
     "axe-core": "^4.13.0",
-    "convex": "^1.17.0",
     "js-yaml": "^5.3.0",
     "pdf-lib": "^1.17.1",
-    "playwright": "^1.49.0",
-    "typescript": "^5.6.3"
-  },
-  "dependencies": {
-    "@auth/core": "^0.41.1",
-    "@convex-dev/auth": "^0.0.94"
+    "playwright": "^1.49.0"
   }
 }

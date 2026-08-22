@@ -3,7 +3,9 @@
 # 것이 시작이고, 바꾸면 검사가 따라온다. (tripodfish app.charter.json의 modutool 소급 적용판, 2026-08-21)
 name: thisismy-tools
 track: self
-backend: convex   # 대표 결정 2026-08-22: 당분간 유지+prod 전환(출시 우선). Supabase 공유 인스턴스 통합은 tripodfish 편입 시점에 재검토
+backend: supabase # 대표 결정 2026-08-22 "지금 이관": tripodfish 공유 인스턴스(tim_ 네임스페이스)로 재이관 완료.
+                  # Convex(superb-echidna-510)는 동결 — 코드·워크플로는 리포에서 제거(git 이력에 보존),
+                  # dev 배포 폐기는 대표 T0. 근거: docs/2026-08-22-tripod-supabase-편입검토.md
 crossCutting:
   i18n:
     enabled: true

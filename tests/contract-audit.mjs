@@ -57,11 +57,12 @@ for (const slug of tools) {
   contracted++;
 }
 
-// ③ events.yaml ↔ convex/telemetry.ts 동기
+// ③ events.yaml ↔ Supabase tim_log_event(SQL 마이그레이션 정본) 동기
+//    서버 강제력의 원본은 supabase/migrations/ 의 RPC 정의다 — 거기 화이트리스트와 계약 문서가 어긋나면 실패.
 const events = yaml.load(readFileSync(join(root, 'product-contract/events.yaml'), 'utf8'));
-const telSrc = readFileSync(join(root, 'convex/telemetry.ts'), 'utf8');
-const srcOutcomes = [...telSrc.matchAll(/OUTCOMES = new Set\(\[([^\]]+)\]/g)][0]?.[1].match(/"([^"]+)"/g)?.map((s) => s.slice(1, -1)) ?? [];
-const srcMeta = [...telSrc.matchAll(/META_KEYS = new Set\(\[([\s\S]*?)\]\)/g)][0]?.[1].match(/"([^"]+)"/g)?.map((s) => s.slice(1, -1)) ?? [];
+const telSrc = readFileSync(join(root, 'supabase/migrations/2026-08-22_tim_backend_from_convex.sql'), 'utf8');
+const srcOutcomes = [...telSrc.matchAll(/p->>'outcome' in \(([^)]+)\)/g)][0]?.[1].match(/'([^']+)'/g)?.map((s) => s.slice(1, -1)) ?? [];
+const srcMeta = [...telSrc.matchAll(/where key in \(([\s\S]*?)\)/g)][0]?.[1].match(/'([^']+)'/g)?.map((s) => s.slice(1, -1)) ?? [];
 const diff = (a, b) => [...a.filter((x) => !b.includes(x)).map((x) => `-${x}`), ...b.filter((x) => !a.includes(x)).map((x) => `+${x}`)];
 const od = diff(events.outcomes, srcOutcomes);
 const md = diff(events.meta_whitelist, srcMeta);
