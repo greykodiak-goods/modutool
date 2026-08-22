@@ -49,10 +49,12 @@
 
 ## 4. 대표 T0 — 이것만 하면 전부 자동
 
-### 웹(도메인) — 10~15분, `docs/2026-08-22-cloudflare-cutover.md` 그대로
-1. Cloudflare Registrar 에서 **thisismypdf.com 구매**.
-2. Workers & Pages → Pages → Connect to Git → `greykodiak-goods/modutool`: 프로젝트 `thisismypdf` / branch `main` / build `node scripts/build.mjs` / output `dist` / env `DEPLOY_ORIGIN=https://thisismypdf.com`.
-3. Custom domains → thisismypdf.com 추가. → 총괄: live-check·canonical 대조·Search Console·live-check URL 교체(T1).
+### 웹(도메인) — 남은 건 구매+연결 클릭 (2026-08-22 20:5x 총괄이 Pages 선배포 완료)
+- **이미 라이브**: https://thisismypdf.pages.dev — wrangler OAuth(대표 8/17 로그인, pages:write)로 Pages 프로젝트 `thisismypdf` 생성 + 직접 업로드 배포(`SITE=pdf node scripts/build.mjs https://thisismypdf.pages.dev` + `_headers`). 전 경로 200·보안헤더·canonical/hreflang·Supabase 연결 확인.
+  런북의 "Git 연결" 대신 직접 업로드를 택함(브랜드 주입이 필요한 `SITE=pdf` 빌드를 CLI 에서 바로 낼 수 있고, 재배포도 한 줄). Git 자동배포로 바꾸려면 대시보드에서 연결하면 됨.
+1. **thisismypdf.com 구매** — Cloudflare 대시보드 → Domain Registration → Register(결제, T0. Registrar 구매는 API 가 없어 대시보드만 가능).
+2. Workers & Pages → `thisismypdf` → Custom domains → thisismypdf.com 추가(같은 계정 Registrar 도메인이라 DNS 자동).
+3. 완료 통보 → 총괄(T1): `DEPLOY_ORIGIN=https://thisismypdf.com` 으로 재빌드·재배포(canonical/sitemap 갱신), live-check·Search Console·live-check 기본 URL 교체.
 
 ### 앱
 4. **Google Play Console 개발자 등록($25 1회)** → 앱 생성(com.thisismy.pdf) → Play App Signing 사용.
