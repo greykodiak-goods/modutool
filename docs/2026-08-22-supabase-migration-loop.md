@@ -29,6 +29,8 @@ Auth 는 1단계 이메일+비밀번호(Supabase Auth 기본), 구글 OAuth 는 
 - 15:4x [5] 백오피스 스왑 — RPC_MAP 은 [4]에서 선반영, 이번엔 admin 페이지 문구 2곳(Convex 시드 안내→tim_admin_users, 결정대기 라벨) 갱신 + **admin 시드: greykodiak1@gmail.com 등록**. 임시 관리자 계정으로 실측 8단계: dashboard 15키 전부 존재·집계 실값 일치(도구 2건 중 실패 1, 페이지뷰 1 분리집계), contact_list 키 8종 렌더 계약 일치, setHandled 왕복, anon 호출 forbidden 차단, 임시계정 자삭. 스모크·임시시드 전량 정리(admins 1행=대표만, 나머지 0행). Queue-Epoch: 1
 - 16:2x [6] 마감 — 헌장 backend:supabase. convex/ 코드·convex-deploy.yml·vendor 전부 삭제(git 이력 보존), doppler 필수키 CONVEX_DEPLOY_KEY 해제. SQL 정본을 운영 DB 덤프로 리포 기록(supabase/migrations/, contract-audit ③이 이 파일과 events.yaml 을 대조하도록 재배선). 구 convex/lib 단위테스트 2종 → backend-sql-unit(17단언, 같은 불변식을 SQL 정본에서 검증)으로 대체. auth-func 14시나리오·supabase-switch·contact-func·telemetry.spec 재작성, live-check 백엔드 섹션 Supabase 재작성. 로컬 게이트 전부 green(unit 17·coverage·contract·i18n·offline·umbrella/subsites/admin/pages smoke·structural·pdf-merge). Queue-Epoch: 1
 
+- 16:5x [마감] main 푸시 → CI green(32558970970) → gh-pages 배포(48e168c, 컷오버) → 라이브 직접 스모크(MDTL_BACKEND·tim_log_event·tim_submit_contact 서빙 확인, convex.js 404) → live-check 워크플로 green(정적 전수 + Supabase 백엔드 E2E). **이관 6/6 완료, 라이브가 Supabase 를 사용 중.** 큐 리스 해제.
+
 ## 남은 T0 (대표 결정 대기)
 1. **Auth 이메일 확인 설정** — ⓐ Confirm email OFF ⓑ ON+커스텀 SMTP. 현재 프런트는 양쪽 다 대응(위 [4] 참조).
 2. **Convex dev 배포(superb-echidna-510) 폐기** — 코드·데이터 이관 완료로 더 안 쓰나, 삭제는 파괴적이라 대표 클릭. 급하지 않음(무료·방치 무해).
