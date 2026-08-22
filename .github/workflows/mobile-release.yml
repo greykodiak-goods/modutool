@@ -1,0 +1,151 @@
+# 스토어 제출 — 빌드·서명·업로드·메타데이터·스크린샷·심사 제출까지 한 번의 dispatch 로.
+# 대표가 계정과 키만 넘기면(아래 시크릿) 나머지는 전부 이 워크플로가 한다. 콘솔에서만 되는 최초 1회 설문
+# (Play: 콘텐츠 등급·데이터 안전·대상 연령 / Apple: 앱 레코드·연령등급·App Privacy)은 docs/2026-08-22-store-answers.md 답안대로 클릭.
+#
+# 시크릿:
+#   서명   ANDROID_KEYSTORE_B64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD
+#          IOS_P12_B64 IOS_P12_PASSWORD IOS_PROVISION_B64 APPLE_TEAM_ID
+#   제출   PLAY_SERVICE_ACCOUNT_JSON (Play Console → API 액세스 → 서비스계정, "출시 관리" 권한)
+#          ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8 (App Store Connect → Users and Access → Integrations → API 키, App Manager)
+name: Mobile release
+on:
+  workflow_dispatch:
+    inputs:
+      version_code:
+        description: "빌드 번호(정수, 매 제출마다 증가 — Play versionCode / iOS CFBundleVersion)"
+        required: true
+      version_name:
+        description: "표시 버전 (예: 1.0.0)"
+        required: true
+        default: "1.0.0"
+      platforms:
+        description: "제출 대상"
+        type: choice
+        default: both
+        options: [both, android, ios]
+      play_track:
+        description: "Play 트랙 (internal → 테스트, production → 심사·공개)"
+        type: choice
+        default: internal
+        options: [internal, alpha, beta, production]
+      ios_submit_review:
+        description: "iOS 심사 제출까지 (false = TestFlight/ASC 업로드만)"
+        type: boolean
+        default: false
+
+jobs:
+  android:
+    if: inputs.platforms != 'ios'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - uses: android-actions/setup-android@v3
+      - uses: ruby/setup-ruby@v1
+        with: { ruby-version: "3.3" }
+      - name: Web bundle + icons + store images
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          node scripts/build-mobile.mjs
+          node scripts/store-screens.mjs
+      - name: Capacitor sync + version
+        working-directory: mobile
+        run: |
+          npm ci --no-audit --no-fund && npx cap sync android
+          sed -i "s/versionCode [0-9]*/versionCode ${{ inputs.version_code }}/; s/versionName \"[^\"]*\"/versionName \"${{ inputs.version_name }}\"/" android/app/build.gradle
+          cp fastlane/metadata/android/en-US/changelogs/1.txt "fastlane/metadata/android/en-US/changelogs/${{ inputs.version_code }}.txt"
+          cp fastlane/metadata/android/ko-KR/changelogs/1.txt "fastlane/metadata/android/ko-KR/changelogs/${{ inputs.version_code }}.txt"
+      - name: Signing config
+        working-directory: mobile/android
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > app/upload.keystore
+          cat >> app/build.gradle <<'EOF'
+          android {
+            signingConfigs { release {
+              storeFile file('upload.keystore')
+              storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+              keyAlias System.getenv('ANDROID_KEY_ALIAS')
+              keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+            } }
+            buildTypes { release { signingConfig signingConfigs.release } }
+          }
+          EOF
+      - name: Build signed AAB
+        working-directory: mobile/android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: chmod +x gradlew && ./gradlew --no-daemon bundleRelease
+      - name: Upload to Play (${{ inputs.play_track }}) + listing
+        working-directory: mobile
+        env:
+          PLAY_JSON_KEY_PATH: ${{ runner.temp }}/play.json
+        run: |
+          echo '${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}' > "$PLAY_JSON_KEY_PATH"
+          gem install fastlane --no-document -q
+          fastlane android release track:${{ inputs.play_track }}
+      - uses: actions/upload-artifact@v4
+        with: { name: android-release, path: mobile/android/app/build/outputs/bundle/release/*.aab, retention-days: 90 }
+
+  ios:
+    if: inputs.platforms != 'android'
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - name: Web bundle + icons + store images
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install chromium
+          node scripts/build-mobile.mjs
+          node scripts/store-screens.mjs
+      - name: Capacitor sync + version
+        working-directory: mobile
+        run: |
+          npm ci --no-audit --no-fund && npx cap sync ios
+          cd ios/App && xcrun agvtool new-version -all ${{ inputs.version_code }} && xcrun agvtool new-marketing-version ${{ inputs.version_name }}
+      - name: Import signing
+        env:
+          P12: ${{ secrets.IOS_P12_B64 }}
+          P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+          PROVISION: ${{ secrets.IOS_PROVISION_B64 }}
+        run: |
+          echo "$P12" | base64 -d > cert.p12
+          security create-keychain -p ci build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p ci build.keychain
+          security import cert.p12 -k build.keychain -P "$P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k ci build.keychain
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$PROVISION" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/app.mobileprovision
+      - name: Archive + export IPA
+        working-directory: mobile/ios/App
+        env: { TEAM: "${{ secrets.APPLE_TEAM_ID }}" }
+        run: |
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos \
+            -archivePath build/App.xcarchive DEVELOPMENT_TEAM="$TEAM" archive | tail -5
+          cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict><key>method</key><string>app-store-connect</string><key>teamID</key><string>$TEAM</string></dict></plist>
+          EOF
+          xcodebuild -exportArchive -archivePath build/App.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath build/ipa | tail -3
+          ls build/ipa
+      - name: Upload to App Store Connect + listing (+ review)
+        working-directory: mobile
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8_PATH: ${{ runner.temp }}/asc.p8
+        run: |
+          echo "${{ secrets.ASC_KEY_P8 }}" > "$ASC_KEY_P8_PATH"
+          fastlane ios release submit_review:${{ inputs.ios_submit_review }}
+      - uses: actions/upload-artifact@v4
+        with: { name: ios-release, path: mobile/ios/App/build/ipa/*.ipa, retention-days: 90 }

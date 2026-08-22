@@ -1,0 +1,54 @@
+# 스토어 제출 자동화 — CI(.github/workflows/mobile-release.yml)에서만 실행.
+# 메타데이터(설명·키워드·릴리즈노트)는 metadata/ 에 파일로 두고, 스크린샷은 scripts/store-screens.mjs 가 CI 에서 생성한다.
+# 필요한 시크릿: PLAY_SERVICE_ACCOUNT_JSON(Play 서비스계정) / ASC_KEY_ID·ASC_ISSUER_ID·ASC_KEY_P8(App Store Connect API 키).
+default_platform(:android)
+
+PACKAGE = "com.thisismy.pdf"
+
+platform :android do
+  desc "AAB 를 Play 트랙에 올린다 (track: internal|alpha|beta|production). 메타데이터·스크린샷 동기화 포함."
+  lane :release do |opts|
+    track = opts[:track] || "internal"
+    upload_to_play_store(
+      package_name: PACKAGE,
+      aab: opts[:aab] || "../android/app/build/outputs/bundle/release/app-release.aab",
+      track: track,
+      json_key: ENV.fetch("PLAY_JSON_KEY_PATH"),
+      metadata_path: "./metadata/android",
+      skip_upload_apk: true,
+      skip_upload_changelogs: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      release_status: track == "production" ? "completed" : "completed",
+      # 최초 제출 전 콘솔 설문(콘텐츠 등급·데이터 안전)이 비어 있으면 Play 가 production 승격을 거부한다 — 오류 메시지를 그대로 노출.
+    )
+  end
+end
+
+platform :ios do
+  desc "IPA 를 App Store Connect 에 올리고 메타데이터·스크린샷 동기화, submit_review=true 면 심사 제출."
+  lane :release do |opts|
+    app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_filepath: ENV.fetch("ASC_KEY_P8_PATH"),
+      in_house: false,
+    )
+    deliver(
+      ipa: opts[:ipa] || "../ios/App/build/ipa/App.ipa",
+      app_identifier: PACKAGE,
+      metadata_path: "./metadata/ios",
+      screenshots_path: "./screenshots/ios",
+      overwrite_screenshots: true,
+      submit_for_review: opts[:submit_review] == "true",
+      automatic_release: true,
+      force: true,                 # HTML 미리보기 확인 생략(CI)
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false,   # HTTPS 외 암호화 없음(Info.plist ITSAppUsesNonExemptEncryption=false 와 일치)
+        content_rights_contains_third_party_content: false,
+      },
+    )
+  end
+end

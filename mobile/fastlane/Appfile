@@ -1,0 +1,2 @@
+package_name("com.thisismy.pdf")
+app_identifier("com.thisismy.pdf")

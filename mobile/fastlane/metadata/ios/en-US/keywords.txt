@@ -1,0 +1,1 @@
+pdf,merge pdf,split pdf,compress pdf,sign pdf,pdf editor,offline pdf,rotate pdf,watermark,page numbers

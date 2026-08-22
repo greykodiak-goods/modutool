@@ -5,3 +5,7 @@ node_modules/
 mobile/www/
 mobile/icons/
 mobile/store/
+mobile/fastlane/screenshots/
+mobile/fastlane/metadata/android/*/images/
+mobile/fastlane/report.xml
+mobile/fastlane/README.md

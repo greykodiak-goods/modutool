@@ -1,0 +1,1 @@
+All processing happens on-device (no server, no account, no network). To test: open Merge PDF, pick two PDFs from Files, tap Merge — the share sheet appears with the merged file. The app bundle makes zero network requests.

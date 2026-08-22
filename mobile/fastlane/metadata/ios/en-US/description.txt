@@ -1,0 +1,20 @@
+ThisIsMyPDF is a complete PDF toolbox that runs entirely on your device. Nothing is uploaded, no account is needed, and every tool works offline.
+
+Tools included:
+• Merge PDF — combine files in any order
+• Split PDF — extract page ranges into separate files
+• Compress PDF — shrink file size
+• Rotate PDF — fix page orientation
+• Sign PDF — draw or type a signature and place it anywhere
+• Watermark PDF — text watermark on every page
+• Page numbers — add numbering in any position
+• Organize PDF — reorder, delete, duplicate pages
+• Extract pages — pull out only what you need
+• PDF to JPG — export pages as images
+• Image to PDF — turn photos and scans into one PDF
+
+Why ThisIsMyPDF
+• Private by design: your files never leave the device. No server, no upload, no tracking.
+• Works offline: use it on a plane, in a hospital, in a law office.
+• Free, no sign-up, no file size limits.
+• English and Korean.
