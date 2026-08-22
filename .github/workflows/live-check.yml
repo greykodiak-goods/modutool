@@ -8,6 +8,12 @@ on:
         description: "검사할 사이트 베이스 URL (끝 슬래시 없이)"
         required: true
         default: "https://greykodiak-goods.github.io/modutool"
+      layout:
+        description: "umbrella = 포털+/pdf,/img,/calc,/video 서브사이트(gh-pages) · single = PDF 단일 사이트(thisismypdf.pages.dev / thisismypdf.com)"
+        required: false
+        default: "umbrella"
+        type: choice
+        options: [umbrella, single]
   schedule:
     - cron: "0 19 * * *"
 
@@ -19,37 +25,43 @@ jobs:
       - name: Check pages
         run: |
           BASE="${{ inputs.base_url || 'https://greykodiak-goods.github.io/modutool' }}"  # schedule 실행엔 inputs가 없다
+          LAYOUT="${{ inputs.layout || 'umbrella' }}"
+          # P = PDF 사이트 접두. 우산 배포(gh-pages)는 /pdf, 단일 사이트(Cloudflare Pages 정본)는 루트.
+          if [ "$LAYOUT" = "single" ]; then P=""; UMB=0; else P="/pdf"; UMB=1; fi
           fail=0
-          for p in "/" "/ko/" "/pdf/" "/pdf/ko/" "/pdf/pdf-merge/" "/pdf/pdf-compress/" "/pdf/pdf-sign/" "/pdf/pricing/" "/pdf/login/" "/pdf/admin/" "/img/" "/img/ko/" "/img/image-compress/" "/img/image-redact/" "/img/image-exif/" "/img/image-bg-remove/" "/img/image-object-remove/" "/img/ko/image-bg-remove/" "/img/assets/vendor/opencv.js" "/video/" "/video/video-trim/" "/video/ko/video-trim/" "/video/video-to-mp3/" "/video/audio-trim/" "/video/video-to-gif/" "/video/video-compress/" "/video/ko/video-to-gif/" "/video/assets/vendor/ffmpeg/ffmpeg-core.wasm" "/calc/" "/calc/age-calculator/" "/calc/vat-calculator/" "/calc/interest-calculator/" "/calc/unit-converter/" "/calc/qr-generator/" "/calc/password-generator/" "/calc/text-diff/" "/sitemap.xml" "/robots.txt" "/pdf/sitemap.xml" "/pdf/assets/site.js" "/pdf/assets/vendor/pdf-lib.min.js" "/calc/assets/vendor/qrcode-generator.js" "/pdf-merge/" "/ko/image-compress/"; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
-            echo "$code  $BASE$p"
-            [ "$code" = "200" ] || fail=1
-          done
+          chk() { code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$1"); echo "$code  $BASE$1"; [ "$code" = "200" ] || fail=1; }
+          for p in "/" "/ko/" "/pdf-merge/" "/pdf-compress/" "/pdf-sign/" "/pricing/" "/login/" "/admin/" "/sitemap.xml" "/assets/site.js" "/assets/vendor/pdf-lib.min.js"; do chk "$P$p"; done
+          if [ "$UMB" = 1 ]; then for p in "/" "/ko/" "/img/" "/img/ko/" "/img/image-compress/" "/img/image-redact/" "/img/image-exif/" "/img/image-bg-remove/" "/img/image-object-remove/" "/img/ko/image-bg-remove/" "/img/assets/vendor/opencv.js" "/video/" "/video/video-trim/" "/video/ko/video-trim/" "/video/video-to-mp3/" "/video/audio-trim/" "/video/video-to-gif/" "/video/video-compress/" "/video/ko/video-to-gif/" "/video/assets/vendor/ffmpeg/ffmpeg-core.wasm" "/calc/" "/calc/age-calculator/" "/calc/vat-calculator/" "/calc/interest-calculator/" "/calc/unit-converter/" "/calc/qr-generator/" "/calc/password-generator/" "/calc/text-diff/" "/sitemap.xml" "/robots.txt" "/calc/assets/vendor/qrcode-generator.js" "/pdf-merge/" "/ko/image-compress/"; do chk "$p"; done; fi
+          if [ "$UMB" = 1 ]; then
           echo "--- portal lists all three brands ---"
           for b in ThisIsMyPDF ThisIsMyIMG ThisIsMyCalculator; do
             curl -sL "$BASE/" | grep -q "$b" && echo "portal: $b OK" || { echo "portal: $b MISSING"; fail=1; }
           done
-          echo "--- subsite brand + canonical ---"
+          echo "--- subsite brand ---"
           curl -sL "$BASE/img/" | grep -o "ThisIsMyIMG" | head -1 || fail=1
-          curl -sL "$BASE/pdf/pdf-merge/" | grep -o '<link rel="canonical" href="[^"]*"' || fail=1
           echo "--- old URL redirects to new brand path ---"
           curl -sL "$BASE/pdf-merge/" | grep -q "url=$BASE/pdf/pdf-merge/" && echo "redirect stub OK" || { echo "redirect stub BROKEN"; fail=1; }
+          SITES="pdf img calc video"; else SITES="."; fi
+          echo "--- brand + canonical ---"
+          curl -sL "$BASE$P/" | grep -q "ThisIsMyPDF" && echo "brand OK" || { echo "brand MISSING"; fail=1; }
+          curl -sL "$BASE$P/pdf-merge/" | grep -o '<link rel="canonical" href="[^"]*"' || fail=1
           echo "--- PWA(오프라인) 자산 ---"
-          for s in pdf img calc video; do
+          for s in $SITES; do
             curl -sL "$BASE/$s/manifest.webmanifest" | grep -q '"start_url"' && echo "$s manifest OK" || { echo "$s manifest MISSING"; fail=1; }
             curl -sL "$BASE/$s/sw.js" | grep -q "var BUILD = '" && echo "$s sw.js OK" || { echo "$s sw.js MISSING"; fail=1; }
             curl -sL "$BASE/$s/sw.js" | grep -q "__BUILD_ID__" && { echo "$s sw.js 빌드ID 미치환"; fail=1; } || true
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE/$s/icon.svg"); [ "$code" = "200" ] || { echo "$s icon.svg $code"; fail=1; }
           done
-          curl -sL "$BASE/pdf/pdf-merge/" | grep -q 'rel="manifest"' && echo "manifest link OK" || { echo "manifest link MISSING"; fail=1; }
+          curl -sL "$BASE$P/pdf-merge/" | grep -q 'rel="manifest"' && echo "manifest link OK" || { echo "manifest link MISSING"; fail=1; }
           echo "--- telemetry wired ---"
-          curl -sL "$BASE/pdf/assets/site.js" | grep -q "mdtlLogEvent" && echo "site.js: mdtlLogEvent OK" || { echo "site.js: mdtlLogEvent MISSING"; fail=1; }
+          curl -sL "$BASE$P/assets/site.js" | grep -q "mdtlLogEvent" && echo "site.js: mdtlLogEvent OK" || { echo "site.js: mdtlLogEvent MISSING"; fail=1; }
           echo "--- admin noindex + not in sitemap ---"
-          curl -sL "$BASE/pdf/admin/" | grep -q "noindex" && echo "admin: noindex OK" || { echo "admin: noindex MISSING"; fail=1; }
-          curl -sL "$BASE/pdf/sitemap.xml" | grep -q "/admin/" && { echo "admin leaked into sitemap"; fail=1; } || echo "admin absent from sitemap OK"
+          curl -sL "$BASE$P/admin/" | grep -q "noindex" && echo "admin: noindex OK" || { echo "admin: noindex MISSING"; fail=1; }
+          curl -sL "$BASE$P/sitemap.xml" | grep -q "/admin/" && { echo "admin leaked into sitemap"; fail=1; } || echo "admin absent from sitemap OK"
           # ── 색인 회귀 점검 ──
           # 도구를 늘리는 것보다 106개 페이지가 실제로 색인되는 게 지금 더 가치 크다.
           # 색인을 깨뜨리는 전형적 사고 3가지를 매 배포마다 막는다.
+          if [ "$UMB" = 1 ]; then
           echo "--- sitemap index가 참조하는 sitemap이 전부 살아있는지 ---"
           maps=$(curl -sL "$BASE/sitemap.xml" | grep -oE "<loc>[^<]+</loc>" | sed -E "s|</?loc>||g")
           [ -n "$maps" ] || { echo "sitemap index 비어있음"; fail=1; }
@@ -60,9 +72,10 @@ jobs:
           echo "--- 포털이 sitemap에 포함됐는지 (대표 랜딩이 빠지면 색인이 늦다) ---"
           curl -sL "$BASE/sitemap-portal.xml" | grep -q "<loc>$BASE/</loc>" \
             && echo "포털 sitemap OK" || { echo "포털이 sitemap에 없음"; fail=1; }
+          fi
           echo "--- sitemap에 실린 URL이 전부 200인지 (죽은 URL은 신뢰도를 깎는다) ---"
           # 브랜드별로 앞 6개씩만 표본 검사 (전수는 106회라 잡이 길어진다 — 표본임을 명시)
-          for s in pdf img calc video; do
+          for s in $SITES; do
             for u in $(curl -sL "$BASE/$s/sitemap.xml" | grep -oE "<loc>[^<]+</loc>" | sed -E "s|</?loc>||g" | head -6); do
               code=$(curl -s -o /dev/null -w "%{http_code}" -L "$u")
               [ "$code" = "200" ] || { echo "  DEAD $code $u"; fail=1; }
@@ -70,7 +83,8 @@ jobs:
           done
           echo "sitemap URL 표본(브랜드당 6개) 점검 완료"
           echo "--- canonical 자기참조 + hreflang 상호참조 ---"
-          for p in "/pdf/pdf-merge/" "/img/image-compress/" "/calc/age-calculator/" "/video/video-trim/"; do
+          if [ "$UMB" = 1 ]; then CANON="/pdf/pdf-merge/ /img/image-compress/ /calc/age-calculator/ /video/video-trim/"; else CANON="/pdf-merge/ /ko/pdf-merge/ /pdf-sign/"; fi
+          for p in $CANON; do
             html=$(curl -sL "$BASE$p")
             echo "$html" | grep -q "<link rel=\"canonical\" href=\"$BASE$p\"" \
               && echo "  canonical OK $p" || { echo "  canonical 불일치 $p"; fail=1; }
@@ -78,37 +92,38 @@ jobs:
               || { echo "  hreflang 누락 $p"; fail=1; }
           done
           echo "--- 색인돼야 할 도구 페이지에 noindex가 잘못 붙지 않았는지 ---"
-          for p in "/pdf/pdf-merge/" "/img/image-redact/" "/video/video-to-gif/"; do
+          if [ "$UMB" = 1 ]; then NOIDX="/pdf/pdf-merge/ /img/image-redact/ /video/video-to-gif/"; else NOIDX="/pdf-merge/ /pdf-split/"; fi
+          for p in $NOIDX; do
             curl -sL "$BASE$p" | grep -q "noindex" && { echo "  $p 에 noindex!"; fail=1; } || echo "  $p 색인가능 OK"
           done
           echo "--- 내부 파일이 사이트로 새지 않았는지 ---"
           # 두 번 새어봤다: .github/*(2026-07-26 오전), README.md·netlify.toml·sites.json(같은 날 오후).
           # README.md에는 수익 모델과 내부 문서 경로가 적혀 있어 공개돼선 안 된다.
-          for p in "/pdf/.github/workflows/live-check.yml" "/pdf/.gitignore" "/img/.github/workflows/ci.yml" \
-                   "/pdf/README.md" "/pdf/netlify.toml" "/pdf/sites.json" "/pdf/package.json" "/README.md" "/sites.json"; do
+          for p in "$P/.github/workflows/live-check.yml" "$P/.gitignore" "$P/README.md" "$P/netlify.toml" "$P/sites.json" "$P/package.json" "$P/mobile/capacitor.config.json" "/README.md" "/sites.json"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p")
             [ "$code" = "404" ] && echo "  차단 OK $p" || { echo "  유출! $code $p"; fail=1; }
           done
           echo "--- 연락 수단 (AdSense 정책 요건이자 사용자 약속) ---"
-          for p in "/pdf/contact/" "/pdf/ko/contact/" "/img/contact/" "/calc/contact/" "/video/contact/"; do
+          if [ "$UMB" = 1 ]; then CONTACT="/pdf/contact/ /pdf/ko/contact/ /img/contact/ /calc/contact/ /video/contact/"; else CONTACT="/contact/ /ko/contact/"; fi
+          for p in $CONTACT; do
             code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$p"); [ "$code" = "200" ] && echo "  $p OK" || { echo "  $p $code"; fail=1; }
           done
-          curl -sL "$BASE/pdf/pdf-merge/assets/site.js" >/dev/null 2>&1 || true
-          curl -sL "$BASE/pdf/assets/site.js" | grep -q "'/contact/', 'Contact'" \
+          curl -sL "$BASE$P/pdf-merge/assets/site.js" >/dev/null 2>&1 || true
+          curl -sL "$BASE$P/assets/site.js" | grep -q "'/contact/', 'Contact'" \
             && echo "  푸터에 문의 링크 OK" || { echo "  푸터에 문의 링크 없음"; fail=1; }
-          curl -sL "$BASE/pdf/about/" | grep -q 'href="[^"]*/contact/"' \
+          curl -sL "$BASE$P/about/" | grep -q 'href="[^"]*/contact/"' \
             && echo "  About → 문의 링크 OK" || { echo "  About이 존재하지 않는 연락처를 안내"; fail=1; }
-          curl -sL "$BASE/pdf/privacy/" | grep -qi "contact form" \
+          curl -sL "$BASE$P/privacy/" | grep -qi "contact form" \
             && echo "  개인정보처리방침에 문의 수집 고지 OK" || { echo "  문의 수집을 고지하지 않음"; fail=1; }
           echo "--- 회원 기능이 Supabase 단일 백엔드를 쓰는지 (2026-08-22 재이관, Convex 잔재 없음) ---"
-          cfg=$(curl -sL "$BASE/pdf/assets/auth-config.js")
+          cfg=$(curl -sL "$BASE$P/assets/auth-config.js")
           echo "$cfg" | grep -q "MDTL_BACKEND" && echo "auth-config: MDTL_BACKEND OK" || { echo "auth-config: MDTL_BACKEND MISSING"; fail=1; }
           echo "$cfg" | grep -q "supabase.co" && echo "auth-config: supabase URL OK" || { echo "auth-config: supabase URL MISSING"; fail=1; }
           echo "$cfg" | grep -q "convex" && { echo "auth-config 에 convex 잔재"; fail=1; } || echo "auth-config convex 없음 OK"
-          for p in "/pdf/login/" "/pdf/signup/" "/pdf/account/" "/pdf/admin/" "/pdf/ko/login/"; do
+          for p in "$P/login/" "$P/signup/" "$P/account/" "$P/admin/" "$P/ko/login/"; do
             curl -sL "$BASE$p" | grep -q "vendor/convex" && { echo "$p 에 convex 벤더 잔재"; fail=1; } || echo "$p convex 없음 OK"
           done
-          code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE/pdf/assets/vendor/convex.js"); [ "$code" = "404" ] || { echo "convex.js 가 아직 배포됨($code)"; fail=1; }
+          code=$(curl -s -o /dev/null -w "%{http_code}" -L "$BASE$P/assets/vendor/convex.js"); [ "$code" = "404" ] || { echo "convex.js 가 아직 배포됨($code)"; fail=1; }
           exit $fail
       # 앞 스텝(정적 사이트)이 실패해도 수집 백엔드는 계속 점검한다 — 잡 결론은 그대로 실패로 남는다.
       - name: Telemetry backend E2E (Supabase — 쓰기 RPC만 허용, 테이블 직접 읽기 차단)
@@ -117,7 +132,8 @@ jobs:
           # 2026-08-22 Supabase 재이관 이후 수집처는 rpc/tim_log_event 단일 경로다.
           # KEY 는 publishable(프론트에 이미 공개된 값) — 비밀 아님.
           SB="https://wcztgneaqmwfeuonyjny.supabase.co"
-          KEY=$(curl -sL "${{ inputs.base_url || 'https://greykodiak-goods.github.io/modutool' }}/pdf/assets/auth-config.js" | grep -oE "sb_publishable_[A-Za-z0-9_]+")
+          P="/pdf"; [ "${{ inputs.layout || 'umbrella' }}" = "single" ] && P=""
+          KEY=$(curl -sL "${{ inputs.base_url || 'https://greykodiak-goods.github.io/modutool' }}$P/assets/auth-config.js" | grep -oE "sb_publishable_[A-Za-z0-9_]+")
           [ -n "$KEY" ] || { echo "::error::라이브 auth-config 에서 publishable key 를 못 읽음"; exit 1; }
           fail=0
           echo "--- 이벤트 수집 POST (expect 204) ---"
