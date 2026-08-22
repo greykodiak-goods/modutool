@@ -12,7 +12,7 @@ Auth 는 1단계 이메일+비밀번호(Supabase Auth 기본), 구글 OAuth 는 
 | 1 | tim_ 스키마·RPC·RLS·트리거·pg_cron 마이그레이션 (프로필 자동생성 포함) | ✅ 완료 | 이 커밋 |
 | 2 | 텔레메트리 스왑 — site.js 수집을 tim_log_event 로, 실삽입·롤업 검증 | ✅ 완료 | 이 커밋 |
 | 3 | 문의 스왑 — contact 폼을 tim_submit_contact 로 (허니팟·레이트리밋 동등성) | ✅ 완료 | 이 커밋 |
-| 4 | Auth 스왑 — 로그인/가입/계정/삭제를 Supabase Auth 로 (구글 버튼은 플래그 숨김) | 대기 | |
+| 4 | Auth 스왑 — 로그인/가입/계정/삭제를 Supabase Auth 로 (구글 버튼은 플래그 숨김) | ✅ 완료 | 이 커밋 |
 | 5 | 백오피스 스왑 — tim_dashboard·문의 관리, admin 시드 | 대기 | |
 | 6 | CI 전 게이트 + 라이브 스모크 + 헌장 backend:supabase + Convex 동결 기록 + T0 갱신 | 대기 | |
 
@@ -21,3 +21,7 @@ Auth 는 1단계 이메일+비밀번호(Supabase Auth 기본), 구글 OAuth 는 
 - 14:0x [1] tim_ 마이그레이션 적용+스모크(화이트리스트 필터·롤업 증분·이메일 검증·크론 등록 실측, 스모크 데이터 정리). 엣지 함수 0개 설계 확정. Queue-Epoch: 1
 - 14:3x [2] 텔레메트리 스왑 — MDTL_BACKEND 설정 도입(+전환기 MDTL_CONVEX 병존, 항목 3·4 완료 시 제거), site.js → rpc/tim_log_event. RPC 에 session_id/sessionId 양표기 호환 패치. anon 실전송 204 + tim_tool_events 적재·meta 화이트리스트 실측 후 스모크 정리(0행). 빌드 88페이지·unit 8단언 통과. Queue-Epoch: 1
 - 14:5x [3] 문의 스왑 — en·ko contact 폼을 rpc/tim_submit_contact 로. 레이트리밋 판정은 429 상태코드 → {ok:false,code:'rate_limited'} JSON 으로 교체. anon 실호출 4케이스 실측: 정상 ok:true 적재, 허니팟 ok:true 무적재(0행), 빈 제목 code:'empty'→오류 분기, 21연타 시 21번째 rate_limited(분당 20 상한 정확). 스모크 정리(msgs·rate 0행). Queue-Epoch: 1
+- 15:1x [4] Auth 스왑 — auth.js 를 Supabase Auth REST 로 전면 재작성(벤더 0). window.mdtl* 계약 유지, Convex 함수명은 RPC_MAP 번역(account:me→tim_me 등), signOutEverywhere→logout?scope=global, 구글은 PKCE 구현 + google:false 플래그 거부. vendor/convex.js·convex-entry.js 삭제, 회원 페이지 7곳 벤더 태그 제거, 전환기 MDTL_CONVEX 제거(참조 0 확인). 실측 8단계: 로그인 200/리프레시 회전/ensure_profile created/me 형상일치/전기기 로그아웃 204/로그아웃 후 리프레시 400 거부/삭제 오입력 email_mismatch/정상삭제 ok — 계정·프로필 실삭제 DB 대조(0행). **발견: 이메일 확인(confirm)이 켜져 있음** → 가입 직후 세션 없음. 프런트는 confirm_email_required 분기로 "확인 메일" 안내 처리(en·ko). Queue-Epoch: 1
+
+> **[T0 대기] Supabase Auth 이메일 확인 설정**: 공유 인스턴스 전체에 걸리는 Auth 설정이라 대표 결정 필요.
+> 선택지 ⓐ Confirm email OFF(가입 즉시 로그인, 지금 프런트도 자동 대응) ⓑ ON 유지 + 커스텀 SMTP 연결(기본 메일러는 시간당 수 통 제한이라 운영 불가). 현재 프런트는 어느 쪽이든 동작.

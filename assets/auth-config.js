@@ -11,7 +11,3 @@ window.MDTL_BACKEND = {
   key: 'sb_publishable_IfQ3mKVFiauD9PsMbT1q9A_1lMIxIGk',
   google: false // 구글 OAuth 는 Supabase 대시보드 공급자 설정(T0) 후 true 로 — 그전까지 버튼 숨김
 };
-
-/* [전환기 한정] auth.js·contact 가 Supabase 로 스왑되는 이관 항목 4·3 완료 시 삭제.
-   그전까지 로그인·문의는 기존 Convex 경로를 유지해 커밋 단위로 배포 가능하게 한다. */
-window.MDTL_CONVEX = { url: 'https://superb-echidna-510.convex.site' };
