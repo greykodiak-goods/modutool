@@ -1,0 +1,10 @@
+# Cloudflare Pages 응답 헤더 — netlify.toml과 동일 정책(정본 전환 대비).
+# 빌드가 dist 루트로 복사한다(build-all.mjs). GitHub Pages는 이 파일을 무시하므로 현행 배포에 무해.
+/assets/*
+  Cache-Control: public, max-age=604800
+/*/assets/*
+  Cache-Control: public, max-age=604800
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN

@@ -43,7 +43,6 @@
   </div>
 </main>
 <footer id="site-footer" class="site-footer"></footer>
-<script src="/modutool/calc/assets/vendor/convex.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function () {
   var msg = document.getElementById('msg');
@@ -86,8 +85,13 @@ document.addEventListener('DOMContentLoaded', async function () {
       await window.mdtlRefreshPlan();
       location.href = acct;
     } catch (err) {
-      // 이미 가입된 이메일인지는 알려주지 않는다(계정 열거 방지).
-      mdtlResult(msg, '\u274c 가입하지 못했습니다. 이미 가입하셨다면 <a href="/modutool/calc/ko/login/">로그인</a>해 주세요.', true);
+      if (err && err.message === 'confirm_email_required') {
+        // 이메일 확인 설정이 켜진 경우 — 세션은 인증 링크 클릭 후 로그인에서 생긴다.
+        mdtlResult(msg, '✉️ 확인 메일을 보냈습니다. 메일함의 링크로 인증한 뒤 <a href="/modutool/calc/ko/login/">로그인</a>해 주세요.');
+      } else {
+        // 이미 가입된 이메일인지는 알려주지 않는다(계정 열거 방지).
+        mdtlResult(msg, '❌ 가입하지 못했습니다. 이미 가입하셨다면 <a href="/modutool/calc/ko/login/">로그인</a>해 주세요.', true);
+      }
       btn.disabled = false;
     }
   });

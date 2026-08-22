@@ -66,7 +66,6 @@
 </main>
 <footer id="site-footer" class="site-footer"></footer>
 
-<script src="/modutool/calc/assets/vendor/convex.js"></script>
 <script>
 (function () {
   var days = 30;
@@ -94,12 +93,10 @@
     } catch (e) {
       loading.style.display = 'none';
       denied.style.display = '';
-      // Convex는 운영에서 서버 예외 메시지를 감추므로 문구로 원인을 특정하지 않는다.
       // 이 쿼리가 실패하는 사유는 사실상 "관리자 아님" 하나뿐이다(로그인 여부는 앞에서 확인).
       denied.innerHTML = '<div class="result show error" style="margin:0">🔒 ' +
         '이 계정은 관리자로 등록되어 있지 않습니다. 관리자 이메일로 로그인하거나, ' +
-        'Convex의 <code>adminUsers</code>에 이메일을 추가하세요' +
-        '(<code>npx convex run admin:seedAdmin \'{"email":"..."}\'</code>).</div>';
+        'Supabase의 <code>tim_admin_users</code>에 이메일을 추가하세요.</div>';
       return;
     }
     render(d || {});
@@ -158,7 +155,7 @@
     html += '<div class="kpi"><div class="n">' + n(viewsTotal) + '</div><div class="l">유입 (페이지뷰 · 캠페인 ' + n((d.top_campaigns || []).length) + '종)</div></div>';
     html += '<div class="kpi"><div class="n">' + n(waitlist) + '</div><div class="l">수익 신호 (프리미엄 출시알림 클릭 — 결제 미개시)</div></div>';
     html += '<div class="kpi"><div class="n" id="ctlImprove">…</div><div class="l">최근 개선 (main 마지막 반영)</div></div>';
-    html += '<div class="kpi warn"><div class="n">3</div><div class="l">대표 결정 대기 (도메인·Convex prod·AdSense)</div></div>';
+    html += '<div class="kpi warn"><div class="n">3</div><div class="l">대표 결정 대기 (도메인·Auth 이메일확인·AdSense)</div></div>';
     html += '</div>';
 
     // KPIs

@@ -43,7 +43,6 @@
   </div>
 </main>
 <footer id="site-footer" class="site-footer"></footer>
-<script src="/modutool/pdf/assets/vendor/convex.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async function () {
   var msg = document.getElementById('msg');
@@ -86,8 +85,13 @@ document.addEventListener('DOMContentLoaded', async function () {
       await window.mdtlRefreshPlan();
       location.href = acct;
     } catch (err) {
-      // 이미 가입된 이메일인지 여부는 서버가 알려주지 않는다(계정 열거 방지).
-      mdtlResult(msg, '❌ Could not create the account. If you already signed up, <a href="/modutool/pdf/login/">log in</a> instead.', true);
+      if (err && err.message === 'confirm_email_required') {
+        // 이메일 확인 설정이 켜진 경우 — 세션은 인증 링크 클릭 후 로그인에서 생긴다.
+        mdtlResult(msg, '✉️ We sent you a confirmation email. Click the link in it, then <a href="/modutool/pdf/login/">log in</a>.');
+      } else {
+        // 이미 가입된 이메일인지 여부는 서버가 알려주지 않는다(계정 열거 방지).
+        mdtlResult(msg, '❌ Could not create the account. If you already signed up, <a href="/modutool/pdf/login/">log in</a> instead.', true);
+      }
       btn.disabled = false;
     }
   });
