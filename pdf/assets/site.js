@@ -112,7 +112,25 @@
     return (n / 1048576).toFixed(2) + ' MB';
   };
 
+  /* 네이티브 앱(Capacitor WebView)에서는 <a download>가 동작하지 않는다(iOS는 무반응, Android는 blob: 미지원).
+     앱이면 Filesystem 캐시에 쓰고 OS 공유 시트(파일에 저장·공유)로 넘긴다 — 같은 파일명·같은 호출부. */
+  function nativePlugins() {
+    var c = window.Capacitor;
+    return (c && c.isNativePlatform && c.isNativePlatform() && c.Plugins) ? c.Plugins : null;
+  }
+  function nativeDownload(P, blob, filename) {
+    var r = new FileReader();
+    r.onload = function () {
+      var b64 = String(r.result).split(',')[1];
+      P.Filesystem.writeFile({ path: filename, data: b64, directory: 'CACHE' })
+        .then(function (res) { return P.Share.share({ title: filename, url: res.uri }); })
+        .catch(function (e) { if (!/cancel/i.test(String(e && e.message))) alert('Save failed: ' + (e && e.message)); });
+    };
+    r.readAsDataURL(blob);
+  }
   window.mdtlDownload = function (blob, filename) {
+    var P = nativePlugins();
+    if (P && P.Filesystem && P.Share) return nativeDownload(P, blob, filename);
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url; a.download = filename;

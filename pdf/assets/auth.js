@@ -86,6 +86,8 @@
   window.mdtlAuthHeader = function () {
     var inner = document.querySelector('#site-header .inner');
     if (!inner) return;
+    // 백엔드 없는 번들(폐쇄망·모바일 앱)엔 pricing/login 페이지가 없다 — 죽은 링크를 만들지 않는다.
+    if (!cfg()) return;
     var ko = lang() === 'ko';
     var themeBtn = inner.querySelector('.icon-btn');
 

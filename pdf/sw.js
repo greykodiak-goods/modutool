@@ -10,7 +10,7 @@
    · API(수집 엔드포인트·인증)는 절대 캐시하지 않는다 — 오프라인이면 그냥 실패시키고 도구는 계속 쓰게 둔다. */
 'use strict';
 
-var BUILD = '5be6275277c9';
+var BUILD = '2fe0748a2621';
 var BASE = new URL('./', self.location).pathname;      // 예: /modutool/pdf/
 
 /* ⚠️ CacheStorage는 스코프가 아니라 "오리진" 단위로 공유된다.
