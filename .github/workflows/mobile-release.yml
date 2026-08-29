@@ -138,6 +138,10 @@ jobs:
           EOF
           xcodebuild -exportArchive -archivePath build/App.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath build/ipa | tail -3
           ls build/ipa
+      # 러너 사전설치에 기대지 않는다 — android 잡과 같은 방식으로 ruby·fastlane 을 명시한다.
+      # pod install(위 cap sync) 다음에 두는 이유: 러너 기본 ruby 로 CocoaPods 를 돌린 뒤 fastlane 만 별도 ruby 에 깐다.
+      - uses: ruby/setup-ruby@v1
+        with: { ruby-version: "3.3" }
       - name: Upload to App Store Connect + listing (+ review)
         working-directory: mobile
         env:
@@ -146,6 +150,7 @@ jobs:
           ASC_KEY_P8_PATH: ${{ runner.temp }}/asc.p8
         run: |
           echo "${{ secrets.ASC_KEY_P8 }}" > "$ASC_KEY_P8_PATH"
+          gem install fastlane --no-document -q
           fastlane ios release submit_review:${{ inputs.ios_submit_review }}
       - uses: actions/upload-artifact@v4
         with: { name: ios-release, path: mobile/ios/App/build/ipa/*.ipa, retention-days: 90 }
