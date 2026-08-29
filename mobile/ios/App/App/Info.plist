@@ -4,6 +4,29 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<!-- 다른 앱("파일"·메일·브라우저)에서 PDF를 이 앱으로 넘길 수 있게 한다.
+	     LSHandlerRank=Alternate — 기본 PDF 뷰어 자리를 뺏지 않고 "다음으로 열기" 목록에만 오른다. -->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>PDF Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+			</array>
+		</dict>
+	</array>
+	<!-- 원본 위치의 파일을 그대로 연다(복사본 아님) -->
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<!-- "파일" 앱에서 이 앱의 문서 폴더가 보인다 — 결과물을 기기에서 바로 꺼낼 수 있다 -->
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>CFBundleDisplayName</key>
         <string>ThisIsMyPDF</string>
 	<key>CFBundleExecutable</key>
@@ -28,9 +51,10 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<!-- 64비트 전용(iOS 11+ 이후 App Store 요건) — Capacitor 템플릿의 32비트 잔재를 정정 -->
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
