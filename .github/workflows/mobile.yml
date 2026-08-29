@@ -89,6 +89,8 @@ jobs:
           npm ci --no-audit --no-fund
           npx playwright install chromium
           node scripts/build-mobile.mjs
+      - name: Privacy manifest lint
+        run: plutil -lint mobile/ios/App/App/PrivacyInfo.xcprivacy
       - name: Capacitor sync (pod install)
         working-directory: mobile
         run: npm ci --no-audit --no-fund && npx cap sync ios
@@ -117,7 +119,9 @@ jobs:
         working-directory: mobile/ios/App
         run: |
           xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build | tail -20
+            -derivedDataPath build/dd CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build | tail -20
+          # 개인정보 매니페스트가 번들에 실제로 들어갔는지 — pbxproj 등록이 빠지면 파일은 있는데 앱엔 없다(ITMS-91053).
+          plutil -lint build/dd/Build/Products/Release-iphoneos/App.app/PrivacyInfo.xcprivacy
       - name: Xcode archive + export IPA (signed)
         if: env.P12 != ''
         env:
