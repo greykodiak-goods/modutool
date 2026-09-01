@@ -149,6 +149,12 @@
     if (opts.accept) input.accept = opts.accept;
     if (opts.multiple) input.multiple = true;
 
+    /* 이 페이지가 PDF를 받는 도구라면, 다른 앱에서 넘어온 파일의 착지점이 된다 */
+    if (!intakeDrop && /pdf/i.test(opts.accept || '')) {
+      intakeDrop = opts.onFiles;
+      window.mdtlCheckIntake();
+    }
+
     el.addEventListener('click', function () { input.click(); });
     input.addEventListener('change', function () {
       if (input.files && input.files.length) opts.onFiles(Array.from(input.files));
@@ -175,6 +181,63 @@
       }
       if (files.length) opts.onFiles(files);
     });
+  };
+
+  /* ── 다른 앱에서 넘어온 파일 수신 ──
+     iOS "다음으로 열기"·Android ACTION_VIEW/SEND 로 넘어온 PDF를 도구 드롭존에 그대로 물린다.
+     네이티브가 파일을 CACHE/mdtl-intake/ 로 복사하고 목록을 intake.json 에 남기면,
+     웹은 페이지가 뜰 때·앱이 다시 앞으로 나올 때 그 목록을 읽어 소비한다(소비 후 삭제).
+     저장 경로(nativeDownload)의 역방향이고 쓰는 플러그인도 같다(Filesystem) — 새 의존성 없음.
+     "네이티브가 JS를 호출한다"가 아니라 "웹이 대기열을 확인한다"로 만든 이유:
+     콜드스타트에서 네이티브 이벤트가 스크립트 등록보다 먼저 나면 파일이 그대로 사라진다. */
+  var INTAKE_DIR = 'mdtl-intake';
+  var INTAKE_LIST = INTAKE_DIR + '/intake.json';
+  var intakeDrop = null;       // 이 페이지의 PDF 드롭존(있으면 여기로 배달)
+  var intakeBusy = false;
+
+  /* 착지 도구: 1개면 페이지 편집(정리), 2개 이상이면 병합.
+     PDF 하나를 넘겼다 = 그 문서를 손보려는 것, 여러 개를 넘겼다 = 합치려는 것. */
+  window.mdtlIntakeLanding = function (count, lang) {
+    return BASE + ((lang || pageLang()) === 'ko' ? '/ko' : '') +
+      (count > 1 ? '/pdf-merge/' : '/pdf-organize/') + '?intake=1';
+  };
+
+  function intakeClear(P, names) {
+    var jobs = (names || []).map(function (n) {
+      return P.Filesystem.deleteFile({ path: INTAKE_DIR + '/' + n, directory: 'CACHE' }).catch(function () {});
+    });
+    jobs.push(P.Filesystem.deleteFile({ path: INTAKE_LIST, directory: 'CACHE' }).catch(function () {}));
+    return Promise.all(jobs);
+  }
+  function intakeReadFile(P, name) {
+    return P.Filesystem.readFile({ path: INTAKE_DIR + '/' + name, directory: 'CACHE' }).then(function (res) {
+      var bin = atob(String(res.data)), u = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+      return new File([u], name, { type: 'application/pdf' });
+    });
+  }
+  /** 대기열 확인 → 이 페이지가 PDF를 받는 도구면 배달, 아니면 착지 도구로 이동. */
+  window.mdtlCheckIntake = function () {
+    var P = nativePlugins();
+    if (!P || !P.Filesystem || intakeBusy) return;
+    intakeBusy = true;
+    P.Filesystem.readFile({ path: INTAKE_LIST, directory: 'CACHE', encoding: 'utf8' })
+      .then(function (res) {
+        var names = JSON.parse(String(res.data)).files || [];
+        if (!names.length) return intakeClear(P, names);
+        if (!intakeDrop) {
+          // 착지 도구인데도 드롭존이 없으면(빌드 이상) 무한 이동이 된다 — 한 번만 시도하고 버린다
+          if (/[?&]intake=1/.test(location.search)) return intakeClear(P, names);
+          location.href = window.mdtlIntakeLanding(names.length);
+          return;
+        }
+        return Promise.all(names.map(function (n) { return intakeReadFile(P, n); }))
+          .then(function (files) { intakeDrop(files); })
+          .catch(function () { /* 읽기 실패 — 대기열을 남기면 매번 되살아난다 */ })
+          .then(function () { return intakeClear(P, names); });
+      })
+      .catch(function () { /* 대기 파일 없음이 정상 */ })
+      .then(function () { intakeBusy = false; });
   };
 
   /* 결과 영역 헬퍼 */
@@ -434,4 +497,9 @@
     telPageview();
     window.mdtlInitSW();
   });
+
+  /* 앱이 다시 앞으로 나올 때(다른 앱에서 "열기"로 들어온 직후 포함) 대기열을 다시 본다 */
+  window.addEventListener('load', function () { window.mdtlCheckIntake(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) window.mdtlCheckIntake(); });
+  window.addEventListener('focus', function () { window.mdtlCheckIntake(); });
 })();
