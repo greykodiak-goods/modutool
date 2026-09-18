@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  개인정보 매니페스트 (ITMS-91053). 선언 근거는 전부 실제 코드에서 확인한 것이다 — 추측으로 채우지 않았다.
+
+  · 수집 없음 / 추적 없음: 앱은 오프라인 번들(OFFLINE=1)이고 외부 요청이 0건인 것을 CI 가 검사한다.
+    계정·광고·분석 SDK 가 없어 NSPrivacyCollectedDataTypes 와 NSPrivacyTrackingDomains 는 비어 있다.
+  · FileTimestamp(C617.1): CapacitorFilesystem → IONFilesystemLib 가 FileManager.attributesOfItem 로
+    .creationDate/.modificationDate 를 읽는다(ctime/mtime 반환). 대상은 앱 컨테이너 안의 파일뿐이다
+    (웹 코드는 Filesystem.writeFile(directory:'CACHE') + Share.share 만 쓴다). 두 pod 다 자체 매니페스트가 없어
+    앱 매니페스트가 덮는다.
+  · UserDefaults(CA92.1)는 선언하지 않는다: @capacitor/ios·filesystem·share 와 IONFilesystemLib,
+    앱의 AppDelegate 어디에도 UserDefaults 접근이 없다(grep 실측). 언어 설정은 WebView 의 localStorage 라
+    UserDefaults 가 아니다. 쓰지 않는 API 를 선언하면 근거 없는 사유를 심사에 제출하는 셈이 된다.
+
+  플러그인을 추가하면 그 pod 의 PrivacyInfo.xcprivacy 유무를 확인하고 이 파일을 갱신할 것.
+-->
+<plist version="1.0">
+<dict>
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>C617.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
