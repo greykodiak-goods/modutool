@@ -75,6 +75,7 @@ jobs:
             mobile/android/app/build/outputs/bundle/release/*.aab
             mobile/android/app/build/outputs/apk/debug/*.apk
             mobile/icons/*.png
+            mobile/fastlane/metadata/android/*/images/icon.png
           retention-days: 30
 
   ios:
